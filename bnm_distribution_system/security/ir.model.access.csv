@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customer_payment_mode_user,customer.payment.mode.user,model_customer_payment_mode,base.group_user,1,1,1,1
+access_customer_payment_mode_portal_user,customer.payment.mode.portal,model_customer_payment_mode,base.group_portal,1,1,1,0
+access_customer_payment_mode_public_user,customer.payment.mode.public,model_customer_payment_mode,base.group_public,1,1,1,0
