@@ -4,6 +4,16 @@ from odoo.addons.website_sale.controllers.main import WebsiteSale
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from datetime import datetime
 import re
+from odoo.addons.website.controllers.main import Website
+
+
+class Website(Website):
+
+    #Requires Login To View Home Page
+    @http.route(auth="user")
+    def index(self, **kw):
+        return super(Website, self).index(**kw)
+    
 
 class WebsiteSale(WebsiteSale):
     
@@ -18,6 +28,10 @@ class WebsiteSale(WebsiteSale):
     def shop(self, page=0, category=None, search='', ppg=False, **post):
         return super(WebsiteSale, self).shop(page=page, category=category, search=search, ppg=ppg, **post)
     
+    @http.route(auth="user")
+    def cart(self, access_token=None, revive='', **post):
+        return super(WebsiteSale, self).cart(access_token=access_token, revive=revive, **post)
+
     #create a route to get and validate additional fields
     @http.route(['/shop/additional_customer_details'], type='json', auth="public", methods=['POST'], website=True)
     def validate_customer_details(self, **post):
