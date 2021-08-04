@@ -12,14 +12,14 @@
     width: 200px;
     height: 150px; 
 } */
-.oe_grid:hover {
+/* .oe_grid:hover { */
     /* background-color: #efecca !important; */
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
-  }
-.oe_product section {
+    /* box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1); */
+    /* border-radius: 20px; */
+  /* } */
+/* .oe_product section {
     background: transparent !important;
-}
+} */
 /* .oe_product_cart {
     height: 50% !important;
 } */
@@ -29,3 +29,6 @@
         top: 25%;
     }
   } */
+.oe_product_cart .o_wsale_product_btn {
+    position: relative; important
+  }
