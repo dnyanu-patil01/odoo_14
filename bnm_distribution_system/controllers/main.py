@@ -5,6 +5,7 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 from datetime import datetime
 import re
 from odoo.addons.website.controllers.main import Website
+from odoo.addons.http_routing.models.ir_http import slug
 
 
 class Website(Website):
@@ -17,6 +18,12 @@ class Website(Website):
 
 class WebsiteSale(WebsiteSale):
     
+    @http.route(['/landing'], type='http', auth="public", website=True)
+    def render_landing_page(self, **kw):
+        categories = request.env['product.public.category'].search([])
+        return request.render("bnm_distribution_system.landing_page",  {'categories':categories})
+
+
     # Inherit To Load payment_mode_list in shop/payment page
     def _get_shop_payment_values(self, order, **kwargs):
         values = super(WebsiteSale, self)._get_shop_payment_values(order, **kwargs)
