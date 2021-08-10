@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_shiprocket_channel,shiprocket.channel,model_shiprocket_channel,base.group_user,1,1,1,0
+access_shiprocket_pickup_location,shiprocket.pickup.location,model_shiprocket_pickup_location,base.group_user,1,1,1,0
+access_shiprocket_courier,shiprocket.courier,model_shiprocket_courier,base.group_user,1,1,1,0
+access_shiprocket_serviceability_matrix,shiprocket.serviceability.matrix,model_shiprocket_serviceability_matrix,base.group_user,1,1,1,1
+access_shiprocket_bulk_process,shiprocket.bulk.process,model_shiprocket_bulk_process,base.group_user,1,1,1,0
+access_shiprocket_order_status,shiprocket.order.status,model_shiprocket_order_status,base.group_user,1,1,1,0
+access_wiz_barcodes_read,wiz.barcodes.read,model_wiz_barcodes_read,base.group_user,1,1,1,0
+access_set_courier,set.courier,model_set_courier,base.group_user,1,1,1,0
+access_message_box,message.box,model_message_box,base.group_user,1,1,1,0
+access_wiz_stock_picking_lines,wiz.stock.picking.lines,model_wiz_stock_picking_lines,base.group_user,1,1,1,0

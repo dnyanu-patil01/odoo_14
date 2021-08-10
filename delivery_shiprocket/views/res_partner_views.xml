@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="view_res_partner_inherit" model="ir.ui.view">
+      <field name="name">view.res.partner.inherit</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form" />
+      <field name="arch" type="xml">
+         <xpath expr="//field[@name='type']" position="before">
+            <field name="is_shiprocket_pickup_location" />
+            <field name="pickup_location_name" attrs="{'invisible':[('is_shiprocket_pickup_location','=',False)]}" />
+            <button type="object" name="add_pickup_location" string="Create Shiprocket Pickup Location" attrs="{'invisible':[('is_shiprocket_pickup_location','=',False)]}" />
+         </xpath>
+      </field>
+   </record>
+</odoo>

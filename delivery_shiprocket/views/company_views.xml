@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="view_res_company_inherit" model="ir.ui.view">
+      <field name="name">view.res.company.inherit</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form" />
+      <field name="arch" type="xml">
+         <xpath expr="//notebook/page[last()]" position="after">
+            <page string="Shiprocket Config">
+               <group>
+                  <group>
+                     <field name="use_shiprocket" />
+                     <field name="api_token" invisible="1" />
+                     <div class="alert alert-info" role="alert" attrs="{'invisible': ['|',('use_shiprocket','=',False),('api_token', '!=', False)]}">
+                        <span>
+                              Unable To Generate Auth Token.Please Verify The Shiprocket Username And Password In Config.
+                        </span>
+                     </div>
+                     
+                  </group>
+               </group>
+               <button type="object" name="get_auth_api" string="Generate Auth Token" />
+               <button type="object" name="get_import_all_channels" string="Import All Channel" attrs="{'invisible':[('api_token','=',False)]}" />
+               <button type="object" name="get_import_all_picking_address" string="Import All Picking Location" attrs="{'invisible':[('api_token','=',False)]}" />
+            </page>
+         </xpath>
+      </field>
+   </record>
+</odoo>
