@@ -1,0 +1,53 @@
+id,status_code,name,is_call_status_cron
+order_status_1,1,New Order,TRUE
+order_status_2,2,Invoiced,TRUE
+order_status_3,3,Ready To Ship,TRUE
+order_status_4,4,Pickup Scheduled,TRUE
+order_status_5,5,Cancelled,FALSE
+order_status_6,6,Shipped,TRUE
+order_status_7,7,Delivered,FALSE
+order_status_8,8,ePayment Failed,TRUE
+order_status_9,9,Returned,FALSE
+order_status_10,10,Unmapped,TRUE
+order_status_11,11,Unfulfillable,TRUE
+order_status_12,12,Pickup Queue,TRUE
+order_status_13,13,Pickup Rescheduled,TRUE
+order_status_14,14,Pickup Error,TRUE
+order_status_15,15,RTO Initiated,TRUE
+order_status_16,16,RTO Delivered,FALSE
+order_status_17,17,RTO Acknowledged,FALSE
+order_status_18,18,Cancellation Requested,FALSE
+order_status_19,19,Out for Delivery,TRUE
+order_status_20,20,In Transit,TRUE
+order_status_21,21,Return Pending,TRUE
+order_status_22,22,Return Initiated,TRUE
+order_status_23,23,Return Pickup Queued,TRUE
+order_status_24,24,Return Pickup Error,TRUE
+order_status_25,25,Return In Transit,TRUE
+order_status_26,26,Return Delivered,FALSE
+order_status_27,27,Return Cancelled,FALSE
+order_status_28,28,Return Pickup Generated,TRUE
+order_status_29,29,Return Cancellation Requested,TRUE
+order_status_30,30,Return Pickup Cancelled,TRUE
+order_status_31,31,Return Pickup Resheduled,TRUE
+order_status_32,32,Return Pickedup,TRUE
+order_status_33,33,Lost,FALSE
+order_status_34,34,Out For Pickup,TRUE
+order_status_35,35,Pickup Exception,FALSE
+order_status_36,36,Undelivered,TRUE
+order_status_37,37,Delayed,TRUE
+order_status_38,38,Partial Delivered,TRUE
+order_status_39,39,Destroyed,FALSE
+order_status_40,40,Damaged,FALSE
+order_status_41,41,Fulfilled,FALSE
+order_status_42,42,Archived,FALSE
+order_status_43,43,Reached Destination Hub,TRUE
+order_status_44,44,Misrouted,TRUE
+order_status_45,45,Rto OFD,TRUE
+order_status_46,46,Rto NDR,TRUE
+order_status_47,47,Return Out For Pickup,TRUE
+order_status_48,48,Return Out For Delivery,TRUE
+order_status_49,49,Return Pickup Exception,TRUE
+order_status_50,50,Return Undelivered,TRUE
+order_status_51,51,Picked Up,TRUE
+order_status_52,52,Self Fulfilled,FALSE

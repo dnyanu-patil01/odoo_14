@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="set_courier_form" model="ir.ui.view">
+        <field name="name">set.courier.form</field>
+        <field name="model">set.courier</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="selected_courier_id" required="1" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="set_courier_in_picking" type="object" string="Set" icon="fa-check" class="oe_highlight" />
+                    <button string="Cancel" class="btn btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

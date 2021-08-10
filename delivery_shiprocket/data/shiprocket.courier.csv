@@ -1,0 +1,51 @@
+id,name,code,is_international,is_return
+courier_001,Blue Dart,1,FALSE,FALSE
+courier_002,FedEx,2,FALSE,FALSE
+courier_003,FEDEX PACKAGING#,7,TRUE,FALSE
+courier_004,DHL Packet International#,8,TRUE,FALSE
+courier_005,Delhivery,10,FALSE,FALSE
+courier_006,FedEx Surface 10 Kg,12,FALSE,FALSE
+courier_007,Ecom Express,14,FALSE,FALSE
+courier_008,Dotzot,16,FALSE,FALSE
+courier_009,Xpressbees,33,FALSE,FALSE
+courier_010,Aramex International#,35,TRUE,FALSE
+courier_011,DHL PACKET PLUS INTERNATIONAL#,37,TRUE,FALSE
+courier_012,DHL PARCEL INTERNATIONAL DIRECT#,38,TRUE,FALSE
+courier_013,Delhivery Surface 5 Kgs,39,FALSE,FALSE
+courier_014,Gati Surface 5 Kg,40,FALSE,FALSE
+courier_015,FedEx Flat Rate,41,FALSE,FALSE
+courier_016,FedEx Surface 5 Kg,42,FALSE,FALSE
+courier_017,Delhivery Surface,43,FALSE,FALSE
+courier_018,Delhivery Surface 2 Kgs,44,FALSE,FALSE
+courier_019,Ecom Express Reverse##,45,FALSE,TRUE
+courier_020,Shadowfax Reverse##,46,FALSE,TRUE
+courier_021,Ekart Logistics,48,FALSE,FALSE
+courier_022,Wow Express,50,FALSE,FALSE
+courier_023,Xpressbees Surface,51,FALSE,FALSE
+courier_024,RAPID DELIVERY,52,FALSE,FALSE
+courier_025,Gati Surface 1 Kg,53,FALSE,FALSE
+courier_026,Ekart Logistics Surface,54,FALSE,FALSE
+courier_027,Blue Dart Surface,55,FALSE,FALSE
+courier_028,DHL Express International,56,FALSE,FALSE
+courier_029,Professional,57,FALSE,FALSE
+courier_030,Shadowfax Surface,58,FALSE,FALSE
+courier_031,Ecom Express ROS,60,FALSE,FALSE
+courier_032,FedEx Surface 1 Kg,62,FALSE,FALSE
+courier_033,Delhivery Flash,63,FALSE,FALSE
+courier_034,Delhivery Essential Surface,68,FALSE,FALSE
+courier_035,Delhivery Reverse QC,80,FALSE,FALSE
+courier_036,Shadowfax Local,95,FALSE,FALSE
+courier_037,Shadowfax Essential Surface,96,FALSE,FALSE
+courier_038,Dunzo Local,97,FALSE,FALSE
+courier_039,Ecom Express ROS Reverse,99,FALSE,FALSE
+courier_040,Delhivery Surface 10 Kgs,100,FALSE,FALSE
+courier_041,Delhivery Surface 20 Kgs,101,FALSE,FALSE
+courier_042,Delhivery Essential Surface 5Kg,102,FALSE,FALSE
+courier_043,Xpressbees Essential Surface,103,FALSE,FALSE
+courier_044,Delhivery Essential Surface 2Kg,104,FALSE,FALSE
+courier_045,Wefast Local,106,FALSE,FALSE
+courier_046,Wefast Local 5 Kg,107,FALSE,FALSE
+courier_047,Ecom Express Essential,108,FALSE,FALSE
+courier_048,Ecom Express ROS Essential,109,FALSE,FALSE
+courier_049,Delhivery Essential,110,FALSE,FALSE
+courier_050,Delhivery Non Essential,111,FALSE,FALSE

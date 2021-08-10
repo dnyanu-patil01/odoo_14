@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_pickup_slip">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h3 class="mb32">
+                            Pickup Slip -
+                            <t t-esc="o.name" />
+                        </h3>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-sm table-bordered" style="table-layout: fixed">
+                                    <thead style="display: table-row-group">
+                                        <tr>
+                                            <th class="text-center" style="width: 10%" scope="col">S.NO</th>
+                                            <th class="text-center" style="width: 25%" scope="col">Internal Ref.</th>
+                                            <th class="text-center" style="width: 50%" scope="col">Product Name</th>
+                                            <th class="text-center" style="width: 15%" scope="col">Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="counter" t-value="1" />
+                                        <t t-foreach="product_lines" t-as="prod">
+                                            <tr>
+                                                <td>
+                                                    <span t-esc="counter" />
+                                                    <t t-set="counter" t-value="counter+1" />
+                                                </td>
+                                                <td>
+                                                    <t t-esc="prod['internal_reference']" />
+                                                </td>
+                                                <td>
+                                                    <t t-esc="prod['product']" />
+                                                </td>
+                                                <td>
+                                                    <t t-esc="prod['qty']" />
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

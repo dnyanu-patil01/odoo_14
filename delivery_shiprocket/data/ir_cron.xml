@@ -1,0 +1,21 @@
+<odoo>
+    <record id="ir_cron_update_shiprocket_auth" model="ir.cron">
+        <field name="name">Shiprocket Auto Update Authentication</field>
+        <field name="model_id" ref="model_res_company"/>
+        <field name="state">code</field>
+        <field name="code">model.action_update_auth_token()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+    <record id="ir_cron_update_shiprocket_order_status" model="ir.cron">
+        <field name="name">Shiprocket Auto Update Order Status</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model.action_update_order_status()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+    </record>
+</odoo>

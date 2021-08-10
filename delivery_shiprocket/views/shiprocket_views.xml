@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <!-- Shiprocket Channel Form View -->
+   <record id="view_shiprocket_channel_form" model="ir.ui.view">
+      <field name="name">view.shiprocket.channel.form</field>
+      <field name="model">shiprocket.channel</field>
+      <field name="arch" type="xml">
+         <form string="Shiprocket Channel" create="0" delete="0" edit="0" duplicate="0">
+            <sheet>
+               <group>
+                  <group>
+                     <field name="name" />
+                     <field name="channel_id" />
+                     <field name="base_channel_code" />
+                     <field name="brand_name" />
+                     <field name="channel_status" />
+                  </group>
+               </group>
+            </sheet>
+         </form>
+      </field>
+   </record>
+   <!-- Shiprocket Channel Tree View -->
+   <record id="view_shiprocket_channel_tree" model="ir.ui.view">
+      <field name="name">view.shiprocket.channel.tree</field>
+      <field name="model">shiprocket.channel</field>
+      <field name="arch" type="xml">
+         <tree string="Shiprocket Channel" create="0" edit="0" delete="0">
+            <field name="name" />
+            <field name="channel_id" />
+            <field name="base_channel_code" />
+            <field name="brand_name" />
+            <field name="channel_status" />
+         </tree>
+      </field>
+   </record>
+   <!-- Action For Shiprocket Channel -->
+   <record id="action_shiprocket_channel" model="ir.actions.act_window">
+      <field name="name">Channels</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">shiprocket.channel</field>
+      <field name="view_mode">tree,form</field>
+   </record>
+   <menuitem id="menu_shiprocket_root" name="Shiprocket" parent="stock.menu_stock_config_settings" sequence="50" />
+   <menuitem id="menu_shiprocket_channel" name="Shiprocket Channels" parent="menu_shiprocket_root" action="action_shiprocket_channel" sequence="1" />
+   <!-- Shiprocket Pickup Location Form View -->
+   <record id="view_shiprocket_pickup_location_form" model="ir.ui.view">
+      <field name="name">view.shiprocket.pickup.location.form</field>
+      <field name="model">shiprocket.pickup.location</field>
+      <field name="arch" type="xml">
+         <form string="Shiprocket Pickup Locations">
+            <sheet>
+               <group name="bank_details" col="4">
+                  <field name="pickup_location" />
+                  <field name="pickup_location_id" />
+               </group>
+               <group>
+                  <group string="Shipper Details">
+                     <field name="name" />
+                     <field name="email" widget="email" />
+                     <field name="phone" widget="phone" />
+                  </group>
+                  <group string="Location Details" name="location_address_details">
+                     <label for="address" string="Pickup Address" />
+                     <div class="o_address_format">
+                        <field name="address" placeholder="Street..." class="o_address_street" />
+                        <field name="address2" placeholder="Street 2..." class="o_address_street" />
+                        <field name="city" placeholder="City" class="o_address_city" />
+                        <field name="state_id" class="o_address_state" placeholder="State" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                        <field name="pin_code" placeholder="ZIP" class="o_address_zip" />
+                        <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                     </div>
+                  </group>
+               </group>
+            </sheet>
+         </form>
+      </field>
+   </record>
+   <!-- Shiprocket pickup location Tree View -->
+   <record id="view_shiprocket_pickup_location_tree" model="ir.ui.view">
+      <field name="name">view.shiprocket.pickup.location.tree</field>
+      <field name="model">shiprocket.pickup.location</field>
+      <field name="arch" type="xml">
+         <tree string="Shiprocket Pickup location">
+            <field name="pickup_location" />
+            <field name="name" />
+            <field name="email" />
+            <field name="phone" />
+            <field name="city" />
+            <field name="state_id" />
+            <field name="pin_code" />
+            <field name="country_id" />
+         </tree>
+      </field>
+   </record>
+   <!-- Action For Shiprocket pickup.location -->
+   <record id="action_shiprocket_pickup_location" model="ir.actions.act_window">
+      <field name="name">Pickup Location</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">shiprocket.pickup.location</field>
+      <field name="view_mode">tree,form</field>
+   </record>
+   <menuitem id="menu_shiprocket_pickup_location" name="Shiprocket Pickup Location" parent="menu_shiprocket_root" action="action_shiprocket_pickup_location" sequence="2" />
+   <!-- Shiprocket Courier Form View -->
+   <record id="view_shiprocket_courier_form" model="ir.ui.view">
+      <field name="name">view.shiprocket.courier.form</field>
+      <field name="model">shiprocket.courier</field>
+      <field name="arch" type="xml">
+         <form string="Shiprocket Courier" create="0" edit="0" delete="0" duplicate="0">
+            <sheet>
+               <group>
+                  <group string="Shipper Details">
+                     <field name="name" />
+                     <field name="code" />
+                     <field name="is_international" />
+                     <field name="is_return" />
+                  </group>
+               </group>
+            </sheet>
+         </form>
+      </field>
+   </record>
+   <!-- Shiprocket courier Tree View -->
+   <record id="view_shiprocket_courier_tree" model="ir.ui.view">
+      <field name="name">view.shiprocket.courier.tree</field>
+      <field name="model">shiprocket.courier</field>
+      <field name="arch" type="xml">
+         <tree string="Shiprocket Courier" create="0" edit="0" delete="0">
+            <field name="name" />
+            <field name="code" />
+            <field name="is_international" />
+            <field name="is_return" />
+         </tree>
+      </field>
+   </record>
+   <!-- Action For Shiprocket Courier -->
+   <record id="action_shiprocket_courier" model="ir.actions.act_window">
+      <field name="name">Courier</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">shiprocket.courier</field>
+      <field name="view_mode">tree,form</field>
+   </record>
+   <menuitem id="menu_shiprocket_courier" name="Shiprocket Courier" parent="menu_shiprocket_root" action="action_shiprocket_courier" sequence="3" />
+   <!-- Shiprocket Order Status Form View -->
+   <record id="view_shiprocket_order_status_form" model="ir.ui.view">
+      <field name="name">view.shiprocket.order.status.form</field>
+      <field name="model">shiprocket.order.status</field>
+      <field name="arch" type="xml">
+         <form string="Shiprocket Order Status" create="0" edit="0" delete="0" duplicate="0">
+            <sheet>
+               <group>
+                  <group>
+                     <field name="name" />
+                     <field name="status_code" />
+                     <field name="active" />
+                     <field name="is_call_status_cron" />
+                  </group>
+               </group>
+            </sheet>
+         </form>
+      </field>
+   </record>
+   <!-- Shiprocket Order Status View -->
+   <record id="view_shiprocket_order_status_tree" model="ir.ui.view">
+      <field name="name">view.shiprocket.order.status.tree</field>
+      <field name="model">shiprocket.order.status</field>
+      <field name="arch" type="xml">
+         <tree string="Shiprocket Order Status" create="0" edit="0" delete="0">
+            <field name="name" />
+            <field name="status_code" />
+            <field name="active" />
+         </tree>
+      </field>
+   </record>
+   <!-- Action For Shiprocket Order  Status -->
+   <record id="action_shiprocket_order_status" model="ir.actions.act_window">
+      <field name="name">Order Status</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">shiprocket.order.status</field>
+      <field name="view_mode">tree,form</field>
+   </record>
+   <menuitem id="menu_shiprocket_order_status" name="Shiprocket Order Status" parent="menu_shiprocket_root" action="action_shiprocket_order_status" sequence="4" />
+</odoo>

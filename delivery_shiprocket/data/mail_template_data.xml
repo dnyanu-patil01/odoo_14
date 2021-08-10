@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding='utf-8'?>
+<odoo>
+
+    <!-- Mail template are declared in a NOUPDATE block
+         so users can freely customize/delete them -->
+    <data noupdate="1">
+        <record id="shiprocket_bulk_process_mail_template" model="mail.template">
+            <field name="name">Shiprocket: Bulk Process Status Send by email</field>
+            <field name="model_id" ref="delivery_shiprocket.model_shiprocket_bulk_process"/>
+            <field name="email_from">${(object.company_id.email or user.company_id.email) |safe}</field>
+            <field name="email_to">${ctx.get('email_to', False)}</field>
+            <field name="subject">Shiprocket Bulk Process - (Ref ${object.name or 'n/a'}) State Changed</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Dear User,
+        <br/><br/>
+        ${ctx.get('message')}
+    </p>
+    <br/>
+    Thank you,
+    % if user.signature:
+        <br />
+        ${user.signature | safe}
+    % endif
+</div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

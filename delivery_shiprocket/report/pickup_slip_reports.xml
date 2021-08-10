@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id="action_report_pickup_slip" model="ir.actions.report">
+            <field name="name">Pickup Slip</field>
+            <field name="model">shiprocket.bulk.process</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">delivery_shiprocket.report_pickup_slip</field>
+            <field name="report_file">delivery_shiprocket.report_pickup_slip</field>
+            <field name="print_report_name">'Pickup Slip - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="model_shiprocket_bulk_process"/>
+            <field name="binding_type">report</field>
+            <field name="binding_view_types">form</field>
+        </record>
+</odoo>
