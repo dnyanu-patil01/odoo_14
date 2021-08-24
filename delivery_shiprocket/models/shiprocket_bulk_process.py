@@ -77,19 +77,21 @@ class ShiprocketBulkProcess(models.Model):
         '''
         self.write({"state": "waiting_awb"})
         self.with_delay().generate_awb_bulk()
-        return True
+        
     
     def generate_awb_bulk(self):
         '''
         Job Queue Function Executed Asyn
         '''
         shiprocket = ShipRocket(self.env.company)
-        for picking in self.stock_picking_ids.filtered(lambda r: r.shiprocket_awb_code == False):
+        for picking in self.stock_picking_ids.filtered(lambda r: r.is_awb_generated == False):
             picking.shiprocket_check_serviceability()
             if self.set_courier_id(picking):
                 picking.with_delay().shiprocket_create_awb()
                 picking.get_shiprocket_status()
-        self.print_labels_bulk()
+                if 'shiprocket_awb_code' in picking:
+                    picking.write({"is_awb_generated":True})
+        self.with_delay().print_labels_bulk()
         self.send_mail_on_queue_completion()
         return True
 
@@ -272,8 +274,13 @@ class ShiprocketBulkProcess(models.Model):
             fill_content = (self.name,'AWB',new_state,'Waiting To Generate AWB',new_state)
         if self.state in ('pickup_created_partially','pickup_created'):
             fill_content = (self.name,'Pickup Request',new_state,'Waiting To Create Pickup Request',new_state)
-        elif self.state in ('ready_to_manifest','waiting_to_manifest'):
+        if self.state in ('ready_to_manifest','waiting_to_manifest','manifest_generated'):
             fill_content = (self.name,'Manifest',new_state,'Waiting To Generate Manifest',new_state)
+        if not new_state:
+            message = """"
+            The Bulk Process : %s No Process Happens in the process please kindly process it one more time.
+            State Changed : No Change
+            """ %(self.name)
         message = """
             The Bulk Process : %s to Generated %s is %s.
             Please Proceed To Next Process.
@@ -283,6 +290,7 @@ class ShiprocketBulkProcess(models.Model):
         return message
     
     def send_mail_on_queue_completion(self):
+        
         Parameters = self.env["ir.config_parameter"].sudo()
         email_to = Parameters.get_param("shiprocket_bulk_process_recipients")
         ctx = {
@@ -301,7 +309,7 @@ class ShiprocketBulkProcess(models.Model):
     
     def set_state(self):
         if self.state in ('waiting_awb','awb_created_partially'):
-            if any(x.shiprocket_awb_code == False for x in self.stock_picking_ids):
+            if any(x.is_awb_generated == False for x in self.stock_picking_ids):
                 self.write({'state':'awb_created_partially'})
                 return 'AWB Generated Partially'
             else:
@@ -320,8 +328,10 @@ class ShiprocketBulkProcess(models.Model):
         if self.state == 'ready_to_manifest':
             if any(x.is_manifest_generated == False for x in self.stock_picking_ids):
                 self.write({'state':'ready_to_manifest'})
+                return 'Ready To Manifest'
             else:
                 self.write({'state':'manifest_generated'})
+                return 'Manifest Generated'
         return True        
 
         

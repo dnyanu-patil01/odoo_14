@@ -11,8 +11,8 @@
                <button name="shiprocket_open_wizard" type="object" string="Generate Manifest" states="ready_to_manifest" />
                <button name="generate_pickup_request_bulk" confirm="This action will be done by backgroud.We will notify you soon." string="Create Pickup Request" type="object" states="awb_created,pickup_created_partially" />
                <button name="shiprocket_get_ready_to_manifest" string="Get Ready To Generate Manifest" type="object" states="pickup_created" />
-               <button name="print_labels_bulk" string="Get Label URL" type="object" states="awb_created,waiting_to_manifest,pickup_created,pickup_created_partially,manifest_generated,done" />
-               <button name="print_manifest_bulk" string="Get Manifest URL" type="object" states="manifest_generated,done" />
+               <button name="print_labels_bulk" string="Get Label Attachment" type="object" states="awb_created,waiting_to_manifest,pickup_created,pickup_created_partially,manifest_generated,done" />
+               <button name="print_manifest_bulk" string="Get Manifest Attachment" type="object" states="manifest_generated,done" />
                <field name="state" widget="statusbar" statusbar_visible="waiting_awb,awb_created,waiting_to_manifest,ready_to_manifest" />
             </header>
             <sheet>
@@ -38,6 +38,7 @@
                         <field name="shiprocket_order_status_id" />
                         <field name="state" optional="show" />
                         <field name="is_manifest_generated" optional="show" />
+                        <field name="is_awb_generated" />
                      </tree>
                      <form>
                         <group>

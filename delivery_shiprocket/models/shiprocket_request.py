@@ -628,7 +628,6 @@ class ShipRocket:
             return {"response_comment": response_dict["message"]}
         if response.status_code == 200 and "response" in response_dict:
             note = "%s \n %s" % (
-                response_dict["response"]["pickup_token_number"],
                 response_dict["response"]["data"],
             )
             return {"pickup_request_note": note}

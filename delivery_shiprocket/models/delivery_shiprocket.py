@@ -22,6 +22,7 @@ class ProviderShiprocket(models.Model):
         [("cod", "COD"), ("pre", "Prepaid")], string="Payment Mode" ,default="pre",ondelete='set null'
     )
 
+
     def _compute_can_generate_return(self):
         super(ProviderShiprocket, self)._compute_can_generate_return()
         for carrier in self:

@@ -52,6 +52,7 @@ class StockPicking(models.Model):
         "shiprocket.order.status", string="Order Status", copy=False, tracking=True
     )
     pickup_request_note = fields.Text("Pickup Request Note", copy=False)
+    is_awb_generated = fields.Boolean(copy=False, readonly=True)
     is_manifest_generated = fields.Boolean(copy=False, readonly=True)
     is_pickup_request_done = fields.Boolean(copy=False, readonly=True)
     rto_courier_rate = fields.Float(copy=False, readonly=True)
@@ -108,6 +109,7 @@ class StockPicking(models.Model):
                 {
                     "courier_id": courier_id.courier_company_id.id,
                     "courier_rate": courier_id.rate,
+                    "is_awb_generated":True,
                 }
             )
             self.write(response_data)
