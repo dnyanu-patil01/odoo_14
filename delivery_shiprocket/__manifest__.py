@@ -28,6 +28,7 @@
         "views/shiprocket_bulk_process_views.xml",
         "report/pickup_slip_reports.xml",
         "report/pickup_slip_templates.xml",
+        "report/shiprocket_invoice_report_template.xml",
     ],
 
     "auto_install": False,
