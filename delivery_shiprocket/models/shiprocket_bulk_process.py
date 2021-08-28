@@ -70,12 +70,19 @@ class ShiprocketBulkProcess(models.Model):
     )
     response_comment = fields.Char(readonly=True)
 
+    @api.constrains('stock_picking_ids')
+    def _constrains_check_stock_picking_ids(self):
+        for record in self:
+            if not record.stock_picking_ids:
+                raise UserError(('Please Select Atleast One Picking Line To Proceed'))
+
     def shiprocket_create_awb(self):
         '''
         Draft ---> Waiting To Generate AWB
         It will schedule queue job to generate AWB and Labels.
         '''
         self.write({"state": "waiting_awb"})
+        self.stock_picking_ids.write({'bulk_order_id':self.id})
         self.with_delay().generate_awb_bulk()
         
     
@@ -256,11 +263,12 @@ class ShiprocketBulkProcess(models.Model):
             pdf_content.append(response.content)
         content = pdf.merge_pdf(pdf_content)
         Attachment = self.env['ir.attachment']
-        prev_attachment = Attachment.search([('res_model','=','shiprocket.bulk.process'),('res_id','=',self.id)])
+        attachment_name = "%s-%s"%(type,self.name)
+        prev_attachment = Attachment.search([('res_model','=','shiprocket.bulk.process'),('res_id','=',self.id),('name','=',attachment_name)])
         if prev_attachment:
             prev_attachment.unlink()
         attachment_id = Attachment.create({
-        'name': "%s-%s"%(type,self.name),
+        'name': attachment_name,
         'type': 'binary',
         'datas': base64.b64encode(content),
         'res_model': 'shiprocket.bulk.process',
@@ -271,21 +279,21 @@ class ShiprocketBulkProcess(models.Model):
     def email_message_content(self):
         new_state = self.set_state()
         if self.state in ('awb_created_partially','awb_created'):
-            fill_content = (self.name,'AWB',new_state,'Waiting To Generate AWB',new_state)
+            fill_content = (self.name,'Waiting To Generate AWB',new_state)
         if self.state in ('pickup_created_partially','pickup_created'):
-            fill_content = (self.name,'Pickup Request',new_state,'Waiting To Create Pickup Request',new_state)
+            fill_content = (self.name,'Waiting To Create Pickup Request',new_state)
         if self.state in ('ready_to_manifest','waiting_to_manifest','manifest_generated'):
-            fill_content = (self.name,'Manifest',new_state,'Waiting To Generate Manifest',new_state)
+            fill_content = (self.name,'Waiting To Generate Manifest',new_state)
         if not new_state:
             message = """"
             The Bulk Process : %s No Process Happens in the process please kindly process it one more time.
             State Changed : No Change
             """ %(self.name)
         message = """
-            The Bulk Process : %s to Generated %s is %s.
-            Please Proceed To Next Process.
+            The Bulk Process : %s
+            
             State Changed : 
-            %s -----> %s.
+            %s -----> %s
         """ % (fill_content)
         return message
     
