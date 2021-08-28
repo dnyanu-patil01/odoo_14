@@ -111,14 +111,31 @@ class ShipRocket:
         if recipient:
             res = [field for field in recipient_required_fields if not recipient[field]]
             if res:
-                raise UserError(
-                    "The Customer/Partner Address Fields is missing or wrong (Missing field(s) :  \n %s)"
-                    % ", ".join(res).replace("_id", "")
-                )
+                # Checking if it has parent and parent contains all fields
+                if recipient.parent_id:
+                    parent_res = [field for field in recipient_required_fields if not recipient.parent_id[field]]
+                    if parent_res:
+                        raise UserError(
+                            "The Customer/Partner Address Fields is missing or wrong (Missing field(s) :  \n %s)"
+                            % ", ".join(res).replace("_id", "")
+                        )
+                else:
+                    raise UserError(
+                            "The Customer/Partner Address Fields is missing or wrong (Missing field(s) :  \n %s)"
+                            % ", ".join(res).replace("_id", "")
+                        )
+            #Trying To Get phone number from receipt if not trying to get it from parent
             if not self._convert_phone_number(
                 recipient.phone, recipient.country_id.code
             ):
-                raise UserError("Phone number is invalid.")
+                if not recipient.parent_id:
+                    raise UserError("Phone number is invalid.")
+                else:
+                    if recipient.parent_id.phone and recipient.parent_id.country_id:
+                        if not self._convert_phone_number(recipient.parent_id.phone, recipient.parent_id.country_id.code):
+                            raise UserError("Phone number is invalid.")
+                    else:
+                        raise UserError("Phone number is invalid.")
         if shipper:
             res = [field for field in shipper_required_fields if not shipper[field]]
             if res:
@@ -386,12 +403,17 @@ class ShipRocket:
                 "pickup_pincode": partner.zip,
                 "pickup_country": partner.country_id.name,
                 "pickup_state": partner.state_id.name,
-                "pickup_email": partner.email,
-                "pickup_phone": self._convert_phone_number(
-                    partner.phone, partner.country_id.code
-                ),
+                "pickup_email": partner.email or partner.parent_id.email,
             }
         )
+        if partner.phone:
+            address_val.update({"pickup_phone": self._convert_phone_number(
+                    partner.phone, partner.country_id.code
+                ),})
+        else:
+            address_val.update({"pickup_phone": self._convert_phone_number(
+                    partner.parent_id.phone, partner.parent_id.country_id.code
+                ),})
         return address_val
 
     def _prepare_address(self, picking):
@@ -415,13 +437,18 @@ class ShipRocket:
                     "billing_pincode": partner.zip,
                     "billing_state": partner.state_id.name,
                     "billing_country": partner.country_id.name,
-                    "billing_email": partner.email,
-                    "billing_phone": self._convert_phone_number(
-                        partner.phone, partner.country_id.code
-                    ),
+                    "billing_email": partner.email or partner.parent_id.email,
                     "shipping_is_billing": True,
                 }
             )
+            if partner.phone:
+                address_val.update({"billing_phone": self._convert_phone_number(
+                        partner.phone, partner.country_id.code
+                    )})
+            else:
+                address_val.update({"billing_phone": self._convert_phone_number(
+                        partner.parent_id.phone, partner.parent_id.country_id.code
+                    )})
         if picking.sale_id.partner_invoice_id:
             partner = picking.sale_id.partner_invoice_id
             self.check_required_value(
@@ -437,12 +464,17 @@ class ShipRocket:
                     "billing_pincode": partner.zip,
                     "billing_state": partner.state_id.name,
                     "billing_country": partner.country_id.name,
-                    "billing_email": partner.email,
-                    "billing_phone": self._convert_phone_number(
-                        partner.phone, partner.country_id.code
-                    ),
+                    "billing_email": partner.email or partner.parent_id.email,
                 }
             )
+            if partner.phone:
+                address_val.update({"billing_phone": self._convert_phone_number(
+                        partner.phone, partner.country_id.code
+                    )})
+            else:
+                address_val.update({"billing_phone": self._convert_phone_number(
+                        partner.parent_id.phone, partner.parent_id.country_id.code
+                    )})
         if (
             picking.sale_id.partner_invoice_id.id
             == picking.sale_id.partner_shipping_id.id
@@ -463,12 +495,17 @@ class ShipRocket:
                     "shipping_pincode": partner.zip,
                     "shipping_country": partner.country_id.name,
                     "shipping_state": partner.state_id.name,
-                    "shipping_email": partner.email,
-                    "shipping_phone": self._convert_phone_number(
-                        partner.phone, partner.country_id.code
-                    ),
+                    "shipping_email": partner.email or partner.parent_id.email,
                 }
             )
+            if partner.phone:
+                address_val.update({"shipping_phone": self._convert_phone_number(
+                        partner.phone, partner.country_id.code
+                    )})
+            else:
+                address_val.update({"shipping_phone": self._convert_phone_number(
+                        partner.parent_id.phone, partner.parent_id.country_id.code
+                    )})
         return address_val
 
     def format_error_message(self, errors):
@@ -627,7 +664,7 @@ class ShipRocket:
         if "message" in response_dict:
             return {"response_comment": response_dict["message"]}
         if response.status_code == 200 and "response" in response_dict:
-            note = "%s \n %s" % (
+            note = "%s" % (
                 response_dict["response"]["data"],
             )
             return {"pickup_request_note": note}

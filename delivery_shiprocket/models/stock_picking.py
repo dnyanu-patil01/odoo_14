@@ -57,6 +57,7 @@ class StockPicking(models.Model):
     is_pickup_request_done = fields.Boolean(copy=False, readonly=True)
     rto_courier_rate = fields.Float(copy=False, readonly=True)
     is_order_rto = fields.Boolean(copy=False, readonly=True)
+    bulk_order_id = fields.Many2one("shiprocket.bulk.process",copy=False, readonly=True)
 
     def _send_confirmation_email(self):
         super(StockPicking, self)._send_confirmation_email()
@@ -207,23 +208,15 @@ class StockPicking(models.Model):
     def shiprocket_cancel_shipment(self):
         """To Cancel Order In Shiprocket"""
         if not self.shiprocket_order_id:
-            raise UserError("Shiprocket Order ID Is Needed To Generate Label")
+            raise UserError("Shiprocket Order ID Required To Cancel Order")
         shiprocket = ShipRocket(self.env.company)
         # API Call To Generate Label
         order_id = int(self.shiprocket_order_id)
         response_data = "Order Cancelled!"
         response_data = shiprocket._cancel_order_request([order_id])
         self.get_shiprocket_status()
-        msg_content = "<b>%s</b>" % (str(response_data))
-        message_id = self.env["message.box"].create({"message": msg_content})
-        return {
-            "name": "Cancellation-Info",
-            "type": "ir.actions.act_window",
-            "view_mode": "form",
-            "res_model": "message.box",
-            "res_id": message_id.id,
-            "target": "new",
-        }
+        self.write({'response_comment':str(response_data)})
+        return True
 
     def get_shiprocket_status(self):
         '''To Get Shiprocket Order Status'''
@@ -305,16 +298,18 @@ class StockPicking(models.Model):
     def generate_attachment_pdf(self,urls,type):
         response = requests.get(urls,stream=True)
         Attachment = self.env['ir.attachment']
+        attachment_name = "%s-%s"%(type,self.name)
         prev_attachment = Attachment.search(
             [
                 ('res_model','=','stock.picking'),
-                ('res_id','=',self.id)
+                ('res_id','=',self.id),
+                ('name','=',attachment_name)
             ]
         )
         if prev_attachment:
             prev_attachment.unlink()
         attachment_id = Attachment.create({
-        'name': "%s-%s"%(type,self.name),
+        'name': attachment_name,
         'type': 'binary',
         'datas': base64.b64encode(response.content),
         'res_model': 'stock.picking',
