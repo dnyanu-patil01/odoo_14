@@ -98,7 +98,6 @@ class ShiprocketBulkProcess(models.Model):
                 picking.get_shiprocket_status()
                 if 'shiprocket_awb_code' in picking:
                     picking.write({"is_awb_generated":True})
-        self.with_delay().print_labels_bulk()
         self.send_mail_on_queue_completion()
         return True
 

@@ -115,11 +115,13 @@ class ShipRocket:
                 if recipient.parent_id:
                     parent_res = [field for field in recipient_required_fields if not recipient.parent_id[field]]
                     if parent_res:
+                        parent_res.insert(0,picking.name if picking else "")
                         raise UserError(
                             "The Customer/Partner Address Fields is missing or wrong (Missing field(s) :  \n %s)"
-                            % ", ".join(res).replace("_id", "")
+                            % ", ".join(parent_res).replace("_id", "")
                         )
                 else:
+                    res.insert(0,picking.name if picking else "")
                     raise UserError(
                             "The Customer/Partner Address Fields is missing or wrong (Missing field(s) :  \n %s)"
                             % ", ".join(res).replace("_id", "")
@@ -129,13 +131,13 @@ class ShipRocket:
                 recipient.phone, recipient.country_id.code
             ):
                 if not recipient.parent_id:
-                    raise UserError("Phone number is invalid.")
+                    raise UserError("%s Phone number is invalid."%(recipient.name))
                 else:
                     if recipient.parent_id.phone and recipient.parent_id.country_id:
                         if not self._convert_phone_number(recipient.parent_id.phone, recipient.parent_id.country_id.code):
-                            raise UserError("Phone number is invalid.")
+                            raise UserError("%s - Phone number is invalid."%(recipient.parent_id.name))
                     else:
-                        raise UserError("Phone number is invalid.")
+                        raise UserError("%s Phone number is invalid."%(recipient.name))
         if shipper:
             res = [field for field in shipper_required_fields if not shipper[field]]
             if res:
@@ -148,7 +150,7 @@ class ShipRocket:
         # check required value for order
         if order:
             if not order.order_line:
-                raise UserError("Please provide at least one item to ship.")
+                raise UserError("%s - Please provide at least one item to ship."%(order.name))
             for line in order.order_line.filtered(
                 lambda line: not line.product_id.weight
                 and not line.is_delivery
@@ -156,16 +158,16 @@ class ShipRocket:
                 and not line.display_type
             ):
                 raise UserError(
-                    "The estimated price cannot be computed because the weight of your product is missing."
+                    "%s - The estimated price cannot be computed because the weight of your product is missing."%(order.name)
                 )
 
         # check required value for picking
         if picking:
             if not picking.move_lines:
-                raise UserError("Please provide at least one item to ship.")
-            if picking.move_lines.filtered(lambda line: not line.weight):
+                raise UserError("%s - Please provide at least one item to ship."%(picking.name))
+            if not picking.shipping_weight:
                 raise UserError(
-                    "The estimated price cannot be computed because the weight of your product is missing."
+                    "%s - The estimated price cannot be computed because the weight of your product is missing."%(picking.name)
                 )
         return True
 
@@ -267,9 +269,9 @@ class ShipRocket:
         :param picking: stock.picking object
         """
         if not picking.pickup_location:
-            raise UserError("Please Select Shiprocket Pickup Location Before Validate.")
+            return {'response_comment':'Please Select Shiprocket Pickup Location Before Validate.'}
         if not picking.channel_id:
-            raise UserError("Please Select Shiprocket Channel Before Validate.")
+            return {'response_comment':"Please Select Shiprocket Channel Before Validate."}
         data = self.prepare_order_data(picking, "forward")
         payload = json.dumps(data)
         order_creation_url = "orders/create/adhoc"
@@ -277,13 +279,14 @@ class ShipRocket:
         response = requests.post(url, headers=self.headers, data=payload)
         response_dict = response.json()
         if "errors" in response_dict:
-            raise UserError(self.format_error_message(response_dict["errors"]))
+            return {'response_comment':self.format_error_message(response_dict["errors"])}
         if "message" in response_dict:
-            raise UserError(response_dict["message"])
+            return {'response_comment':response_dict["message"]}
         if response.status_code == 200:
             response_data = {
                 "shiprocket_order_id": response_dict["order_id"],
                 "shiprocket_shipping_id": response_dict["shipment_id"],
+                "shiprocket_order_status_id":1,
             }
             return response_data
         return False
@@ -292,7 +295,7 @@ class ShipRocket:
         """To get tracking link from shiprocket
         :param picking: stock.picking object
         """
-        tracking_url = "courier/track/awb/"
+        tracking_url = "courier/track/shipment/"
         url = url_join(API_BASE_URL, tracking_url)
         request_tracking_url = url_join(url, str(picking.shiprocket_shipping_id))
         payload = {}
@@ -391,7 +394,7 @@ class ShipRocket:
         )
         partner = picking.partner_id
         self.check_required_value(
-            recipient=partner, shipper=False, order=False, picking=False
+            recipient=partner, shipper=False, order=False, picking=picking
         )
         address_val.update(
             {
@@ -425,7 +428,7 @@ class ShipRocket:
         if not picking.sale_id:
             partner = picking.sale_id.partner_invoice_id
             self.check_required_value(
-                recipient=partner, shipper=False, order=False, picking=False
+                recipient=partner, shipper=False, order=False, picking=picking
             )
             address_val.update(
                 {
@@ -452,7 +455,7 @@ class ShipRocket:
         if picking.sale_id.partner_invoice_id:
             partner = picking.sale_id.partner_invoice_id
             self.check_required_value(
-                recipient=partner, shipper=False, order=False, picking=False
+                recipient=partner, shipper=False, order=False, picking=picking
             )
             address_val.update(
                 {
@@ -483,7 +486,7 @@ class ShipRocket:
         else:
             partner = picking.sale_id.partner_shipping_id
             self.check_required_value(
-                recipient=partner, shipper=False, order=False, picking=False
+                recipient=partner, shipper=False, order=False, picking=picking
             )
             address_val.update(
                 {
@@ -642,7 +645,7 @@ class ShipRocket:
         else:
             if response.status_code == 200:
                 response_data = {
-                    "shiprocket_awb_code": response_dict["response"]["data"]["awb_code"]
+                    "shiprocket_awb_code": response_dict["response"]["data"]["awb_code"],
                 }
                 return response_data
         return False
@@ -667,7 +670,7 @@ class ShipRocket:
             note = "%s" % (
                 response_dict["response"]["data"],
             )
-            return {"pickup_request_note": note}
+            return {"pickup_request_note": note,"shiprocket_order_status_id":3}
         return False
 
     def _generate_manifest_request(self, shipping_id):

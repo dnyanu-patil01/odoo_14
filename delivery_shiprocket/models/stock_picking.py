@@ -200,6 +200,9 @@ class StockPicking(models.Model):
         response_data = shiprocket._print_manifest_request([order_id])
         self.get_shiprocket_status()
         if response_data:
+            data = shiprocket.get_tracking_link(self)
+            if data:
+                response_data.update(data)
             self.write(response_data)
         if 'manifest_url' in response_data:
             self.generate_attachment_pdf(response_data['manifest_url'],'Manifest')
