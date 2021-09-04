@@ -268,27 +268,37 @@ class ShipRocket:
         """Create Order In Shiprocket
         :param picking: stock.picking object
         """
-        if not picking.pickup_location:
-            return {'response_comment':'Please Select Shiprocket Pickup Location Before Validate.'}
-        if not picking.channel_id:
-            return {'response_comment':"Please Select Shiprocket Channel Before Validate."}
+        picking._pre_put_in_pack_hook(picking.move_line_ids)
         data = self.prepare_order_data(picking, "forward")
+        if not picking.pickup_location:
+            picking.write({'response_comment':"Please Select Shiprocket Pickup Location Before Validate"})
+            return False
+        if not picking.channel_id:
+            picking.write({'response_comment':"Please Select Shiprocket Channel Before Validate."})
+            return False
         payload = json.dumps(data)
         order_creation_url = "orders/create/adhoc"
         url = url_join(API_BASE_URL, order_creation_url)
         response = requests.post(url, headers=self.headers, data=payload)
         response_dict = response.json()
         if "errors" in response_dict:
-            return {'response_comment':self.format_error_message(response_dict["errors"])}
+            picking.write({'response_comment':self.format_error_message(response_dict["errors"])})
+            return False
         if "message" in response_dict:
-            return {'response_comment':response_dict["message"]}
+            picking.write({'response_comment':response_dict["message"]})
+            return False
         if response.status_code == 200:
-            response_data = {
-                "shiprocket_order_id": response_dict["order_id"],
-                "shiprocket_shipping_id": response_dict["shipment_id"],
-                "shiprocket_order_status_id":1,
-            }
-            return response_data
+            if 'order_id' in response_dict and 'shipment_id' in response_dict:
+                response_data = {
+                    "shiprocket_order_id": response_dict["order_id"],
+                    "shiprocket_shipping_id": response_dict["shipment_id"],
+                    "shiprocket_order_status_id":1,
+                    "response_comment":response_dict,
+                }
+                return response_data
+            else:
+                picking.write({"response_comment":response_dict})
+                return False
         return False
 
     def get_tracking_link(self, picking):
@@ -643,12 +653,15 @@ class ShipRocket:
         if "message" in response_dict:
             return {"response_comment": response_dict["message"]}
         else:
-            if response.status_code == 200:
+            if response.status_code == 200 and 'awb_code' in response_dict["response"]["data"]:
                 response_data = {
                     "shiprocket_awb_code": response_dict["response"]["data"]["awb_code"],
+                    "response_comment":response_dict,
+                    "is_awb_generated":True,
                 }
                 return response_data
-        return False
+        return {"response_comment": response_dict}
+
 
     def _generate_pickup_request(self, shipping_id):
         """To Create Pickup Request For AWB Generated Records
@@ -670,8 +683,8 @@ class ShipRocket:
             note = "%s" % (
                 response_dict["response"]["data"],
             )
-            return {"pickup_request_note": note,"shiprocket_order_status_id":3}
-        return False
+            return {"pickup_request_note": note,"shiprocket_order_status_id":3,"response_comment": response_dict}
+        return {"response_comment": response_dict}
 
     def _generate_manifest_request(self, shipping_id):
         """To Create Manifest For Pickup Request Generated Records
@@ -715,7 +728,7 @@ class ShipRocket:
         if "message" in response_dict:
             return {"response_comment": response_dict["message"]}
         if response.status_code == 200 and "label_url" in response_dict:
-            response_data = {"label_url": response_dict["label_url"]}
+            response_data = {"label_url": response_dict["label_url"],"response_comment": response_dict}
             return response_data
         return False
 
@@ -736,7 +749,7 @@ class ShipRocket:
         if "message" in response_dict:
             return {"response_comment": response_dict["message"]}
         if response.status_code == 200 and "manifest_url" in response_dict:
-            response_data = {"manifest_url": response_dict["manifest_url"]}
+            response_data = {"manifest_url": response_dict["manifest_url"],"response_comment": response_dict}
             return response_data
         return False
 

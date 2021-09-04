@@ -53,6 +53,11 @@ class ProviderShiprocket(models.Model):
                     }
                 )
                 res.append(response_data)
+            else:
+                res.append({
+                        "exact_price": 0,
+                        "tracking_number": "",
+                    })
         return res
 
     def shiprocket_return_order_creation(self, pickings):

@@ -9,6 +9,22 @@ import base64
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    def _get_default_channel_id(self):
+        custom_channel =  self.env['shiprocket.channel'].search(
+            [('base_channel_code', '=', 'CS')],limit=1)
+        if custom_channel:
+            return custom_channel.id
+        else:
+            return False
+    
+    def _get_default_pickup_location_id(self):
+        pickup_location =  self.env['shiprocket.pickup.location'].search(
+            [('pickup_location', '=', 'Kanha')],limit=1)
+        if pickup_location:
+            return pickup_location.id
+        else:
+            return False
+
     # Fields To Store The Response After Create Order Request
     shiprocket_order_id = fields.Char(readonly=True, string="Order ID", copy=False)
     shiprocket_shipping_id = fields.Char(
@@ -29,8 +45,8 @@ class StockPicking(models.Model):
     # To Store The Error Response Message
     response_comment = fields.Char(readonly=True, copy=False, tracking=True)
     # To Auto Fetch From Vendor
-    pickup_location = fields.Many2one("shiprocket.pickup.location", copy=False)
-    channel_id = fields.Many2one("shiprocket.channel", copy=False)
+    pickup_location = fields.Many2one("shiprocket.pickup.location", copy=False,default=_get_default_pickup_location_id)
+    channel_id = fields.Many2one("shiprocket.channel", copy=False,default=_get_default_channel_id)
     # Serviceablity Related Fields
     shiprocket_serviceability_matrix = fields.One2many(
         "shiprocket.serviceability.matrix", "picking_id", copy=False
@@ -110,7 +126,6 @@ class StockPicking(models.Model):
                 {
                     "courier_id": courier_id.courier_company_id.id,
                     "courier_rate": courier_id.rate,
-                    "is_awb_generated":True,
                 }
             )
             self.write(response_data)
@@ -147,14 +162,6 @@ class StockPicking(models.Model):
         return response_data
 
     def shiprocket_reassign_courier(self):
-        self.write(
-            {
-                "label_url": False,
-                "courier_id": False,
-                "recommended_courier_company_id": False,
-                "shiprocket_recommended_courier_id": False,
-            }
-        )
         self.shiprocket_check_serviceability()
         courier_id = self.shiprocket_serviceability_matrix.filtered(
             lambda line: line.courier_company_id.id
