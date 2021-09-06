@@ -20,6 +20,13 @@ class SetCourier(models.TransientModel):
                 }
             )
         if self.picking_id and self.env.context.get("reassign"):
+            self.picking_id.write(
+            {
+                "label_url": False,
+                "courier_id": False,
+                "recommended_courier_company_id": False,
+                "shiprocket_recommended_courier_id": False,
+            })
             vals = {
                 "courier_id": int(self.selected_courier_id.courier_company_id.code),
                 "shipment_id": int(self.picking_id.shiprocket_shipping_id),

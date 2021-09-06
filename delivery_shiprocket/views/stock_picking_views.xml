@@ -9,13 +9,13 @@
                 <page string="Shiprocket Details" attrs="{'invisible':[('delivery_type','!=','shiprocket')]}">
                     <group>
                         <group>
-                            <field name="pickup_location" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" options="{'no_create': True, 'no_open': True}" />
-                            <field name="channel_id" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" options="{'no_create': True, 'no_open': True}" />
-                            <field name="shipping_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" />
-                            <field name="giftwrap_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" />
-                            <field name="transaction_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" />
-                            <field name="order_type" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" />
-                            <field name="payment_method" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" />
+                            <field name="pickup_location" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('shiprocket_order_id', '!=', False)]}" options="{'no_create': True, 'no_open': True}" />
+                            <field name="channel_id" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('shiprocket_order_id', '!=', False)]}" options="{'no_create': True, 'no_open': True}" />
+                            <field name="shipping_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('shiprocket_order_id', '!=', False)]}" />
+                            <field name="giftwrap_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('shiprocket_order_id', '!=', False)]}" />
+                            <field name="transaction_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('state', 'in', ('done', 'cancel'))]}" />
+                            <field name="order_type" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('state', 'in', ('done', 'cancel'))]}" />
+                            <field name="payment_method" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('state', 'in', ('done', 'cancel'))]}" />
                         </group>
                         <group>
                             <field name="shiprocket_order_id" readonly="1" />
@@ -60,7 +60,12 @@
                 </page>
             </xpath>
             <xpath expr="//div[hasclass('oe_title')]" position="before">
-                <span attrs="{'invisible': [('shiprocket_order_status_id', '=', False)]}" class="o_notification_alert alert alert-info align-items-end" role="alert" style="margin-bottom:0px;float:right;pointer-events:none;">
+                <widget name="web_ribbon" text="Unable To Place Order In Shiprocket"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': ['|','|',('shiprocket_order_id', '!=', False),('state','not in',('done')),('delivery_type', '!=', 'shiprocket')]}"
+                        tooltip="Unable to place order in shiprocket.please try once by clicking send to shipper button"/>
+
+                <span attrs="{'invisible': [('shiprocket_order_status_id', '=', False)]}" class="o_notification_alert alert alert-info align-items-center" role="alert" style="margin-bottom:0px;float:right;pointer-events:none;">
                   Shiprocket Order Status:<b><field name="shiprocket_order_status_id" readonly="1" options="{'no_open':True}"/></b>
                 </span>
             </xpath>
@@ -77,7 +82,7 @@
                 <attribute name="groups">base.group_no_one</attribute>               
             </xpath>
             <xpath expr="//button[@name='send_to_shipper']" position="attributes">
-                <attribute name="attrs">{'invisible':['|','|','|','|',('delivery_type','=','shiprocket'),('delivery_type','in', ['fixed', 'base_on_rule']),('delivery_type','=',False),('state','not in',('done')),('picking_type_code', '=', 'incoming')]}</attribute>
+                <attribute name="attrs">{'invisible':['|','|','|','|',('shiprocket_order_id','!=',False),('delivery_type','in', ['fixed', 'base_on_rule']),('delivery_type','=',False),('state','not in',('done')),('picking_type_code', '=', 'incoming')]}</attribute>
             </xpath>
             <xpath expr="//button[@name='send_to_shipper']" position="after">
                 <button name="shiprocket_check_serviceability" string="Check Serviceability" type="object" attrs="{'invisible':['|','|','|',('courier_id','!=',False),('shiprocket_order_id','=',False),('shiprocket_shipping_id','=',False),('shiprocket_awb_code','!=',False)]}" />

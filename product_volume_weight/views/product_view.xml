@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record model="ir.ui.view" id="product_normal_form_view">
+        <field name="name">product_normal_form_view</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='inventory']" position="inside">
+                <group name="dimensions" string="Dimensions" colspan="2">
+                    <field name="product_length" string="Length" />
+                    <field name="product_height" string="Height" />
+                    <field name="product_width" string="Width" />
+                    <field name="volumetric_weight" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="product_template_only_form_view">
+        <field name="name">product_template_form_view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='inventory']" position="inside">
+                <group
+                    string="Dimensions"
+                    name="dimensions"
+                    attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}"
+                >
+                <label for="product_length" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}"/>
+                <div class="o_row" name="product_length" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}">
+                    <field name="product_length" string="Length"/>
+                    <span>in cm</span>
+                </div>
+                <label for="product_width" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}"/>
+                <div class="o_row" name="product_width" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}">
+                    <field name="product_width" string="Width"/>
+                    <span>in cm</span>
+                </div>
+                <label for="product_height" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}"/>
+                <div class="o_row" name="product_height" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}">
+                    <field name="product_height" string="Height"/>
+                    <span>in cm</span>
+                </div>
+                <label for="volumetric_weight" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}"/>
+                <div class="o_row" name="volumetric_weight" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}">
+                    <field name="volumetric_weight" string="Volumetric Weight"/>
+                </div>
+            </group>
+          </xpath>
+        </field>
+    </record>
+    </odoo>
