@@ -64,10 +64,49 @@
                         bg_color="bg-danger"
                         attrs="{'invisible': ['|','|',('shiprocket_order_id', '!=', False),('state','not in',('done')),('delivery_type', '!=', 'shiprocket')]}"
                         tooltip="Unable to place order in shiprocket.please try once by clicking send to shipper button"/>
-
-                <span attrs="{'invisible': [('shiprocket_order_status_id', '=', False)]}" class="o_notification_alert alert alert-info align-items-center" role="alert" style="margin-bottom:0px;float:right;pointer-events:none;">
-                  Shiprocket Order Status:<b><field name="shiprocket_order_status_id" readonly="1" options="{'no_open':True}"/></b>
-                </span>
+                <widget name="web_ribbon" title="Order Placed"
+                    bg_color="bg-info"
+                    attrs="{'invisible': ['|','|',
+                    ('shiprocket_order_status_id', '!=', 1),
+                    ('state','not in',('done')),
+                    ('delivery_type', '!=', 'shiprocket')
+                    ]}"/>
+                <widget name="web_ribbon" title="AWB Generated"
+                    bg_color="bg-info"
+                    attrs="{'invisible': [
+                    ('is_awb_generated','=',False)
+                    ]}"/>
+                <widget name="web_ribbon" title="Pickup Requested"
+                    bg_color="bg-info"
+                    attrs="{'invisible': [
+                    ('is_pickup_request_done','=',False)
+                    ]}"/>
+                <widget name="web_ribbon" title="Manifest Generated"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [
+                    ('is_manifest_generated','=',False)
+                    ]}"/>
+                <widget name="web_ribbon" title="Delivered"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [
+                    ('shiprocket_order_status_id','!=',7)
+                    ]}"/>
+                <widget name="web_ribbon" title="Shipped"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [
+                    ('shiprocket_order_status_id','!=',6)
+                    ]}"/>
+                <widget name="web_ribbon" title="Order Cancelled"
+                    bg_color="bg-danger"
+                    attrs="{'invisible': ['|','|',
+                    ('shiprocket_order_status_id', 'not in', (5,18)),
+                    ('state','not in',('done')),
+                    ('delivery_type', '!=', 'shiprocket')
+                    ]}"/>
+                <field name="shiprocket_order_status_id" invisible="1"/>
+                <field name="is_awb_generated" invisible="1"/>
+                <field name="is_pickup_request_done" invisible="1"/>
+                <field name="is_manifest_generated" invisible="1"/>
             </xpath>
             <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
                 <attribute name="attrs">{'invisible': [('state', '!=', 'draft')]}</attribute>               
