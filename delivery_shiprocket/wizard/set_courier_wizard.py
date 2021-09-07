@@ -23,7 +23,6 @@ class SetCourier(models.TransientModel):
             self.picking_id.write(
             {
                 "label_url": False,
-                "courier_id": False,
                 "recommended_courier_company_id": False,
                 "shiprocket_recommended_courier_id": False,
             })
@@ -34,7 +33,7 @@ class SetCourier(models.TransientModel):
             }
             shiprocket = ShipRocket(self.env.company)
             # API Call To Reassign AWB
-            response_data = shiprocket._create_awb(vals, self)
+            response_data = shiprocket._create_awb(vals, self.picking_id)
             if response_data:
                 self.picking_id.write(response_data)
         return {"type": "ir.actions.act_window_close"}

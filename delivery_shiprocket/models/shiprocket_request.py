@@ -77,14 +77,14 @@ class ShipRocket:
         if pickup_location:
             res = [field for field in required_fields if not pickup_location[field]]
             if res:
-                raise UserError(
+                return(
                     "The Pickup/Seller Address Fields is missing or wrong (Missing field(s) :  \n %s)"
                     % ", ".join(res).replace("_id", "")
                 )
             if not self._convert_phone_number(
                 pickup_location.phone, pickup_location.country_id.code
             ):
-                raise UserError("Pickup/Seller Phone number is invalid.")
+                return("Pickup/Seller Phone number is invalid.")
         return True
 
     def check_required_value(
@@ -268,7 +268,8 @@ class ShipRocket:
         """Create Order In Shiprocket
         :param picking: stock.picking object
         """
-        picking._pre_put_in_pack_hook(picking.move_line_ids)
+        if not picking.package_ids:
+            picking._pre_put_in_pack_hook(picking.move_line_ids)
         data = self.prepare_order_data(picking, "forward")
         if not picking.pickup_location:
             picking.write({'response_comment':"Please Select Shiprocket Pickup Location Before Validate"})
@@ -298,7 +299,8 @@ class ShipRocket:
                 return response_data
             else:
                 picking.write({"response_comment":response_dict})
-                return False
+        else:
+            picking.write({"response_comment":response_dict})
         return False
 
     def get_tracking_link(self, picking):
@@ -403,9 +405,9 @@ class ShipRocket:
             }
         )
         partner = picking.partner_id
-        self.check_required_value(
-            recipient=partner, shipper=False, order=False, picking=picking
-        )
+        # self.check_required_value(
+        #     recipient=partner, shipper=False, order=False, picking=picking
+        # )
         address_val.update(
             {
                 "pickup_location_id": picking.pickup_location.pickup_location_id,
@@ -437,9 +439,9 @@ class ShipRocket:
         address_val = dict()
         if not picking.sale_id:
             partner = picking.sale_id.partner_invoice_id
-            self.check_required_value(
-                recipient=partner, shipper=False, order=False, picking=picking
-            )
+            # self.check_required_value(
+            #     recipient=partner, shipper=False, order=False, picking=picking
+            # )
             address_val.update(
                 {
                     "billing_customer_name": partner.name,
@@ -464,9 +466,9 @@ class ShipRocket:
                     )})
         if picking.sale_id.partner_invoice_id:
             partner = picking.sale_id.partner_invoice_id
-            self.check_required_value(
-                recipient=partner, shipper=False, order=False, picking=picking
-            )
+            # self.check_required_value(
+            #     recipient=partner, shipper=False, order=False, picking=picking
+            # )
             address_val.update(
                 {
                     "billing_customer_name": partner.name,
@@ -495,9 +497,9 @@ class ShipRocket:
             address_val.update({"shipping_is_billing": True})
         else:
             partner = picking.sale_id.partner_shipping_id
-            self.check_required_value(
-                recipient=partner, shipper=False, order=False, picking=picking
-            )
+            # self.check_required_value(
+            #     recipient=partner, shipper=False, order=False, picking=picking
+            # )
             address_val.update(
                 {
                     "shipping_is_billing": False,
@@ -538,6 +540,8 @@ class ShipRocket:
         :param country_code: Country Code Ex: IN
         :return: 10 digits integer of phone number.
         """
+        if not number or not country_code:
+            return False
         try:
             phone_nbr = phonenumbers.parse(
                 number, region=country_code, keep_raw_input=True
@@ -659,6 +663,10 @@ class ShipRocket:
                     "response_comment":response_dict,
                     "is_awb_generated":True,
                 }
+                #Some Courier Partner like Amazon Shipping Are Creating AWB Request While Generating AWB
+                status_code = self._get_order_status(picking)
+                if 'order_status_code' in status_code and status_code['order_status_code'] == '4':
+                    response_data.update({'is_pickup_request_done':True,'pickup_request_note':'Automatically Pickup Requested While Creating AWB'})
                 return response_data
         return {"response_comment": response_dict}
 
@@ -679,7 +687,7 @@ class ShipRocket:
             }
         if "message" in response_dict:
             return {"response_comment": response_dict["message"]}
-        if response.status_code == 200 and "response" in response_dict:
+        if response.status_code == 200 and "response" in response_dict and response_dict['pickup_status'] == 1:
             note = "%s" % (
                 response_dict["response"]["data"],
             )
