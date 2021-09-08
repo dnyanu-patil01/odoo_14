@@ -10,6 +10,7 @@ class ShiprocketBulkProcess(models.Model):
     _name = "shiprocket.bulk.process"
     _description = "Shiprocket Bulk Processing"
     _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "id desc"
 
     def _get_default_channel_id(self):
         custom_channel =  self.env['shiprocket.channel'].search(
@@ -23,7 +24,7 @@ class ShiprocketBulkProcess(models.Model):
     pickup_location_id = fields.Many2one(
         "shiprocket.pickup.location", "Shiprocket Pickup Location", tracking=True,required=True
     )
-    stock_picking_ids = fields.Many2many("stock.picking", string="Delivery Orders",domain="[('pickup_location','=',pickup_location_id),('picking_type_code', '=', 'outgoing'),('delivery_type','=','shiprocket'),('state','=','done'),('shiprocket_shipping_id','!=',False),('shiprocket_awb_code','=',False)]")
+    stock_picking_ids = fields.Many2many("stock.picking", string="Delivery Orders",domain="[('pickup_location','=',pickup_location_id),('picking_type_code', '=', 'outgoing'),('delivery_type','=','shiprocket'),('state','=','done'),('shiprocket_order_status_id','=',1),('shiprocket_awb_code','=',False)]")
     channel_id = fields.Many2one("shiprocket.channel", "Channel", tracking=True,default=_get_default_channel_id)
     shiprocket_courier_priority = fields.Selection(
         [
@@ -69,9 +70,24 @@ class ShiprocketBulkProcess(models.Model):
         "res.users", string="Responsible", default=lambda self: self.env.uid
     )
     response_comment = fields.Char(readonly=True)
+    bulk_process_log_line = fields.One2many('shiprocket.bulk.process.log','bulk_process_id')
+    generate_labels_group_by_courier = fields.Boolean("Generate Labels Group By Courier",default=True)
 
-    @api.constrains('stock_picking_ids')
-    def _constrains_check_stock_picking_ids(self):
+    def create_log_lines(self):
+        self.bulk_process_log_line.unlink()
+        log_lines = []
+        if self.state in ('awb_created_partially','awb_created'):
+            for line in self.stock_picking_ids.filtered(lambda line: line.is_awb_generated == False):
+                log_lines.append({'picking_id':line.id,'bulk_process_id':self.id,'response_comment':line.response_comment})
+        elif self.state in ("waiting_create_pickup","pickup_created_partially","pickup_created"):
+            for line in self.stock_picking_ids.filtered(lambda line: line.is_pickup_request_done == False):
+                log_lines.append({'picking_id':line.id,'bulk_process_id':self.id,'response_comment':line.response_comment})
+        elif self.state in ("waiting_to_manifest","manifest_generated"):
+            for line in self.stock_picking_ids.filtered(lambda line: line.is_manifest_generated == False):
+                log_lines.append({'picking_id':line.id,'bulk_process_id':self.id,'response_comment':line.response_comment})
+        self.env['shiprocket.bulk.process.log'].create(log_lines)  
+    
+    def _check_stock_picking_ids(self):
         for record in self:
             if not record.stock_picking_ids:
                 raise UserError(('Please Select Atleast One Picking Line To Proceed'))
@@ -81,27 +97,22 @@ class ShiprocketBulkProcess(models.Model):
         Draft ---> Waiting To Generate AWB
         It will schedule queue job to generate AWB and Labels.
         '''
+        self._check_stock_picking_ids()
         self.write({"state": "waiting_awb"})
-        self.stock_picking_ids.write({'bulk_order_id':self.id})
         self.with_delay().generate_awb_bulk()
         
-    
+        
     def generate_awb_bulk(self):
         '''
         Job Queue Function Executed Asyn
         '''
-        shiprocket = ShipRocket(self.env.company)
         for picking in self.stock_picking_ids.filtered(lambda r: r.is_awb_generated == False):
-            picking.shiprocket_check_serviceability()
-            if self.set_courier_id(picking):
-                picking.with_delay().shiprocket_create_awb()
-                picking.get_shiprocket_status()
-                if 'shiprocket_awb_code' in picking:
-                    picking.write({"is_awb_generated":True})
-        self.send_mail_on_queue_completion()
-        return True
+            picking.with_delay(priority=1,channel='create_awb').bulk_awb_creation_request(self)
+        self.with_delay(priority=30,channel='create_awb').send_mail_on_queue_completion()
+        self.create_log_lines()
 
     def shiprocket_get_ready_to_manifest(self):
+        self._check_stock_picking_ids()
         self.write({"state": "waiting_to_manifest"})
         self.with_delay().prepare_to_generate_manifest()
 
@@ -120,47 +131,12 @@ class ShiprocketBulkProcess(models.Model):
                 }
             )
         self.env["wiz.stock.picking.lines"].create(wizard_picking_lines)
-        self.send_mail_on_queue_completion()
+        self.with_delay().send_mail_on_queue_completion()
         return True
 
-    def set_courier_id(self, picking):
-        serviceability_matrix = self.env["shiprocket.serviceability.matrix"]
-        if self.shiprocket_courier_priority == "rate":
-            courier_id = serviceability_matrix.search(
-                [("picking_id", "=", picking.id)], order="rating desc", limit=1
-            )
-        if self.shiprocket_courier_priority == "price":
-            courier_id = serviceability_matrix.search(
-                [("picking_id", "=", picking.id)], order="rate", limit=1
-            )
-        if self.shiprocket_courier_priority == "fast":
-            courier_id = serviceability_matrix.search(
-                [("picking_id", "=", picking.id)], order="etd_hours", limit=1
-            )
-        if self.shiprocket_courier_priority == "custom":
-            courier_id = serviceability_matrix.filtered(
-                lambda line: line.courier_company_id.id
-                == picking.recommended_courier_company_id.id
-            )
-        if self.shiprocket_courier_priority == "recommend":
-            courier_id = serviceability_matrix.filtered(
-                lambda line: line.courier_company_id.id
-                == picking.shiprocket_recommended_courier_id.id
-            )
-        if courier_id:
-            set_courier_id = self.env["set.courier"].create(
-                {
-                    "selected_courier_id": courier_id.id,
-                    "picking_id": picking.id,
-                }
-            )
-            set_courier_id.set_courier_in_picking()
-            return True
-        return False
-
-    
     def generate_pickup_request_bulk(self):
         '''Create Queue Job To Generate Pickup Request In Shiprocket'''
+        self._check_stock_picking_ids()
         self.write({'state':'waiting_create_pickup'})
         self.with_delay().generate_pickup_request()
 
@@ -182,7 +158,8 @@ class ShiprocketBulkProcess(models.Model):
                         if 'pickup_request_note' not in res:
                             response_details+=str(res)
         self.write({"response_comment": str(response_details)})
-        self.send_mail_on_queue_completion()
+        self.with_delay().send_mail_on_queue_completion()
+        self.create_log_lines()
         return True
 
     def print_manifest_bulk(self):
@@ -205,19 +182,38 @@ class ShiprocketBulkProcess(models.Model):
             else:
                 response_content += response_data['response_comment']
         if manifest_url_list != []:
-            self.generate_attachment_pdf(manifest_url_list,'Manifest')
+            self.generate_attachment_pdf(manifest_url_list,'Manifest','')
         if response_content:
             self.write({"response_comment":response_content})
 
-    def print_labels_bulk(self):
-        shipment_ids = list(
-            map(
-                int,
-                self.stock_picking_ids.filtered(
-                    lambda s: s.shiprocket_awb_code != False
-                ).mapped("shiprocket_shipping_id"),
-            )
-        )
+    def print_label_group_by(self):
+        if self.generate_labels_group_by_courier:
+            courier_ids = self.stock_picking_ids.filtered(
+                        lambda s: s.shiprocket_awb_code != False
+                    ).mapped("courier_id")
+            for courier in courier_ids:
+                shipment_ids = list(
+                    map(
+                        int,
+                        self.stock_picking_ids.filtered(
+                            lambda s: s.shiprocket_awb_code != False and s.courier_id == courier
+                        ).mapped("shiprocket_shipping_id"),
+                    )
+                )
+                self.print_labels_bulk(shipment_ids,courier.name)
+        else:
+            shipment_ids = list(
+                    map(
+                        int,
+                        self.stock_picking_ids.filtered(
+                            lambda s: s.shiprocket_awb_code != False
+                        ).mapped("shiprocket_shipping_id"),
+                    )
+                )
+            self.print_labels_bulk(shipment_ids,"All")
+
+        
+    def print_labels_bulk(self,shipment_ids,courier):
         label_url_list = []
         response_content = ""
         shiprocket = ShipRocket(self.env.company)
@@ -228,7 +224,7 @@ class ShiprocketBulkProcess(models.Model):
             else:
                 response_content += response_data['response_comment']
         if label_url_list != []:
-            self.generate_attachment_pdf(label_url_list,'Labels')
+            self.generate_attachment_pdf(label_url_list,'Labels',courier)
         response_data = shiprocket._generate_label_request(shipment_ids)
         if response_content:
             self.write({"response_comment":response_content})
@@ -255,14 +251,14 @@ class ShiprocketBulkProcess(models.Model):
             return []
         return [ids[i * n:(i + 1) * n] for i in range((len(ids) + n - 1) // n )] 
     
-    def generate_attachment_pdf(self,attachment_urls,type):
+    def generate_attachment_pdf(self,attachment_urls,type,courier):
         pdf_content = []
         for url in attachment_urls:
             response = requests.get(url,stream=True)
             pdf_content.append(response.content)
         content = pdf.merge_pdf(pdf_content)
         Attachment = self.env['ir.attachment']
-        attachment_name = "%s-%s"%(type,self.name)
+        attachment_name = "%s-%s-%s"%(courier,type,self.name)
         prev_attachment = Attachment.search([('res_model','=','shiprocket.bulk.process'),('res_id','=',self.id),('name','=',attachment_name)])
         if prev_attachment:
             prev_attachment.unlink()
@@ -340,5 +336,30 @@ class ShiprocketBulkProcess(models.Model):
                 self.write({'state':'manifest_generated'})
                 return 'Manifest Generated'
         return True        
+    
+    def action_picking_move_tree(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("delivery_shiprocket.do_view_bulk_processing")
+        action['views'] = [
+            (self.env.ref('delivery_shiprocket.bulk_processing_vpicktree').id, 'tree'),
+            (self.env.ref('stock.view_picking_form').id,'form'),
+        ]
+        action['context'] = {
+            'default_bulk_order_id':self.id,
+            'bulk':True
+        }
+        action['domain'] = [('id', 'in', self.stock_picking_ids.ids)]
+        return action
+    
+    def remove_do_lines(self):
+        list_packs =[(3,line.id) for line in self.bulk_process_log_line.mapped('picking_id')]
+        self.write({'stock_picking_ids':list_packs})
+        self.bulk_process_log_line.unlink()
+        return True
 
-        
+class ShiprocketBulkProcessLog(models.Model):
+    _name = "shiprocket.bulk.process.log"
+    _description = "Shiprocket Bulk Process Log"
+
+    bulk_process_id = fields.Many2one('shiprocket.bulk.process', string='Process ID')
+    picking_id = fields.Many2one('stock.picking',string='Delivery Order')
+    response_comment = fields.Char("Comment")

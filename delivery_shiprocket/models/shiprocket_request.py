@@ -650,14 +650,12 @@ class ShipRocket:
         url = url_join(API_BASE_URL, create_awb_url)
         response = requests.post(url, headers=self.headers, data=json.dumps(data))
         response_dict = response.json()
-        if "errors" in response_dict:
+        if response.status_code != 200:
             return {
-                "response_comment": self.format_error_message(response_dict["errors"])
+                "response_comment": response.text
             }
-        if "message" in response_dict:
-            return {"response_comment": response_dict["message"]}
-        else:
-            if response.status_code == 200 and 'awb_code' in response_dict["response"]["data"]:
+        if response.status_code == 200 and 'response' in response_dict:
+            if 'awb_code' in response_dict["response"]["data"] and response_dict["response"]["data"]["awb_code"] != False:
                 response_data = {
                     "shiprocket_awb_code": response_dict["response"]["data"]["awb_code"],
                     "response_comment":response_dict,
@@ -668,6 +666,8 @@ class ShipRocket:
                 if 'order_status_code' in status_code and status_code['order_status_code'] == '4':
                     response_data.update({'is_pickup_request_done':True,'pickup_request_note':'Automatically Pickup Requested While Creating AWB'})
                 return response_data
+            else:
+                return {"response_comment": response_dict}
         return {"response_comment": response_dict}
 
 
@@ -799,3 +799,92 @@ class ShipRocket:
         if "data" in response_dict and response.status_code == 200:
             return {"order_status_code": str(response_dict["data"]["status_code"])}
         return False
+
+    def bulk_awb_creation_request(self,picking,bulk_process):
+        check_serviceability_vals = {
+            "pickup_postcode": int(picking.pickup_location.pin_code),
+            "delivery_postcode": int(picking.partner_id.zip),
+            "order_id": int(picking.shiprocket_order_id),
+        }
+        check_serviceability_url = "courier/serviceability/"
+        url = url_join(API_BASE_URL, check_serviceability_url)
+        serviceability_response = requests.get(url, headers=self.headers, data=json.dumps(check_serviceability_vals))
+        response_data_error = None
+        serviceability_response_dict = None
+        selected_courier_dict = None
+        try:
+            serviceability_response_dict = serviceability_response.json()
+        except json.JSONDecodeError:
+            response_data_error = "Invaild JSON in Response - %s"%(serviceability_response.text)
+        if response_data_error:
+            picking.write({'response_comment':response_data_error})
+            return False
+        if serviceability_response.status_code != 200:
+            picking.write({'response_comment':serviceability_response.text})
+            return False
+        if serviceability_response.status_code == 200 and "data" in serviceability_response_dict:
+            available_courier_list = serviceability_response_dict["data"]["available_courier_companies"]
+            if available_courier_list:
+                if bulk_process.shiprocket_courier_priority == 'rate':
+                    selected_courier_dict = max(available_courier_list, key=lambda d: d['rating'])
+                if bulk_process.shiprocket_courier_priority == 'price':
+                    selected_courier_dict = min(available_courier_list, key=lambda d: d['rate'])
+                if bulk_process.shiprocket_courier_priority == 'rate':
+                    selected_courier_dict = min(available_courier_list, key=lambda d: d['fast'])
+                if bulk_process.shiprocket_courier_priority == 'custom':
+                    selected_courier_dict = [x for x in available_courier_list if x["courier_company_id"] == serviceability_response_dict['data']['recommended_courier_company_id']][-1]
+                if bulk_process.shiprocket_courier_priority == 'recommend':
+                    selected_courier_dict = [x for x in available_courier_list if x["courier_company_id"] == serviceability_response_dict['data']['shiprocket_recommended_courier_id']][-1]
+                if selected_courier_dict:
+                    data_vals = {
+                        "courier_id": int(selected_courier_dict["courier_company_id"]),
+                        "shipment_id": int(picking.shiprocket_shipping_id),
+                    }
+                    response_data = self._create_awb(data_vals, picking)
+                    response_data.update({
+                        'courier_id':picking.get_courier_id(selected_courier_dict["courier_company_id"], selected_courier_dict["courier_name"]),
+                        'courier_rate':selected_courier_dict['rate'],
+                        'bulk_order_id':bulk_process.id,
+                    })
+                    picking.write(response_data)
+        return True
+    
+    def _get_order_details(self, picking):
+        """To get order details from shiprocket to update awb and other flags
+        :param picking: stock.picking object
+        """
+        order_url = "orders/show/"
+        url = url_join(API_BASE_URL, order_url)
+        request_order_url = url_join(url, str(picking.shiprocket_order_id))
+        payload = {}
+        response = requests.get(
+             request_order_url, headers=self.headers, data=payload
+        )
+        response_dict = response.json()
+        picking_vals = {}
+        if response.status_code != 200:
+            picking_vals.update({'response_comment':response_dict})
+        if response.status_code == 200 and 'data' in response_dict:
+            if 'shipments' in response_dict['data']:
+                awb_code = response_dict['data']['shipments']['awb'] or False
+                courier_name = response_dict['data']['shipments']['courier'] or False
+                courier_code = response_dict['data']['shipments']['courier_id'] or False
+                if awb_code and courier_code and courier_name:
+                    picking_vals.update({
+                        'shiprocket_awb_code':awb_code,
+                        'courier_id':picking.get_courier_id(str(courier_code),str(courier_name)),
+                        'courier_rate':response_dict['data']['awb_data']['charges']['freight_charges'],
+                        'is_awb_generated':True
+                    })
+                if response_dict['data']['shipments']['manifest_id']:
+                    picking_vals.update({'is_manifest_generated':True,'is_pickup_request_done':True})
+            else:
+                picking_vals.update({'response_comment':'No Shipment Details Found To Update AWB Details'})
+        else:
+            picking_vals.update({'response_comment':'No Data Found In Response To AWB Details'})
+        self._get_order_status(picking)
+        picking.write(picking_vals)
+        return True
+
+
+        

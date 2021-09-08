@@ -7,7 +7,7 @@ class ProductPackaging(models.Model):
     
     #Redefined fields to change Int to Float
     height = fields.Float('Height')
-    width = fields.Float('Width')
+    width = fields.Float('Breadth')
     packaging_length = fields.Float('Length')
     volumetric_weight = fields.Float(
         "Volumetric Weight",

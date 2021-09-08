@@ -9,3 +9,5 @@ access_wiz_barcodes_read,wiz.barcodes.read,model_wiz_barcodes_read,base.group_us
 access_set_courier,set.courier,model_set_courier,base.group_user,1,1,1,0
 access_message_box,message.box,model_message_box,base.group_user,1,1,1,0
 access_wiz_stock_picking_lines,wiz.stock.picking.lines,model_wiz_stock_picking_lines,base.group_user,1,1,1,0
+access_shiprocket_bulk_process_log,shiprocket.bulk.process.log,model_shiprocket_bulk_process_log,base.group_user,1,1,1,1
+access_order_cancel_reason,order.cancel.reason,model_order_cancel_reason,base.group_user,1,1,1,0

@@ -8,8 +8,8 @@
             <xpath expr="//group[@name='inventory']" position="inside">
                 <group name="dimensions" string="Dimensions" colspan="2">
                     <field name="product_length" string="Length" />
+                    <field name="product_width" string="Breadth" />
                     <field name="product_height" string="Height" />
-                    <field name="product_width" string="Width" />
                     <field name="volumetric_weight" />
                 </group>
             </xpath>
@@ -33,7 +33,7 @@
                 </div>
                 <label for="product_width" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}"/>
                 <div class="o_row" name="product_width" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}">
-                    <field name="product_width" string="Width"/>
+                    <field name="product_width" string="Breadth"/>
                     <span>in cm</span>
                 </div>
                 <label for="product_height" attrs="{'invisible':[('product_variant_count', '>', 1), ('is_product_variant', '=', False)]}"/>
