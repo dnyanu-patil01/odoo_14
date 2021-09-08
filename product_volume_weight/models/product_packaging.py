@@ -5,6 +5,10 @@ from odoo.tools.float_utils import float_compare
 class ProductPackaging(models.Model):
     _inherit = "product.packaging"
     
+    #Redefined fields to change Int to Float
+    height = fields.Float('Height')
+    width = fields.Float('Width')
+    packaging_length = fields.Float('Length')
     volumetric_weight = fields.Float(
         "Volumetric Weight",
         digits=(8, 3),
