@@ -1,0 +1,11 @@
+<odoo>
+    <data>
+    
+    <template id="hide_buttons_assets_backend" name="hide Buttons assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/hide_generic_feature/static/src/js/action_menus.js"/>
+        </xpath>
+    </template>
+    
+    </data>
+</odoo>

@@ -1,0 +1,30 @@
+{
+    'name': 'Seller Management',
+    'version': '14.0',
+    'description': 'Seller Management System',
+    'summary': 'Seller Management System To Store Maintain Sellers and Their Products,Orders.',
+    'author': 'leelapriskila',
+    'license': 'LGPL-3',
+    'category': 'sale',
+    'depends': [
+        'base','sale','stock','account'
+    ],
+    'data': [
+        'security/security.xml',
+        'views/seller_view.xml',
+        'views/product_view.xml',
+        'views/sale_order_view.xml',
+        'views/account_move_view.xml',
+        'views/stock_location_view.xml',
+        'views/stock_move_view.xml',
+        'views/stock_picking_view.xml',
+        'views/seller_inventory_view.xml',
+        'report/sale_report_view.xml',
+        'report/sale_report.xml',
+    ],
+    'demo': [
+        ''
+    ],
+    'auto_install': True,
+    'application': True,
+}
