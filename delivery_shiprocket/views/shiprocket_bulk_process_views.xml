@@ -8,14 +8,19 @@
          <form string="Shiprocket Bulk Process" duplicate="0">
             <header>
                <button name="shiprocket_create_awb" confirm="This action will be done by backgroud.We will notify you soon." string="Create AWB" type="object" states="draft,awb_created_partially" />
-               <button name="shiprocket_open_wizard" type="object" string="Generate Manifest" states="ready_to_manifest" />
+               <button name="shiprocket_open_wizard" type="object" string="Generate Manifest" states="ready_to_manifest,manifest_generated_partially" />
                <button name="generate_pickup_request_bulk" confirm="This action will be done by backgroud.We will notify you soon." string="Create Pickup Request" type="object" states="awb_created,pickup_created_partially" />
                <button name="shiprocket_get_ready_to_manifest" string="Get Ready To Generate Manifest" type="object" states="pickup_created" />
-               <button name="print_labels_bulk" string="Get Label Attachment" type="object" states="awb_created,waiting_to_manifest,pickup_created,pickup_created_partially,manifest_generated,done" />
+               <button name="print_label_group_by" string="Get Label Attachment" type="object" states="awb_created,waiting_to_manifest,pickup_created,pickup_created_partially,manifest_generated,done" />
                <button name="print_manifest_bulk" string="Get Manifest Attachment" type="object" states="manifest_generated,done" />
                <field name="state" widget="statusbar" statusbar_visible="waiting_awb,awb_created,waiting_to_manifest,ready_to_manifest" />
             </header>
             <sheet>
+               <div class="oe_button_box" name="button_box">
+                  <button name="action_picking_move_tree" string="Delivery Orders" type="object"
+                            class="oe_stat_button" icon="fa-list-alt"
+                            attrs="{'invisible': [('stock_picking_ids', '=', False)]}"/>
+               </div>
                <group>
                   <group>
                      <field name="name" />
@@ -24,44 +29,60 @@
                      <field name="shiprocket_courier_priority" help="Based On This Courier Will Be Selected To Generated AWB" />
                   </group>
                   <group>
+                     <field name="generate_labels_group_by_courier" />
                      <field name="user_id" />
                      <field name="response_comment" />
                   </group>
-                  <field name="stock_picking_ids" options="{'no_create_edit': True, 'no_create':True, 'no_open':True}">
-                     <tree decoration-danger="is_manifest_generated == False">
-                        <field name="partner_id" optional="show" />
-                        <field name="name" optional="show" />
-                        <field name="scheduled_date" optional="show" />
-                        <field name="shiprocket_order_id" />
-                        <field name="shiprocket_shipping_id" />
-                        <field name="shiprocket_awb_code" />
-                        <field name="shiprocket_order_status_id"  optional="show" />
-                        <field name="response_comment" optional="show" />
-                        <field name="is_manifest_generated" optional="show" />
-                        <field name="is_awb_generated" optional="show" />
-                        <field name="state" optional="show" />
-                     </tree>
-                     <form>
-                        <group>
-                           <group>
-                              <field name="partner_id" readonly="1" />
-                              <field name="name" readonly="1" />
-                              <field name="scheduled_date" readonly="1" />
-                              <field name="shiprocket_order_id" readonly="1" />
-                              <field name="shiprocket_shipping_id" readonly="1" />
-                              <field name="state" readonly="1" />
-                           </group>
-                           <group>
-                              <field name="shiprocket_awb_code" readonly="1" />
-                              <field name="shiprocket_order_status_id" readonly="1" />
-                              <field name="response_comment" readonly="1" />
-                              <field name="is_manifest_generated" readonly="1" />
-                              <field name="company_id" readonly="1" />
-                           </group>
-                        </group>
-                     </form>
-                  </field>
                </group>
+               <notebook>
+                  <page name="all_stock_picking_ids" string="Delivery Orders">
+                     <field name="stock_picking_ids">
+                        <tree>
+                           <field name="partner_id" />
+                           <field name="name"/>
+                           <field name="scheduled_date" optional="show" />
+                           <field name="shiprocket_order_id" optional="show" />
+                           <field name="shiprocket_shipping_id" optional="show"/>
+                           <field name="shiprocket_awb_code"  string = "AWB NO"/>
+                           <field name="courier_id" string="Courier" optional="show"/>
+                           <field name="courier_rate" string="Rate" optional="show" />
+                           <field name="shiprocket_order_status_id"/>
+                           <field name="response_comment" optional="show" />
+                           <field name="is_manifest_generated" string="Manifest" optional="show" />
+                           <field name="is_awb_generated" string="AWB" optional="show" />
+                           <field name="state" optional="show" />
+                        </tree>
+                        <form>
+                           <group>
+                              <group>
+                                 <field name="partner_id" readonly="1" />
+                                 <field name="name" readonly="1" />
+                                 <field name="scheduled_date" readonly="1" />
+                                 <field name="shiprocket_order_id" readonly="1" />
+                                 <field name="shiprocket_shipping_id" readonly="1" />
+                                 <field name="state" readonly="1" />
+                              </group>
+                              <group>
+                                 <field name="shiprocket_awb_code" readonly="1" />
+                                 <field name="shiprocket_order_status_id" readonly="1" />
+                                 <field name="response_comment" readonly="1" />
+                                 <field name="is_manifest_generated" readonly="1" />
+                                 <field name="company_id" readonly="1" />
+                              </group>
+                           </group>
+                        </form>
+                     </field>
+                  </page>
+                  <page name="process_log" string="Process Log">
+                     <field name="bulk_process_log_line" widget="one2many" mode="tree">
+                        <tree editable="top" create="false" delete="false">
+                           <field name="picking_id" readonly="1"/>
+                           <field name="response_comment" />
+                        </tree>
+                     </field>
+                     <button class="btn btn-danger mx-3" style="margin:10px;" name="remove_do_lines" string="Remove Order From Bulk Process" type="object"/>
+                  </page>
+               </notebook>
             </sheet>
             <div class="oe_chatter">
                <field name="message_follower_ids" widget="mail_followers"/>

@@ -35,15 +35,16 @@
                         <field name="response_comment" readonly="1"/>
                         <field name="comment" placeholder="Reseller: M/s Goku" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" />
                         <field name="pickup_request_note" placeholder="Pickup Request Note" readonly="1" />
+                        <field name="cancel_reason" readonly="1"/>
                     </group>
                 </page>
-                <page string="Shiprocket Cost Matrix" attrs="{'invisible':['|',('delivery_type','!=','shiprocket'),('courier_id','!=',False)]}">
+                <page string="Shiprocket Cost Matrix" attrs="{'invisible':['|',('delivery_type','!=','shiprocket'),('shiprocket_serviceability_matrix','=',False)]}">
                     <separator />
                     <field name="shiprocket_serviceability_matrix">
                         <tree>
                             <field name="courier_name" invisible="1" />
-                            <field name="courier_company_id" />
-                            <field name="rate" />
+                            <field name="courier_company_id" decoration-bf="1"/>
+                            <field name="rate" decoration-bf="1"/>
                             <field name="rating" />
                             <field name="etd" />
                             <field name="etd_hours" />
@@ -135,17 +136,121 @@
             </xpath>
         </field>
     </record>
-    <record id="action_shiprocket_cancel_picking" model="ir.actions.server">
-        <field name="name">Cancel Order In Shiprocket</field>
+    <!-- Transfer Tree View -->
+    <record id="vpicktree_view_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.delivery.tree.inherit.delivery</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='backorder_id']" position="after">
+                <field name="pickup_location" optional="show"/>
+                <field name="channel_id" optional="show" />
+                <field name="shiprocket_order_id" string="Order ID" optional="show"/>
+                <field name="shiprocket_shipping_id" string="Shipping ID" optional="show" />
+                <field name="shiprocket_awb_code" string="AWB" optional="show"/>
+                <field name="courier_id" optional="show"/>
+                <field name="courier_rate" optional="show"/>
+                <field name="shiprocket_order_status_id" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_picking_internal_search_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.search.inherit.delivery</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_type_id']" position="after">
+                <field name="shiprocket_order_id" string="Order ID"/>
+                <field name="shiprocket_shipping_id" string="Shipping ID" />
+                <field name="shiprocket_awb_code" string="AWB"/>
+                <field name="pickup_location"/>
+            </xpath>
+            <xpath expr="//filter[@name='backorder']" position="before">
+                <filter name="carrier_id" string="Shiprocket" domain="[('carrier_id.delivery_type', '=', 'shiprocket')]"/>
+            </xpath>
+            <xpath expr="//filter[@name='picking_type']" position="after">
+                <filter string="pickup Location" name="pickup_location" domain="[]" context="{'group_by': 'pickup_location'}" />
+                <filter string="Channel" name="channel_id" domain="[]" context="{'group_by': 'channel_id'}" />
+                <filter string="Courier" name="courier_id" domain="[]" context="{'group_by': 'courier_id'}" />
+                <filter string="Shiprocket Status" name="shiprocket_order_status_id" domain="[]" context="{'group_by': 'shiprocket_order_status_id'}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_picking_send_to_shipper" model="ir.actions.server">
+        <field name="name">Send To Shipper</field>
         <field name="model_id" ref="stock.model_stock_picking"/>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="groups_id" eval="[(4, ref('stock.group_stock_manager'))]"/>
-        <field name="binding_view_types">form</field>
+        <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">
         if records:
             for rec in records:
-                rec.shiprocket_cancel_shipment()
+                rec.send_to_shipper()
         </field>
+    </record>
+    <record id="action_shiprocket_update_awb" model="ir.actions.server">
+        <field name="name">Update Details From Shiprocket</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="groups_id" eval="[(4, ref('base.group_no_one'))]"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+action = model.update_shiprocket_details_in_transfer()
+        </field>
+    </record>
+    <record id="action_shiprocket_cancel_order" model="ir.actions.server">
+        <field name="name">Cancel Order In Shiprocket</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="groups_id" eval="[(4, ref('stock.group_stock_manager'))]"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+action = model.action_get_cancel_reason()
+        </field>
+    </record>
+
+    <record id="bulk_processing_vpicktree" model="ir.ui.view">
+        <field name="name">stock.picking.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <tree string="Picking list" multi_edit="1">
+                <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                <field name="name" decoration-bf="1"/>
+                <field name="origin" optional="show"/>
+                <field name="picking_type_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="pickup_location" optional="show"/>
+                <field name="channel_id" optional="show" />
+                <field name="shiprocket_order_id" string="Order ID" optional="hide"/>
+                <field name="shiprocket_shipping_id" string="Shipping ID" optional="hide" />
+                <field name="shiprocket_awb_code" string="AWB" optional="show"/>
+                <field name="courier_id" optional="show"/>
+                <field name="courier_rate" optional="hide"/>
+                <field name="shiprocket_order_status_id" optional="show" />
+                <field name="signature" string="Signed" optional="hide" groups="stock.group_stock_sign_delivery"/>
+                <field name="user_id" optional="hshowide" widget="many2one_avatar_user"/>
+                <field name="scheduled_date" optional="hide" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}"/>
+                <field name="date_deadline" optional="hide" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}"/>
+                <field name="group_id" invisible="1"/>
+                <field name="backorder_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="location_id" options="{'no_create': True}" string="From" groups="stock.group_stock_multi_locations" optional="hide"/>
+                <field name="location_dest_id" options="{'no_create': True}" string="To" groups="stock.group_stock_multi_locations" optional="hide"/>
+                <field name="state" optional="show" widget="badge" decoration-success="state == 'done'" decoration-info="state not in ('done', 'cancel')"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+                <field name="json_popover" nolabel="1" widget="stock_rescheduling_popover" attrs="{'invisible': [('json_popover', '=', False)]}"/>
+            </tree>
+        </field>
+    </record>
+    <record id="do_view_bulk_processing" model="ir.actions.act_window">
+        <field name="name">Processed Orders</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">form,tree</field>
+        <field name="view_id" ref="delivery_shiprocket.bulk_processing_vpicktree"/>
     </record>
 </odoo>

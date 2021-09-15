@@ -12,15 +12,26 @@
                     <span>kg</span>
                 </div>
             </xpath>
-            <xpath expr="//div[@name='height']/span" position="replace">
-                <span>cm</span>
-            </xpath>
-            <xpath expr="//div[@name='width']/span" position="replace">
-                <span>cm</span>
-            </xpath>
-            <xpath expr="//div[@name='packaging_length']/span" position="replace">
-                <span>cm</span>
-            </xpath>
+            <xpath expr="//group[@name='delivery']/group[1]" position="replace">
+                  <group>
+                    <field name="package_carrier_type"/>
+                    <label for="packaging_length"/>
+                    <div class="o_row" name="packaging_length">
+                      <field name="packaging_length"/>
+                      <span>cm</span>
+                    </div>
+                    <label for="width"/>
+                    <div class="o_row" name="width">
+                      <field name="width"/>
+                      <span>cm</span>
+                    </div>
+                    <label for="height"/>
+                    <div class="o_row" name="height">
+                      <field name="height"/>
+                      <span>cm</span>
+                    </div>
+                  </group>
+                </xpath>
         </field>
     </record>
 </odoo>

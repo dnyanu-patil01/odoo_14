@@ -16,7 +16,7 @@ class Product(models.Model):
 
     product_length = fields.Float("Length")
     product_height = fields.Float("Height")
-    product_width = fields.Float("Width")
+    product_width = fields.Float("Breadth")
     volumetric_weight = fields.Float("Volumetric Weight",digits=(8, 3))
 
 

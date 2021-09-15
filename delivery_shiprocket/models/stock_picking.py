@@ -74,6 +74,7 @@ class StockPicking(models.Model):
     rto_courier_rate = fields.Float(copy=False, readonly=True)
     is_order_rto = fields.Boolean(copy=False, readonly=True)
     bulk_order_id = fields.Many2one("shiprocket.bulk.process",copy=False, readonly=True)
+    cancel_reason = fields.Text("Reason")
 
     def _send_confirmation_email(self):
         super(StockPicking, self)._send_confirmation_email()
@@ -217,15 +218,17 @@ class StockPicking(models.Model):
 
     def shiprocket_cancel_shipment(self):
         """To Cancel Order In Shiprocket"""
-        if not self.shiprocket_order_id:
-            raise UserError("Shiprocket Order ID Required To Cancel Order")
-        shiprocket = ShipRocket(self.env.company)
-        # API Call To Generate Label
-        order_id = int(self.shiprocket_order_id)
-        response_data = "Order Cancelled!"
-        response_data = shiprocket._cancel_order_request([order_id])
-        self.get_shiprocket_status()
-        self.write({'response_comment':str(response_data)})
+        for transfer in self:
+            if not transfer.shiprocket_order_id:
+                transfer.write({"response_comment":"Shiprocket Order ID Required To Cancel Order"})
+                return 
+            shiprocket = ShipRocket(self.env.company)
+            # API Call To Generate Label
+            order_id = int(transfer.shiprocket_order_id)
+            response_data = "Order Cancelled!"
+            response_data = shiprocket._cancel_order_request([order_id])
+            transfer.get_shiprocket_status()
+            transfer.write({'response_comment':str(response_data)})
         return True
 
     def get_shiprocket_status(self):
@@ -250,6 +253,10 @@ class StockPicking(models.Model):
             if response_data["order_status_code"] in ["15", "16", "17"]:
                 vals.update(
                     {"rto_courier_rate": self.courier_rate, "is_order_rto": True}
+                )
+            if response_data['order_status_code'] == "4":
+                vals.update(
+                    {"is_pickup_request_done": True}
                 )
             self.write(vals)
         return True
@@ -325,4 +332,43 @@ class StockPicking(models.Model):
         'res_model': 'stock.picking',
         'res_id': self.id,
         })
+        return True
+    
+    def bulk_awb_creation_request(self,bulk_process):
+        """Call To Bulk AWB Creation Process"""
+        shiprocket = ShipRocket(self.env.company)
+        shiprocket.bulk_awb_creation_request(self,bulk_process)
+        return True
+
+    def action_get_cancel_reason(self):
+        picking_ids = self.env.context.get('active_ids') or False
+        ctx = {"picking_ids": picking_ids}
+        return {
+            "name": ("Cancel Order In Shiprocket"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "order.cancel.reason",
+            "target": "new",
+            "context":ctx,
+        }
+
+    def update_shiprocket_details_in_transfer(self):
+        picking_ids = self.env.context.get('active_ids') or False
+        if picking_ids:
+            for picking in self.browse(picking_ids):
+                picking.with_delay().get_order_details()
+            message_id = self.env['message.box'].create({'message':"Shiprocket Order Details Will Be Updated Few Minutes In Odoo."})
+            return {
+                "name": "Information",
+                "type": "ir.actions.act_window",
+                "view_mode": "form",
+                "res_model": "message.box",
+                "res_id": message_id.id,
+                "target": "new",
+            }
+        
+    
+    def get_order_details(self):
+        shiprocket = ShipRocket(self.env.company)
+        shiprocket._get_order_details(self)
         return True

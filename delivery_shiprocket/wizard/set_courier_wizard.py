@@ -23,8 +23,6 @@ class SetCourier(models.TransientModel):
             self.picking_id.write(
             {
                 "label_url": False,
-                "recommended_courier_company_id": False,
-                "shiprocket_recommended_courier_id": False,
             })
             vals = {
                 "courier_id": int(self.selected_courier_id.courier_company_id.code),
