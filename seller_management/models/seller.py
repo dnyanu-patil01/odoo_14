@@ -105,14 +105,3 @@ class ResPartner(models.Model):
         ]
         action['context'] = {'default_seller_id':self.id}
         return action
-
-    def _get_filtered_seller_record(self):
-        action = self.env["ir.actions.actions"]._for_xml_id("seller_management.seller_view_action")
-        if self.env.user.has_group('seller_management.group_sellers_management_manager') and self.env.user.has_group('base.group_partner_manager'):
-            action['domain'] = [('seller','=',True)]
-        elif self.env.user.has_group('seller_management.group_sellers_management_user') and self.env.user.has_group('base.group_partner_manager'):
-            action['domain'] = [
-                ('id', '=', self.env.user.partner_id.id),
-                ('seller','=',True)
-            ]
-        return action

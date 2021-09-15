@@ -1,8 +1,8 @@
 {
-    'name': 'Seller Management',
+    'name': 'Multi Seller Marketplace',
     'version': '14.0',
-    'description': 'Seller Management System',
-    'summary': 'Seller Management System To Store Maintain Sellers and Their Products,Orders.',
+    'description': 'Multi Seller Marketplace',
+    'summary': 'Multi Seller Marketplace To Store Maintain Sellers and Their Products,Orders.',
     'author': 'leelapriskila',
     'license': 'LGPL-3',
     'category': 'sale',

@@ -300,14 +300,7 @@
             </form>
         </field>
     </record>
-    <record id="server_action_filter_seller_invoices" model="ir.actions.server">
-        <field name="name">To Filter Seller Invoices Record Based On Login</field>
-        <!-- <field name="condition">True</field> -->
-        <field name="type">ir.actions.server</field>
-        <field name="model_id" ref="model_account_move" />
-        <field name="state">code</field>
-        <field name="code">action=env.get('account.move')._get_filtered_seller_invoices_record()</field>
-    </record>
+    
     <record id="action_sellers_invoices" model="ir.actions.act_window">
         <field name="name">Seller Invoices</field>
         <field name="res_model">account.move</field>
@@ -332,10 +325,11 @@
     <menuitem
         id="menu_seller_invoices"
         name="Invoices"
-        action="server_action_filter_seller_invoices"
+        action="action_sellers_invoices"
         parent="seller_root_menu"
         groups="seller_management.group_sellers_management_user"
         sequence="30"/>
+        
     <record model="ir.ui.view" id="account_move_form_view_inherit">
         <field name="name">customer.move.form.inherit</field>
         <field name="model">account.move</field>

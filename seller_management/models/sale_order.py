@@ -3,16 +3,7 @@ from odoo import _, api, fields, models
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    @api.model   
-    def _get_seller_domain(self):
-        domain=[]
-        if self.env.user.has_group('seller_management.group_sellers_management_manager'):
-            domain= [('seller','=',True)]
-        elif self.env.user.has_group('seller_management.group_sellers_management_user'):
-            domain.append(('id','=',self.env.user.partner_id.id))
-        return domain
-
-    seller_id = fields.Many2one('res.partner','Seller', domain=lambda self:self._get_seller_domain(),index=True, copy=False)
+    seller_id = fields.Many2one('res.partner','Seller', index=True, copy=False)
     seller_shopify_sequence = fields.Char(readonly=True)
 
     @api.model

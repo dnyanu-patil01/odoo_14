@@ -224,19 +224,11 @@
         <field name="act_window_id" ref="seller_product_view_action"/>
         <field name="view_id" ref="view_seller_product_template_form"/>
     </record>
-
-    <record id="server_action_filter_seller_products" model="ir.actions.server">
-        <field name="name">Server Action:To Filter Seller Record Based On Login</field>
-        <field name="type">ir.actions.server</field>
-        <field name="model_id" ref="model_product_template" />
-        <field name="state">code</field>
-        <field name="code">action=env.get('product.template')._get_filtered_seller_product_record()</field>
-    </record>
     
     <menuitem
         id="menu_seller_product"
         name="Products"
-        action="server_action_filter_seller_products"
+        action="seller_product_view_action"
         parent="seller_root_menu"
         groups="seller_management.group_sellers_management_user"
         sequence="30"/>
