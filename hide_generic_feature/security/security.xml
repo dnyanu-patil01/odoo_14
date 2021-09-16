@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+    <!-- ===================== Groups ================== -->
+    <record id="show_actions_button" model="res.groups">
+        <field name="name">Show Action Button</field>
+        <field name="users" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="show_print_button" model="res.groups">
+        <field name="name">Show Print Button</field>
+        <field name="users" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+  </data>
+  
+  <data>
+    <record id="restrict_menu_user" model="ir.rule">
+      <field name="name">Restrict Menu from Users</field>
+      <field ref="base.model_ir_ui_menu" name="model_id"/>
+      <field name="domain_force">[('restrict_user_ids','not in',user.id)]</field>
+    </record>
+  </data>
+  
+</odoo>
+
