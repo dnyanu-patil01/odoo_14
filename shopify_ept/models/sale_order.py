@@ -76,7 +76,7 @@ class SaleOrder(models.Model):
     is_service_tracking_updated = fields.Boolean("Service Tracking Updated", default=False, copy=False)
 
     _sql_constraints = [('unique_shopify_order',
-                         'unique(shopify_instance_id,shopify_order_id,shopify_order_number)',
+                         'unique(shopify_instance_id,shopify_order_id,shopify_order_number,id)',
                          "Shopify order must be Unique.")]
 
     def create_shopify_log_line(self, message, queue_line, log_book, order_name):
@@ -272,9 +272,11 @@ class SaleOrder(models.Model):
                 if order_data_line:
                     order_data_line.write({"state": "failed", "processed_at": datetime.now()})
                 continue
-            seller_list,seller_lines = self.update_seller_info_in_order_lines(lines, order_response, instance)
+            #By Leela:Added To Create Multiple Sale Orders Based On Sellers
+            seller_lines = self.update_seller_info_in_order_lines(lines, order_response, instance)
             sorted_lines = sorted(seller_lines, key=operator.itemgetter("seller_id"))
             for seller, seller_value in groupby(sorted_lines, key=operator.itemgetter("seller_id")):
+                #By Leela:pushed remaining function from shopify inside the loop
                 lines = list(seller_value)
                 sale_order = self.shopify_create_order(instance, partner, delivery_address, invoice_address,
                                                     order_data_line, order_response, log_book,seller)
@@ -326,6 +328,7 @@ class SaleOrder(models.Model):
 
         return order_ids
 
+    #By Leela:Method To Get Unique Sellers List From Order Line Products And Also Passing Seller ID To Sale Order Lines
     def update_seller_info_in_order_lines(self,lines, order_response, instance):
         seller_ids = []
         for line in lines:
@@ -465,6 +468,7 @@ class SaleOrder(models.Model):
             "picking_policy": workflow.picking_policy or False,
             "auto_workflow_process_id": workflow and workflow.id
         })
+        #By Leela : To Have Seller Shopify Reference Format(HFN/1/1034)
         if seller:
             seller_obj = self.env['res.partner'].browse(int(seller))
             ordervals.update({
@@ -474,7 +478,7 @@ class SaleOrder(models.Model):
         else:
             ordervals.update({
                 'seller_id':False,
-                'seller_shopify_sequence':'NOSeller/'+str(instance.id)+'/'+str(order_response.get("order_number"))
+                'seller_shopify_sequence':False,
             })
         if not instance.is_use_default_sequence:
             if instance.shopify_order_prefix:

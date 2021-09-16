@@ -76,8 +76,8 @@
                             <field name="auto_approve_product" />
                         </group>
                         <group>
-                            <field name="seller_sale_sequence_id" />
-                            <field name="seller_invoice_sequence_id" />
+                            <field name="seller_sale_sequence_id" attrs="{'required':[('seller','=',True)]}"/>
+                            <field name="seller_invoice_sequence_id" attrs="{'required':[('seller','=',True)]}" />
                             <field name="user_id" invisible="True"/>
                         </group>
                         <group>
@@ -252,5 +252,5 @@
         <field name="view_id" ref="view_seller_form"/>
     </record>
     <menuitem id="seller_root_menu" name="Sellers" sequence="7" groups="seller_management.group_sellers_management_user"/>
-    <menuitem id="menu_seller" name="Sellers" action="seller_view_action" parent="seller_root_menu" sequence="10" groups="seller_management.group_sellers_management_user" />
+    <menuitem id="menu_seller" name="Sellers" action="seller_view_action" parent="menu_seller_config" sequence="10" groups="seller_management.group_sellers_management_user" />
 </odoo>

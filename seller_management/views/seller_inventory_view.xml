@@ -75,7 +75,7 @@
             action="seller_stock_warehouse_action"
             parent="menu_seller_config"
             groups="seller_management.group_sellers_management_manager"
-            sequence="10"/>
+            sequence="20"/>
 
         <record id="view_seller_stock_location_tree" model="ir.ui.view">
             <field name="name">stock.location.view.tree</field>

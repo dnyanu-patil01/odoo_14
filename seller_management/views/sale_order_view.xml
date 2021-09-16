@@ -50,8 +50,8 @@
                     <group name="sale_header">
                         <group name="partner_details">
                             <field name="seller_id" />
-                            <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True}"/>
-                            <field name="partner_invoice_id" widget="res_partner_many2one" groups="sale.group_delivery_invoice_address" context="{'show_address': 1, 'default_type':'invoice'}" options="{&quot;always_reload&quot;: True}"/>
+                            <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True,&quot;no_open&quot;: True}"/>
+                            <field name="partner_invoice_id" widget="res_partner_many2one" groups="sale.group_delivery_invoice_address" context="{'show_address': 1, 'default_type':'invoice'}" options="{&quot;always_reload&quot;: True,&quot;no_open&quot;: True}"/>
                         </group>
                         <group name="order_details">
                             <field name="validity_date" attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}"/>
@@ -63,7 +63,7 @@
                                 <label for="date_order" string="Order Date"/>
                             </div>
                             <field name="date_order" attrs="{'required': [('state', 'in', ['sale', 'done'])], 'invisible': [('state', 'in', ['draft', 'sent'])]}" nolabel="1"/>
-                            <field name="partner_shipping_id" widget="res_partner_many2one" groups="sale.group_delivery_invoice_address" context="{'show_address': 1, 'default_type':'delivery'}" options="{&quot;always_reload&quot;: True}"/>
+                            <field name="partner_shipping_id" widget="res_partner_many2one" groups="sale.group_delivery_invoice_address" context="{'show_address': 1, 'default_type':'delivery'}" options="{&quot;always_reload&quot;: True,&quot;no_open&quot;: True}"/>
                             <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
                             <field name="reference" readonly="1" attrs="{'invisible': [('reference', '=', False)]}"/>
                             <field name="client_order_ref"/>
