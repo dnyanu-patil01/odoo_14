@@ -21,10 +21,32 @@
         <record model="res.groups" id="group_sellers_management_manager">
             <field name="name">Manager</field>
             <field name="category_id" ref="module_seller_management" />
+            <field name="implied_ids" eval="[(4, ref('seller_management.group_sellers_management_user'))]"/>
+            <field name="users"
+                   eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
         </record>
         <!-- Inactive Base Private Address Rule:To Display Seller Own Record For Seller User Group -->
+        <!-- To Handle User To See His Own Contacts -->
+        <record model="ir.module.category" id="module_contact_access">
+            <field name="name">Contact Access</field>
+            <field name="description">Contact Access Right</field>
+            <field name="sequence">105</field>
+        </record>
+
+        <record model="res.groups" id="group_own_contact_only">
+            <field name="name">Access Own Contact</field>
+            <field name="category_id" ref="seller_management.module_contact_access" />
+        </record>
+        
+        <record model="res.groups" id="group_all_contacts">
+            <field name="name">Access All Contact</field>
+            <field name="category_id" ref="seller_management.module_contact_access" />
+            <field name="users"
+                   eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]"/>
+        </record>
+       
         <record id="base.res_partner_rule_private_employee" model="ir.rule">
-            <field name="active">False</field>
+            <field name="groups" eval="[(6, 0, [ref('seller_management.group_all_contacts')])]" />
         </record>
         <!-- Seller User Group Rules -->
         <record id="seller_account_move_personal_rule" model="ir.rule">
@@ -81,7 +103,7 @@
             <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
-        <record id="seller_stock_location_personal_rule" model="ir.rule">
+        <!-- <record id="seller_stock_location_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Stock Locations</field>
             <field ref="stock.model_stock_location" name="model_id" />
             <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
@@ -92,6 +114,12 @@
             <field ref="stock.model_stock_inventory" name="model_id" />
             <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
+        </record> -->
+        <record id="seller_product_packaging_personal_rule" model="ir.rule">
+            <field name="name">Seller Personal Product Package</field>
+            <field ref="product.model_product_packaging" name="model_id" />
+            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <!-- Sellers Manager Rules To See All Sellers Records -->
         <record id="seller_account_move_all_rule" model="ir.rule">
@@ -153,6 +181,12 @@
             <field ref="stock.model_stock_inventory" name="model_id" />
             <field name="domain_force">[(1,'=',1)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_manager'))]" />
+        </record>
+        <record id="seller_product_packaging_all_rule" model="ir.rule">
+            <field name="name">Seller All Product Package</field>
+            <field ref="product.model_product_packaging" name="model_id" />
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_manager'))]" />
         </record>
     </data>
 </odoo>

@@ -73,6 +73,7 @@
                         <group>
                             <field name="seller" readonly="1" invisible="1" />
                             <field name="seller_code" attrs="{'required':[('seller','=',True)]}" />
+                            <field name="fulfilment_type" attrs="{'required':[('seller','=',True)]}" />
                             <field name="auto_approve_product" />
                         </group>
                         <group>
@@ -251,6 +252,21 @@
         <field name="act_window_id" ref="seller_view_action"/>
         <field name="view_id" ref="view_seller_form"/>
     </record>
-    <menuitem id="seller_root_menu" name="Sellers" sequence="7" groups="seller_management.group_sellers_management_user"/>
-    <menuitem id="menu_seller" name="Sellers" action="seller_view_action" parent="menu_seller_config" sequence="10" groups="seller_management.group_sellers_management_user" />
+    <menuitem 
+        id="seller_root_menu" 
+        name="Sellers" sequence="7" 
+        groups="seller_management.group_sellers_management_user"/>
+    <menuitem
+            id="menu_seller_config"
+            name="Configuration"
+            parent="seller_root_menu"
+            groups="seller_management.group_sellers_management_user"
+            sequence="60"/>
+    <menuitem
+         id="menu_seller" 
+         name="Sellers" 
+         action="seller_view_action" 
+         parent="menu_seller_config" 
+         sequence="10" 
+         groups="seller_management.group_sellers_management_user" />
 </odoo>

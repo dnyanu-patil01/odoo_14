@@ -200,14 +200,17 @@ class SaleOrder(models.Model):
         @author: Maulik Barad on Date 11-Sep-2020.
         """
         delivery_carrier_obj = self.env["delivery.carrier"]
-        for line in order_response.get("shipping_lines", []):
-            carrier = delivery_carrier_obj.shopify_search_create_delivery_carrier(line, instance)
+        if self.seller_id and self.seller_id.fulfilment_type == 'shiprocket':
+        # By Leela:To Remove Shipping Products
+        # for line in order_response.get("shipping_lines", []):
+            # carrier = delivery_carrier_obj.shopify_search_create_delivery_carrier(line, instance)
+            carrier = delivery_carrier_obj.search([('delivery_type','=','shiprocket')])
             if carrier:
                 self.write({"carrier_id": carrier.id})
-                shipping_product = carrier.product_id
-                self.shopify_create_sale_order_line(line, shipping_product, 1,
-                                                    shipping_product.name or line.get("title"),
-                                                    line.get("price"), order_response, is_shipping=True)
+                # shipping_product = carrier.product_id
+                # self.shopify_create_sale_order_line(line, shipping_product, 1,
+                #                                     shipping_product.name or line.get("title"),
+                #                                     line.get("price"), order_response, is_shipping=True)
         return
 
     def import_shopify_orders(self, order_data_lines, log_book, is_queue_line=True):
@@ -341,8 +344,8 @@ class SaleOrder(models.Model):
             else:
                 line.update({'seller_id':False})
         if seller_ids:
-            return (list(set(seller_ids)),lines)
-        return (False,lines)
+            return lines
+        return lines
 
     def check_mismatch_details(self, lines, instance, order_number, order_data_queue_line,
                                log_book_id):

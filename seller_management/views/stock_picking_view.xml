@@ -15,6 +15,15 @@
                     <attribute name="options">{'no_create': true}</attribute>
                     <attribute name="domain">[('state', '=', 'approve')]</attribute>
             </xpath>
+            <xpath expr="//button[@name='button_validate']" position="attributes">
+                <attribute name="groups">stock.group_stock_user,seller_management.group_sellers_management_user</attribute>               
+            </xpath>
+            <xpath expr="//button[@name='button_validate'][2]" position="attributes">
+                <attribute name="groups">stock.group_stock_user,seller_management.group_sellers_management_user</attribute>               
+            </xpath>
+            <xpath expr="//button[@name='send_to_shipper']" position="attributes">
+                <attribute name="groups">stock.group_stock_user,seller_management.group_sellers_management_user</attribute>
+            </xpath>
         </field>
     </record>
 

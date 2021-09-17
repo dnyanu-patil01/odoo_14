@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record model="ir.ui.view" id="product_packaging_delivery_form_seller">
+    <field name="name">product.packaging.form.seller</field>
+    <field name="model">product.packaging</field>
+    <field name="inherit_id" eval="False"/>
+    <field name="arch" type="xml">
+        <form string="Sellers Delivery Packaging">
+            <sheet>
+                <label for="name"/>
+                <h1>
+                    <field name="name"/>
+                </h1>
+                <group name="delivery">
+                  <group>
+                    <field name="package_carrier_type"/>
+                    <label for="packaging_length"/>
+                    <div class="o_row" name="packaging_length">
+                      <field name="packaging_length"/>
+                      <span>cm</span>
+                    </div>
+                    <label for="width"/>
+                    <div class="o_row" name="width">
+                      <field name="width"/>
+                      <span>cm</span>
+                    </div>
+                    <label for="height"/>
+                    <div class="o_row" name="height">
+                      <field name="height"/>
+                      <span>cm</span>
+                    </div>
+                  </group>
+                  <group>
+                    <label for="max_weight"/>
+                    <div class="o_row" name="max_weight">
+                      <field name="max_weight"/>
+                      <span><field name="weight_uom_name"/></span>
+                    </div>
+                    <label for="volumetric_weight"/>
+                    <div class="o_row" name="volumetric_weight">
+                        <field name="volumetric_weight"/>
+                        <span>kg</span>
+                    </div>
+                    <field name="barcode"/>
+                    <field name="seller_id" readonly="1"/>
+                    <field name="shipper_package_code"/>
+                  </group>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="product_packaging_tree_seller">
+    <field name="name">product.packaging.tree.seller</field>
+    <field name="model">product.packaging</field>
+    <field name="inherit_id" eval="False"/>
+    <field name="arch" type="xml">
+        <tree string="Delivery Packages">
+            <field name="sequence" widget="handle"/>
+            <field name="package_carrier_type"/>
+            <field name="name"/>
+            <field name="height"/>
+            <field name="width"/>
+            <field name="packaging_length"/>
+            <field name="max_weight"/>
+            <field name="shipper_package_code"/>
+            <field name="barcode" invisible="1"/>
+        </tree>
+    </field>
+</record>
+
+        <record id="seller_product_packaging_action" model="ir.actions.act_window">
+            <field name="name">Delivery Packages</field>
+            <field name="res_model">product.packaging</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('seller_id','!=',False)]</field>
+            <field name="help" type="html">
+                <p>To Create New Seller's Stock Transfers</p>
+            </field>
+        </record>
+        <record id="seller_product_packaging_action_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence">1</field>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="seller_product_packaging_action"/>
+            <field name="view_id" ref="product_packaging_tree_seller"/>
+        </record>
+        <record id="seller_product_packaging_action_form" model="ir.actions.act_window.view">
+            <field name="sequence">2</field>
+            <field name="view_mode">form</field>
+            <field name="act_window_id" ref="seller_product_packaging_action"/>
+            <field name="view_id" ref="product_packaging_delivery_form_seller"/>
+        </record>
+        
+        <menuitem
+            id="menu_seller_product_packaging"
+            name="Delivery Packaging"
+            action="seller_product_packaging_action"
+            parent="seller_root_menu"
+            groups="seller_management.group_sellers_management_user"
+            sequence="50"/>
+    </data>
+</odoo>

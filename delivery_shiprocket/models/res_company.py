@@ -57,6 +57,7 @@ class ResCompany(models.Model):
         ShiprocketChannel = self.env["shiprocket.channel"]
         shiprocket = ShipRocket(self)
         response_dict = shiprocket._import_all_channels()
+        ShiprocketChannel.unlink()
         if response_dict and "data" in response_dict:
             for rec in response_dict.get("data"):
                 vals = {
@@ -86,6 +87,7 @@ class ResCompany(models.Model):
             return
         ShiprocketPickupLocation = self.env["shiprocket.pickup.location"]
         shiprocket = ShipRocket(self)
+        ShiprocketPickupLocation.unlink()
         response_dict = shiprocket._import_picking_address()
         if response_dict and "data" in response_dict:
             for rec in response_dict.get("data")["shipping_address"]:

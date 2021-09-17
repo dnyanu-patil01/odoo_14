@@ -7,7 +7,7 @@
     'license': 'LGPL-3',
     'category': 'sale',
     'depends': [
-        'base','sale','stock','account'
+        'base','sale','stock','account','product_volume_weight'
     ],
     'data': [
         'security/security.xml',
@@ -20,6 +20,7 @@
         'views/stock_move_view.xml',
         'views/stock_picking_view.xml',
         'views/seller_inventory_view.xml',
+        'views/product_packaging.xml',
         'report/sale_report_view.xml',
         'report/sale_report.xml',
     ],

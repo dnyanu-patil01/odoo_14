@@ -34,4 +34,14 @@
                 </xpath>
         </field>
     </record>
+    <record id="choose_delivery_package_view_form_inherit" model="ir.ui.view">
+      <field name="name">choose.delivery.package.view.form.inherit</field>
+      <field name="model">choose.delivery.package</field>
+      <field name="inherit_id" ref="delivery.choose_delivery_package_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//div[last()]" position="after">
+          <field name="shipping_actual_weight" />
+        </xpath>
+      </field>
+    </record>
 </odoo>

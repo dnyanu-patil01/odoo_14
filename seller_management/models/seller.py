@@ -5,6 +5,10 @@ class ResPartner(models.Model):
 
     seller = fields.Boolean("Seller")
     seller_code = fields.Char("Seller Code",size=5)
+    fulfilment_type = fields.Selection([
+        ('self_fulfilment', 'Self Fulfilment'),
+        ('shiprocket','By Shiprocket'),
+    ], string='Fulfilment Type')
     seller_sale_sequence_id = fields.Many2one('ir.sequence', string='Order Sequence',
         help="This sequence is automatically created by Odoo but you can change it "
         "to customize the reference numbers of your orders.", copy=False)
