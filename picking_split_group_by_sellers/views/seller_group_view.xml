@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    
+    <record id="seller_group_view_tree" model="ir.ui.view">
+        <field name="name">seller.group.view.tree</field>
+        <field name="model">seller.group</field>
+        <field name="arch" type="xml">
+            <tree string="Seller Group" delete="0">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="seller_group_view_form" model="ir.ui.view">
+        <field name="name">seller.group.view.form</field>
+        <field name="model">seller.group</field>
+        <field name="arch" type="xml">
+            <form string="Seller Group" delete="0" duplicate="0">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="seller_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="seller_group_action" model="ir.actions.act_window">
+        <field name="name">Seller Group</field>
+        <field name="res_model">seller.group</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p>Create Seller Group</p>
+        </field>
+    </record>
+
+    <menuitem action="seller_group_action"
+              id="menu_seller_group" parent="sale.menu_sale_config" groups="base.group_system"
+              sequence="200"/>
+
+    </data>
+</odoo>

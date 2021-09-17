@@ -305,3 +305,4 @@ class SaleOrder(models.Model):
             stock_move._set_quantity_done(product_qty)
             stock_move._action_done()
         return True
+    

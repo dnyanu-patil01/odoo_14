@@ -289,12 +289,10 @@ class SaleOrder(models.Model):
                     _logger.info(message)
                     self.create_shopify_log_line(message, order_data_line, log_book, order_response.get("name"))
                     continue
-                order_ids.append(sale_order.id)
-
                 location_vals = self.set_shopify_location_and_warehouse(order_response, instance, pos_order)
                 sale_order.write(location_vals)
-
                 risk_result = shopify.OrderRisk().find(order_id=order_response.get("id"))
+                order_ids.append(sale_order.id)
                 if risk_result:
                     order_risk_obj.shopify_create_risk_in_order(risk_result, sale_order)
                     risk = sale_order.risk_ids.filtered(lambda x: x.recommendation != "accept")
@@ -313,25 +311,36 @@ class SaleOrder(models.Model):
 
                 _logger.info("Starting auto workflow process for Odoo order(%s) and Shopify order is (%s)"
                             % (sale_order.name, order_number))
-
-                if not sale_order.is_risky_order:
-                    if sale_order.shopify_order_status == "fulfilled":
-                        sale_order.auto_workflow_process_id.shipped_order_workflow_ept(sale_order)
+                            
+                # By Leela : Commented The Below Lines Of Code To Group Delivery Order Based Seller Group
+                # if not order.is_risky_order:
+                #     if order.shopify_order_status == "fulfilled":
+                #         order.auto_workflow_process_id.shipped_order_workflow_ept(order)
+                #     else:
+                #         order.process_orders_and_invoices_ept()
+            self.merge_quotations(order_ids)
+            for order in self.env['sale.order'].browse(order_ids):
+                if not order.is_risky_order:
+                    if order.shopify_order_status == "fulfilled":
+                        #To Automate the invoice process after grouped DO process Copied from common_connector_libary sale_order.py
+                        if order.order_line.filtered(lambda l: l.product_id.invoice_policy == 'order'):
+                            order.validate_and_paid_invoices_ept(self)
+                        delivered_lines = order.order_line.filtered(lambda l: l.product_id.invoice_policy != 'order')
+                        if delivered_lines:
+                            order.validate_and_paid_invoices_ept(self)
                     else:
-                        sale_order.process_orders_and_invoices_ept()
-
+                        order.process_orders_and_invoices_ept()
                 _logger.info("Done auto workflow process for Odoo order(%s) and Shopify order is (%s)"
-                            % (sale_order.name, order_number))
+                            % (order.name, order_number))
 
                 if order_data_line:
                     order_data_line.write({"state": "done", "processed_at": datetime.now(),
-                                        "sale_order_id": sale_order.id})
+                                        "sale_order_id": order.id})
                 _logger.info("Processed the Odoo Order %s process and Shopify Order (%s)"
-                            % (sale_order.name, order_number))
-
+                            % (order.name, order_number))
         return order_ids
 
-    #By Leela:Method To Get Unique Sellers List From Order Line Products And Also Passing Seller ID To Sale Order Lines
+    #By Leela:Method To Get Unique Sellers List From Order Line Products And Also Passing Seller ID and Seller Group To Sale Order Lines
     def update_seller_info_in_order_lines(self,lines, order_response, instance):
         seller_ids = []
         for line in lines:
@@ -339,10 +348,10 @@ class SaleOrder(models.Model):
             if shopify_product:
                 product = shopify_product.product_id
             if product and product.seller_id:
-                line.update({'seller_id':product.seller_id.id})
-                seller_ids.append(product.seller_id.id)
+                line.update({'seller_id':product.seller_id.id,'seller_group_id':product.seller_id.seller_group_id.id})
+                seller_ids.append(product.seller_id.seller_group_id.id)
             else:
-                line.update({'seller_id':False})
+                line.update({'seller_id':False,'seller_group_id':False})
         if seller_ids:
             return lines
         return lines
@@ -474,14 +483,17 @@ class SaleOrder(models.Model):
         #By Leela : To Have Seller Shopify Reference Format(HFN/1/1034)
         if seller:
             seller_obj = self.env['res.partner'].browse(int(seller))
+            seller_code  = seller_obj.seller_code if seller_obj.seller_code else "NoSellerCode"
             ordervals.update({
+                'seller_group_id':seller_obj.seller_group_id.id,
                 'seller_id':seller_obj.id,
-                'seller_shopify_sequence':seller_obj.seller_code+'/'+str(instance.id)+'/'+str(order_response.get("order_number"))
+                'seller_shopify_sequence':seller_code+'/'+str(instance.id)+'/'+str(order_response.get("order_number"))
             })
         else:
             ordervals.update({
                 'seller_id':False,
                 'seller_shopify_sequence':False,
+                'seller_group_id':False,
             })
         if not instance.is_use_default_sequence:
             if instance.shopify_order_prefix:
