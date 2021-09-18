@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_document" inherit_id="account.report_invoice_document">
+		<xpath expr="//h2" position="replace"/>
+		<xpath expr="//t[@t-set='address']" position="before">
+			<div style="padding-top:0px;margin-top:-30px;" align="center" class="row text-left">
+				<div class="col-12" style="text-align:center"><h2>Tax Invoice/Bill Of Supply/Cash Memo</h2>
+				<br/>(original for Recipient)</div>
+			</div>
+		</xpath>
+		<xpath expr="//t[@t-set='address']" position="replace">
+			<div class="row">
+				<div class="col-6 text-left">
+					<strong>Sold By:</strong>
+					<t t-if="o.seller_id">
+						<div t-field="o.seller_id"
+						t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True,"no_tag_br": True}'/>
+						<div t-if="o.seller_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.seller_id.vat"/></div>
+					</t>
+					<t t-if="not o.seller_id">
+						<div t-field="o.company_id.partner_id"
+						t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True,"no_tag_br": True}'/>
+					<div t-if="o.company_id.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.company_id.partner_id.vat"/></div>
+					</t>
+				</div>
+				<div class="col-6 text-right">
+					<strong>Billing Address:</strong>
+					<div t-field="o.partner_id"
+						t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True,"no_tag_br": True}'/>
+					<div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.partner_id.vat"/></div>
+				</div>
+			</div>
+			<div style="padding-bottom:20px" class="row">
+				<div class="col-6 text-left">
+					<p><b>Place Of Supply:</b>
+					<t t-if="o.partner_shipping_id and o.partner_shipping_id.state_id">
+						<span><t t-esc="o.partner_shipping_id.state_id.name"/></span>
+					</t>
+					<t t-elif="o.partner_id and o.partner_id.state_id">
+						<span><t t-esc="o.partner_id.state_id.name"/></span>
+					</t>
+					</p>
+					<p><b>Place Of Delivery:</b>
+					<t t-if="o.partner_shipping_id and o.partner_shipping_id.state_id">
+						<span><t t-esc="o.partner_shipping_id.state_id.name"/></span>
+					</t>
+					<t t-elif="o.partner_id and o.partner_id.state_id">
+						<span><t t-esc="o.partner_id.state_id.name"/></span>
+					</t>
+					</p>
+				</div>
+				<div class="col-6 text-right">
+					<strong>Shipping Address:</strong>
+					<div t-field="o.partner_shipping_id"
+						t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True,"no_tag_br": True}'/>
+				</div>
+			</div>
+		</xpath>
+		<xpath expr="//div[@id='informations']" position="replace">
+			<t t-set="sale_order" t-value="o.get_sale_order_data()"/>
+			<div id="informations" style="padding-top:5px" class="row mt32 mb32">
+				<t t-if="sale_order.shopify_order_id">
+					<div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_origin" name="origin">
+						<strong>Order Number:</strong>
+						<p class="m-0"><t t-esc="sale_order.shopify_order_number"/>-<t t-esc="sale_order.shopify_order_id"/></p>
+					</div>
+				</t> 
+				<t t-if="not sale_order.shopify_order_id">
+					<div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_origin" name="origin">
+						<strong>Order Number:</strong>
+						<p class="m-0" t-field="o.invoice_origin"/>
+					</div>
+				</t>
+				<div class="col-auto col-3 mw-100 mb-2" t-if="sale_order" name="origin">
+					<strong>Order Date:</strong>
+					<p class="m-0" t-esc="sale_order.date_order.strftime('%%d-%%m-%%Y')"/>
+				</div>
+				<div class="col-auto col-3 mw-100 mb-2" t-if="o.name" name="invoice_date">
+					<strong>Invoice Number:</strong>
+					<p class="m-0" t-field="o.name"/>
+				</div>
+
+				<div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">
+					<strong>Invoice Date:</strong>
+					<p class="m-0" t-field="o.invoice_date"/>
+				</div>
+			</div>
+		</xpath>
+		<xpath expr="//p[@name='payment_communication']" position="replace"/>
+		<xpath expr="//div[@id='qrcode']" position="after">
+			<div class="row">
+				<div class="col-12"  align="right">
+					<b>
+						<t t-if="o.seller_id">
+							For <t t-esc="o.seller_id.name"/> :<br/>
+						</t>
+					</b>
+					
+					<div style="padding-top:10px;">
+					<img t-if="o.seller_id.seller_signature_image" t-att-src="image_data_uri(o.seller_id.seller_signature_image)"
+								style="max-height: 44px;width:188px;valign:bottom;" alt="Logo"/>
+					<br/>		
+					<b>Authorized Signature</b></div>
+				</div>
+			</div>
+        </xpath>
+    </template>
+	<template id="external_layout_background" inherit_id="web.external_layout_background">
+        <xpath expr="//div[hasclass('float-right')]" position="replace"/>
+		<xpath expr="//div[hasclass('float-left','company_address')]" position="replace"/>
+    </template>
+	<template id="external_layout_boxed" inherit_id="web.external_layout_boxed">
+        <xpath expr="//div[hasclass('o_boxed_header')]" position="replace">
+		<div class="row">
+			<div class="col-3 mb4">
+				<img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 85px;" alt="Logo"/>
+			</div>
+		</div>
+		</xpath>
+    </template>
+	<template id="external_layout_standard" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[@t-att-style='report_header_style']" position="replace">
+		<div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+            <div class="row">
+                <div class="col-3 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 85px;" alt="Logo"/>
+                </div>
+            </div>
+        </div>
+		</xpath>
+    </template>
+	<template id="external_layout_clean" inherit_id="web.external_layout_clean">
+        <xpath expr="//div[@t-att-style='report_header_style']" position="replace">
+		<div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+            <div class="row">
+                <div class="col-3 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 85px;" alt="Logo"/>
+                </div>
+            </div>
+        </div>
+		</xpath>
+    </template>
+</odoo>

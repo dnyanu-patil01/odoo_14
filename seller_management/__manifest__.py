@@ -24,6 +24,7 @@
         'views/product_packaging.xml',
         'report/sale_report_view.xml',
         'report/sale_report.xml',
+        'report/invoice_report.xml',
     ],
     'demo': [
         ''
