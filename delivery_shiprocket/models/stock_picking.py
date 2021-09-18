@@ -74,7 +74,7 @@ class StockPicking(models.Model):
     rto_courier_rate = fields.Float(copy=False, readonly=True)
     is_order_rto = fields.Boolean(copy=False, readonly=True)
     bulk_order_id = fields.Many2one("shiprocket.bulk.process",copy=False, readonly=True)
-    cancel_reason = fields.Text("Reason")
+    cancel_reason = fields.Text("Reason",copy=False, readonly=True)
 
     def _send_confirmation_email(self):
         super(StockPicking, self)._send_confirmation_email()
@@ -250,16 +250,33 @@ class StockPicking(models.Model):
                 .id,
             }
             # To check for RTO Status and To Update RTO Rate
-            if response_data["order_status_code"] in ["15", "16", "17"]:
+            if response_data["order_status_code"] in ["15", "17"]:
                 vals.update(
                     {"rto_courier_rate": self.courier_rate, "is_order_rto": True}
                 )
+            #Auto Generation Of Return Of The Delivery Order
+            if response_data['order_status_code'] == '16':
+                self.create_return_picking_for_rto()
             if response_data['order_status_code'] == "4":
                 vals.update(
                     {"is_pickup_request_done": True}
                 )
             self.write(vals)
         return True
+
+    def create_return_picking_for_rto(self):
+        '''
+        Create Return Picking For RTO Delivered Order
+        '''
+        return_pick_wiz = self.env['stock.return.picking'].with_context(
+        active_model='stock.picking', active_id=self.id,shiprocket=False).create({})
+        return_pick_wiz._onchange_picking_id()
+        return_picking_id, dummy = return_pick_wiz.with_context(active_id=self.id)._create_returns()
+        return_picking = self.env['stock.picking'].browse(return_picking_id)
+        return_picking.action_confirm()
+        for rec in return_picking.move_lines:
+            rec.quantity_done = rec.product_uom_qty
+        return_picking.button_validate()
 
     def get_courier_id(self, code, name):
         """To Get Courier ID from courier code"""

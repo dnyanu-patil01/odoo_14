@@ -9,6 +9,8 @@ class ReturnPicking(models.TransientModel):
     def _create_returns(self):
         res = super(ReturnPicking, self)._create_returns()
         if self.picking_id.carrier_id.delivery_type == "shiprocket":
+            if not self.env.context.get('shiprocket'):
+                return res
             new_picking_id, pick_type_id = res
             new_picking = self.env["stock.picking"].browse(new_picking_id)
             new_picking.write(

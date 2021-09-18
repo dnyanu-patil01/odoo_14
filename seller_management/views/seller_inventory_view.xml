@@ -63,13 +63,6 @@
         </record>
 
         <menuitem
-            id="menu_seller_config"
-            name="Configuration"
-            parent="seller_root_menu"
-            groups="seller_management.group_sellers_management_user"
-            sequence="60"/>
-
-        <menuitem
             id="menu_seller_warehouse"
             name="Warehouse"
             action="seller_stock_warehouse_action"
