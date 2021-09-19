@@ -47,19 +47,19 @@
                     <div class="oe_title">
                         <label class="oe_edit_only" for="name" string="Product Name"/>
                         <h1><field name="name" placeholder="Product Name"/></h1>
-                        <div name="options" groups="base.group_user">
+                        <!-- <div name="options" groups="base.group_user">
                             <div>
                                 <field name="sale_ok"/>
                                 <label for="sale_ok"/>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <notebook>
                         <page string="General Information" name="general_information">
                             <group>
                                 <group name="group_general">
                                     <field name="active" invisible="1"/>
-                                    <field name="seller_id" domain="[('seller','=',True)]" />
+                                    <field name="seller_id" required="1" domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]" />
                                     <field name="type"/>
                                     <field name="categ_id" string="Product Category"/>
                                 </group>
@@ -112,7 +112,7 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='type']" position="before">
-                <field name="seller_id" domain="[('seller','=',True)]" />
+                <field name="seller_id" domain="[('seller','=',True),('parent_id','=',False)]" />
             </xpath>
             <xpath expr="//form/header" position="inside">
                 <button name="button_approve" string="Approve" states="draft" type="object" class="btn-primary" groups="seller_management.group_product_approval"/>
@@ -129,7 +129,7 @@
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='type']" position="before">
-                <field name="seller_id" readony="False" domain="[('seller','=',True)]" />
+                <field name="seller_id" readony="False" domain="[('seller','=',True),('parent_id','=',False)]" />
                 <field name="state" readonly="1"/>
             </xpath>
         </field>
@@ -141,7 +141,7 @@
         <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='type']" position="before">
-                <field name="seller_id" readony="False"  domain="[('seller','=',True)]" />
+                <field name="seller_id" readony="False"  domain="[('seller','=',True),('parent_id','=',False)]" />
                 <field name="state" readonly="1"/>
             </xpath>
         </field>

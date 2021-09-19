@@ -8,6 +8,7 @@
             <tree string="Sellers">                
                 <field name="display_name" string="Name"/>
                 <field name="seller_code" />
+                <field name="fulfilment_type" />
                 <field name="function" invisible="1"/>
                 <field name="phone" class="o_force_ltr" optional="show"/>
                 <field name="email" optional="show"/>
@@ -54,12 +55,12 @@
                         </button>
                     </div>
                     <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}" />
-                    <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;image_128&quot;}" />
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;image_128&quot;}" required="1" />
                     <div class="oe_title">
                         <field name="is_company" invisible="1" />
                         <field name="commercial_partner_id" invisible="1" />
                         <field name="active" invisible="1" />
-                        <field name="company_type" widget="radio" class="oe_edit_only" options="{'horizontal': true}" />
+                        <field name="company_type" readonly="1" widget="radio" class="oe_edit_only" options="{'horizontal': true}" />
                         <h1>
                             <field name="name" default_focus="1" placeholder="Name" attrs="{'required' : [('type', '=', 'contact')]}" />
                         </h1>
@@ -74,11 +75,10 @@
                             <field name="seller" readonly="1" invisible="1" />
                             <field name="seller_code" attrs="{'required':[('seller','=',True)]}" />
                             <field name="fulfilment_type" attrs="{'required':[('seller','=',True)]}" />
-                            <field name="auto_approve_product" />
                         </group>
                         <group>
-                            <field name="seller_sale_sequence_id" attrs="{'required':[('seller','=',True)]}"/>
-                            <field name="seller_invoice_sequence_id" attrs="{'required':[('seller','=',True)]}" />
+                            <field name="seller_sale_sequence_id" groups="base.group_system" attrs="{'required':[('seller','=',True)]}"/>
+                            <field name="seller_invoice_sequence_id" groups="base.group_system" attrs="{'required':[('seller','=',True)]}" />
                             <field name="user_id" invisible="True"/>
                         </group>
                         <group>
@@ -92,21 +92,21 @@
                                 <b attrs="{'invisible': ['&amp;', ('parent_id', '!=', False), ('type', '!=', False)]}">Address</b>
                             </span>
                             <div class="o_address_format">
-                                <field name="street" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" />
-                                <field name="street2" placeholder="Street 2..." class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" />
-                                <field name="city" placeholder="City" class="o_address_city" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" />
-                                <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}" />
-                                <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" />
-                                <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" />
+                                <field name="street" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" required="1" />
+                                <field name="street2" placeholder="Street 2..." class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" required="1"/>
+                                <field name="city" placeholder="City" class="o_address_city" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" required="1" />
+                                <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}" required="1" />
+                                <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" required="1"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" required="1"/>
                             </div>
-                            <field name="vat" placeholder="e.g. BE0477472701" attrs="{'readonly': [('parent_id','!=',False)]}" />
+                            <field name="vat" string="GSTIN" placeholder="e.g. BE0477472701" attrs="{'readonly': [('parent_id','!=',False)]}" required="1"/>
                         </group>
                         <group>
                             <field name="function" placeholder="e.g. Sales Director" attrs="{'invisible': [('is_company','=', True)]}" />
-                            <field name="phone" widget="phone" />
-                            <field name="mobile" widget="phone" />
+                            <field name="phone" widget="phone" required="1" />
+                            <field name="mobile" widget="phone" required="1" />
                             <field name="user_ids" invisible="1" />
-                            <field name="email" widget="email" context="{'gravatar_image': True}" attrs="{'required': [('user_ids','!=', [])]}" />
+                            <field name="email" widget="email" context="{'gravatar_image': True}" attrs="{'required': [('user_ids','!=', [])]}" required="1"/>
                             <field name="website" widget="url" placeholder="e.g. https://www.odoo.com" />
                             <field name="title" options="{&quot;no_open&quot;: True}" placeholder="e.g. Mister" attrs="{'invisible': [('is_company', '=', True)]}" />
                             <field name="active_lang_count" invisible="1" />
@@ -115,7 +115,15 @@
                                 <field name="lang" />
                                 <button type="action" name="53" class="btn-sm btn-link mb4 fa fa-globe" aria-label="More languages" groups="base.group_system" title="More languages" />
                             </div>
-                            <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags..." />
+                            <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags..."/>
+                            <label for="seller_signature_image"/>
+                            <div class="col-md-6 col-xl-7 text-left o_website_sale_image_modal_container">
+                            <div class="row">
+                                <div class="col">
+                                    <field name="seller_signature_image" widget="image" required="1"/>
+                                </div>
+                            </div>
+                        </div>
                         </group>
                     </group>
                     <notebook colspan="4">
@@ -234,8 +242,8 @@
         <field name="name">Sellers</field>
         <field name="res_model">res.partner</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('seller','=',True),('active','=',True)]</field>
-        <field name="context">{'default_seller':1}</field>
+        <field name="domain">[('seller','=',True),('active','=',True),('parent_id','=',False)]</field>
+        <field name="context">{'default_seller':1,'default_is_company':1}</field>
         <field name="help" type="html">
             <p>To Create New Seller</p>
         </field>
