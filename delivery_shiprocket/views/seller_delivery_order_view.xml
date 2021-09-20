@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_seller_stock_transfer_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="seller_management.view_seller_stock_transfer_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='backorder_id']" position="after">
+                <field name="pickup_location" optional="show"/>
+                <field name="channel_id" optional="show" />
+                <field name="shiprocket_order_id" string="Order ID" optional="show"/>
+                <field name="shiprocket_shipping_id" string="Shipping ID" optional="show" />
+                <field name="shiprocket_awb_code" string="AWB" optional="show"/>
+                <field name="courier_id" optional="show"/>
+                <field name="courier_rate" optional="show"/>
+                <field name="shiprocket_order_status_id" optional="show" />
+            </xpath>
+        </field>
+    </record>
+
+        <record id="seller_view_picking_for_shiprocket" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.delivery.shiprocket</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="seller_management.view_seller_stock_picking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='note']" position="before">
+                <page string="Shiprocket Details" attrs="{'invisible':[('delivery_type','!=','shiprocket')]}">
+                    <group>
+                        <group>
+                            <field name="pickup_location" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('shiprocket_order_id', '!=', False)]}" options="{'no_create': True, 'no_open': True}" />
+                            <field name="channel_id" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('shiprocket_order_id', '!=', False)]}" options="{'no_create': True, 'no_open': True}" />
+                            <field name="shipping_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('shiprocket_order_id', '!=', False)]}" />
+                            <field name="giftwrap_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('shiprocket_order_id', '!=', False)]}" />
+                            <field name="transaction_charges" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('state', 'in', ('done', 'cancel'))]}" />
+                            <field name="order_type" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('state', 'in', ('done', 'cancel'))]}" />
+                            <field name="payment_method" attrs="{'readonly': [('state', 'in', ('done', 'cancel')),('state', 'in', ('done', 'cancel'))]}" />
+                        </group>
+                        <group>
+                            <field name="shiprocket_order_id" readonly="1" />
+                            <field name="shiprocket_order_status_id" readonly="1" />
+                            <field name="shiprocket_shipping_id" readonly="1" />
+                            <field name="courier_id" readonly="1" />
+                            <field name="courier_rate" readonly="1" />
+                            <field name="is_order_rto"/>
+                            <field name="rto_courier_rate" attrs="{'invisible':[('is_order_rto','=',False)]}"/>
+                            <field name="shiprocket_awb_code" readonly="1" />
+                            <field name="manifest_url" widget="url" readonly="1" />
+                            <field name="label_url" widget="url" readonly="1" />
+                            <field name="is_manifest_generated" invisible="1" />
+                            <field name="is_pickup_request_done" invisible="1" />
+                            <field name="bulk_order_id" readonly="1" attrs="{'invisible':[('bulk_order_id','=',False)]}" />
+                        </group>
+                        <field name="response_comment" readonly="1"/>
+                        <field name="comment" placeholder="Reseller: M/s Goku" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" />
+                        <field name="pickup_request_note" placeholder="Pickup Request Note" readonly="1" />
+                        <field name="cancel_reason" readonly="1"/>
+                    </group>
+                </page>
+                <page string="Shiprocket Cost Matrix" attrs="{'invisible':['|',('delivery_type','!=','shiprocket'),('shiprocket_serviceability_matrix','=',False)]}">
+                    <separator />
+                    <field name="shiprocket_serviceability_matrix">
+                        <tree>
+                            <field name="courier_name" invisible="1" />
+                            <field name="courier_company_id" decoration-bf="1"/>
+                            <field name="rate" decoration-bf="1"/>
+                            <field name="rating" />
+                            <field name="etd" />
+                            <field name="etd_hours" />
+                            <field name="estimated_delivery_days" />
+                        </tree>
+                    </field>
+                    <group string="Recommended Courier">
+                        <group>
+                            <field name="recommended_courier_company_id" readonly="1" />
+                            <field name="shiprocket_recommended_courier_id" readonly="1" />
+                            <button class="btn btn-info btn-lg btn-block" icon="fa-edit" type="object" name="set_courier_id" string="Set Courier" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <widget name="web_ribbon" text="Unable To Place Order In Shiprocket"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': ['|','|',('shiprocket_order_id', '!=', False),('state','not in',('done')),('delivery_type', '!=', 'shiprocket')]}"
+                        tooltip="Unable to place order in shiprocket.please try once by clicking send to shipper button"/>
+                <widget name="web_ribbon" title="Order Placed"
+                    bg_color="bg-info"
+                    attrs="{'invisible': ['|','|',
+                    ('shiprocket_order_status_id', '!=', 1),
+                    ('state','not in',('done')),
+                    ('delivery_type', '!=', 'shiprocket')
+                    ]}"/>
+                <widget name="web_ribbon" title="AWB Generated"
+                    bg_color="bg-info"
+                    attrs="{'invisible': [
+                    ('is_awb_generated','=',False)
+                    ]}"/>
+                <widget name="web_ribbon" title="Pickup Requested"
+                    bg_color="bg-info"
+                    attrs="{'invisible': [
+                    ('is_pickup_request_done','=',False)
+                    ]}"/>
+                <widget name="web_ribbon" title="Manifest Generated"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [
+                    ('is_manifest_generated','=',False)
+                    ]}"/>
+                <widget name="web_ribbon" title="Delivered"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [
+                    ('shiprocket_order_status_id','!=',7)
+                    ]}"/>
+                <widget name="web_ribbon" title="Shipped"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [
+                    ('shiprocket_order_status_id','!=',6)
+                    ]}"/>
+                <widget name="web_ribbon" title="Order Cancelled"
+                    bg_color="bg-danger"
+                    attrs="{'invisible': ['|','|',
+                    ('shiprocket_order_status_id', 'not in', (5,18)),
+                    ('state','not in',('done')),
+                    ('delivery_type', '!=', 'shiprocket')
+                    ]}"/>
+                <field name="shiprocket_order_status_id" invisible="1"/>
+                <field name="is_awb_generated" invisible="1"/>
+                <field name="is_pickup_request_done" invisible="1"/>
+                <field name="is_manifest_generated" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@name='send_to_shipper']" position="attributes">
+                <attribute name="attrs">{'invisible':['|','|','|','|',('shiprocket_order_id','!=',False),('delivery_type','in', ['fixed', 'base_on_rule']),('delivery_type','=',False),('state','not in',('done')),('picking_type_code', '=', 'incoming')]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='send_to_shipper']" position="after">
+                <button name="shiprocket_check_serviceability" string="Check Serviceability" type="object" attrs="{'invisible':['|','|','|',('courier_id','!=',False),('shiprocket_order_id','=',False),('shiprocket_shipping_id','=',False),('shiprocket_awb_code','!=',False)]}" />
+                <button name="shiprocket_create_awb" confirm="Before Creating AWB Request Set Courier ID or It will be selected automatically based on your courier priority." string="Generate AWB" type="object" attrs="{'invisible':['|','|','|',('recommended_courier_company_id','=',False),('shiprocket_order_id','=',False),('shiprocket_shipping_id','=',False),('shiprocket_awb_code','!=',False)]}" />
+                <button name="shiprocket_reassign_courier" string="Re-assign Courier" confirm="This Will Reassign Your Selected Courier.Do You Want To Proceed?" type="object" attrs="{'invisible':['|',('manifest_url','!=',False),('shiprocket_awb_code','=',False)]}" />
+                <button name="shiprocket_generate_pickup_request" string="Generate Pickup Request" type="object" attrs="{'invisible':['|','|',('is_pickup_request_done','=',True),('shiprocket_awb_code','=',False),('label_url','=',False)]}" />
+                <button name="shiprocket_generate_manifest_request" string="Generate Manifest" type="object" attrs="{'invisible':['|','|',('manifest_url','!=',False),('pickup_request_note','=',False),('manifest_url','!=',False)]}" />
+                <button name="shiprocket_generate_label_request" string="Generate Label" type="object" attrs="{'invisible':['|','|','|','|',('shiprocket_awb_code','=',False),('delivery_type','in', ['fixed', 'base_on_rule']),('delivery_type','=',False),('state','not in',('done')),('delivery_type', '!=', 'shiprocket')]}" />
+                <button name="get_shiprocket_status" string="Get Status" type="object" attrs="{'invisible':[('is_manifest_generated','=',False)]}" />
+                <button name="shiprocket_print_manifest_request" string="Generate Manifest" type="object" attrs="{'invisible':[('manifest_url','=',False)]}" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

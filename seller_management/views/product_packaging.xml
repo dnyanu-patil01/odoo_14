@@ -43,7 +43,7 @@
                         <span>kg</span>
                     </div>
                     <field name="barcode"/>
-                    <field name="seller_id" readonly="1"/>
+                    <field name="seller_id" options="{'no_open': True, 'no_create': True}" readonly="1"/>
                     <field name="shipper_package_code"/>
                   </group>
                 </group>

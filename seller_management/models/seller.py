@@ -21,7 +21,7 @@ class ResPartner(models.Model):
     seller_sale_order_ids = fields.One2many('sale.order', 'seller_id', 'Sellers Order')
     seller_invoice_count = fields.Integer(compute='_compute_seller_invoice_count', string='Seller Invoice Count')
     seller_product_count = fields.Integer(compute='_compute_seller_product_count', string='Seller Product Count')
-
+    seller_signature_image = fields.Binary(string='Seller Signature')
 
     def _compute_seller_sale_order_count(self):
         # retrieve all children all_sellers and prefetch 'parent_id' on them
