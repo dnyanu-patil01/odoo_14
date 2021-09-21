@@ -10,7 +10,8 @@ class SaleOrder(models.Model):
     def create(self, vals):
         if 'seller_id' in vals and vals['seller_id'] != False:
             seller_obj = self.env['res.partner'].browse(vals['seller_id'])
-            vals['name'] = seller_obj.seller_sale_sequence_id._next()
+            if seller_obj.seller_sale_sequence_id:
+                vals['name'] = seller_obj.seller_sale_sequence_id._next()
         return super(SaleOrder, self).create(vals)
         
     def _prepare_invoice(self):
@@ -18,8 +19,9 @@ class SaleOrder(models.Model):
         """
         invoice_val = super(SaleOrder, self)._prepare_invoice()
         if self.seller_id:
-            invoice_val.update({'seller_id': self.seller_id.id,
-                                'name':self.seller_id.seller_invoice_sequence_id._next()})
+            invoice_val.update({'seller_id': self.seller_id.id})
+        if self.seller_id.seller_invoice_sequence_id:
+            invoice_val.update({'name':self.seller_id.seller_invoice_sequence_id._next()})
         return invoice_val
 
 class SaleOrderLine(models.Model):
