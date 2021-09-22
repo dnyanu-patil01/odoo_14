@@ -120,6 +120,11 @@
                 <button name="button_draft" string="Set Draft" states="reject" type="object"  groups="seller_management.group_product_approval"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,approve,reject"/>
             </xpath>
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <field name="message_ids"/>
+                </div>
+            </xpath>
         </field>
     </record>
 
