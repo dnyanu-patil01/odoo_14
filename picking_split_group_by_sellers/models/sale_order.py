@@ -10,7 +10,8 @@ class SaleOrder(models.Model):
 
     seller_group_id = fields.Many2one("seller.group")
     picking_id = fields.Many2one('stock.picking','Stock Transfer',readonly=True)
-
+    merge_delivery_count = fields.Integer(string='Delivery Orders', compute='_compute_merged_picking_ids')
+    
     def merge_quotations(self,order_ids):
         # To Get All Order Lines Of The Orders
         all_order_lines = self.env['sale.order.line'].search([('seller_group_id','!=',False),('order_id','in',order_ids)],order="seller_group_id")
@@ -44,6 +45,30 @@ class SaleOrder(models.Model):
                 order.write({'picking_id':picking_id.id})
         return True
                        
+    def action_view_merged_delivery(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("seller_management.seller_stock_transfer_action")
+        if len(self.picking_id.sale_order_ids) > 1:
+            action['domain'] = [('id', '=', self.picking_id.id),('seller_group_id.seller_ids','in',self.seller_id.id)]
+        elif self.picking_id:
+            form_view = [(self.env.ref('seller_management.view_seller_stock_picking_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = self.picking_id.id
+        # Prepare the context.
+        picking_id = self.picking_id.filtered(lambda l: l.picking_type_id.code == 'outgoing')
+        if picking_id:
+            picking_id = picking_id[0]
+        else:
+            picking_id = self.picking_id
+        action['context'] = dict(self._context, default_seller_id=self.seller_id.id, default_picking_type_id=picking_id.picking_type_id.id, default_origin=self.name, default_group_id=picking_id.group_id.id)
+        return action
+
+    @api.depends('picking_id')
+    def _compute_merged_picking_ids(self):
+        for order in self:
+            order.merge_delivery_count = len(order.picking_id.sale_order_ids)
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
@@ -130,6 +155,12 @@ class StockPicking(models.Model):
 
     seller_group_id = fields.Many2one("seller.group")
     sale_order_ids = fields.One2many("sale.order",'picking_id')
+    merge_so_count = fields.Integer(string='Orders', compute='_compute_merged_so_ids')
+
+    @api.depends('sale_order_ids')
+    def _compute_merged_so_ids(self):
+        for pick in self:
+            pick.merge_so_count = len(pick.sale_order_ids)
 
     def _get_new_picking_values(self):
         """We need this method to set Seller in Stock Picking"""

@@ -30,7 +30,6 @@
         "report/pickup_slip_reports.xml",
         "report/pickup_slip_templates.xml",
         "report/shiprocket_invoice_report_template.xml",
-        "views/seller_delivery_order_view.xml",
     ],
 
     "auto_install": False,

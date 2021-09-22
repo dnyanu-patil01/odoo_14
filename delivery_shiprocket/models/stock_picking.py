@@ -359,7 +359,10 @@ class StockPicking(models.Model):
 
     def action_get_cancel_reason(self):
         picking_ids = self.env.context.get('active_ids') or False
-        ctx = {"picking_ids": picking_ids}
+        if not picking_ids:
+            ctx={'picking_ids':self.ids}
+        else:
+            ctx = {"picking_ids": picking_ids}
         return {
             "name": ("Cancel Order In Shiprocket"),
             "type": "ir.actions.act_window",

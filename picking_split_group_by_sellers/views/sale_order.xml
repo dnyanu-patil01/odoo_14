@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_seller_sale_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.view.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="seller_management.view_seller_sale_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_seller_delivery']" position="before">
+                <button name="action_view_merged_delivery" type="object" class="oe_stat_button" icon="fa-angle-double-right" attrs="{'invisible': [('merge_delivery_count', '&lt;', 1)]}">
+                <field name="merge_delivery_count"  string="Group DO" widget="statinfo" />
+                </button>
+            </xpath>
+            <xpath expr="//button[@name='action_view_seller_delivery']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|',('merge_delivery_count','>',1),('delivery_count','=',0)]}</attribute>
+            </xpath> 
+        </field>
+    </record>
+
+    <record id="view_sale_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.view.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_delivery']" position="before">
+                <button name="action_view_merged_delivery" type="object" class="oe_stat_button" icon="fa-angle-double-right" attrs="{'invisible': [('merge_delivery_count', '&lt;', 1)]}">
+                <field name="merge_delivery_count" widget="statinfo" string="Group DO" />
+                </button>
+            </xpath>
+            <xpath expr="//button[@name='action_view_delivery']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|',('merge_delivery_count','>',1),('delivery_count','=',0)]}</attribute>
+            </xpath> 
+        </field>
+    </record>
+
+</odoo>

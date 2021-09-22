@@ -10,3 +10,6 @@ class AccountMove(models.Model):
             orders = self.env['sale.order'].search([(
                 'name', '=', rec.invoice_origin)], limit=1)
         return orders
+
+    def print_invoice(self):
+        return self.env.ref('account.account_invoices').report_action(self)

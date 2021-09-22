@@ -3,12 +3,14 @@
     "version": "14.0.1.0.0",
     "category": "Delivery",
     "author": "Heartfulness ERP Team",
-    "depends": ["seller_management","product","sale_stock"],
+    "depends": ["seller_management","product","sale_stock","delivery_shiprocket"],
     "data": [
         'security/security.xml',
         "security/ir.model.access.csv",
         "views/seller_group_view.xml",
         "views/seller_view.xml",
+        "views/sale_order.xml",
+        "views/stock_picking_view.xml",
             ],
     "installable": True,
 }

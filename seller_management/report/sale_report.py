@@ -18,5 +18,5 @@ class SaleReport(models.Model):
         return super(SaleReport, self)._query(with_clause, fields, groupby, from_clause)
 
     def seller_sale_report(self):
-        action = self.env.ref('seller_management.seller_action_order_report_all').read()[0]
+        action = self.env.ref('seller_management.seller_action_order_report_all').sudo().read()[0]
         return action

@@ -5,7 +5,11 @@
         <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
-            <tree string="Seller Products" delete="0">
+            <tree decoration-info="state == 'draft'"
+                  decoration-muted="state == 'reject'"
+                  decoration-warning="state == 'to_approve'" 
+                  decoration-success="state == 'approve'"
+                  string="Seller Products" delete="0">
                 <field name="product_variant_count" invisible="1"/>
                 <field name="sale_ok" invisible="1"/>
                 <field name="currency_id" invisible="1"/>
@@ -21,6 +25,7 @@
                 <field name="categ_id" optional="hide"/>
                 <field name="type" optional="hide" readonly="1"/>
                 <field name="uom_id" readonly="1" optional="show" groups="uom.group_uom"/>
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -33,8 +38,11 @@
             <form string="Seller Products" delete="0">
                 <header>
                     <button string="Update Quantity" type="object"
-                        name="action_update_quantity_on_hand"
+                        name="seller_update_stock_quantity"
                         attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                    <button name="button_draft" string="Update Product Details" states="reject,approve" type="object"  groups="seller_management.group_sellers_management_user"/>
+                    <button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
+                   <field name="state" invisible="1"/>
                 </header>
                 <sheet>
                     <field name="product_variant_count" invisible="1"/>
@@ -43,10 +51,30 @@
                     <div class="oe_button_box" name="button_box"/>
                     <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <field name="id" invisible="True"/>
-                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    <widget name="web_ribbon" title="Draft"
+                    bg_color="bg-info"
+                    attrs="{'invisible': [
+                    ('state','!=','draft')
+                    ]}"/>
+                    <widget name="web_ribbon" title="Approved"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [
+                    ('state','!=','approve')
+                    ]}"/>
+                    <widget name="web_ribbon" title="Rejected"
+                    bg_color="bg-danger"
+                    attrs="{'invisible': [
+                    ('state','!=','reject')
+                    ]}"/>
+                    <widget name="web_ribbon" title="Waiting For Approval"
+                    bg_color="bg-dark"
+                    attrs="{'invisible': [
+                    ('state','!=','to_approve')
+                    ]}"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" style="marign-left:300px;" attrs="{'readonly':[('state','!=','draft')]}" options="{'preview_image': 'image_128'}"/>
                     <div class="oe_title">
                         <label class="oe_edit_only" for="name" string="Product Name"/>
-                        <h1><field name="name" placeholder="Product Name"/></h1>
+                        <h1><field name="name" placeholder="Product Name" attrs="{'readonly':[('state','!=','draft')]}"/></h1>
                         <!-- <div name="options" groups="base.group_user">
                             <div>
                                 <field name="sale_ok"/>
@@ -59,45 +87,48 @@
                             <group>
                                 <group name="group_general">
                                     <field name="active" invisible="1"/>
-                                    <field name="seller_id" required="1" domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]" />
-                                    <field name="type"/>
-                                    <field name="categ_id" string="Product Category"/>
+                                    <field name="seller_id" required="1" attrs="{'readonly':[('state','!=','draft')]}" domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]" options="{'no_create': True,'no_open':True}" />
+                                    <field name="type" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                    <field name="categ_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_open':True}" string="Product Category"/>
                                 </group>
                                 <group name="group_standard_price">
-                                    <label for="list_price"/>
+                                    <label for="list_price" attrs="{'readonly':[('state','!=','draft')]}"/>
                                     <div name="pricing">
-                                      <field name="list_price" class="oe_inline" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
-                                      <button name="open_pricelist_rules" icon="fa-arrow-right" type="object" groups="product.group_product_pricelist" class="oe_inline">
-                                        <field name="pricelist_item_count" attrs="{'invisible': [('pricelist_item_count', '=', 0)]}"/>
-                                        <span attrs="{'invisible': [('pricelist_item_count', '=', 1)]}">
+                                      <field name="list_price" class="oe_inline" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                      <button name="open_pricelist_rules" icon="fa-arrow-right" type="object" groups="product.group_product_pricelist" class="oe_inline" attrs="{'readonly':[('state','!=','draft')]}">
+                                        <field name="pricelist_item_count" attrs="{'invisible': [('pricelist_item_count', '=', 0)],'readonly':[('state','!=','draft')]}"/>
+                                        <span attrs="{'invisible': [('pricelist_item_count', '=', 1)],'readonly':[('state','!=','draft')]}">
                                           Extra Prices
                                         </span>
-                                        <span attrs="{'invisible': [('pricelist_item_count', '!=', 1)]}">
+                                        <span attrs="{'invisible': [('pricelist_item_count', '!=', 1)],'readonly':[('state','!=','draft')]}">
                                           Extra Price
                                         </span>
                                       </button>
                                     </div>
-                                    <label for="standard_price" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}"/>
-                                    <div name="standard_price_uom" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" class="o_row">
-                                        <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id', 'field_digits': True}"/>
+                                    <label for="standard_price" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly':[('state','!=','draft')]}"/>
+                                    <div name="standard_price_uom" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly':[('state','!=','draft')]}" class="o_row">
+                                        <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id', 'field_digits': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
                                         <span groups="uom.group_uom" class="oe_read_only">per
-                                            <field name="uom_name"/>
+                                            <field name="uom_name" options="{'no_open':True}" attrs="{'readonly':[('state','!=','draft')]}"/>
                                         </span>
                                     </div>
-                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-                                    <field name="uom_id" groups="uom.group_uom" options="{'no_create': True}"/>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                    <field name="uom_id" groups="uom.group_uom" options="{'no_create': True,'no_open':True}" attrs="{'readonly':[('state','!=','draft')]}"/>
                                     <field name="currency_id" invisible="1"/>
                                     <field name="cost_currency_id" invisible="1"/>
                                     <field name="product_variant_id" invisible="1"/>
                                 </group>
                             </group>
                             <group string="Internal Notes">
-                                <field name="description" nolabel="1" placeholder="This note is only for internal purposes."/>
+                                <field name="description" nolabel="1" placeholder="This note is only for internal purposes." attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </group>
+                            <group string="Rejection Reason" attrs="{'invisible':[('state','!=','reject')]}">
+                                <field name="rejection_reason" nolabel="1" readonly="1"/>
                             </group>
                         </page>
                         <page string="Sales">
                             <group string="Sales Description" name="description">
-                                <field name="description_sale" nolabel="1" placeholder="This note is added to sales orders and invoices."/>
+                                <field name="description_sale" nolabel="1" placeholder="This note is added to sales orders and invoices." attrs="{'readonly':[('state','!=','draft')]}"/>
                             </group>
                         </page>
                     </notebook>
@@ -115,7 +146,7 @@
                 <field name="seller_id" domain="[('seller','=',True),('parent_id','=',False)]" />
             </xpath>
             <xpath expr="//form/header" position="inside">
-                <button name="button_approve" string="Approve" states="draft" type="object" class="btn-primary" groups="seller_management.group_product_approval"/>
+                <button name="button_approve" string="Approve" states="draft,to_approve" type="object" class="btn-primary" groups="seller_management.group_product_approval"/>
                 <button name="button_reject" string="Reject" states="draft,approve" type="object" class="btn-primary" groups="seller_management.group_product_approval"/>
                 <button name="button_draft" string="Set Draft" states="reject" type="object"  groups="seller_management.group_product_approval"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,approve,reject"/>
@@ -188,9 +219,7 @@
         <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">
-        if records:
-            for rec in records:
-                rec.button_reject()
+        action = model.button_reject()
         </field>
     </record>
 
