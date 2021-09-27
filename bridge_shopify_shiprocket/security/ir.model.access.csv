@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_message_box_seller,message.box.seller,delivery_shiprocket.model_message_box,seller_management.group_sellers_management_user,1,1,1,0
+access_order_cancel_reason_seller,order.cancel.reason.seller,delivery_shiprocket.model_order_cancel_reason,seller_management.group_sellers_management_user,1,1,1,0

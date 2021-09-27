@@ -27,11 +27,11 @@
         <field name="name">res.partner.view.form</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <form string="Sellers">
+            <form string="Sellers" duplicate="0">
                 <div class="alert alert-warning oe_edit_only" role="alert" attrs="{'invisible': [('same_vat_partner_id', '=', False)]}">
                     A Seller with the same
                     <span>
-                        <span class="o_vat_label">Tax ID</span>
+                        <span class="o_vat_label">GSTIN</span>
                     </span>
                     already exists (
                     <field name="same_vat_partner_id" />
@@ -55,7 +55,7 @@
                         </button>
                     </div>
                     <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}" />
-                    <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;image_128&quot;}" required="1" />
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <field name="is_company" invisible="1" />
                         <field name="commercial_partner_id" invisible="1" />
@@ -77,8 +77,8 @@
                             <field name="fulfilment_type" attrs="{'required':[('seller','=',True)]}" />
                         </group>
                         <group>
-                            <field name="seller_sale_sequence_id" groups="base.group_system" attrs="{'required':[('seller','=',True)]}"/>
-                            <field name="seller_invoice_sequence_id" groups="base.group_system" attrs="{'required':[('seller','=',True)]}" />
+                            <field name="seller_sale_sequence_id" groups="seller_management.group_sellers_management_manager" attrs="{'required':[('seller','=',True)]}"/>
+                            <field name="seller_invoice_sequence_id" groups="seller_management.group_sellers_management_manager" attrs="{'required':[('seller','=',True)]}" />
                             <field name="user_id" invisible="True"/>
                         </group>
                         <group>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_seller_stock_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="seller_management.view_seller_stock_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='send_to_shipper']" position="after">
+                <button string="Create Invoice" icon="fa-cogs" class="btn btn-info" name="generate_invoice" type="object" attrs="{'invisible':['|',('invoice_count','!=',0),('state','!=','done')]}"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_seller_invoice" type="object"
+                    class="oe_stat_button" icon="fa-file-text"
+                    attrs="{'invisible': [('invoice_count','=', 0)]}">
+                    <field name="invoice_count" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="view_pickup_location_form_seller_inherit" model="ir.ui.view">
+        <field name="name">shiprocket.pickup.location.view.form.inherit</field>
+        <field name="model">shiprocket.pickup.location</field>
+        <field name="inherit_id" ref="delivery_shiprocket.view_shiprocket_pickup_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="seller_id" options="{'no_create': True,'no_open':True}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pickup_location_tree_seller_inherit" model="ir.ui.view">
+        <field name="name">shiprocket.pickup.location.view.tree.inherit</field>
+        <field name="model">shiprocket.pickup.location</field>
+        <field name="inherit_id" ref="delivery_shiprocket.view_shiprocket_pickup_location_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="seller_id" options="{'no_create': True,'no_open':True}" />
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_seller_shiprocket_pickup_location_form" model="ir.ui.view">
+      <field name="name">view.seller.shiprocket.pickup.location.form</field>
+      <field name="model">shiprocket.pickup.location</field>
+      <field name="arch" type="xml">
+         <form string="Shiprocket Pickup Locations" create="0" delete="0" duplicate="0">
+            <sheet>
+               <group name="bank_details" col="4">
+                  <field name="pickup_location"  />
+                  <field name="pickup_location_id" />
+               </group>
+               <group>
+                  <group string="Shipper Details">
+                     <field name="name" />
+                     <field name="seller_id" options="{'no_create': True,'no_open':True}" />
+                     <field name="email" widget="email" />
+                     <field name="phone" widget="phone" />
+                  </group>
+                  <group string="Location Details" name="location_address_details">
+                     <label for="address" string="Pickup Address" />
+                     <div class="o_address_format">
+                        <field name="address" placeholder="Street..." class="o_address_street" />
+                        <field name="address2" placeholder="Street 2..." class="o_address_street" />
+                        <field name="city" placeholder="City" class="o_address_city" />
+                        <field name="state_id" class="o_address_state" placeholder="State" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                        <field name="pin_code" placeholder="ZIP" class="o_address_zip" />
+                        <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                     </div>
+                  </group>
+               </group>
+            </sheet>
+         </form>
+      </field>
+   </record>
+   <!-- Shiprocket pickup location Tree View -->
+   <record id="view_seller_shiprocket_pickup_location_tree" model="ir.ui.view">
+      <field name="name">view.seller.shiprocket.pickup.location.tree</field>
+      <field name="model">shiprocket.pickup.location</field>
+      <field name="arch" type="xml">
+         <tree string="Shiprocket Pickup location" create="0" delete="0">
+            <field name="seller_id" />
+            <field name="pickup_location" />
+            <field name="name" />
+            <field name="email" />
+            <field name="phone" />
+            <field name="city" />
+            <field name="state_id" />
+            <field name="pin_code" />
+            <field name="country_id" />
+         </tree>
+      </field>
+   </record>
+   <!-- Action For Shiprocket pickup.location -->
+   <record id="action_seller_shiprocket_pickup_location" model="ir.actions.act_window">
+      <field name="name">Shiprocket Pickup Location</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">shiprocket.pickup.location</field>
+      <field name="view_mode">tree,form</field>
+   </record>
+
+   <menuitem
+        id="menu_seller_shiprocket_pickup_location"
+        name="Shiprocket Pickup Location"
+        action="action_seller_shiprocket_pickup_location"
+        parent="seller_management.menu_seller_config"
+        groups="seller_management.group_sellers_management_user"
+        sequence="40"/>
+</odoo>

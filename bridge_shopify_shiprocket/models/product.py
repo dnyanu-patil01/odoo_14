@@ -42,3 +42,12 @@ class StockPicking(models.Model):
                 return self._set_delivery_packaging()
         else:
             return self._set_delivery_packaging()
+
+class ProductTemplate(models.Model):
+    _inherit = "product.template"
+
+    def button_approve(self):
+        self.write({'state': 'approve'})
+        action = self.env["ir.actions.actions"]._for_xml_id("shopify_ept.action_shopify_export_odoo_products_ept")
+        action['context'] = dict(self.env.context)
+        return action

@@ -22,7 +22,11 @@ class ResPartner(models.Model):
     seller_invoice_count = fields.Integer(compute='_compute_seller_invoice_count', string='Seller Invoice Count')
     seller_product_count = fields.Integer(compute='_compute_seller_product_count', string='Seller Product Count')
     seller_signature_image = fields.Binary(string='Seller Signature')
-
+    
+    _sql_constraints = [
+        ("seller_code_uniq", "unique(seller_code)", "Seller Code Must Be Unique")
+    ]
+    
     def _compute_seller_sale_order_count(self):
         # retrieve all children all_sellers and prefetch 'parent_id' on them
         all_sellers = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])

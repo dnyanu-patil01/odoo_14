@@ -25,6 +25,7 @@
         'report/sale_report_view.xml',
         'report/sale_report.xml',
         'report/invoice_report.xml',
+        'wizard/get_cancel_reason_view.xml',
     ],
     'demo': [
         ''

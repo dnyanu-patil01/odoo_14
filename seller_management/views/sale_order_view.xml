@@ -30,15 +30,16 @@
             <field name="arch" type="xml">
                 <form string="Sales Order" class="o_sale_order" js_class="sale_discount_form"  create="0" edit="0" delete="0">
                     <header>
+                        <button type="object" string="Print" name="print_sale_order" icon="fa-download" class="btn btn-info"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <field name="picking_ids" invisible="1"/>
-                            <button type="object" name="action_view_delivery" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('delivery_count', '=', 0)]}" groups="base.group_user">
+                            <button type="object" name="action_view_seller_delivery" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('delivery_count', '=', 0)]}" groups="base.group_user">
                                 <field name="delivery_count" widget="statinfo" string="Delivery"/>
                             </button>
-                            <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                            <button name="action_view_seller_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('invoice_count', '=', 0)]}">
                                 <field name="invoice_count" widget="statinfo" string="Invoices"/>
                             </button>
                         </div>

@@ -61,9 +61,9 @@
             <field name="sequence" widget="handle"/>
             <field name="package_carrier_type"/>
             <field name="name"/>
-            <field name="height"/>
-            <field name="width"/>
             <field name="packaging_length"/>
+            <field name="width"/>
+            <field name="height"/>           
             <field name="max_weight"/>
             <field name="shipper_package_code"/>
             <field name="barcode" invisible="1"/>

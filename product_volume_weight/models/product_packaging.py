@@ -6,9 +6,9 @@ class ProductPackaging(models.Model):
     _inherit = "product.packaging"
     
     #Redefined fields to change Int to Float
-    height = fields.Float('Height')
-    width = fields.Float('Breadth')
-    packaging_length = fields.Float('Length')
+    height = fields.Float('Height',required=True)
+    width = fields.Float('Breadth',required=True)
+    packaging_length = fields.Float('Length',required=True)
     volumetric_weight = fields.Float(
         "Volumetric Weight",
         digits=(8, 3),
@@ -36,6 +36,16 @@ class ProductPackaging(models.Model):
         if packaging_length and height and width:
             volume = (packaging_length * height * width)/5000
         return volume
+    
+    def name_get(self):
+        result = []
+        for pack in self:
+            if pack.packaging_length and pack.height and pack.width:
+                name = pack.name+'-'+str(pack.packaging_length) + ' * ' + str(pack.width)+' * '+ str(pack.height)
+            else:
+                name = pack.name
+            result.append((pack.id, name))
+        return result
 
 class ChooseDeliveryPackage(models.TransientModel):
     _inherit = 'choose.delivery.package'

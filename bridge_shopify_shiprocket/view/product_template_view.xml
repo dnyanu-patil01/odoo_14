@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view"
+        id="view_seller_product_template_form_image_ept">
+        <field name="name">seller.product.template.image.ept</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id"
+            ref="seller_management.view_seller_product_template_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position='inside'>
+                <page string="Images">
+                    <group string="Images Info" colspan="4">
+                        <field name="ept_image_ids" attrs="{'readonly':[('state','!=','draft')]}"
+                            context="{'default_name': name,'default_template_id':id}"
+                            mode="kanban" options="{'create_text':'Add a Media'}" nolabel="1">
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="seller_management.action_approve_products" model="ir.actions.server">
+        <field name="code">
+        action = model.button_approve()
+        </field>
+    </record>
+</odoo>

@@ -24,6 +24,59 @@ class SaleOrder(models.Model):
             invoice_val.update({'name':self.seller_id.seller_invoice_sequence_id._next()})
         return invoice_val
 
+    def action_view_seller_delivery(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("seller_management.seller_stock_transfer_action")
+        pickings = self.mapped('picking_ids')
+        if len(pickings) > 1:
+            action['domain'] = [('id', 'in', pickings.ids)]
+        elif pickings:
+            form_view = [(self.env.ref('seller_management.view_seller_stock_picking_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = pickings.id
+        # Prepare the context.
+        picking_id = pickings.filtered(lambda l: l.picking_type_id.code == 'outgoing')
+        if picking_id:
+            picking_id = picking_id[0]
+        else:
+            picking_id = pickings[0]
+        action['context'] = dict(self._context, default_seller_id=self.seller_id.id, default_picking_type_id=picking_id.picking_type_id.id, default_origin=self.name, default_group_id=picking_id.group_id.id)
+        return action
+    
+    def action_view_seller_invoice(self):
+        invoices = self.mapped('invoice_ids')
+        action = self.env["ir.actions.actions"]._for_xml_id("seller_management.action_sellers_invoices")
+        if len(invoices) > 1:
+            action['domain'] = [('id', 'in', invoices.ids)]
+        elif len(invoices) == 1:
+            form_view = [(self.env.ref('seller_management.view_seller_invoice_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+            action['res_id'] = invoices.id
+        else:
+            action = {'type': 'ir.actions.act_window_close'}
+
+        context = {
+            'default_move_type': 'out_invoice',
+        }
+        if len(self) == 1:
+            context.update({
+                'default_seller_id': self.seller_id.id,
+                'default_partner_shipping_id': self.partner_shipping_id.id,
+                'default_invoice_payment_term_id': self.payment_term_id.id or self.partner_id.property_payment_term_id.id or self.env['account.move'].default_get(['invoice_payment_term_id']).get('invoice_payment_term_id'),
+                'default_invoice_origin': self.name,
+            })
+        action['context'] = context
+        return action
+
+    def print_sale_order(self):
+        return self.env.ref('sale.action_report_saleorder').report_action(self)
+
+
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 

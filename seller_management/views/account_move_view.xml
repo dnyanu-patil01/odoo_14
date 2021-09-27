@@ -37,6 +37,7 @@
         <field name="arch" type="xml">
             <form string="Sellers Invoice"  create="0" edit="0" delete="0">
                     <header>
+                        <button type="object" string="Print" name="print_invoice" icon="fa-download" class="btn btn-info"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
                     </header>
                     <sheet>
