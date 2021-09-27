@@ -27,7 +27,7 @@
         <field name="name">res.partner.view.form</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <form string="Sellers">
+            <form string="Sellers" duplicate="0">
                 <div class="alert alert-warning oe_edit_only" role="alert" attrs="{'invisible': [('same_vat_partner_id', '=', False)]}">
                     A Seller with the same
                     <span>

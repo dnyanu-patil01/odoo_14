@@ -11,9 +11,6 @@
                 <field name="merge_delivery_count"  string="Group DO" widget="statinfo" />
                 </button>
             </xpath>
-            <xpath expr="//button[@name='action_view_seller_delivery']" position="attributes">
-                <attribute name="attrs">{'invisible': ['|',('merge_delivery_count','>',1),('delivery_count','=',0)]}</attribute>
-            </xpath> 
         </field>
     </record>
 
@@ -27,9 +24,6 @@
                 <field name="merge_delivery_count" widget="statinfo" string="Group DO" />
                 </button>
             </xpath>
-            <xpath expr="//button[@name='action_view_delivery']" position="attributes">
-                <attribute name="attrs">{'invisible': ['|',('merge_delivery_count','>',1),('delivery_count','=',0)]}</attribute>
-            </xpath> 
         </field>
     </record>
 

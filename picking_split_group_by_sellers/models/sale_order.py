@@ -3,7 +3,7 @@ from odoo import api, fields, models, _
 from datetime import datetime, date, timedelta
 from odoo.exceptions import Warning
 from itertools import groupby
-from operator import itemgetter
+from operator import itemgetter, mod
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -144,7 +144,7 @@ class StockMove(models.Model):
                 picking = picking[0]
         return picking
 
-class StockPicking(models.Model):
+class ProcurementGroup(models.Model):
     _inherit = 'procurement.group'
 
     seller_group_id = fields.Many2one("seller.group")
@@ -155,6 +155,7 @@ class StockPicking(models.Model):
 
     seller_group_id = fields.Many2one("seller.group")
     sale_order_ids = fields.One2many("sale.order",'picking_id')
+    group_seller_ids = fields.Many2many("res.partner")
     merge_so_count = fields.Integer(string='Orders', compute='_compute_merged_so_ids')
 
     @api.depends('sale_order_ids')
@@ -179,3 +180,8 @@ class StockRule(models.Model):
         fields = super(StockRule, self)._get_custom_move_fields()
         fields += ['seller_group_id']
         return fields
+
+class AccountMove(models.Model):
+    _inherit = 'account.move'
+
+    picking_id = fields.Many2one('stock.picking','Delivery Order',readonly=True)
