@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<kanban class="oe_background_grey o_kanban_dashboard o_emphasize_colors o_stock_kanban" create="0" disable_draggable="true">
+                    <field name="color"/>
+                    <field name="name"/>
+                    <field name="state"/>
+                    <field name="count_product_rejected"/>
+                    <field name="count_product_pending"/>
+                    <field name="count_product_new"/>
+                    <field name="count_product_approved"/>
+                    <field name="is_seller"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(record.color.raw_value)}" name="mp_dashboard" attrs="{'invisible':[('is_seller','=',True),('state','=','seller')]}">
+                                <div>
+                                    <div t-attf-class="o_kanban_card_header">
+                                        <div class="o_kanban_card_header_title">
+                                            <div class="o_primary">
+                                                <!-- <a type="object" name="get_stock_picking_action_picking_type"> -->
+                                                    <field name="name"/>
+                                                <!-- </a> -->
+                                            </div>
+                                            <div class="o_secondary">
+                                                <!-- <field class="o_secondary"  name="company_id"/> -->
+                                            </div>
+                                        </div>
+                                        <!-- <div class="o_kanban_manage_button_section">
+                                            <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" /></a>
+                                        </div> -->
+                                        <div class="o_kanban_manage_button_section">
+                                            <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                                        </div>
+                                    </div>
+                                    <div class="container o_kanban_card_content">
+                                        <div class="row">
+                                            <div class="col-6 o_kanban_primary_left">
+                                                <div t-if="record.state.raw_value =='product'" style="color:rgb(162, 70, 137)">
+                                                    <center><i title="Products" class="fa fa-tags fa-5x"/>
+                                                    <h3>Products</h3></center>
+                                                </div>
+                                                <div t-if="record.state.raw_value =='seller'" style="color:rgb(162, 70, 137)">
+                                                    <center><i title="Sellers" class="fa fa-users fa-5x"/>
+                                                    <h3>Sellers</h3></center>
+                                                </div><div t-if="record.state.raw_value =='order'" style="color:rgb(162, 70, 137)">
+                                                    <center><i title="Orders" class="fa fa-shopping-cart fa-5x"/>
+                                                    <h3>Orders</h3></center>
+                                                </div>
+                                                <div t-if="record.state.raw_value =='payment'" style="color:rgb(162, 70, 137)">
+                                                    <center><i class="fa fa-money fa-5x" title="Payments"/>
+                                                    <h3>Payments</h3></center>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 o_kanban_primary_right">
+                                                <div t-if="record.state.raw_value =='product'">
+                                                    <a class="bg-primary wk_kanban_button_box text-white" name="501" type="action">
+                                                        <span class="o_value"><t t-esc="record.count_product_pending.raw_value"/></span>
+                                                        <span class="o_label">Pending</span>
+                                                    </a>
+                                                    <a class="wk_kanban_button_box text-white" name="500" type="action" style="background-color:#5cb85c">
+                                                        <span class="o_value"><t t-esc="record.count_product_approved.raw_value"/></span>
+                                                        <span class="o_label">Approved</span>
+                                                    </a>
+                                                <a class="wk_kanban_button_box text-white" name="499" type="action" style="background-color:#d9534f">
+                                                        <span class="o_value"><t t-esc="record.count_product_rejected.raw_value"/></span>
+                                                        <span class="o_label">Rejected</span>
+                                                    </a>
+                                                </div>
+
+                                                <div t-if="record.state.raw_value =='seller'">
+                                                    <a class="bg-primary wk_kanban_button_box text-white" name="505" type="action">
+                                                        <span class="o_value"><t t-esc="record.count_product_pending.raw_value"/></span>
+                                                        <span class="o_label">Pending</span>
+                                                    </a>
+                                                    <a class="wk_kanban_button_box text-white" name="502" type="action" style="background-color:#5cb85c">
+                                                        <span class="o_value"><t t-esc="record.count_product_approved.raw_value"/></span>
+                                                        <span class="o_label">Approved</span>
+                                                    </a>
+                                                    <a class="wk_kanban_button_box text-white" name="503" type="action" style="background-color:#d9534f">
+                                                        <span class="o_value"><t t-esc="record.count_product_rejected.raw_value"/></span>
+                                                        <span class="o_label">Rejected</span>
+                                                    </a>
+                                                </div>
+
+												<div t-if="record.state.raw_value =='order'">
+                                                    <a class="bg-info wk_kanban_button_box text-white" name="506" type="action">
+                                                        <span class="o_value"><t t-esc="record.count_product_new.raw_value"/></span>
+                                                        <span class="o_label">New</span>
+                                                    </a>
+                                                    <a class="bg-primary wk_kanban_button_box text-white" name="507" type="action">
+                                                        <span class="o_value"><t t-esc="record.count_product_pending.raw_value"/></span>
+                                                        <span class="o_label">Pending</span>
+                                                    </a>
+                                                    <a class="wk_kanban_button_box text-white" name="508" type="action" style="background-color:#5cb85c">
+                                                        <span class="o_value"><t t-esc="record.count_product_approved.raw_value"/></span>
+                                                        <span class="o_label">Approved</span>
+                                                    </a>
+												    <a class="wk_kanban_button_box text-white" name="509" type="action" style="background-color:#f0ad4e">
+                                                        <span class="o_value"><t t-esc="record.count_product_rejected.raw_value"/></span>
+                                                        <span class="o_label">Shipped</span>
+                                                    </a>
+                                                </div>
+
+                                                <div t-if="record.state.raw_value =='payment'">
+                                                    <a class="bg-primary wk_kanban_button_box text-white" name="511" type="action">
+                                                        <span class="o_value"><t t-esc="record.count_product_pending.raw_value"/></span>
+                                                        <span class="o_label">Requested</span>
+                                                    </a>
+                                                    <a class="wk_kanban_button_box text-white" name="514" type="action" style="background-color:#f0ad4e">
+                                                        <span class="o_value"><t t-esc="record.count_product_rejected.raw_value"/></span>
+                                                        <span class="o_label">To Be Approved</span>
+                                                    </a>
+                                                    <a class="wk_kanban_button_box text-white" name="512" type="action" style="background-color:#5cb85c">
+                                                        <span class="o_value"><t t-esc="record.count_product_approved.raw_value"/></span>
+                                                        <span class="o_label">Approved</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                                <div t-if="record.state.raw_value =='product'" class="row">
+                                                    <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view">
+                                                        <div class="o_kanban_card_manage_title">
+                                                            <span style="color:#a24689">View</span>
+                                                        </div>
+                                                        <div>
+                                                            <a name="498" type="action">All</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="500" type="action">Approved</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="499" type="action"> Rejected</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="501" type="action">Pending</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="518" type="action">Draft</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_new">
+                                                        <div class="o_kanban_card_manage_title">
+                                                            <span style="color:#a24689">New</span>
+                                                        </div>
+                                                        <div>
+                                                            <a name="487" type="action">Create Product</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div t-if="record.state.raw_value =='order'" class="row">
+                                                    <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view">
+                                                        <div class="o_kanban_card_manage_title">
+                                                            <span style="color:#a24689">View</span>
+                                                        </div>
+                                                        <div>
+                                                            <a name="504" type="action">All</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="506" type="action">New Order</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="507" type="action">Pending Order</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="508" type="action">Approved Order</a>
+                                                        </div>
+														<div>
+                                                            <a name="509" type="action">Shipped Order</a>
+                                                        </div>
+														<div>
+                                                            <a name="510" type="action">Cancelled Order</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_new">
+                                                    </div>
+                                                </div>
+                                                <div t-if="record.state.raw_value =='payment'" class="row">
+                                                    <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_view">
+                                                        <div class="o_kanban_card_manage_title">
+                                                            <span style="color:#a24689">View</span>
+                                                        </div>
+                                                        <div>
+                                                            <a name="476" type="action">All</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="511" type="action">Requested</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="514" type="action">Confirm</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="512" type="action">Approved</a>
+                                                        </div>
+                                                        <div>
+                                                            <a name="513" type="action"> Requested Payment</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 o_kanban_card_manage_section o_kanban_manage_new">
+                                                        <!-- <div class="o_kanban_card_manage_title">
+                                                            <span style="color:#a24689">New</span>
+                                                        </div>
+                                                        <div>
+                                                            <a name="487" type="action">Create Product</a>
+                                                        </div> -->
+                                                    </div>
+                                                </div>
+                                                <div class="o_kanban_card_manage_settings row">
+                                                    <div class="col-8" role="menuitem" aria-haspopup="true">
+                                                        <ul class="oe_kanban_colorpicker" data-field="color" role="menu"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Inherit search view-->
+        <record id="seller_view_order_product_search" model="ir.ui.view">
+            <field name="name">seller.sale.report.search</field>
+            <field name="model">sale.report</field>
+            <field name="inherit_id" ref="sale.view_order_product_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter name="seller_id" string="Sellers"
+                            domain="[('seller_id','!=',False)]"/>
+                    <field name="seller_id" invisible='1'/>
+                    <filter string="Sellers" name="groupby_seller_id"
+                            context="{'group_by':'seller_id'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

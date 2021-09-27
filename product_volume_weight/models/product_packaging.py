@@ -40,7 +40,8 @@ class ProductPackaging(models.Model):
 class ChooseDeliveryPackage(models.TransientModel):
     _inherit = 'choose.delivery.package'
     
-    shipping_weight = fields.Float('Shipping Weight',related="delivery_packaging_id.volumetric_weight",readonly=False)
+    shipping_weight = fields.Float('Volumetric Weight',related="delivery_packaging_id.volumetric_weight",readonly=False)
+    shipping_actual_weight = fields.Float('Actual Weight')
 
     def action_put_in_pack(self):
         picking_move_lines = self.picking_id.move_line_ids
@@ -60,17 +61,21 @@ class ChooseDeliveryPackage(models.TransientModel):
         # write shipping weight and product_packaging on 'stock_quant_package' if needed
         if self.delivery_packaging_id:
             delivery_package.packaging_id = self.delivery_packaging_id
-        
-        shipping_weight = 0
-        for move in move_line_ids:
-            if move.product_id.weight > move.product_id.volumetric_weight:
-                shipping_weight+=move.product_id.weight * move.qty_done
-            else:
-                shipping_weight += move.product_id.volumetric_weight * move.qty_done
-        if self.shipping_weight:
-            delivery_package.shipping_weight = self.shipping_weight + shipping_weight
+        # shipping_weight = 0
+        # for move in move_line_ids:
+        #     if move.product_id.weight > move.product_id.volumetric_weight:
+        #         shipping_weight+=move.product_id.weight * move.qty_done
+        #     else:
+        #         shipping_weight += move.product_id.volumetric_weight * move.qty_done
+        # if self.shipping_weight:
+        #     delivery_package.shipping_weight = self.shipping_weight + shipping_weight
+        # else:
+        #     delivery_package.shipping_weight = shipping_weight
+        if self.shipping_weight > self.shipping_actual_weight:
+            delivery_package.shipping_weight = self.shipping_weight
         else:
-            delivery_package.shipping_weight = shipping_weight
+            delivery_package.shipping_weight = self.shipping_actual_weight
+
 
 
 class StockPicking(models.Model):
@@ -79,3 +84,4 @@ class StockPicking(models.Model):
     #redefined to have digits
     shipping_weight = fields.Float("Weight for Shipping",digits=(8, 3), compute='_compute_shipping_weight',
             help="Total weight of packages and products not in a package. Packages with no shipping weight specified will default to their products' total weight. This is the weight used to compute the cost of the shipping.")
+    shipping_actual_weight = fields.Float('Shipping Actual Weight',readonly=True)

@@ -16,7 +16,8 @@ from ..shopify.pyactiveresource.connection import ClientError
 utc = pytz.utc
 
 _logger = logging.getLogger("Shopify")
-
+from itertools import groupby
+import operator
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -75,7 +76,7 @@ class SaleOrder(models.Model):
     is_service_tracking_updated = fields.Boolean("Service Tracking Updated", default=False, copy=False)
 
     _sql_constraints = [('unique_shopify_order',
-                         'unique(shopify_instance_id,shopify_order_id,shopify_order_number)',
+                         'unique(shopify_instance_id,shopify_order_id,shopify_order_number,id)',
                          "Shopify order must be Unique.")]
 
     def create_shopify_log_line(self, message, queue_line, log_book, order_name):
@@ -199,14 +200,17 @@ class SaleOrder(models.Model):
         @author: Maulik Barad on Date 11-Sep-2020.
         """
         delivery_carrier_obj = self.env["delivery.carrier"]
-        for line in order_response.get("shipping_lines", []):
-            carrier = delivery_carrier_obj.shopify_search_create_delivery_carrier(line, instance)
+        if self.seller_id and self.seller_id.fulfilment_type == 'shiprocket':
+        # By Leela:To Remove Shipping Products
+        # for line in order_response.get("shipping_lines", []):
+            # carrier = delivery_carrier_obj.shopify_search_create_delivery_carrier(line, instance)
+            carrier = delivery_carrier_obj.search([('delivery_type','=','shiprocket')])
             if carrier:
                 self.write({"carrier_id": carrier.id})
-                shipping_product = carrier.product_id
-                self.shopify_create_sale_order_line(line, shipping_product, 1,
-                                                    shipping_product.name or line.get("title"),
-                                                    line.get("price"), order_response, is_shipping=True)
+                # shipping_product = carrier.product_id
+                # self.shopify_create_sale_order_line(line, shipping_product, 1,
+                #                                     shipping_product.name or line.get("title"),
+                #                                     line.get("price"), order_response, is_shipping=True)
         return
 
     def import_shopify_orders(self, order_data_lines, log_book, is_queue_line=True):
@@ -244,10 +248,10 @@ class SaleOrder(models.Model):
                          % (order_number, order_response.get("id")))
             sale_order = self.search([("shopify_order_id", "=", order_response.get("id")),
                                       ("shopify_instance_id", "=", instance.id),
-                                      ("shopify_order_number", "=", order_number)])
+                                      ("shopify_order_number", "=", order_number)],limit=1)
             if not sale_order:
                 sale_order = self.search([("shopify_instance_id", "=", instance.id),
-                                          ("client_order_ref", "=", order_response.get("name"))])
+                                          ("client_order_ref", "=", order_response.get("name"))],limit=1)
 
             if sale_order:
                 if order_data_line:
@@ -271,56 +275,86 @@ class SaleOrder(models.Model):
                 if order_data_line:
                     order_data_line.write({"state": "failed", "processed_at": datetime.now()})
                 continue
+            #By Leela:Added To Create Multiple Sale Orders Based On Sellers
+            seller_lines = self.update_seller_info_in_order_lines(lines, order_response, instance)
+            sorted_lines = sorted(seller_lines, key=operator.itemgetter("seller_id"))
+            for seller, seller_value in groupby(sorted_lines, key=operator.itemgetter("seller_id")):
+                #By Leela:pushed remaining function from shopify inside the loop
+                lines = list(seller_value)
+                sale_order = self.shopify_create_order(instance, partner, delivery_address, invoice_address,
+                                                    order_data_line, order_response, log_book,seller)
+                if not sale_order:
+                    message = "Configuration missing in Odoo while importing Shopify Order(%s) and id (%s)" % (
+                        order_number, order_response.get("id"))
+                    _logger.info(message)
+                    self.create_shopify_log_line(message, order_data_line, log_book, order_response.get("name"))
+                    continue
+                location_vals = self.set_shopify_location_and_warehouse(order_response, instance, pos_order)
+                sale_order.write(location_vals)
+                risk_result = shopify.OrderRisk().find(order_id=order_response.get("id"))
+                order_ids.append(sale_order.id)
+                if risk_result:
+                    order_risk_obj.shopify_create_risk_in_order(risk_result, sale_order)
+                    risk = sale_order.risk_ids.filtered(lambda x: x.recommendation != "accept")
+                    if risk:
+                        sale_order.is_risky_order = True
 
-            sale_order = self.shopify_create_order(instance, partner, delivery_address, invoice_address,
-                                                   order_data_line, order_response, log_book)
-            if not sale_order:
-                message = "Configuration missing in Odoo while importing Shopify Order(%s) and id (%s)" % (
-                    order_number, order_response.get("id"))
-                _logger.info(message)
-                self.create_shopify_log_line(message, order_data_line, log_book, order_response.get("name"))
-                continue
-            order_ids.append(sale_order.id)
+                _logger.info("Creating order lines for Odoo order(%s) and Shopify order is (%s)." % (
+                    sale_order.name, order_number))
+                sale_order.create_shopify_order_lines(lines, order_response, instance)
 
-            location_vals = self.set_shopify_location_and_warehouse(order_response, instance, pos_order)
-            sale_order.write(location_vals)
+                _logger.info("Created order lines for Odoo order(%s) and Shopify order is (%s)"
+                            % (sale_order.name, order_number))
 
-            risk_result = shopify.OrderRisk().find(order_id=order_response.get("id"))
-            if risk_result:
-                order_risk_obj.shopify_create_risk_in_order(risk_result, sale_order)
-                risk = sale_order.risk_ids.filtered(lambda x: x.recommendation != "accept")
-                if risk:
-                    sale_order.is_risky_order = True
+                sale_order.create_shopify_shipping_lines(order_response, instance)
+                _logger.info("Created Shipping lines for order (%s)." % sale_order.name)
 
-            _logger.info("Creating order lines for Odoo order(%s) and Shopify order is (%s)." % (
-                sale_order.name, order_number))
-            sale_order.create_shopify_order_lines(lines, order_response, instance)
+                _logger.info("Starting auto workflow process for Odoo order(%s) and Shopify order is (%s)"
+                            % (sale_order.name, order_number))
+                            
+                # By Leela : Commented The Below Lines Of Code To Group Delivery Order Based Seller Group
+                # if not order.is_risky_order:
+                #     if order.shopify_order_status == "fulfilled":
+                #         order.auto_workflow_process_id.shipped_order_workflow_ept(order)
+                #     else:
+                #         order.process_orders_and_invoices_ept()
+            self.merge_quotations(order_ids)
+            for order in self.env['sale.order'].browse(order_ids):
+                if not order.is_risky_order:
+                    if order.shopify_order_status == "fulfilled":
+                        #To Automate the invoice process after grouped DO process Copied from common_connector_libary sale_order.py
+                        if order.order_line.filtered(lambda l: l.product_id.invoice_policy == 'order'):
+                            order.validate_and_paid_invoices_ept(self)
+                        delivered_lines = order.order_line.filtered(lambda l: l.product_id.invoice_policy != 'order')
+                        if delivered_lines:
+                            order.validate_and_paid_invoices_ept(self)
+                    else:
+                        order.process_orders_and_invoices_ept()
+                _logger.info("Done auto workflow process for Odoo order(%s) and Shopify order is (%s)"
+                            % (order.name, order_number))
 
-            _logger.info("Created order lines for Odoo order(%s) and Shopify order is (%s)"
-                         % (sale_order.name, order_number))
-
-            sale_order.create_shopify_shipping_lines(order_response, instance)
-            _logger.info("Created Shipping lines for order (%s)." % sale_order.name)
-
-            _logger.info("Starting auto workflow process for Odoo order(%s) and Shopify order is (%s)"
-                         % (sale_order.name, order_number))
-
-            if not sale_order.is_risky_order:
-                if sale_order.shopify_order_status == "fulfilled":
-                    sale_order.auto_workflow_process_id.shipped_order_workflow_ept(sale_order)
-                else:
-                    sale_order.process_orders_and_invoices_ept()
-
-            _logger.info("Done auto workflow process for Odoo order(%s) and Shopify order is (%s)"
-                         % (sale_order.name, order_number))
-
-            if order_data_line:
-                order_data_line.write({"state": "done", "processed_at": datetime.now(),
-                                       "sale_order_id": sale_order.id})
-            _logger.info("Processed the Odoo Order %s process and Shopify Order (%s)"
-                         % (sale_order.name, order_number))
-
+                if order_data_line:
+                    order_data_line.write({"state": "done", "processed_at": datetime.now(),
+                                        "sale_order_id": order.id})
+                _logger.info("Processed the Odoo Order %s process and Shopify Order (%s)"
+                            % (order.name, order_number))
         return order_ids
+
+    #By Leela:Method To Get Unique Sellers List From Order Line Products And Also Passing Seller ID and Seller Group To Sale Order Lines
+    def update_seller_info_in_order_lines(self,lines, order_response, instance):
+        seller_ids = []
+        for line in lines:
+            shopify_product = self.search_shopify_product_for_order_line(line, instance)
+            if shopify_product:
+                product = shopify_product.product_id
+            if product and product.seller_id:
+                line.update({'seller_id':product.seller_id.id,'seller_group_id':product.seller_id.seller_group_id.id})
+                seller_ids.append(product.seller_id.seller_group_id.id)
+            else:
+                line.update({'seller_id':False,'seller_group_id':False})
+        if seller_ids:
+            return lines
+        return lines
 
     def check_mismatch_details(self, lines, instance, order_number, order_data_queue_line,
                                log_book_id):
@@ -379,7 +413,7 @@ class SaleOrder(models.Model):
         return mismatch
 
     def shopify_create_order(self, instance, partner, shipping_address, invoice_address,
-                             order_data_queue_line, order_response, log_book_id):
+                             order_data_queue_line, order_response, log_book_id,seller):
         """This method used to create a sale order.
             @param : self, instance, partner, shipping_address, invoice_address,order_data_queue_line, order_response
             @return: order
@@ -398,14 +432,14 @@ class SaleOrder(models.Model):
         order_vals = self.prepare_shopify_order_vals(instance, partner, shipping_address,
                                                      invoice_address, order_response,
                                                      payment_gateway,
-                                                     workflow)
+                                                     workflow,seller)
 
         order = self.create(order_vals)
         return order
 
     def prepare_shopify_order_vals(self, instance, partner, shipping_address,
                                    invoice_address, order_response, payment_gateway,
-                                   workflow):
+                                   workflow,seller):
         """
         This method used to Prepare a order vals.
         @param : self, instance, partner, shipping_address,invoice_address, order_response, payment_gateway,workflow
@@ -446,7 +480,21 @@ class SaleOrder(models.Model):
             "picking_policy": workflow.picking_policy or False,
             "auto_workflow_process_id": workflow and workflow.id
         })
-
+        #By Leela : To Have Seller Shopify Reference Format(HFN/1/1034)
+        if seller:
+            seller_obj = self.env['res.partner'].browse(int(seller))
+            seller_code  = seller_obj.seller_code if seller_obj.seller_code else "NoSellerCode"
+            ordervals.update({
+                'seller_group_id':seller_obj.seller_group_id.id,
+                'seller_id':seller_obj.id,
+                'seller_shopify_sequence':seller_code+'/'+str(instance.id)+'/'+str(order_response.get("order_number"))
+            })
+        else:
+            ordervals.update({
+                'seller_id':False,
+                'seller_shopify_sequence':False,
+                'seller_group_id':False,
+            })
         if not instance.is_use_default_sequence:
             if instance.shopify_order_prefix:
                 name = "%s_%s" % (instance.shopify_order_prefix, order_response.get("name"))
@@ -531,6 +579,8 @@ class SaleOrder(models.Model):
             "price_unit": price,
             "order_qty": quantity,
         }
+        if 'seller_id' in line and line['seller_id']:
+            line_vals.update({'seller_id':line.get('seller_id')})
         order_line_vals = sale_order_line_obj.create_sale_order_line_ept(line_vals)
         if instance.apply_tax_in_order == "create_shopify_tax":
             taxes_included = order_response.get("taxes_included") or False

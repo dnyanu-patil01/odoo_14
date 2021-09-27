@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_seller_product_template_tree" model="ir.ui.view">
+        <field name="name">product.template.view.tree</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <tree string="Seller Products" delete="0">
+                <field name="product_variant_count" invisible="1"/>
+                <field name="sale_ok" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="cost_currency_id" invisible="1"/>
+                <field name="sequence" widget="handle" readonly="1"/>
+                <field name="name" string="Product Name"/>
+                <field name="seller_id" />
+                <field name="default_code" optional="show"/>
+                <field name="barcode" optional="hide" attrs="{'readonly': [('product_variant_count', '&gt;', 1)]}"/>
+                <field name="company_id" options="{'no_create_edit': True}" groups="base.group_multi_company" optional="hide"/>
+                <field name="list_price" string="Sales Price" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show" decoration-muted="not sale_ok"/>
+                <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show" readonly="1"/>
+                <field name="categ_id" optional="hide"/>
+                <field name="type" optional="hide" readonly="1"/>
+                <field name="uom_id" readonly="1" optional="show" groups="uom.group_uom"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_seller_product_template_form" model="ir.ui.view">
+        <field name="name">product.template.view.form</field>
+        <field name="model">product.template</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <form string="Seller Products" delete="0">
+                <header>
+                    <button string="Update Quantity" type="object"
+                        name="action_update_quantity_on_hand"
+                        attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                </header>
+                <sheet>
+                    <field name="product_variant_count" invisible="1"/>
+                    <field name="is_product_variant" invisible="1"/>
+                    <field name="attribute_line_ids" invisible="1"/>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <field name="id" invisible="True"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name" string="Product Name"/>
+                        <h1><field name="name" placeholder="Product Name"/></h1>
+                        <!-- <div name="options" groups="base.group_user">
+                            <div>
+                                <field name="sale_ok"/>
+                                <label for="sale_ok"/>
+                            </div>
+                        </div> -->
+                    </div>
+                    <notebook>
+                        <page string="General Information" name="general_information">
+                            <group>
+                                <group name="group_general">
+                                    <field name="active" invisible="1"/>
+                                    <field name="seller_id" required="1" domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]" />
+                                    <field name="type"/>
+                                    <field name="categ_id" string="Product Category"/>
+                                </group>
+                                <group name="group_standard_price">
+                                    <label for="list_price"/>
+                                    <div name="pricing">
+                                      <field name="list_price" class="oe_inline" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                      <button name="open_pricelist_rules" icon="fa-arrow-right" type="object" groups="product.group_product_pricelist" class="oe_inline">
+                                        <field name="pricelist_item_count" attrs="{'invisible': [('pricelist_item_count', '=', 0)]}"/>
+                                        <span attrs="{'invisible': [('pricelist_item_count', '=', 1)]}">
+                                          Extra Prices
+                                        </span>
+                                        <span attrs="{'invisible': [('pricelist_item_count', '!=', 1)]}">
+                                          Extra Price
+                                        </span>
+                                      </button>
+                                    </div>
+                                    <label for="standard_price" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}"/>
+                                    <div name="standard_price_uom" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" class="o_row">
+                                        <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id', 'field_digits': True}"/>
+                                        <span groups="uom.group_uom" class="oe_read_only">per
+                                            <field name="uom_name"/>
+                                        </span>
+                                    </div>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                                    <field name="uom_id" groups="uom.group_uom" options="{'no_create': True}"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="cost_currency_id" invisible="1"/>
+                                    <field name="product_variant_id" invisible="1"/>
+                                </group>
+                            </group>
+                            <group string="Internal Notes">
+                                <field name="description" nolabel="1" placeholder="This note is only for internal purposes."/>
+                            </group>
+                        </page>
+                        <page string="Sales">
+                            <group string="Sales Description" name="description">
+                                <field name="description_sale" nolabel="1" placeholder="This note is added to sales orders and invoices."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_product_template_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.view.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="before">
+                <field name="seller_id" domain="[('seller','=',True),('parent_id','=',False)]" />
+            </xpath>
+            <xpath expr="//form/header" position="inside">
+                <button name="button_approve" string="Approve" states="draft" type="object" class="btn-primary" groups="seller_management.group_product_approval"/>
+                <button name="button_reject" string="Reject" states="draft,approve" type="object" class="btn-primary" groups="seller_management.group_product_approval"/>
+                <button name="button_draft" string="Set Draft" states="reject" type="object"  groups="seller_management.group_product_approval"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,approve,reject"/>
+            </xpath>
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <field name="message_ids"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_form_inherit" model="ir.ui.view">
+        <field name="name">product.product.view.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="before">
+                <field name="seller_id" readony="False" domain="[('seller','=',True),('parent_id','=',False)]" />
+                <field name="state" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_varients_form_inherit" model="ir.ui.view">
+        <field name="name">product.product.view.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="before">
+                <field name="seller_id" readony="False"  domain="[('seller','=',True),('parent_id','=',False)]" />
+                <field name="state" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="product_search_tree_view_inherit">
+        <field name="name">product.template.search.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <filter name="filter_to_sell" position="before">
+               <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+               <filter name="filter_approve" string="Approved" domain="[('state', '=', 'approve')]"/>
+               <filter name="filter_reject" string="Rejected" domain="[('state', '=', 'reject')]"/>
+               <filter string="Status" name="status" context="{'group_by':'state'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="action_approve_products" model="ir.actions.server">
+        <field name="name">Approve</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="groups_id" eval="[(4, ref('seller_management.group_product_approval'))]"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+        if records:
+            for rec in records:
+                rec.button_approve()
+        </field>
+    </record>
+
+    <record id="action_products_reject" model="ir.actions.server">
+        <field name="name">Reject</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="groups_id" eval="[(4, ref('seller_management.group_product_approval'))]"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+        if records:
+            for rec in records:
+                rec.button_reject()
+        </field>
+    </record>
+
+    <record id="action_product_set_to_draft" model="ir.actions.server">
+        <field name="name">Set To Draft</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="groups_id" eval="[(4, ref('seller_management.group_product_approval'))]"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+        if records:
+            for rec in records:
+                rec.button_draft()
+        </field>
+    </record>
+
+    <record id="seller_product_view_action" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('seller_id','!=',False),('active','=',True)]</field>
+        <field name="help" type="html">
+            <p>To Create New Seller Products</p>
+        </field>
+    </record>
+    <record id="seller_product_view_action_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">tree</field>
+        <field name="act_window_id" ref="seller_product_view_action"/>
+        <field name="view_id" ref="view_seller_product_template_tree"/>
+    </record>
+    <record id="seller_product_view_action_view_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="act_window_id" ref="seller_product_view_action"/>
+        <field name="view_id" ref="view_seller_product_template_form"/>
+    </record>
+    
+    <menuitem
+        id="menu_seller_product"
+        name="Products"
+        action="seller_product_view_action"
+        parent="seller_root_menu"
+        groups="seller_management.group_sellers_management_user"
+        sequence="30"/>
+    
+</odoo>
