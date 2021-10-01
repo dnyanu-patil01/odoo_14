@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <!-- This template is for a table at the top of purchase views that shows some KPIs. -->
+    <t t-name="stock_picking_dashboard.StockPickingDashboard">
+        <div class="o_sale_dashboard container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-sm">
+                        <!-- thead needed to avoid list view rendering error for some reason -->
+                        <thead>
+                            <tr>
+                                <!-- can't use th tag due to list rendering error when no values in list... -->
+                                <td class="o_text">
+                                    <div>Shiprocket Transfers</div>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Unfulfiled Orders"
+                                    name="stock_action_dashboard_unfulfiled">
+                                    <a href="#"><t t-esc="values['unfulfiled']"/><br/>Unfulfiled</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="New Orders"
+                                    name="stock_action_dashboard_new_orders">
+                                    <a href="#"><t t-esc="values['new_orders']"/><br/>New Orders</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Ready To Ship"
+                                    name="stock_action_dashboard_ready_to_ship">
+                                    <a href="#"><t t-esc="values['ready_to_ship']"/><br/>Ready To Ship</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Manifest"
+                                    name="stock_action_dashboard_manifest">
+                                    <a href="#"><t t-esc="values['manifest']"/><br/>Manifest</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Delivered Orders"
+                                    name="stock_action_dashboard_delivered">
+                                    <a href="#"><t t-esc="values['delivered']"/><br/>Delivered</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Shiprocket Transfers"
+                                    name="stock_action_dashboard_all_orders">
+                                    <a href="#"><t t-esc="values['all_orders']"/><br/>All Transfers</a>
+                                </td>
+                            </tr>
+                        </thead>
+                        <!-- <tbody>
+                            <tr>
+                                <td class="o_text">
+                                    <div>Bulk Process</div>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Draft Quotes"
+                                    name="stock_bulk_action_dashboard_wp_awb">
+                                    <a href="#"><t t-esc="values['wp_awb']"/><br/>AWB <br/>Generated Partially</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Waiting Quotes"
+                                    name="stock_bulk_action_dashboard_gen_awb">
+                                    <a href="#"><t t-esc="values['gen_awb']"/><br/>AWB <br/>Generated</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Late Quotes"
+                                    name="stock_bulk_action_dashboard_wp_pickup">
+                                    <a href="#"><t t-esc="values['wp_pickup']"/><br/>Pickup <br/>Requested Partially</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Late Quotes"
+                                    name="stock_bulk_action_dashboard_gen_pickup">
+                                    <a href="#"><t t-esc="values['gen_pickup']"/><br/>Pickup<br/> Requested</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Late Quotes"
+                                    name="stock_bulk_action_dashboard_wp_manifest">
+                                    <a href="#"><t t-esc="values['wp_manifest']"/><br/>Manifest <br/>Generated Partially</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Late Quotes"
+                                    name="stock_bulk_action_dashboard_gen_manifest">
+                                    <a href="#"><t t-esc="values['gen_manifest']"/><br/>Manifest <br/>Generated</a>
+                                </td>
+                            </tr>
+                        </tbody> -->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
