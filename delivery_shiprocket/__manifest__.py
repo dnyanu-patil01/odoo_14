@@ -7,7 +7,7 @@
 
     "author": "Heartfulness Team",
     "depends": [
-        'delivery','stock','queue_job','seller_management'
+        'delivery','stock','queue_job'
     ],
     "data": [
         "data/mail_template_data.xml",
