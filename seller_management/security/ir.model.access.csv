@@ -1,5 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_res_partner_seller,access.res.partner.seller,base.model_res_partner,seller_management.group_sellers_management_user,1,0,0,0
+access_res_partner_seller,access.res.partner.seller,base.model_res_partner,seller_management.group_sellers_management_user,1,1,0,0
 access_sale_order_seller,access.sale.order.seller,sale.model_sale_order,seller_management.group_sellers_management_user,1,0,0,0
 access_sale_order_line_seller,access.sale.order.line.seller,sale.model_sale_order_line,seller_management.group_sellers_management_user,1,0,0,0
 access_account_account_type_seller,access.account.account.type.seller,account.model_account_account_type,seller_management.group_sellers_management_user,1,1,1,0
@@ -29,9 +29,10 @@ access_ir_sequence_seller,access.ir.sequence.seller,base.model_ir_sequence,selle
 access_ir_sequence_date_range_seller,access.ir.sequence.date_range.seller,base.model_ir_sequence_date_range,seller_management.group_sellers_management_user,1,1,1,0
 access_stock_immediate_transfer_seller,access.stock.immediate.transfer.seller,stock.model_stock_immediate_transfer,seller_management.group_sellers_management_user,1,1,1,0
 access_stock_immediate_transfer_line_seller,access.stock.immediate.transfer.line.seller,stock.model_stock_immediate_transfer_line,seller_management.group_sellers_management_user,1,1,1,0
-access_res_users_seller,access.res.users.seller,base.model_res_users,seller_management.group_sellers_management_user,1,0,0,0
+access_res_users_seller,access.res.users.seller,base.model_res_users,seller_management.group_sellers_management_user,1,1,0,0
 access_res_partner_category_seller,access.res.partner.category.seller ,base.model_res_partner_category,seller_management.group_sellers_management_user,1,0,0,0
 access_res_partner_category_seller_manager,access.res.partner.category.seller.manager,base.model_res_partner_category,seller_management.group_sellers_management_manager,1,1,1,0
 access_account_invoice_send_seller,access.account.invoice.send.seller,account.model_account_invoice_send,seller_management.group_sellers_management_user,1,1,1,0
 access_cancel_reason_user,access.cancel.reason.user,model_cancel_reason,seller_management.group_sellers_management_user,1,1,1,0
-access.stock.change.product.qty,access.stock.change.product.qty,stock.model_stock_change_product_qty,seller_management.group_sellers_management_user,1,1,1,0
+access_stock_change_product_qty,access.stock.change.product.qty,stock.model_stock_change_product_qty,seller_management.group_sellers_management_user,1,1,1,0
+access_stock_warehouse_orderpoint_seller,access.stock.warehouse.orderpoint.seller,stock.model_stock_warehouse_orderpoint,seller_management.group_sellers_management_user,1,1,1,0

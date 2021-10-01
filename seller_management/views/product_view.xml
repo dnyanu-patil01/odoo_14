@@ -43,8 +43,8 @@
                     <field name="state" invisible="1"/>
                     <button name="button_draft" string="Set Draft" states="approve,reject" type="object"  groups="seller_management.group_product_approval,seller_management.group_sellers_management_user"/>
                     <button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
-                    <button name="button_approve" string="Approve" states="draft,to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
-                    <button name="button_reject" string="Reject" states="draft,to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
+                    <button name="button_approve" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
+                    <button name="button_reject" string="Reject" states="to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
                     
                 </header>
                 <sheet>
@@ -151,8 +151,8 @@
             <xpath expr="//form/header" position="inside">
                 <button name="button_draft" string="Set Draft" states="approve,reject" type="object"  groups="seller_management.group_product_approval,seller_management.group_sellers_management_user"/>
                 <button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
-                <button name="button_approve" string="Approve" states="draft,to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
-                <button name="button_reject" string="Reject" states="draft,to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
+                <button name="button_approve" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
+                <button name="button_reject" string="Reject" states="to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approve,reject"/>
             </xpath>
             <xpath expr="//sheet" position="after">
