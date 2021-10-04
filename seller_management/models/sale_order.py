@@ -73,10 +73,6 @@ class SaleOrder(models.Model):
         action['context'] = context
         return action
 
-    def print_sale_order(self):
-        return self.env.ref('sale.action_report_saleorder').report_action(self)
-
-
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
