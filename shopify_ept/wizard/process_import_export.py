@@ -178,7 +178,7 @@ class ShopifyProcessImportExport(models.TransientModel):
         shopify_product_obj = self.env['shopify.product.product.ept']
 
         shopify_products = self._context.get('active_ids', [])
-
+        
         template = shopify_product_template_obj.browse(shopify_products)
         templates = template.filtered(lambda x: not x.exported_in_shopify)
         if templates and len(templates) > 80:

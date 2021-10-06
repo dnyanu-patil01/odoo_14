@@ -192,9 +192,6 @@ class StockPicking(models.Model):
         shipping_id = int(self.shiprocket_shipping_id)
         response_data = shiprocket._generate_label_request([shipping_id])
         if response_data:
-            data = shiprocket.get_tracking_link(self)
-            if data:
-                response_data.update(data)
             self.write(response_data)
         if 'label_url' in response_data:
             self.generate_attachment_pdf(response_data['label_url'],'Label')
@@ -208,9 +205,6 @@ class StockPicking(models.Model):
         response_data = shiprocket._print_manifest_request([order_id])
         self.get_shiprocket_status()
         if response_data:
-            data = shiprocket.get_tracking_link(self)
-            if data:
-                response_data.update(data)
             self.write(response_data)
         if 'manifest_url' in response_data:
             self.generate_attachment_pdf(response_data['manifest_url'],'Manifest')

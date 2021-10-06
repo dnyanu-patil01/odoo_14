@@ -47,7 +47,20 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     def button_approve(self):
-        self.write({'state': 'approve'})
-        action = self.env["ir.actions.actions"]._for_xml_id("shopify_ept.action_shopify_export_odoo_products_ept")
-        action['context'] = dict(self.env.context)
-        return action
+        shopify_instance_id = self.env['shopify.instance.ept'].search([],limit=1)
+        shopify_export = self.env['shopify.prepare.product.for.export.ept'].create({
+            'export_method':'direct',
+            'shopify_instance_id':shopify_instance_id.id
+        })
+        
+        active_template_ids = self._context.get("active_ids", []) or [self.id]
+        shopify_export.with_context({'active_ids':active_template_ids}).prepare_product_for_export()
+        shopify_product_template_ids = self.env['shopify.product.template.ept'].search([('product_tmpl_id','in',active_template_ids)]).ids
+        import_product_obj = self.env['shopify.process.import.export'].create({
+            'shopify_is_update_basic_detail':True,
+            'shopify_is_update_price':True,
+            'shopify_is_set_image':True,
+            'shopify_is_publish':'publish_product_web',
+        })
+        import_product_obj.with_context({'active_ids':shopify_product_template_ids}).manual_update_product_to_shopify()
+        return super(ProductTemplate,self).button_approve()

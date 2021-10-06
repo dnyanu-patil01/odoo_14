@@ -79,4 +79,4 @@ class ProviderShiprocket(models.Model):
 
     def shiprocket_get_tracking_link(self, picking):
         shiprocket = ShipRocket(self.env.company)
-        return "https://app.shiprocket.co//tracking/%s" % picking.carrier_tracking_ref
+        return "https://shiprocket.co/tracking/%s" % picking.carrier_tracking_ref

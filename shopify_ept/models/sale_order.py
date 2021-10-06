@@ -28,16 +28,16 @@ class SaleOrder(models.Model):
         @author: Maulik Barad on Date 06-05-2020.
         """
         for order in self:
-            if order.shopify_instance_id:
-                pickings = order.picking_ids.filtered(lambda x: x.state != "cancel")
-                if pickings:
-                    outgoing_picking = pickings.filtered(
-                        lambda x: x.location_dest_id.usage == "customer")
-                    if all(outgoing_picking.mapped("updated_in_shopify")):
-                        order.updated_in_shopify = True
-                        continue
-                order.updated_in_shopify = False
-                continue
+            # if order.shopify_instance_id:
+            #     pickings = order.picking_ids.filtered(lambda x: x.state != "cancel")
+            #     if pickings:
+            #         outgoing_picking = pickings.filtered(
+            #             lambda x: x.location_dest_id.usage == "customer")
+            #         if all(outgoing_picking.mapped("updated_in_shopify")):
+            #             order.updated_in_shopify = True
+            #             continue
+            #     order.updated_in_shopify = False
+            #     continue
             order.updated_in_shopify = False
 
     def _search_shopify_order_ids(self, operator, value):
@@ -815,86 +815,94 @@ class SaleOrder(models.Model):
                                                order="date")
         for picking in picking_ids:
             carrier_name = self.get_shopify_carrier_code(picking)
-            sale_order = picking.sale_id
+            # sale_order = picking.sale_id
+            # Added By Leela To Handle Merged DO
+            sale_orders = picking.get_related_sale_orders()
+            for sale_order in self.env['sale.order'].browse(sale_orders):
+                _logger.info("We are processing Sale order '%s' and Picking '%s'" % (sale_order.name, picking.name))
 
-            _logger.info("We are processing Sale order '%s' and Picking '%s'" % (sale_order.name, picking.name))
-
-            try:
-                order = shopify.Order.find(sale_order.shopify_order_id)
-                order_data = order.to_dict()
-                if order_data.get('fulfillment_status') == 'fulfilled':
-                    _logger.info('Order %s is already fulfilled' % sale_order.name)
-                    sale_order.picking_ids.filtered(lambda l: l.state == 'done').write({'updated_in_shopify': True})
+                try:
+                    order = shopify.Order.find(sale_order.shopify_order_id)
+                    order_data = order.to_dict()
+                    if order_data.get('fulfillment_status') == 'fulfilled':
+                        _logger.info('Order %s is already fulfilled' % sale_order.name)
+                        sale_order.picking_ids.filtered(lambda l: l.state == 'done').write({'updated_in_shopify': True})
+                        continue
+                except Exception as e:
                     continue
-            except Exception as e:
-                continue
 
-            order_lines = sale_order.order_line
-            if order_lines and order_lines.filtered(lambda s: s.product_id.type != 'service' and not s.shopify_line_id):
-                message = (_(
-                    "- Order status could not be updated for order %s.\n- Possible reason can be, Shopify order line reference is missing, which is used to update Shopify order status at Shopify store. "
-                    "\n- This might have happen because user may have done changes in order "
-                    "manually, after the order was imported." %
-                    sale_order.name))
-                _logger.info(message)
-                self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
-                continue
-
-            tracking_numbers, line_items = sale_order.prepare_tracking_numbers_and_lines_for_fulfilment(picking)
-
-            if not line_items:
-                message = "No order lines found for the update order shipping status for order [%s]" \
-                          % sale_order.name
-                _logger.info(message)
-                self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
-                continue
-
-            shopify_location_id = sale_order.shopify_location_id or False
-            if not shopify_location_id:
-                shopify_location_id = shopify_location_obj.search(
-                    [("warehouse_for_order", "=", sale_order.warehouse_id.id), ("instance_id", "=", instance.id)])
-                if not shopify_location_id:
-                    shopify_location_id = shopify_location_obj.search([("is_primary_location", "=", True),
-                                                                       ("instance_id", "=", instance.id)])
-                if not shopify_location_id:
-                    message = "Primary Location not found for instance %s while update order " \
-                              "shipping status." % (
-                                  instance.name)
+                order_lines = sale_order.order_line
+                if order_lines and order_lines.filtered(lambda s: s.product_id.type != 'service' and not s.shopify_line_id):
+                    message = (_(
+                        "- Order status could not be updated for order %s.\n- Possible reason can be, Shopify order line reference is missing, which is used to update Shopify order status at Shopify store. "
+                        "\n- This might have happen because user may have done changes in order "
+                        "manually, after the order was imported." %
+                        sale_order.name))
                     _logger.info(message)
                     self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
                     continue
 
-            try:
-                fulfillment_vals = {"order_id": sale_order.shopify_order_id,
-                                    "location_id": shopify_location_id.shopify_location_id,
-                                    "tracking_numbers": list(set(tracking_numbers)),
-                                    "tracking_urls": [picking.carrier_tracking_url or ''],
-                                    "tracking_company": carrier_name, "line_items": line_items,
-                                    "notify_customer": notify_customer}
+                tracking_numbers, line_items = sale_order.prepare_tracking_numbers_and_lines_for_fulfilment(picking)
 
-                new_fulfillment = shopify.Fulfillment(fulfillment_vals)
-                fulfillment_result = new_fulfillment.save()
-                if not fulfillment_result:
-                    message = "Order [%s] status not updated due to some issue in fulfillment " \
-                              "request/response." % (
-                                  sale_order.name)
+                if not line_items:
+                    message = "No order lines found for the update order shipping status for order [%s]" \
+                            % sale_order.name
                     _logger.info(message)
                     self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
                     continue
 
-            except ClientError as e:
-                if hasattr(e, "response"):
-                    if e.response.code == 429 and e.response.msg == "Too Many Requests":
-                        time.sleep(5)
-                        fulfillment_result = new_fulfillment.save()
-            except Exception as e:
-                message = "%s" % str(e)
-                _logger.info(message)
-                self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
-                continue
+                shopify_location_id = sale_order.shopify_location_id or False
+                if not shopify_location_id:
+                    shopify_location_id = shopify_location_obj.search(
+                        [("warehouse_for_order", "=", sale_order.warehouse_id.id), ("instance_id", "=", instance.id)])
+                    if not shopify_location_id:
+                        shopify_location_id = shopify_location_obj.search([("is_primary_location", "=", True),
+                                                                        ("instance_id", "=", instance.id)])
+                    if not shopify_location_id:
+                        message = "Primary Location not found for instance %s while update order " \
+                                "shipping status." % (
+                                    instance.name)
+                        _logger.info(message)
+                        self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
+                        continue
 
-            picking.write({"updated_in_shopify": True})
-            sale_order.shopify_location_id = shopify_location_id
+                try:
+                    fulfillment_vals = {"order_id": sale_order.shopify_order_id,
+                                        "location_id": shopify_location_id.shopify_location_id,
+                                        "tracking_numbers": list(set(tracking_numbers)),
+                                        "tracking_urls": [picking.carrier_tracking_url or ''],
+                                        "tracking_company": carrier_name, "line_items": line_items,
+                                        "notify_customer": notify_customer}
+
+                    new_fulfillment = shopify.Fulfillment(fulfillment_vals)
+                    fulfillment_result = new_fulfillment.save()
+                    if not fulfillment_result:
+                        message = "Order [%s] status not updated due to some issue in fulfillment " \
+                                "request/response." % (
+                                    sale_order.name)
+                        _logger.info(message)
+                        self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
+                        continue
+
+                except ClientError as e:
+                    if hasattr(e, "response"):
+                        if e.response.code == 429 and e.response.msg == "Too Many Requests":
+                            time.sleep(5)
+                            fulfillment_result = new_fulfillment.save()
+                except Exception as e:
+                    message = "%s" % str(e)
+                    _logger.info(message)
+                    self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
+                    continue
+                sale_order.shopify_location_id = shopify_location_id
+            # ADDED By Leela
+            if picking.carrier_id.delivery_type == 'shiprocket' and not picking.carrier_tracking_ref:
+                picking.write({"updated_in_shopify": False})
+            elif picking.carrier_id.delivery_type == 'shiprocket' and picking.carrier_tracking_ref:
+                picking.write({"updated_in_shopify": True})
+            else:
+                picking.write({"updated_in_shopify":True})
+            # sale_order.shopify_location_id = shopify_location_id
 
         if not log_book.log_lines:
             log_book.unlink()

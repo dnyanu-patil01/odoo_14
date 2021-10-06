@@ -307,9 +307,9 @@ class ShipRocket:
         """To get tracking link from shiprocket
         :param picking: stock.picking object
         """
-        tracking_url = "courier/track/shipment/"
+        tracking_url = "courier/track/awb/"
         url = url_join(API_BASE_URL, tracking_url)
-        request_tracking_url = url_join(url, str(picking.shiprocket_shipping_id))
+        request_tracking_url = url_join(url, str(picking.shiprocket_awb_code))
         payload = {}
         response = requests.get(
              request_tracking_url, headers=self.headers, data=payload
@@ -658,6 +658,7 @@ class ShipRocket:
             if 'awb_code' in response_dict["response"]["data"] and response_dict["response"]["data"]["awb_code"] != False:
                 response_data = {
                     "shiprocket_awb_code": response_dict["response"]["data"]["awb_code"],
+                    "carrier_tracking_ref":response_dict["response"]["data"]["awb_code"],
                     "response_comment":response_dict,
                     "is_awb_generated":True,
                 }
@@ -872,6 +873,7 @@ class ShipRocket:
                 if awb_code and courier_code and courier_name:
                     picking_vals.update({
                         'shiprocket_awb_code':awb_code,
+                        'carrier_tracking_ref':awb_code,
                         'courier_id':picking.get_courier_id(str(courier_code),str(courier_name)),
                         'courier_rate':response_dict['data']['awb_data']['charges']['freight_charges'],
                         'is_awb_generated':True
