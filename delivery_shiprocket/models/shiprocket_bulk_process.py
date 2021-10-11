@@ -76,7 +76,7 @@ class ShiprocketBulkProcess(models.Model):
     def create_log_lines(self):
         self.bulk_process_log_line.unlink()
         log_lines = []
-        if self.state in ('awb_created_partially','awb_created'):
+        if self.state in ('awb_created_partially','waiting_awb'):
             for line in self.stock_picking_ids.filtered(lambda line: line.is_awb_generated == False):
                 log_lines.append({'picking_id':line.id,'bulk_process_id':self.id,'response_comment':line.response_comment})
         elif self.state in ("waiting_create_pickup","pickup_created_partially","pickup_created"):
@@ -100,6 +100,7 @@ class ShiprocketBulkProcess(models.Model):
         self._check_stock_picking_ids()
         self.write({"state": "waiting_awb"})
         self.with_delay().generate_awb_bulk()
+        self.create_log_lines()
         
         
     def generate_awb_bulk(self):
@@ -109,7 +110,6 @@ class ShiprocketBulkProcess(models.Model):
         for picking in self.stock_picking_ids.filtered(lambda r: r.is_awb_generated == False):
             picking.with_delay(priority=1,channel='create_awb').bulk_awb_creation_request(self)
         self.with_delay(priority=30,channel='create_awb').send_mail_on_queue_completion()
-        self.create_log_lines()
 
     def shiprocket_get_ready_to_manifest(self):
         self._check_stock_picking_ids()

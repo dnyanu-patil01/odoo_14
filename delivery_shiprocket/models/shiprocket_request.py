@@ -530,8 +530,8 @@ class ShipRocket:
         """
         message_format = """"""
         for error, message in errors.items():
-            msg_format = "%s : %s \n" % (error, message[-1])
-            message_format = msg_format
+            msg_format = "%s : %s \n" % (str(error), str(message))
+            message_format += msg_format
         return message_format
 
     def _convert_phone_number(self, number, country_code):
@@ -830,8 +830,8 @@ class ShipRocket:
                     selected_courier_dict = max(available_courier_list, key=lambda d: d['rating'])
                 if bulk_process.shiprocket_courier_priority == 'price':
                     selected_courier_dict = min(available_courier_list, key=lambda d: d['rate'])
-                if bulk_process.shiprocket_courier_priority == 'rate':
-                    selected_courier_dict = min(available_courier_list, key=lambda d: d['fast'])
+                if bulk_process.shiprocket_courier_priority == 'fast':
+                    selected_courier_dict = min(available_courier_list, key=lambda d: d['etd_hours'])
                 if bulk_process.shiprocket_courier_priority == 'custom':
                     selected_courier_dict = [x for x in available_courier_list if x["courier_company_id"] == serviceability_response_dict['data']['recommended_courier_company_id']][-1]
                 if bulk_process.shiprocket_courier_priority == 'recommend':
@@ -888,5 +888,21 @@ class ShipRocket:
         picking.write(picking_vals)
         return True
 
-
-        
+    def _update_pickup_location(self,picking_ids,pickup_location):
+        """To Update Pickup Location In Shiprocket
+        :param picking_ids: stock.picking objects
+        :param pickup_location: new picking_location
+        """
+        update_pickup_location_url = "orders/address/pickup/"
+        url = url_join(API_BASE_URL, update_pickup_location_url)
+        for picking in picking_ids:
+            payload = json.dumps({
+                "order_id":[int(picking.shiprocket_order_id)],
+                "pickup_location":str(pickup_location.pickup_location)
+            })
+            response = requests.request("PATCH", url, headers=self.headers, data=payload)
+            vals = {"response_comment": self.format_error_message(response.json())}
+            if response.status_code == 200:
+                vals.update({'pickup_location':pickup_location.id})
+            picking.write(vals)
+        return True

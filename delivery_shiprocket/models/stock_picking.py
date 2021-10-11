@@ -250,7 +250,7 @@ class StockPicking(models.Model):
                 )
             #Auto Generation Of Return Of The Delivery Order
             if response_data['order_status_code'] == '16':
-                self.create_return_picking_for_rto()
+                self.create_return_picking()
             if response_data['order_status_code'] == "4":
                 vals.update(
                     {"is_pickup_request_done": True}
@@ -258,7 +258,7 @@ class StockPicking(models.Model):
             self.write(vals)
         return True
 
-    def create_return_picking_for_rto(self):
+    def create_return_picking(self):
         '''
         Create Return Picking For RTO Delivered Order
         '''
@@ -386,3 +386,19 @@ class StockPicking(models.Model):
         shiprocket = ShipRocket(self.env.company)
         shiprocket._get_order_details(self)
         return True
+    
+    def action_update_pickup_location(self):
+        '''popup wizard to choose new pickup location and update the same in shiprocket'''
+        picking_ids = self.env.context.get('active_ids') or False
+        if not picking_ids:
+            ctx={'picking_ids':self.ids}
+        else:
+            ctx = {"picking_ids": picking_ids}
+        return {
+            "name": ("Update Pickup Location In Shiprocket"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "update.pickup.location",
+            "target": "new",
+            "context":ctx,
+        }
