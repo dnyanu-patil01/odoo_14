@@ -8,6 +8,7 @@ import base64
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
+    _order = "id desc"
 
     def _get_default_channel_id(self):
         custom_channel =  self.env['shiprocket.channel'].search(
