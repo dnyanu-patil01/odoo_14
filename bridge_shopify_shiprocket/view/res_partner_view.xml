@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_seller_form_seller_management" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="seller_management.view_seller_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page name="seller_pickup_location" string="Pickup Location">
+                    <field name="pickup_location_lines" widget="one2many" readonly="1">
+                        <tree>
+                            <field name="pickup_location_id" />
+                            <field name="name" />
+                            <field name="pickup_location" />
+                            <field name="email" />
+                            <field name="phone" />
+                            <field name="address" />
+                            <field name="address2" />
+                            <field name="city" />
+                            <field name="pin_code" />
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -45,7 +45,7 @@ class StockPicking(models.Model):
     comment = fields.Char(copy=False)
     # To Store The Error Response Message
     response_comment = fields.Char(readonly=True, copy=False, tracking=True)
-    # To Auto Fetch From Vendor
+    # To Auto Fetch From Seller
     pickup_location = fields.Many2one("shiprocket.pickup.location", copy=False,default=_get_default_pickup_location_id)
     channel_id = fields.Many2one("shiprocket.channel", copy=False,default=_get_default_channel_id)
     # Serviceablity Related Fields
