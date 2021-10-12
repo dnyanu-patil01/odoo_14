@@ -772,12 +772,13 @@ class ShipRocket:
         payload = json.dumps({"ids": order_ids})
         response = requests.post(url, headers=self.headers, data=payload)
         response_dict = response.json()
-        if "errors" in response_dict:
-            return self.format_error_message(response_dict["errors"])
-        if "message" in response_dict:
-            return response_dict["message"]
-        return response_dict
-
+        if response.status_code in (200,204):
+            return response.status_code
+        elif "errors" in response_dict or "message" in response_dict:
+            return self.format_error_message(response_dict)
+        else:
+            return response_dict
+        
     def _get_order_status(self, picking):
         """To Get Status Of Current Record
         :param picking: stock.picking object

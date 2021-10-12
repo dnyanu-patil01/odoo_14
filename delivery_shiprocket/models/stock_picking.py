@@ -220,8 +220,11 @@ class StockPicking(models.Model):
             shiprocket = ShipRocket(self.env.company)
             # API Call To Generate Label
             order_id = int(transfer.shiprocket_order_id)
-            response_data = "Order Cancelled!"
             response_data = shiprocket._cancel_order_request([order_id])
+            #Creating Return DO for order status before manifest
+            if response_data in (200,204) and transfer.shiprocket_order_status_id.status_code in ('1','2','3','4','12','13','14'):
+                transfer.create_return_picking()
+                response_data = "Order Cancellation In Shiprocket And Return Order Also Created."
             transfer.get_shiprocket_status()
             transfer.write({'response_comment':str(response_data)})
         return True
