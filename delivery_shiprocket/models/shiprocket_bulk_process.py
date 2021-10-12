@@ -355,6 +355,12 @@ class ShiprocketBulkProcess(models.Model):
         self.write({'stock_picking_ids':list_packs})
         self.bulk_process_log_line.unlink()
         return True
+    
+    def cancel_bulk_process(self):
+        return self.write({'state':'close'})
+    
+    def completed_bulk_process(self):
+        return self.write({'state':'done'})
 
 class ShiprocketBulkProcessLog(models.Model):
     _name = "shiprocket.bulk.process.log"
