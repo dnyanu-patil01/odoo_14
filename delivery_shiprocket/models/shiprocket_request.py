@@ -907,3 +907,59 @@ class ShipRocket:
                 vals.update({'pickup_location':pickup_location.id})
             picking.write(vals)
         return True
+
+    def create_wrapper_order(self, picking):
+        """Wrapper API Call To Create, Ship and Generate Label and Manifest for Order
+        :param picking: stock.picking object
+        """
+        if not picking.package_ids:
+            picking._pre_put_in_pack_hook(picking.move_line_ids)
+        data = self.prepare_order_data(picking, "forward")
+        if not picking.pickup_location:
+            picking.write({'response_comment':"Please Select Shiprocket Pickup Location Before Validate"})
+            return False
+        if not picking.channel_id:
+            picking.write({'response_comment':"Please Select Shiprocket Channel Before Validate."})
+            return False
+        payload = json.dumps(data)
+        order_creation_url = "shipments/create/forward-shipment"
+        url = url_join(API_BASE_URL, order_creation_url)
+        response = requests.post(url, headers=self.headers, data=payload)
+        response_dict = response.json()
+        if "errors" in response_dict:
+            return {'response_comment':self.format_error_message(response_dict)}
+        if "status" in response_dict and response_dict['status'] == 0:
+            return {'response_comment':self.format_error_message(response_dict)}
+        if response.status_code == 200 and response_dict['status'] == 1:
+            response_data = {}
+            if 'order_id' in response_dict['payload'] and 'shipment_id' in response_dict['payload']:
+                response_data.update({
+                    "shiprocket_order_id": response_dict['payload']["order_id"],
+                    "shiprocket_shipping_id": response_dict['payload']["shipment_id"],
+                    "shiprocket_order_status_id":1,
+                })
+            if response_dict['payload']['awb_generated'] == 1 and 'awb_code' in response_dict['payload'] and response_dict['payload']['awb_code']:
+                response_data.update({
+                    'shiprocket_awb_code':response_dict['payload']["awb_code"],
+                    'is_awb_generated':True,
+                    'courier_id':picking.get_courier_id(str(response_dict['payload']['courier_company_id']),str(response_dict['payload']['courier_name']))
+                })
+            if response_dict['payload']['label_generated'] == 1 and 'label_url' in response_dict['payload']:
+                response_data.update({
+                    'label_url':response_dict['payload']['label_url']
+                })
+            if response_dict['payload']['pickup_generated'] == 1 and 'pickup_token_number' in response_dict['payload'] and response_dict['payload']['pickup_token_number'] != False:
+                response_data.update({
+                    'pickup_request_note':response_dict['payload']['pickup_token_number'],
+                    'is_pickup_request_done':True,
+                    "shiprocket_order_status_id":4,
+                })
+            if response_dict['payload']['manifest_generated'] == 1 and 'manifest_url' in response_dict['payload']:
+                response_data.update({
+                    'manifest_url':response_dict['payload']['manifest_url'],
+                    'is_manifest_generated':True
+                })
+            return response_data
+        else:
+            picking.write({"response_comment":self.format_error_message(response_dict)})
+        return False
