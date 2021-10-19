@@ -35,7 +35,7 @@
         <field name="model">product.template</field>
         <field name="priority">30</field>
         <field name="arch" type="xml">
-            <form string="Seller Products" delete="0">
+            <form string="Seller Products" duplicate="0" delete="0">
                 <header>
                     <button string="Update Quantity" type="object"
                         name="seller_update_stock_quantity"
