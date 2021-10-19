@@ -137,7 +137,7 @@
             </xpath>
             <!-- confirm="This Action Will Cancel Your Delivery Order In Shiprocket. Do you still want to proceed ?"  -->
             <xpath expr="//button[@name='send_to_shipper']" position="after">
-                <button string="Update Pickup" name="action_update_pickup_location" type="object" attrs="{'invisible':['|',('shiprocket_awb_code','=',True),('state','!=','done')]}"/>
+                <button string="Update Pickup" name="action_update_pickup_location" type="object" attrs="{'invisible':['|','|',('delivery_type','in', ['fixed', 'base_on_rule','self']),('shiprocket_awb_code','=',True),('state','!=','done')]}"/>
                 <button name="shiprocket_check_serviceability" string="Check Serviceability" class="oe_highlight" type="object" attrs="{'invisible':['|','|','|',('courier_id','!=',False),('shiprocket_order_id','=',False),('shiprocket_shipping_id','=',False),('shiprocket_awb_code','!=',False)]}" />
                 <button name="shiprocket_create_awb" confirm="Before Creating AWB Request Set Courier ID or It will be selected automatically based on your courier priority." string="Generate AWB" type="object" attrs="{'invisible':['|','|','|',('recommended_courier_company_id','=',False),('shiprocket_order_id','=',False),('shiprocket_shipping_id','=',False),('shiprocket_awb_code','!=',False)]}" />
                 <button name="shiprocket_reassign_courier" string="Re-assign Courier" confirm="This Will Reassign Your Selected Courier.Do You Want To Proceed?" type="object" attrs="{'invisible':['|',('manifest_url','!=',False),('shiprocket_awb_code','=',False)]}" />

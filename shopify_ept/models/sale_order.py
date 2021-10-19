@@ -207,6 +207,10 @@ class SaleOrder(models.Model):
             carrier = delivery_carrier_obj.search([('delivery_type','=','shiprocket')])
             if carrier:
                 self.write({"carrier_id": carrier.id})
+        elif self.seller_id and self.seller_id.fulfilment_type == 'self_fulfilment':
+            carrier = delivery_carrier_obj.search([('delivery_type','=','self')])
+            if carrier:
+                self.write({"carrier_id": carrier.id})
                 # shipping_product = carrier.product_id
                 # self.shopify_create_sale_order_line(line, shipping_product, 1,
                 #                                     shipping_product.name or line.get("title"),
@@ -896,9 +900,9 @@ class SaleOrder(models.Model):
                 continue
             sale_order.shopify_location_id = shopify_location_id
             # ADDED By Leela
-            if picking.carrier_id.delivery_type == 'shiprocket' and not picking.carrier_tracking_ref:
+            if picking.carrier_id.delivery_type in ('self','shiprocket') and not picking.carrier_tracking_ref:
                 picking.write({"updated_in_shopify": False})
-            elif picking.carrier_id.delivery_type == 'shiprocket' and picking.carrier_tracking_ref:
+            elif picking.carrier_id.delivery_type in ('self','shiprocket') and picking.carrier_tracking_ref:
                 picking.write({"updated_in_shopify": True})
             else:
                 picking.write({"updated_in_shopify":True})

@@ -14,5 +14,38 @@
                 </field>
             </field>
         </record>
+
+        <record id="view_picking_withcarrier_out_form_inherit" model="ir.ui.view">
+            <field name="name">delivery.stock.picking_withcarrier.form.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='carrier_tracking_ref']" position="attributes">
+                    <attribute name="attrs">{'required':[('delivery_type','=','self')],'readonly':[('state', 'in', ('done', 'cancel'))]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='delivery_type']" position="after">
+                    <field name="self_tracking_url" attrs="{'invisible':[('delivery_type','!=','self')],'required':[('delivery_type','=','self')],'readonly':[('state', 'in', ('done', 'cancel'))]}"/>
+                </xpath>
+                <xpath expr="//button[@name='send_to_shipper']" position="attributes">
+                    <attribute name="attrs">{'invisible':['|','|','|','|',('shiprocket_order_id','!=',False),('delivery_type','in', ['fixed', 'base_on_rule','self']),('delivery_type','=',False),('state','not in',('done')),('picking_type_code', '=', 'incoming')]}</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_seller_stock_picking_form" model="ir.ui.view">
+            <field name="name">seller.stock.picking.form.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="seller_management.view_seller_stock_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='carrier_tracking_ref']" position="attributes">
+                    <attribute name="attrs">{'required':[('delivery_type','=','self')],'readonly':[('state', 'in', ('done', 'cancel'))]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='delivery_type']" position="after">
+                    <field name="self_tracking_url" attrs="{'invisible':[('delivery_type','!=','self')],'required':[('delivery_type','=','self')],'readonly':[('state', 'in', ('done', 'cancel'))]}"/>
+                </xpath>
+                <xpath expr="//button[@name='send_to_shipper']" position="attributes">
+                    <attribute name="attrs">{'invisible':['|','|','|','|',('carrier_tracking_ref','!=',False),('delivery_type','in', ['fixed', 'base_on_rule','self']),('delivery_type','=',False),('state','not in',('done')),('picking_type_code', '=', 'incoming')]}</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
