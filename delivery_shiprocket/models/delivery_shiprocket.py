@@ -57,13 +57,14 @@ class ProviderShiprocket(models.Model):
                     }
                 )
                 res.append(response_data)
+                if 'shiprocket_awb_code' in response_data:
+                    #To Update AWB Code And Courier Cost
+                    shiprocket._get_order_details(picking)
             else:
                 res.append({
                         "exact_price": 0,
                         "tracking_number": "",
                     })
-            #To Update AWB Code And Courier Cost
-            shiprocket._get_order_details(picking)
         return res
 
     def shiprocket_return_order_creation(self, pickings):
