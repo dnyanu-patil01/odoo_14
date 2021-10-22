@@ -1,0 +1,63 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="custom_customer_view_sale_order_inherit_form" model="ir.ui.view">
+      <field name="name">sale.order.form</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form" />
+      <field name="arch" type="xml">
+         <xpath expr="//header" position="inside">
+            <field name="is_website_order" invisible="1"/>
+         </xpath>
+         <xpath expr="//button[@name='action_cancel']" position="attributes">
+            <attribute name="states">draft,sent,sale,payment_confirmation</attribute>
+         </xpath>
+         <xpath expr="//button[@id='action_confirm']" position="attributes">
+            <attribute name="attrs">{'invisible': ['|','&amp;',('is_website_order','=', False),('state', 'not in', ['sent']),'&amp;',('is_website_order', '=', True),('state', 'not in', ['payment_confirmation'])]}</attribute> 
+         </xpath>
+         
+         <xpath expr="//notebook/page[last()]" position="after">
+            <page name="buyer_details" string="Customer Details">
+               <group>
+                  <field name="customer_name" readonly="1" />
+                  <field name="customer_contact_no" readonly="1" />
+                  <field name="customer_email" readonly="1" />
+                  <field name="payment_reference" readonly="1" />
+                  <field name="payment_date" readonly="1" />
+                  <field name="payment_mode_id" readonly="1" />
+                  <field name="payment_amount" readonly="1" />
+               </group>
+            </page>
+         </xpath>
+      </field>
+   </record>
+   <record id="view_customer_payment_mode_form" model="ir.ui.view">
+      <field name="name">customer.payment.mode.form</field>
+      <field name="model">customer.payment.mode</field>
+      <field name="arch" type="xml">
+         <form>
+            <sheet>
+               <group>
+                  <field name="name" />
+                  <field name="active" />
+               </group>
+            </sheet>
+         </form>
+      </field>
+   </record>
+   <record id="view_customer_payment_mode_tree" model="ir.ui.view">
+      <field name="name">customer.payment.mode.tree</field>
+      <field name="model">customer.payment.mode</field>
+      <field name="arch" type="xml">
+         <tree>
+            <field name="name" />
+         </tree>
+      </field>
+   </record>
+   <record id="action_customer_payment_mode" model="ir.actions.act_window">
+      <field name="name">Payment Mode</field>
+      <field name="res_model">customer.payment.mode</field>
+       <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+   </record>
+   <menuitem name="Payment Mode" id="menu_payment_mode" sequence="30" parent="website_sale.menu_ecommerce_settings" action="action_customer_payment_mode" />
+</odoo> -->

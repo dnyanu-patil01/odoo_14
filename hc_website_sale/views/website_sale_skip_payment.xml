@@ -1,0 +1,62 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <template id="payment" inherit_id="website_sale.payment">
+      <xpath expr="//div[hasclass('js_payment')]" position="after">
+         <div class="float-left mt-2" t-if="website.checkout_skip_payment">
+            <a role="button" href="/shop/cart" class="btn btn-secondary">
+               <i class="fa fa-chevron-left" />
+               Return to Cart
+            </a>
+         </div>
+         <div class="js_skip_payment mt-3" t-if="website.checkout_skip_payment" id="skip_payment_method">
+            <form target="_self" action="/shop/confirmation" method="post" class="float-right">
+               <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+               <button id="o_confirm_order_button" class="btn btn-primary" href="#">
+                  <span>
+                     Confirm Order
+                     <span class="fa fa-chevron-right" />
+                  </span>
+               </button>
+            </form>
+         </div>
+      </xpath>
+      <xpath expr="//div[@id='payment_method']" position="attributes">
+         <attribute name="t-if">(acquirers or tokens) and website_sale_order.amount_total and not website.checkout_skip_payment</attribute>
+      </xpath>
+      <xpath expr="//div[hasclass('js_payment')]" position="attributes">
+         <attribute name="t-if">not website_sale_order.amount_total and not website.checkout_skip_payment</attribute>
+      </xpath>
+   </template>
+   <template id="confirmation" inherit_id="website_sale.confirmation">
+      <xpath expr="//t[@t-if=&quot;payment_tx_id.state == 'done'&quot;]" position="attributes">
+         <attribute name="t-if">payment_tx_id.state == 'done' or (website.checkout_skip_payment and order.state == 'sale')</attribute>
+      </xpath>
+      <xpath expr="//t[@t-call='website_sale.payment_confirmation_status']" position="after">
+         <div class="alert alert-info" role="alert" t-if="website.checkout_skip_payment">Thank You For Your Order.</div>
+      </xpath>
+      Hide payment related info if skip payment step
+      <xpath expr="//t[@t-call='website_sale.payment_confirmation_status']" position="attributes">
+         <attribute name="t-if">not website.checkout_skip_payment</attribute>
+      </xpath>
+   </template>
+   <template id="order_state_message">
+      <p>Your order is waiting manual confirmation.</p>
+      <br />
+   </template>
+   <template id="confirmation_order_error">
+      <t t-call="website.layout">
+         <t t-set="additional_title">Shop - Confirmation - Error</t>
+         <div id="wrap">
+            <div class="container oe_website_sale">
+               <div class="row">
+                  <div class="alert alert-danger" role="alert">
+                     <strong>Error!</strong>
+                     An error occurred trying to
+                            confirm the sale order.
+                  </div>
+               </div>
+            </div>
+         </div>
+      </t>
+   </template>
+</odoo> -->

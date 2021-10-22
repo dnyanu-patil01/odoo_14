@@ -1,0 +1,79 @@
+<!-- <odoo>
+
+    
+    <template id="sale_order_portal_template" name="Add Payment Details" inherit_id="sale.sale_order_portal_template">
+        <xpath expr="//div[hasclass('o_portal_sale_sidebar')]//div[hasclass('o_download_pdf')]/.." position="after">
+            <li t-if="sale_order.state in ['draft', 'sent']" class="list-group-item flex-grow-1" id="li-request-rma">
+                <a role="button" class="btn btn-secondary btn-block mb8" data-toggle="modal" data-target=".modal_add_payment_details" href="#">
+                    <i class="fa fa-plus-square"/> Add Payment Details
+                </a>
+            </li>
+        </xpath>
+        <xpath expr="//div[@id='modaldecline']" position="after">
+            <div role="form" class="modal fade modal_add_payment_details" id="modal-add-payment-details">
+                <div class="modal-dialog" style="max-width: 500px;">
+                    <form id="form-request-addpaymentdetails" method="POST" t-attf-action="/my/orders/#{sale_order.id}/addpaymentdetails?access_token=#{sale_order.access_token}" class="modal-content">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <header class="modal-header">
+                            <h4 class="modal-title">Add Payment Details</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&amp;times;</button>
+                        </header>
+                        <main class="modal-body" id="modal-body-add-payment-details">
+                            <t t-set="payment_mode_list" t-value="sale_order.env['customer.payment.mode'].search([])"/>
+                            <div class="text-left">
+                                <label class="col-form-label" for="payment_reference">
+                                    <strong>Payment Reference</strong>
+                                </label>
+                                <div>
+                                    <input type="text" placeholder="Payment Reference" class="form-control o_website_form_input payment_reference" name="payment_reference" id="payment_reference" required="True" pattern="\S(.*\S)?"/>
+                                </div>
+                            </div>
+                            <div class="text-left">
+                                <label class="col-form-label" for="payment_date">
+                                    <strong>Payment Date</strong>
+                                </label>
+                                <div class="o_payment_date">
+                                    <input type="text" required="required" style="background:white;" placeholder="dd-mm-yy" class="form-control o_website_form_input payment_date" name="payment_date" id="payment_date"/>
+                                </div>
+                            </div>
+                            <div class="text-left">
+                                <label class="col-form-label" for="payment_amount">
+                                    <strong>Payment Amount</strong>
+                                </label>
+                                <div class="o_payment_date">
+                                    <input type="number" t-att-max="sale_order.amount_total" t-att-value="sale_order.amount_total" min="1" step="0.01" class="form-control o_website_form_input payment_amount" name="payment_amount" id="payment_amount" required="True" />
+                                </div>
+                            </div>
+                            <div class="text-left">
+                                <label class="col-form-label" for="payment_mode_id">
+                                    <strong>Mode of Payment</strong>
+                                </label>
+                                <select required="True" t-attf-name="payment_mode_id" class="form-control payment_mode_id" id="payment_mode_id">
+                                    <option value="">Choose Mode of Payment..</option>
+                                    <t t-foreach="payment_mode_list" t-as="payment_mode">
+                                    <option t-att-data="payment_mode.id" t-att-value="payment_mode.id" t-att-name="payment_mode.name">
+                                        <t t-esc="payment_mode.name" />
+                                    </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </main>
+                        <footer class="modal-footer">
+                            <button type="submit" t-att-id="sale_order.id" class="btn btn-primary"><i class="fa fa-check"></i>Submit</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                        </footer>
+                    </form>
+                </div>
+            </div>
+        </xpath>
+    </template> 
+    <template id="portal_my_quotations" name="Add Payment Details" inherit_id="sale.portal_my_quotations">
+        <xpath expr="//t[@t-foreach='quotations']/tr/td[last()]" position="after">
+            <td class="text-center">
+                <a role="button" t-att-href="quotation.get_portal_url()" title="Add Payment Info" aria-label="Add Payment Info" class="btn btn-sm btn-primary">
+                    <i class="fa fa-plus-square"/><span class='d-none d-md-inline'>Add Payment Info</span>
+                </a>
+            </td>
+        </xpath>
+    </template>
+</odoo> -->
