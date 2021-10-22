@@ -10,7 +10,7 @@
         "website",'website_sale','sale'
     ],
     "data": [
-        "data/mail_data.xml",
+        # "data/mail_data.xml",
         "security/ir.model.access.csv",
         "views/config_view.xml",
         "views/template.xml",

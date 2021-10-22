@@ -2,9 +2,11 @@
 <odoo>
     <template name="landing_page" id="landing_page">
         <t t-call="website.layout">
-            <t t-call="website_sale.search">
-                <t t-set="_classes" t-valuef="w-100 w-md-auto mt-2"/>
-            </t>
+            <div class="container-fluid">
+                <div class="row d-flex justify-content-center">
+                    <t t-call="website_sale.website_sale_products_search_box"/>
+                </div>
+            </div>
             <section class="s_product_list">
                 <div class="container-fluid">
                     <div class="row">

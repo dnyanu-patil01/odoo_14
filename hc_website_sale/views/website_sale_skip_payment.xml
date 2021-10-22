@@ -1,6 +1,6 @@
-<!-- <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-   <template id="payment" inherit_id="website_sale.payment">
+<!--    <template id="payment" inherit_id="website_sale.payment">
       <xpath expr="//div[hasclass('js_payment')]" position="after">
          <div class="float-left mt-2" t-if="website.checkout_skip_payment">
             <a role="button" href="/shop/cart" class="btn btn-secondary">
@@ -58,5 +58,5 @@
             </div>
          </div>
       </t>
-   </template>
-</odoo> -->
+   </template> -->
+</odoo>
