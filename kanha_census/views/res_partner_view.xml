@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	<!-- Kanha Census Form View  -->
+	<record model="ir.ui.view"
+		id="kanha_inherit_view_partner_form">
+		<field name="name">kanha.inherit.view.partner.form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form" />
+		<field name="mode">primary</field>
+		<field name="arch" type="xml">
+			<xpath expr="//form" position="replace">
+				<form string="Kanha Census">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="surname" />
+								<field name="email" />
+								<field name="mobile" />
+								<field name="gender"/>
+							</group>
+							<group>
+								<field name="application_type" />
+								<field name="date_of_birth"/>
+								<field name="resident_of_kanha_from_date" />
+								<field name="kanha_location_id" />
+								<field name="application_type" />
+							</group>
+						</group>
+						<notebook>
+							<page string="Documents" name="documents" >
+                        		<group>
+		                            <group string="Documents" name="documents">
+		                            	<field name="passport_photo" widget="image"/>
+		                                <field name="adhar_card" />
+		                                <field name="address_proof" />
+		                              	<field name="age_proof" />
+		                              	<field name="age_declaration_form" />
+		                            </group>
+                        		</group>
+                    		</page>
+                    		<page string="Voter ID Details" name="voter_id_details" >
+                        		<group>
+		                            <group string="Voter ID Details" name="voter_id_details">
+		                                <field name="voter_number" />
+		                                <field name="country_id" invisible="1"/>
+		                                <field name="state_id" />
+		                              	<field name="assembly_constituency" />
+		                              	<field name="house_number" />
+		                              	<field name="locality" />
+		                         		<field name="town" />
+		                             	<field name="post_office" />
+		                            	<field name="zip" />
+		                            </group>
+                        		</group>
+                    		</page>
+                    		<page string="Relation Info" name="reation_info" >
+                        		<group>
+		                            <group string="Relation Info" name="reation_info">
+		                            	<field name="relation_type" />
+		                                <field name="relative_aadhaar_card_number" />
+		                                <field name="relative_name" />
+		                                <field name="relative_surname" />
+		                            </group>
+                        		</group>
+                    		</page>
+                    		<page string="Family Members">
+	                    		<field name="family_members_ids" widget="one2many_list">
+	                    			<tree editable="bottom" string="Family Members">
+		                                <field name="name" />
+	                                </tree>
+	                                <form>
+	                             		<group>
+			                                <field name="name" />
+	                                  	</group>
+	                               	 </form>
+	                      		</field>
+                   			</page>
+						</notebook>
+					</sheet>
+				</form>
+			</xpath>
+		</field>
+	</record>
+
+	<!-- Kanha Census Tree View  -->
+	<record id="kanha_iherit_view_partner_tree"
+		model="ir.ui.view">
+		<field name="name">res.partner.tree</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form" />
+		<field name="mode">primary</field>
+		<field name="arch" type="xml">
+			<xpath expr="//form" position="replace">
+				<tree string="Kanha Census" sample="1" multi_edit="1">
+					<field name="name" />
+					<field name="mobile" class="o_force_ltr" optional="show" />
+					<field name="email" />
+					<field name="gender" />
+					<field name="date_of_birth" />
+				</tree>
+			</xpath>
+		</field>
+	</record>
+
+	<!-- Kanha Census Action  -->
+	<record id="kanha_partner_action" model="ir.actions.act_window">
+		<field name="name">Kanha Census</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_ids"
+			eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]" />
+	</record>
+	
+	<!-- Menu item  -->
+	<menuitem id="menu_kanha_partner"
+          parent="kanha_census.menu_kanha_location_root" 
+          action="kanha_partner_action"
+          />
+</odoo>
