@@ -910,16 +910,17 @@ class ShipRocket:
         }
         check_serviceability_url = "courier/serviceability/"
         url = url_join(API_BASE_URL, check_serviceability_url)
-        serviceability_response = requests.get(url, headers=self.headers, data=json.dumps(check_serviceability_vals))
         response_data_error = None
         serviceability_response_dict = None
         selected_courier_dict = None
         try:
+            serviceability_response = requests.get(url, headers=self.headers, data=json.dumps(check_serviceability_vals))
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            response_data_error = "The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."
+        try:
             serviceability_response_dict = serviceability_response.json()
         except json.JSONDecodeError:
             response_data_error = "Invaild JSON in Response - %s"%(serviceability_response.text)
-        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
-            response_data_error = "The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."
         if response_data_error:
             picking.write({'response_comment':response_data_error})
             return False
@@ -1085,4 +1086,128 @@ class ShipRocket:
         except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
             picking.write({"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."})
             return False
-        
+
+    def format_ndr_data(self,response_dict):
+        response_values = []
+        if 'data' in response_dict and response_dict.get('data') != []:
+            for value in response_dict['data']:
+                ndr_values = {}
+                if 'id' in value:
+                    ndr_values.update({'id':str(value['id'])})
+                else:
+                    ndr_values.update({"id":False})
+                if 'shipment_id' in value:
+                    ndr_values.update({'shipment_id':str(value['shipment_id'])})
+                else:
+                    ndr_values.update({"shipment_id":False})
+                if 'awb_code' in value:
+                    ndr_values.update({'awb_code':str(value['awb_code'])})
+                else:
+                    ndr_values.update({"awb_code":False})
+                if 'ndr_raised_at' in value:
+                    ndr_values.update({'ndr_raised_at':str(value['ndr_raised_at'])})
+                else:
+                    ndr_values.update({"ndr_raised_at":False})
+                if 'attempts' in value:
+                    ndr_values.update({'attempts':str(value['attempts'])})
+                else:
+                    ndr_values.update({"attempts":False})
+                if 'reason' in value:
+                    ndr_values.update({'reason':str(value['reason'])})
+                else:
+                    ndr_values.update({"reason":False})
+                if 'escalation_status' in value:
+                    ndr_values.update({'escalation_status':str(value['escalation_status'])})
+                else:
+                    ndr_values.update({"escalation_status":False})
+                if 'shipment_channel_id' in value:
+                    ndr_values.update({'shipment_channel_id':str(value['shipment_channel_id'])})
+                else:
+                    ndr_values.update({"shipment_channel_id":False})
+                if 'courier' in value:
+                    ndr_values.update({'courier':str(value['courier'])})
+                else:
+                    ndr_values.update({"courier":False})
+                if 'history' in value:
+                    ndr_values.update({'history':value['history']})
+                else:
+                    ndr_values.update({"history":False})
+                response_values.append(ndr_values)
+        return response_values
+
+    def _get_specific_ndr_shipments(self,awb_code):
+        """To Get Specific NDR Shipment Informations
+        :param:awb_code of particular shipment"""
+        payload = {}
+        ndr_url = "ndr/%s"%('D82183221')
+        url = url_join(API_BASE_URL, ndr_url)
+        try:
+            response = requests.get(url, headers=self.headers, data=payload)
+            if response.status_code == 200:
+                response_dict = response.json()
+                return self.format_ndr_data(response_dict)
+            else:
+                if ERROR_MAP.get(str(response.status_code)):
+                    return {'response_comment':'%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code)))}
+                else:
+                    return {"response_comment":response.text}
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
+
+
+    def _get_all_ndr_shipments(self):
+        """To Get All NDR Shipment Informations"""
+        payload = {}
+        all_ndr_url = "ndr/all"
+        url = url_join(API_BASE_URL, all_ndr_url)
+        all_ndr_values = []
+        response = requests.get(url, headers=self.headers, data=payload)
+        next_url = False
+        response_dict = response.json()
+        if response.status_code == 200:
+            all_ndr_values.extend(self.format_ndr_data(response_dict))
+            if 'meta' in response_dict and response_dict['meta'] != False:
+                if 'pagination' in response_dict['meta']:
+                    if "links" in  response_dict['meta']['pagination']:
+                        if "next" in response_dict['meta']['pagination']['links']:
+                            next_url = response_dict['meta']['pagination']['links']['next']
+        else:
+            if ERROR_MAP.get(str(response.status_code)):
+                return {'response_comment':'%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code)))}
+            else:
+                return {"response_comment":response_dict}
+        while next_url:
+            next_response = requests.get(next_url, headers=self.headers, data=payload)    
+            next_response_dict = next_response.json()
+            if next_response.status_code == 200:
+                all_ndr_values.extend(self.format_ndr_data(next_response_dict))
+                if 'meta' in next_response_dict and next_response_dict['meta'] != False:
+                    if 'pagination' in next_response_dict['meta']:
+                        if "links" in  next_response_dict['meta']['pagination']:
+                            if "next" in next_response_dict['meta']['pagination']['links']:
+                                next_url = next_response_dict['meta']['pagination']['links']['next']             
+            else:
+                if ERROR_MAP.get(str(next_response.status_code)):
+                    return {'response_comment':'%s Error Occured! %s'%(str(next_response.status_code),ERROR_MAP.get(str(next_response.status_code)))}
+                else:
+                    return {"response_comment":next_response_dict}
+        if all_ndr_values != []:
+            return all_ndr_values
+        else:
+            return {"response_comment":"No NDR Details Found!"}
+
+    def _action_ndr(self,data,awb_code):
+        action_ndr_url = "ndr/%s/action"%(awb_code)
+        url = url_join(API_BASE_URL, action_ndr_url)
+        payload = json.dumps(data)
+        try:
+            response = requests.post(url, headers=self.headers, data=payload)
+            response_dict = response.json()
+            if response.status_code in (200,204):
+                return response.status_code
+            elif "errors" in response_dict or "message" in response_dict:
+                return self.format_error_message(response_dict)
+            else:
+                return response_dict
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}

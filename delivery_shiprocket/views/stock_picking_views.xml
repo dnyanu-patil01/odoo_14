@@ -30,6 +30,7 @@
                             <field name="label_url" widget="url" readonly="1" />
                             <field name="is_manifest_generated" invisible="1" />
                             <field name="is_pickup_request_done" invisible="1" />
+                            <field name="is_ndr" invisible="1" />
                             <field name="bulk_order_id" readonly="1" attrs="{'invisible':[('bulk_order_id','=',False)]}" />
                         </group>
                         <field name="response_comment" readonly="1"/>
@@ -58,6 +59,18 @@
                             <button class="btn btn-info btn-lg btn-block" icon="fa-edit" type="object" name="set_courier_id" string="Set Courier" />
                         </group>
                     </group>
+                </page>
+                <page name="ndr_history" string="NDR Details" attrs="{'invisible':[('is_ndr','=',False)]}">
+                    <field name="ndr_history_line">
+                        <tree> 
+                            <field name="ndr_history_id" string="NDR ID" />
+                            <field name="ndr_raised_at" />
+                            <field name="ndr_attempt" />
+                            <field name="ndr_reason" />
+                            <field name="comment" />
+                        </tree>
+                    </field>
+                    <button string="Action NDR" name="action_ndr" type="object" class="oe_highlight"/>
                 </page>
             </xpath>
             <xpath expr="//div[hasclass('oe_title')]" position="before">
@@ -133,6 +146,7 @@
                 <button name="shiprocket_generate_label_request" string="Generate Label" type="object" attrs="{'invisible':['|','|','|','|',('shiprocket_awb_code','=',False),('delivery_type','in', ['fixed', 'base_on_rule']),('delivery_type','=',False),('state','not in',('done')),('delivery_type', '!=', 'shiprocket')]}" />
                 <button name="get_shiprocket_status" string="Get Status" type="object" attrs="{'invisible':[('is_manifest_generated','=',False)]}" />
                 <button name="shiprocket_print_manifest_request" string="Generate Manifest" type="object" attrs="{'invisible':[('manifest_url','=',False)]}" />
+                <button string="Get NDR Details" name="get_ndr_details" type="object" class="oe_highlight" attrs="{'invisible':[('is_ndr','=',False)]}" context="{'specific_ndr':True}"/>
             </xpath>
         </field>
     </record>

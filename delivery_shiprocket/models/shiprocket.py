@@ -71,3 +71,35 @@ class ShiprocketServiceabilityMatrix(models.Model):
     etd_hours = fields.Char()
     etd = fields.Char()
     picking_id = fields.Many2one("stock.picking")
+
+class ShiprocketNDR(models.Model):
+    _name="shiprocket.ndr"
+    _description = "Shiprocket NDR Details"
+    _rec_name = "shiprocket_ndr_id"
+
+    shiprocket_ndr_id = fields.Char("ID",help="To store id return from ndr call")
+    ndr_shipment_id = fields.Char("NDR Shipment ID")
+    picking_id = fields.Many2one('stock.picking')
+    attempts = fields.Integer("Attempts")
+    ndr_raised_at = fields.Datetime("Last NDR Raised At")
+    reason = fields.Char()
+    escalation_status = fields.Char()
+    shipment_channel_id = fields.Char()
+    courier = fields.Char()
+    history_line = fields.One2many("shiprocket.ndr.history.line","odoo_ndr_id")
+
+class ShiprocketNDRHistoryLine(models.Model):
+    _name = "shiprocket.ndr.history.line"
+    _rec_name = "ndr_history_id"
+    _order_by = "ndr_attempt"
+
+    odoo_ndr_id = fields.Many2one('shiprocket.ndr',index=True, ondelete="cascade")
+    ndr_history_id = fields.Char()
+    ndr_id = fields.Char()
+    picking_id = fields.Many2one('stock.picking')
+    ndr_reason = fields.Char()
+    ndr_attempt = fields.Integer()
+    comment = fields.Char()
+    ndr_raised_at = fields.Datetime("NDR Raised At")
+    ndr_push_status = fields.Char()
+    action_by = fields.Char()

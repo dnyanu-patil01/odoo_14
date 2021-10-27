@@ -53,6 +53,7 @@
                             <field name="label_url" widget="url" readonly="1" />
                             <field name="is_manifest_generated" invisible="1" />
                             <field name="is_pickup_request_done" invisible="1" />
+                            <field name="is_ndr" invisible="1" />
                             <field name="bulk_order_id" readonly="1" attrs="{'invisible':[('bulk_order_id','=',False)]}" />
                         </group>
                         
@@ -81,6 +82,17 @@
                             <button class="btn btn-info btn-lg btn-block" icon="fa-edit" type="object" name="set_courier_id" string="Set Courier" />
                         </group>
                     </group>
+                </page>
+                <page name="ndr_history" string="NDR Details" attrs="{'invisible':[('is_ndr','=',False)]}">
+                    <field name="ndr_history_line">
+                        <tree> 
+                            <field name="ndr_history_id" string="NDR ID" />
+                            <field name="ndr_raised_at" />
+                            <field name="ndr_attempt" />
+                            <field name="ndr_reason" />
+                            <field name="comment" />
+                        </tree>
+                    </field>
                 </page>
             </xpath>
             <xpath expr="//div[hasclass('oe_title')]" position="before">

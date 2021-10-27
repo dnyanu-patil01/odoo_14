@@ -18,4 +18,13 @@
         <field name="interval_type">days</field>
         <field name="numbercall">-1</field>
     </record>
+    <record id="ir_cron_update_shiprocket_all_ndr" model="ir.cron">
+        <field name="name">Shiprocket Get All NDR Details</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model.get_ndr_details()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+    </record>
 </odoo>
