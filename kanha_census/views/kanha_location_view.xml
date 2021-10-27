@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-	
+		
+		<!-- Kanha location Tree -->
 	    <record id="kanha_location_view_tree" model="ir.ui.view">
 	        <field name="name">kanha.location.view.tree</field>
 	        <field name="model">kanha.location</field>
 	        <field name="arch" type="xml">
 	            <tree string="Kanha Location">
-	                <field name="name"/>
+	          		<field name="display_name" string="Kanha Location"/>
 	            </tree>
 	        </field>
 	    </record>
 	
+		<!-- Kanha location Form -->
 	    <record id="kanha_location_view_form" model="ir.ui.view">
 	        <field name="name">kanha.location.view.form</field>
 	        <field name="model">kanha.location</field>
 	        <field name="arch" type="xml">
 	            <form string="Kanha Location">
 	                <sheet>
-	                    <group>
-	                        <field name="name" ></field>
-	                    </group>
-	                </sheet>
+                        <div class="oe_title">
+                        	<field name="active" invisible="1"/>
+                            <label for="name" string="Kanha Location" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Lamps"/></h1>
+                        </div>
+                        <group name="first" col="2">
+                            <field name="parent_id" class="oe_inline"/>
+                        </group>
+                    </sheet>
 	            </form>
 	        </field>
 	    </record>
 	
+		<!-- Kanha location Action -->
 	    <record id="kanha_location_action" model="ir.actions.act_window">
 	        <field name="name">Kanha Location</field>
 	        <field name="type">ir.actions.act_window</field>
@@ -36,10 +44,12 @@
 	        </field>
 	    </record>
 	           
+	    <!-- Kanha census root menu -->       
 		<menuitem name="Kanha Census"
 	        id="menu_kanha_location_root" 
 	        sequence="4"/>
 	
+		<!-- Kanha Location menu -->
 		<menuitem
 		    id="kanha_location_menu"
 		    name="Kanha Location"
