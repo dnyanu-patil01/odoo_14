@@ -11,7 +11,7 @@ class ResPartner(models.Model):
     gender = fields.Selection([
         ('Male', 'Male'),
         ('Female', 'Female'),
-        ('Mother', 'Other')
+        ('Other', 'Other')
     ], required=True)
     date_of_birth = fields.Date(string='Date of birth', required=True)
     town = fields.Char(string='Town/Village Name', required=True)

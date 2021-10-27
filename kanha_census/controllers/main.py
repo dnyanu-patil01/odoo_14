@@ -14,22 +14,8 @@ class CustomerPortal(CustomerPortal):
                                 "gender",
                                 "mobile",
                                 "date_of_birth",
-                                "zipcode",
-                                "state_id",
                                 "resident_of_kanha_from_date",
-                                "adhar_card",
                                 "kanha_location_id",
-                                "age_proof",
-                                "address_proof",
-                                "age_declaration_form",
-                                "passport_photo",
-                                "house_number",
-                                "locality",
-                                "town",
-                                "voter_number",
-                                "assembly_constituency",
-                                "post_office",
-                                "district",
                                 "application_type",
                                 "pan_card_number",
                                 "aadhaar_card_number",
@@ -54,7 +40,25 @@ class CustomerPortal(CustomerPortal):
                                "change_voter_id_address",
                                "room_details"
                                ]
+    VOTER_INFO_FIELDS = ["house_number",
+                         "locality",
+                         "town",
+                         "voter_number",
+                         "assembly_constituency",
+                         "post_office",
+                         "district",
+                         "state_id",
+                         "zipcode",
+                         ]
     
+    DOCUMENT_INFO_FIELDS = ["adhar_card",
+                           "age_proof",
+                           "address_proof",
+                           "age_declaration_form",
+                           "passport_photo",
+                           ]
+
+
     def _partner_get_page_view_values(self, partner, access_token, **kwargs):
         values = {
             'page_name': 'partner',
@@ -105,13 +109,21 @@ class CustomerPortal(CustomerPortal):
         values = self._partner_get_page_view_values(partner_sudo, access_token, **kw)
         return request.render("kanha_census.portal_partner", values)
 
-    def partner_form_validate(self, data):
+    def partner_form_validate(self, data, partner_id):
         error = dict()
         error_message = []
         # Validation
         for field_name in self.MANDATORY_PARTNER_FIELDS:
             if not data.get(field_name):
                 error[field_name] = 'missing'
+        if(data.get('application_type') == 'Transfer Application'):
+            for field_name in self.VOTER_INFO_FIELDS:
+                if not data.get(field_name):
+                    error[field_name] = 'missing'
+        if(not partner_id):
+            for field_name in self.DOCUMENT_INFO_FIELDS:
+                if not data.get(field_name):
+                    error[field_name] = 'missing'
         # email validation
         if data.get('email') and not tools.single_email_re.match(data.get('email')):
             error["email"] = 'error'
@@ -127,7 +139,25 @@ class CustomerPortal(CustomerPortal):
             is_valid = self.is_valid_aadhaar_number(data.get('aadhar_card_number'))
             if not is_valid:
                 error["aadhar_card_number"] = 'error'
-                error_message.append(_('Invalid Aadhar Number!'))        
+                error_message.append(_('Invalid Aadhar Number!')) 
+                
+        # Relative Aadhar card validation
+        if data.get('relative_aadhaar_card_number'):
+            relative_aadhaar_card_number = data.get('relative_aadhaar_card_number')
+            is_valid = self.is_valid_aadhaar_number(relative_aadhaar_card_number)
+            if not is_valid:
+                error["aadhar_card_number"] = 'error'
+                error_message.append(_('Invalid Aadhar Number!'))               
+            # Adhar card exsist
+            ResPartner = request.env['res.partner']
+            is_adhar_exsist = ResPartner.search([('aadhaar_card_number', '=', relative_aadhaar_card_number)])
+            if(not is_adhar_exsist): 
+                error["relative_aadhaar_card_number"] = 'error'
+                error_message.append(_('Relative Aadhar Number does not exist!'))              
+        if ((data.get('relation_type')) and (not data.get('relative_aadhaar_card_number'))):
+            error["relative_aadhaar_card_number"] = 'error'
+            error_message.append(_('Relative Aadhar Number is Mandatory!'))
+        
         # Mobile number validation
         if data.get('mobile'):
             is_valid = self.is_valid_mobile_number(data.get('mobile'))
@@ -138,7 +168,7 @@ class CustomerPortal(CustomerPortal):
         if [err for err in error.values() if err == 'missing']:
             error_message.append(_('Some required fields are empty.'))
 
-        unknown = [k for k in data if k not in self.MANDATORY_PARTNER_FIELDS + self.OPTIONAL_PARTNER_FIELDS]
+        unknown = [k for k in data if k not in self.MANDATORY_PARTNER_FIELDS + self.OPTIONAL_PARTNER_FIELDS + self.VOTER_INFO_FIELDS + self.DOCUMENT_INFO_FIELDS]
         if unknown:
             error['common'] = 'Unknown field'
             error_message.append("Unknown field '%s'" % ','.join(unknown))
@@ -190,13 +220,13 @@ class CustomerPortal(CustomerPortal):
     def update_partner(self, partner_id=None, redirect=None, access_token=None, **post):
         values = self._prepare_portal_layout_values()
         ResPartner = request.env['res.partner']
-        partner = ResPartner.search([('id', '=', partner_id)])
+        partner = ResPartner.sudo().search([('id', '=', partner_id)])
         values.update({
             'error': {},
             'error_message': [],
         })
         if post and request.httprequest.method == 'POST':
-            error, error_message = self.partner_form_validate(post)
+            error, error_message = self.partner_form_validate(post, partner_id)
             values.update({'error': error, 'error_message': error_message})
             values.update(post)
             if not error:
@@ -218,10 +248,11 @@ class CustomerPortal(CustomerPortal):
                 else:
                     partner_created = ResPartner.sudo().create(values)
                     if(post.get('relative_aadhaar_card_number')):
-                        relative_aadhar_card_number = post.get('relative_aadhaar_card_number')
-                        relative_partner = ResPartner.search([('aadhaar_card_number', '=', relative_aadhar_card_number)])
-                        partner_created.sudo().write({'family_members_ids': [(4, relative_partner.id)]})
-                        relative_partner.sudo().write({'family_members_ids': [(4, partner_created.id)]})
+                        relative_aadhaar_card_number = post.get('relative_aadhaar_card_number')
+                        relative_partner = ResPartner.search([('aadhaar_card_number', '=', relative_aadhaar_card_number)])
+                        if(relative_partner):
+                            partner_created.sudo().write({'family_members_ids': [(4, relative_partner.id)]})
+                            relative_partner.sudo().write({'family_members_ids': [(4, partner_created.id)]})
 
                 if redirect:
                     return request.redirect(redirect)

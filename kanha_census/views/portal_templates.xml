@@ -113,7 +113,7 @@
           							</div>
 		                            <div t-attf-class="form-group #{error.get('gender') and 'o_has_error' or ''} col-xl-6">
 										<select name="gender" t-attf-class="form-control #{error.get('gender') and 'is-invalid' or ''}">
-		                                    <t t-foreach="['male', 'female', 'other']" t-as="gen">
+		                                    <t t-foreach="['Male', 'Female', 'Other']" t-as="gen">
 		                                   		<!-- <option t-att-value="gen" t-att-selected="gen == gender if gender else gen == partner.gender"> -->
 		                                        <option t-att-value="gen" t-att-selected="gen == partner.gender if partner else ''">
 		                                            <t t-esc="gen" />
@@ -151,17 +151,17 @@
           							</div>
                         		  	<div t-attf-class="form-group #{error.get('citizenship') and 'o_has_error' or ''} col-xl-6">
             							<select name="citizenship" t-attf-class="form-control #{error.get('citizenship') and 'is-invalid' or ''}">
-		                                    <t t-foreach="['Overseas', 'NRI', 'Indian']" t-as="citizenship">
+		                                    <t t-foreach="['Indian', 'NRI', 'Overseas']" t-as="citizenship">
 		                                        <option t-att-value="citizenship" t-att-selected="citizenship == partner.citizenship if partner else ''">
 		                                            <t t-esc="citizenship" />
 		                                        </option>
 		                                    </t>
 		                                </select> 
             						</div>
-            						<div class="col-lg-6 passport_field d-none">
+            						<div t-attf-class="col-lg-6 passport_field #{'d-none' if partner and partner.citizenship != 'Overseas' else ''} ">
 		                                <label class="col-form-label passport_field" for="passport_number">Passport Number</label>
           							</div>
-                        		  	<div t-attf-class="passport_field d-none form-group #{error.get('passport_number') and 'o_has_error' or ''} col-xl-6">
+                        		  	<div t-attf-class="passport_field form-group #{error.get('passport_number') and 'o_has_error' or ''} col-xl-6 #{'d-none' if partner and partner.citizenship != 'Overseas' else ''} ">
 		                                <input type="text" name="passport_number" t-attf-class="form-control #{error.get('passport_number') and 'is-invalid' or ''}" t-att-value="partner.passport_number if partner else ''" />
             						</div>
 	                       		</div>
@@ -249,7 +249,7 @@
 					                                aria-selected="false">Relation Info</a>
 					                        </li>
 					                        <li class="nav-item">
-					                            <a class="nav-link"
+					                            <a t-attf-class="voter_id_tab nav-link #{'d-none' if partner and partner.application_type != 'Transfer Application' else ''} "
 					                                id="nav_tabs_link_voter"
 					                                data-toggle="tab"
 					                                href="#nav_tabs_content_voter"
@@ -293,7 +293,7 @@
 							                      	</a>
 									          	</div>
 									        	<div t-attf-class="form-group #{error.get('adhar_card') and 'o_has_error' or ''} col-xl-6">
-							                    	<input type="file" name="adhar_card" t-attf-class="form-control #{error.get('adhar_card') and 'is-invalid' or ''}"/>
+							                    	<input type="file" name="adhar_card" t-attf-class="form-control #{error.get('adhar_card') and 'is-invalid' or ''}" value="'test'"/>
 									            </div>
 									            <div class="col-lg-4">
 											   		<label class="col-form-label" for="passport_photo">Passport Photo</label>
@@ -418,7 +418,7 @@
 					                           </div>
 											</div>
 					                    </div>
-					                    <div class="tab-pane fade"
+					                    <div t-attf-class="voter_id_tab tab-pane fade #{'d-none' if partner and partner.application_type != 'Transfer Application' else ''} "
 					                        id="nav_tabs_content_voter"
 					                        role="tabpanel"
 					                        aria-labelledby="nav_tabs_link_voter">

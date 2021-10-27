@@ -32,12 +32,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     _onApplicationTypeChange: function () {
        var application_type = this.$('select[name="application_type"]');
 		if(application_type.val() == 'Transfer Application'){
-			document.getElementById('nav_tabs_link_voter').style.display = "block";
-			document.getElementById('nav_tabs_content_voter').style.display = "block";
+			$('.voter_id_tab').removeClass('d-none');
 		}
 		else{
-			document.getElementById('nav_tabs_link_voter').style.display = "none";
-			document.getElementById('nav_tabs_content_voter').style.display = "none";
+			$('.voter_id_tab').addClass('d-none');
 		}
     },
 
