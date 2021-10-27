@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	
-	<!-- Kanha Census Form View  -->
+	<!-- Kanha Family Form View  -->
 	<record model="ir.ui.view"
 		id="kanha_inherit_view_partner_form">
 		<field name="name">kanha.inherit.view.partner.form</field>
@@ -16,27 +16,71 @@
 							<group>
 								<field name="name" />
 								<field name="surname" />
-								<field name="email" />
-								<field name="mobile" />
 								<field name="gender"/>
+								<field name="application_type" />
+								<field name="pan_card_number" />
+								<field name="abhyasi_id" />
+								<field name="citizenship" />
+								<field name="passport_number" />
 							</group>
 							<group>
-								<field name="application_type" />
+								<field name="email" />
+								<field name="mobile" />
 								<field name="date_of_birth"/>
-								<field name="resident_of_kanha_from_date" />
-								<field name="kanha_location_id" />
-								<field name="application_type" />
+								<field name="aadhaar_card_number"/>
+								<field name="members_count" />
+								<field name="change_voter_id_address" />
+								<field name="room_details" />
 							</group>
 						</group>
 						<notebook>
+							<page string="Birth Place Info" name="birthplace" >
+                        		<group>
+		                            <group string="Birth Place Info" name="birthplace">
+		                                <field name="birth_state_id" />
+		                                <field name="birth_district" />
+		                              	<field name="birth_town" />
+		                            </group>
+                        		</group>
+                    		</page>
+                    		<page string="Relation Info" name="reation_info" >
+                        		<group>
+		                            <group string="Relation Info" name="reation_info">
+		                            	<field name="relation_type" />
+		                                <field name="relative_aadhaar_card_number" />
+		                                <field name="relative_name" />
+		                                <field name="relative_surname" />
+		                            </group>
+                        		</group>
+                    		</page>
+                    		<page string="Kanha Address" name="kanha_address" >
+                        		<group>
+		                            <group string="Kanha Address" name="kanha_address">
+		                            	<field name="resident_of_kanha_from_date" />
+		                                <field name="work_profile" />
+		                                <field name="kanha_location_id" />
+		                                <field name="kanha_house_number" />
+		                            </group>
+                        		</group>
+                    		</page>
 							<page string="Documents" name="documents" >
                         		<group>
 		                            <group string="Documents" name="documents">
-		                            	<field name="passport_photo" widget="image"/>
+		                            	<field name="passport_photo"/>
 		                                <field name="adhar_card" />
 		                                <field name="address_proof" />
 		                              	<field name="age_proof" />
 		                              	<field name="age_declaration_form" />
+		                            </group>
+                        		</group>
+                    		</page>
+                    		<page string="Vehicle Details" name="vehicle_details" >
+                        		<group>
+		                            <group string="Vehicle Details" name="vehicle_details">
+		                                <field name="vehicle_number" />
+		                                <field name="vehicle_owner" />
+		                                <field name="vehicle_type" />
+		                              	<field name="additional_vehicle_number" />
 		                            </group>
                         		</group>
                     		</page>
@@ -52,16 +96,6 @@
 		                         		<field name="town" />
 		                             	<field name="post_office" />
 		                            	<field name="zip" />
-		                            </group>
-                        		</group>
-                    		</page>
-                    		<page string="Relation Info" name="reation_info" >
-                        		<group>
-		                            <group string="Relation Info" name="reation_info">
-		                            	<field name="relation_type" />
-		                                <field name="relative_aadhaar_card_number" />
-		                                <field name="relative_name" />
-		                                <field name="relative_surname" />
 		                            </group>
                         		</group>
                     		</page>
@@ -84,7 +118,7 @@
 		</field>
 	</record>
 
-	<!-- Kanha Census Tree View  -->
+	<!-- Kanha Family Tree View  -->
 	<record id="kanha_iherit_view_partner_tree"
 		model="ir.ui.view">
 		<field name="name">res.partner.tree</field>
@@ -104,9 +138,9 @@
 		</field>
 	</record>
 
-	<!-- Kanha Census Action  -->
+	<!-- Kanha Patner Action  -->
 	<record id="kanha_partner_action" model="ir.actions.act_window">
-		<field name="name">Kanha Census</field>
+		<field name="name">Family</field>
 		<field name="res_model">res.partner</field>
 		<field name="view_mode">tree,form</field>
 		<field name="view_ids"

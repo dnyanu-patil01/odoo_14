@@ -16,6 +16,9 @@ class ResPartner(models.Model):
     date_of_birth = fields.Date(string='Date of birth', required=True)
     town = fields.Char(string='Town/Village Name', required=True)
     district = fields.Char(string='District', required=True)
+    birth_town = fields.Char(string='Birth Town/Village Name', required=True)
+    birth_district = fields.Char(string='Birth District', required=True)
+    birth_state_id = fields.Many2one("res.country.state", string='Birth State', ondelete='restrict')
     relation_type = fields.Selection([
         ('Father', 'Father'),
         ('Mother', 'Mother'),
@@ -27,21 +30,22 @@ class ResPartner(models.Model):
     relative_surname = fields.Char(string='Relative Surname')
     kanha_location_id = fields.Many2one('kanha.location', string="Kanha Location", required=True)
     house_number = fields.Char(string='House Number', required=True)
+    kanha_house_number = fields.Char(string='Kanha House Number', required=True)
     resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date', required=True)
     voter_number = fields.Char(string="Voter Number", required=True)
     assembly_constituency = fields.Char(string="Assembly Constituency", required=True)
     locality = fields.Char(string="Locality", required=True)
     post_office = fields.Char(string="Post Office", required=True)
     passport_photo = fields.Image(string="Passport Photo", required=True)
+    passport_photo_filename = fields.Char()
     adhar_card = fields.Binary('Adhar Card', attachment=True, required=True)
+    adhar_card_filename = fields.Char()
     age_proof = fields.Binary(string='Age Proof', required=True)
+    age_proof_filename = fields.Char()
     address_proof = fields.Binary( string='Address Proof', required=True)
+    address_proof_filename = fields.Char()
     age_declaration_form = fields.Binary(string='Age Declaration Form', required=True)
-    # age_proof = fields.Many2one('ir.attachment', string='Age Proof', required=True)
-    # address_proof = fields.Many2one('ir.attachment', string='Address Proof', required=True)
-    # age_declaration_form = fields.Many2one('ir.attachment', string='Age Declaration Form', required=True)
-    #adhar_card = fields.Many2one('ir.attachment', string='Adhar Card', required=True)
-    #adhar_card_filename = fields.Char()
+    age_declaration_form_filename = fields.Char()
     application_type = fields.Selection([
         ('New Application', 'New Application'),
         ('Transfer Application', 'Transfer Application'),

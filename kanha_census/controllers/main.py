@@ -3,7 +3,6 @@ import base64
 import re
 from odoo import http, tools, _
 from odoo.http import request
-from odoo.exceptions import AccessError, MissingError
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
 
 
@@ -17,9 +16,16 @@ class CustomerPortal(CustomerPortal):
                                 "resident_of_kanha_from_date",
                                 "kanha_location_id",
                                 "application_type",
-                                "pan_card_number",
                                 "aadhaar_card_number",
-                                # "relative_aadhaar_card_number"
+                                "birth_state_id",
+                                "birth_district",
+                                "birth_town",
+                                "kanha_house_number",
+                                "adhar_card_filename",
+                                "passport_photo_filename",
+                                "age_proof_filename",
+                                "address_proof_filename",
+                                "age_declaration_form_filename",
                                 ]
     OPTIONAL_PARTNER_FIELDS = ["company_name",
                                "surname",
@@ -38,7 +44,13 @@ class CustomerPortal(CustomerPortal):
                                "additional_vehicle_number",
                                "work_profile",
                                "change_voter_id_address",
-                               "room_details"
+                               "room_details",
+                               "adhar_card",
+                               "passport_photo",
+                               "age_proof",
+                               "address_proof",
+                               "age_declaration_form",
+                               "pan_card_number",
                                ]
     VOTER_INFO_FIELDS = ["house_number",
                          "locality",
@@ -48,30 +60,14 @@ class CustomerPortal(CustomerPortal):
                          "post_office",
                          "district",
                          "state_id",
-                         "zipcode",
+                         "zip",
                          ]
-    
-    DOCUMENT_INFO_FIELDS = ["adhar_card",
-                           "age_proof",
-                           "address_proof",
-                           "age_declaration_form",
-                           "passport_photo",
-                           ]
 
-
-    def _partner_get_page_view_values(self, partner, access_token, **kwargs):
-        values = {
-            'page_name': 'partner',
-            'partner': partner,
-        }
-        return self._get_page_view_values(partner, access_token, values, 'partners_history', False, **kwargs)
-
-    
     @http.route(['/partners', '/partners/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_partners(self, page=1,  **kw):
-        # values = self._prepare_portal_layout_values()
+    def partner_list(self, page=1,  **kw):
         values = {}
         current_partner = request.env.user.partner_id
+        # print(current_partner.zip)
         ResPartner = request.env['res.partner']
         if current_partner.aadhaar_card_number:
             domain = ['|',('id', '=', current_partner.id),('relative_aadhaar_card_number', '=', current_partner.aadhaar_card_number)]
@@ -86,7 +82,6 @@ class CustomerPortal(CustomerPortal):
             page=page,
             step=self._items_per_page
         )
-        # if request.env.user.has_group('base.group_portal'):
         # search the count to display, according to the pager data
         partners = ResPartner.sudo().search(domain, limit=self._items_per_page, offset=pager['offset'])
         request.session['partners_history'] = partners.ids[:100]
@@ -97,31 +92,38 @@ class CustomerPortal(CustomerPortal):
             'pager': pager,
             'default_url': '/partners',
         })
-        return request.render("kanha_census.portal_partners", values)
-    
-    @http.route(['/partner_old/<int:partner_id>'], type='http', auth="public", website=True)
-    def portal_partner(self, partner_id=None, access_token=None, **kw):
-        try:
-            partner_sudo = self._document_check_access('res.partner', partner_id, access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
+        return request.render("kanha_census.kanha_portal_list", values)
 
-        values = self._partner_get_page_view_values(partner_sudo, access_token, **kw)
-        return request.render("kanha_census.portal_partner", values)
-
-    def partner_form_validate(self, data, partner_id):
+    def kanha_portal_form_validate(self, data, partner_id):
         error = dict()
         error_message = []
+        missing_fields = dict()
+        form_fields = {"name": "Name",
+                       "email":"Email",
+                       "gender":"Gender",
+                       "mobile":"Mobile",
+                       "date_of_birth": "Date of Birth",
+                       "resident_of_kanha_from_date": "Resident of Kanha From Date",
+                       "kanha_location_id": "Kanha Location",
+                       "application_type": "Application Type",
+                       "pan_card_number":"Pan Card Number",
+                       "aadhaar_card_number":"Adhar Card Number",
+                       "birth_state_id": "Birth State",
+                       "birth_district":"Birth District",
+                       "birth_town": "Birth Town",
+                       "kanha_house_number":"Kanha House Number",
+                       "adhar_card_filename": 'Adhar Card File',
+                       "passport_photo_filename": "Passport Photo File",
+                       "age_proof_filename": "Age Proof File",
+                       "address_proof_filename": "Address Proof File",
+                       "age_declaration_form_filename": "Age Declaration Form"}
         # Validation
         for field_name in self.MANDATORY_PARTNER_FIELDS:
             if not data.get(field_name):
                 error[field_name] = 'missing'
+                missing_fields[field_name] = form_fields.get(field_name)
         if(data.get('application_type') == 'Transfer Application'):
             for field_name in self.VOTER_INFO_FIELDS:
-                if not data.get(field_name):
-                    error[field_name] = 'missing'
-        if(not partner_id):
-            for field_name in self.DOCUMENT_INFO_FIELDS:
                 if not data.get(field_name):
                     error[field_name] = 'missing'
         # email validation
@@ -140,7 +142,6 @@ class CustomerPortal(CustomerPortal):
             if not is_valid:
                 error["aadhar_card_number"] = 'error'
                 error_message.append(_('Invalid Aadhar Number!')) 
-                
         # Relative Aadhar card validation
         if data.get('relative_aadhaar_card_number'):
             relative_aadhaar_card_number = data.get('relative_aadhaar_card_number')
@@ -153,11 +154,10 @@ class CustomerPortal(CustomerPortal):
             is_adhar_exsist = ResPartner.search([('aadhaar_card_number', '=', relative_aadhaar_card_number)])
             if(not is_adhar_exsist): 
                 error["relative_aadhaar_card_number"] = 'error'
-                error_message.append(_('Relative Aadhar Number does not exist!'))              
+                error_message.append(_('Given Relative Aadhar Number does not exist!'))              
         if ((data.get('relation_type')) and (not data.get('relative_aadhaar_card_number'))):
             error["relative_aadhaar_card_number"] = 'error'
             error_message.append(_('Relative Aadhar Number is Mandatory!'))
-        
         # Mobile number validation
         if data.get('mobile'):
             is_valid = self.is_valid_mobile_number(data.get('mobile'))
@@ -165,10 +165,10 @@ class CustomerPortal(CustomerPortal):
                 error["mobile"] = 'error'
                 error_message.append(_('Invalid Mobile Number!')) 
         # error message for empty required fields
-        if [err for err in error.values() if err == 'missing']:
-            error_message.append(_('Some required fields are empty.'))
-
-        unknown = [k for k in data if k not in self.MANDATORY_PARTNER_FIELDS + self.OPTIONAL_PARTNER_FIELDS + self.VOTER_INFO_FIELDS + self.DOCUMENT_INFO_FIELDS]
+        if(missing_fields):
+            error_message.append("Please fill these required field(s): '%s'" % ','.join(missing_fields.values()))
+        
+        unknown = [k for k in data if k not in self.MANDATORY_PARTNER_FIELDS + self.OPTIONAL_PARTNER_FIELDS + self.VOTER_INFO_FIELDS]
         if unknown:
             error['common'] = 'Unknown field'
             error_message.append("Unknown field '%s'" % ','.join(unknown))
@@ -188,7 +188,6 @@ class CustomerPortal(CustomerPortal):
             return True
         else:
             return False
-            # raise Warning("Invalid Pan Number!")
         
     def is_valid_aadhaar_number(self,emp_aadhaar):
         # Valid Aadhar number conditions:
@@ -202,7 +201,6 @@ class CustomerPortal(CustomerPortal):
             return True
         else:
             return False
-            # raise Warning("Invalid Aadhar Number!")
         
     def is_valid_mobile_number(self,mobile_number):
         #Valid Mobile Number
@@ -214,10 +212,9 @@ class CustomerPortal(CustomerPortal):
             return True
         else:
             return False
-            # raise Warning("Invalid Mobile Number!")
 
     @http.route(['/partner/portal/form', '/partner/<int:partner_id>'], type='http', auth="public", website=True)
-    def update_partner(self, partner_id=None, redirect=None, access_token=None, **post):
+    def save_portal_form(self, partner_id=None, redirect=None, access_token=None, **post):
         values = self._prepare_portal_layout_values()
         ResPartner = request.env['res.partner']
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
@@ -226,23 +223,35 @@ class CustomerPortal(CustomerPortal):
             'error_message': [],
         })
         if post and request.httprequest.method == 'POST':
-            error, error_message = self.partner_form_validate(post, partner_id)
+            error, error_message = self.kanha_portal_form_validate(post, partner_id)
             values.update({'error': error, 'error_message': error_message})
             values.update(post)
             if not error:
                 values = {key: post[key] for key in self.MANDATORY_PARTNER_FIELDS}
                 values.update({key: post[key] for key in self.OPTIONAL_PARTNER_FIELDS if key in post})
-                for field in set(['state_id']) & set(values.keys()):
+                # print(values.get('zip'))
+                values.update({'is_published': True})
+                many_2_one_fields = ['birth_state_id', 'kanha_location_id']
+                if(post.get('application_type') == 'Transfer Application'):
+                    values.update({key: post[key] for key in self.VOTER_INFO_FIELDS if key in post})
+                    many_2_one_fields.append('state_id')
+                for field in set(many_2_one_fields) & set(values.keys()):
                     try:
                         values[field] = int(values[field])
+                        # print(values[field])
                     except:
                         values[field] = False
                 for field in set(['passport_photo', 'adhar_card', 'age_proof', 'address_proof', 'age_declaration_form']) & set(values.keys()):
                         file = post.get(field)
-                        # values[field] = self.insert_attachment(file)
-                        values[field] = base64.encodebytes(file.read())
-                values.update({'zip': values.pop('zipcode', '')})
-                
+                        file_content = file.read()
+                        # Restricts empty file upload when update the records
+                        if(file_content):
+                            values[field] = base64.encodebytes(file_content)
+                        else:
+                            values.pop(field)
+                # print(values.get('zip'))
+                # print(values.get('error'))
+                # print(values.get('error_message'))
                 if partner:
                     partner.sudo().write(values)
                 else:
@@ -253,7 +262,6 @@ class CustomerPortal(CustomerPortal):
                         if(relative_partner):
                             partner_created.sudo().write({'family_members_ids': [(4, relative_partner.id)]})
                             relative_partner.sudo().write({'family_members_ids': [(4, partner_created.id)]})
-
                 if redirect:
                     return request.redirect(redirect)
                 return request.redirect('/partners')
@@ -263,17 +271,17 @@ class CustomerPortal(CustomerPortal):
         values.update({
             'partner': partner,
             'states': states,
-            'has_check_vat': hasattr(request.env['res.partner'], 'check_vat'),
             'redirect': redirect,
-            'page_name': 'my_details',
+            'page_name': 'partner',
             'kanha_locations': kanha_locations
         })
-        response = request.render("kanha_census.portal_user_details", values)
+        # print(values['state_id'])
+        response = request.render("kanha_census.kanha_portal_form", values)
         response.headers['X-Frame-Options'] = 'DENY'
         return response
     
     @http.route(['/add_partner'], type='http', auth="public", website=True)
-    def add_partner_form(self, redirect=None, **post):
+    def add_family_members(self, redirect=None, **post):
         values = self._prepare_portal_layout_values()
         values.update({
             'error': {},
@@ -285,19 +293,8 @@ class CustomerPortal(CustomerPortal):
             'partner': 0,
             'states': states,
             'redirect': redirect,
-            'page_name': 'my_details',
+            'page_name': 'partner',
             'kanha_locations': kanha_locations
         })
-        response = request.render("kanha_census.portal_user_details", values)
+        response = request.render("kanha_census.kanha_portal_form", values)
         return response
-    
-    # def insert_attachment(self, file):
-    #     Attachments = request.env['ir.attachment']
-    #     partner_id = request.env.user.partner_id.id
-    #     attachment = Attachments.create({
-    #         'name':file.name,
-    #         'res_model': 'res.partner',
-    #         'res_id': partner_id,
-    #         'datas': base64.encodebytes(file.read())
-    #     })
-    #     return attachment.id

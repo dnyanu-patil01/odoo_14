@@ -3,7 +3,7 @@
     <data>
     	<!-- Menu make visible only for Portal users -->
         <record id="menu_kanha_partners" model="website.menu" >
-            <field name="name">Partners</field>
+            <field name="name">Family</field>
             <field name="url">/partners</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">22</field>
