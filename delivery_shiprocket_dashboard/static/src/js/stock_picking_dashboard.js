@@ -129,12 +129,12 @@ var StockPickingListDashboardController = ListController.extend({
                         'stock_action_dashboard_manifest_list',
                         'stock_action_dashboard_delivered_list', 
                         'stock_action_dashboard_all_orders_list',
-                        // 'stock_bulk_action_dashboard_wp_awb_list',
-                        // 'stock_bulk_action_dashboard_gen_awb_list',
-                        // 'stock_bulk_action_dashboard_wp_pickup_list',
-                        // 'stock_bulk_action_dashboard_gen_pickup_list',
-                        // 'stock_bulk_action_dashboard_wp_manifest_list',
-                        // 'stock_bulk_action_dashboard_gen_manifest_list',
+                        'stock_bulk_action_dashboard_wp_awb_list',
+                        'stock_bulk_action_dashboard_gen_awb_list',
+                        'stock_bulk_action_dashboard_wp_pickup_list',
+                        'stock_bulk_action_dashboard_gen_pickup_list',
+                        'stock_bulk_action_dashboard_wp_manifest_list',
+                        'stock_bulk_action_dashboard_gen_manifest_list',
                     ], action_name)) {
             return this._rpc({model: this.modelName, method: action_name})
                 .then(function (data) {

@@ -21,6 +21,12 @@ class StockPickingDashboard(models.Model):
             'manifest': 0,
             'delivered': 0,
             'all_orders': 0,
+            'wp_awb':0,
+            'gen_awb':0,
+            'wp_pickup':0,
+            'gen_pickup':0,
+            'wp_manifest':0,
+            'gen_manifest':0,
         }
         # easy counts
         pickings = self.env['stock.picking']
@@ -30,60 +36,68 @@ class StockPickingDashboard(models.Model):
         result['manifest'] = pickings.search_count([('shiprocket_order_status_id.status_code', '=', '3'),('is_pickup_request_done', '=', True),('is_awb_generated','=',True)])
         result['delivered'] = pickings.search_count([('shiprocket_order_status_id.status_code', '=', '7')])
         result['all_orders'] = pickings.search_count([('shiprocket_order_status_id', '!=', False)])
-        # bulk_process = self.env['shiprocket.bulk.process']
-        # result['wp_awb'] = bulk_process.search_count([('state','in',('waiting_awb','awb_created_partially'))])
-        # result['gen_awb'] = bulk_process.search_count([('state','=','awb_created')])
-        # result['wp_pickup'] = bulk_process.search_count([('state','in',('waiting_create_pickup','pickup_created_partially'))])
-        # result['gen_pickup'] = bulk_process.search_count([('state','=','pickup_created')])
-        # result['wp_manifest'] = bulk_process.search_count([('state','in',('waiting_to_manifest','ready_to_manifest'))])
-        # result['gen_manifest'] = bulk_process.search_count([('state','=','manifest_generated')])
+        bulk_process = self.env['shiprocket.bulk.process']
+        result['wp_awb'] = bulk_process.search_count([('state','in',('waiting_awb','awb_created_partially'))])
+        result['gen_awb'] = bulk_process.search_count([('state','=','awb_created')])
+        result['wp_pickup'] = bulk_process.search_count([('state','in',('waiting_create_pickup','pickup_created_partially'))])
+        result['gen_pickup'] = bulk_process.search_count([('state','=','pickup_created')])
+        result['wp_manifest'] = bulk_process.search_count([('state','in',('waiting_to_manifest','ready_to_manifest'))])
+        result['gen_manifest'] = bulk_process.search_count([('state','=','manifest_generated')])
         return result
 
-    # @api.model
-    # def stock_bulk_action_dashboard_wp_awb_list(self):
-    #     return self.search([])._action_view_bulk_process(tranfers='wp_awb')
-    # @api.model
-    # def stock_bulk_action_dashboard_gen_awb_list(self):
-    #     return self.search([])._action_view_bulk_process(tranfers='gen_awb')
-    # @api.model
-    # def stock_bulk_action_dashboard_wp_pickup_list(self):
-    #     return self.search([])._action_view_bulk_process(tranfers='wp_pickup')
-    # @api.model
-    # def stock_bulk_action_dashboard_gen_pickup_list(self):
-    #     return self.search([])._action_view_bulk_process(tranfers='gen_pickup')
-    # @api.model
-    # def stock_bulk_action_dashboard_wp_manifest_list(self):
-    #     return self.search([])._action_view_bulk_process(tranfers='wp_manifest')
-    # @api.model
-    # def stock_bulk_action_dashboard_gen_manifest_list(self):
-    #     return self.search([])._action_view_bulk_process(tranfers='gen_manifest')
+    @api.model
+    def stock_bulk_action_dashboard_wp_awb_list(self):
+        return self._action_view_bulk_process(tranfers='wp_awb')
+    @api.model
+    def stock_bulk_action_dashboard_gen_awb_list(self):
+        return self._action_view_bulk_process(tranfers='gen_awb')
+    @api.model
+    def stock_bulk_action_dashboard_wp_pickup_list(self):
+        return self._action_view_bulk_process(tranfers='wp_pickup')
+    @api.model
+    def stock_bulk_action_dashboard_gen_pickup_list(self):
+        return self._action_view_bulk_process(tranfers='gen_pickup')
+    @api.model
+    def stock_bulk_action_dashboard_wp_manifest_list(self):
+        return self._action_view_bulk_process(tranfers='wp_manifest')
+    @api.model
+    def stock_bulk_action_dashboard_gen_manifest_list(self):
+        return self._action_view_bulk_process(tranfers='gen_manifest')
     
-    # def _action_view_bulk_process(self, tranfers=False):
-    #     domain = [('company_id', '=', self.env.company.id)]
+    def _action_view_bulk_process(self, tranfers=False):
+        domain = [('company_id', '=', self.env.company.id)]
         
-    #     if tranfers == 'wp_awb':
-    #         domain += [('state','in',('waiting_awb','awb_created_partially'))]
+        if tranfers == 'wp_awb':
+            domain += [('state','in',('waiting_awb','awb_created_partially'))]
 
-    #     if tranfers == 'gen_awb':
-    #         domain += [('state','=','awb_created')]
+        if tranfers == 'gen_awb':
+            domain += [('state','=','awb_created')]
 
-    #     if tranfers == 'wp_pickup':
-    #         domain += [('state','in',('waiting_create_pickup','pickup_created_partially'))]
+        if tranfers == 'wp_pickup':
+            domain += [('state','in',('waiting_create_pickup','pickup_created_partially'))]
 
-    #     if tranfers == 'gen_pickup':
-    #         domain += [('state','=','pickup_created')]
+        if tranfers == 'gen_pickup':
+            domain += [('state','=','pickup_created')]
 
-    #     if tranfers == 'wp_manifest':
-    #         domain += [('state','in',('waiting_to_manifest','ready_to_manifest'))]
+        if tranfers == 'wp_manifest':
+            domain += [('state','in',('waiting_to_manifest','ready_to_manifest'))]
 
-    #     if tranfers == 'gen_manifest':
-    #         domain += [('state','=','manifest_generated')]
+        if tranfers == 'gen_manifest':
+            domain += [('state','=','manifest_generated')]
         
-    #     action = self.env["ir.actions.actions"]._for_xml_id("delivery_shiprocket.action_shiprocket_bulk_process")
-    #     action['views'] = [(self.env.ref('delivery_shiprocket.view_shiprocket_bulk_process_tree').id, 'tree'),
-    #                        (self.env.ref('delivery_shiprocket.view_shiprocket_bulk_process_form').id, 'form')]
+        action = self.env["ir.actions.actions"]._for_xml_id("delivery_shiprocket.action_shiprocket_bulk_process")
+        action['views'] = [(self.env.ref('delivery_shiprocket.view_shiprocket_bulk_process_tree').id, 'tree'),
+                           (self.env.ref('delivery_shiprocket.view_shiprocket_bulk_process_form').id, 'form')]
       
-    #     return action
+        return {'name': 'Bulk Process',
+                'type': 'ir.actions.act_window',
+                'res_model': 'shiprocket.bulk.process',
+                'view_mode': 'tree,form',
+                'views': [(self.env.ref('delivery_shiprocket.view_shiprocket_bulk_process_tree').id, 'list'),
+                           (self.env.ref('delivery_shiprocket.view_shiprocket_bulk_process_form').id, 'form')],
+                'domain': domain,
+                'target': 'current'
+            }
     
     @api.model
     def stock_action_dashboard_unfulfiled_list(self):
@@ -135,4 +149,12 @@ class StockPickingDashboard(models.Model):
         
         action['views'] = [(self.env.ref('stock.vpicktree').id, 'tree'),
                            (self.env.ref('stock.view_picking_form').id, 'form')]
-        return action
+        return {'name': 'Transfer',
+                'type': 'ir.actions.act_window',
+                'res_model': 'stock.picking',
+                'view_mode': 'tree,form',
+                'views': [(self.env.ref('stock.vpicktree').id, 'list'),
+                           (self.env.ref('stock.view_picking_form').id, 'form')],
+                'domain': domain,
+                'target': 'current'
+            }
