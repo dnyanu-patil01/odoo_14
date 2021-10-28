@@ -28,6 +28,7 @@
 								<field name="mobile" />
 								<field name="date_of_birth"/>
 								<field name="aadhaar_card_number"/>
+								<field name="voter_number"/>
 								<field name="members_count" />
 								<field name="change_voter_id_address" />
 								<field name="room_details" />
@@ -68,6 +69,7 @@
 		                            <group string="Documents" name="documents">
 		                            	<field name="passport_photo"/>
 		                                <field name="adhar_card" />
+		                                <field name="adhar_card_back_side" />
 		                                <field name="address_proof" />
 		                              	<field name="age_proof" />
 		                              	<field name="age_declaration_form" />
@@ -87,7 +89,7 @@
                     		<page string="Voter ID Details" name="voter_id_details" >
                         		<group>
 		                            <group string="Voter ID Details" name="voter_id_details">
-		                                <field name="voter_number" />
+		                                <field name="existing_voter_id_number" />
 		                                <field name="country_id" invisible="1"/>
 		                                <field name="state_id" />
 		                              	<field name="assembly_constituency" />

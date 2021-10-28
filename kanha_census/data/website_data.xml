@@ -2,9 +2,9 @@
 <odoo>
     <data>
     	<!-- Menu make visible only for Portal users -->
-        <record id="menu_kanha_partners" model="website.menu" >
+        <record id="menu_family" model="website.menu" >
             <field name="name">Family</field>
-            <field name="url">/partners</field>
+            <field name="url">/family</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">22</field>
             <field name="group_ids" eval="[(4, ref('base.group_portal'))]"/>
