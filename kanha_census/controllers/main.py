@@ -16,6 +16,7 @@ class CustomerPortal(CustomerPortal):
                                 "application_type",
                                 "aadhaar_card_number",
                                 "citizenship",
+                                "country_id",
                                 "birth_state_id",
                                 "birth_district",
                                 "birth_town",
@@ -227,7 +228,7 @@ class CustomerPortal(CustomerPortal):
         else:
             return False
 
-    @http.route(['/family/<int:partner_id>'], type='http', auth="public", website=True)
+    @http.route(['/family', '/family/<int:partner_id>'], type='http', auth="public", website=True)
     def save_portal_form(self, partner_id=None, redirect=None, access_token=None, **post):
         values = self._prepare_portal_layout_values()
         ResPartner = request.env['res.partner']
@@ -236,28 +237,30 @@ class CustomerPortal(CustomerPortal):
             'error': {},
             'error_message': [],
         })
-        states = request.env['res.country.state'].sudo().search([])
-        kanha_locations = request.env['kanha.location'].sudo().search([])
-        
+        # Fetch the state of India
+        country = request.env['res.country'].sudo().search([('code', '=', 'IN')])
+        states = request.env['res.country.state'].sudo().search([('country_id', '=', country.id)])
+        # Fetch the record who doesnt have any child records
+        kanha_location_parent_ids = request.env['kanha.location'].sudo().search([]).parent_id.ids
+        kanha_locations_nth_child = request.env['kanha.location'].sudo().search([('id', 'not in', kanha_location_parent_ids)])
         form_values = {}
         form_values.update({
-            'partner': partner,
             'states': states,
             'redirect': redirect,
             'page_name': 'family',
-            'kanha_locations': kanha_locations,
-            'zipcode': post.get('zip')
+            'kanha_locations': kanha_locations_nth_child,
+            'zipcode': post.get('zip'),
+            'country_id': country
         })
         if post and request.httprequest.method == 'POST':
             error, error_message = self.kanha_portal_form_validate(post, partner_id)
             values.update({'error': error, 'error_message': error_message})
             values.update(post)
-            
             if not error:
                 values = {key: post[key] for key in self.MANDATORY_PARTNER_FIELDS}
                 values.update({key: post[key] for key in self.OPTIONAL_PARTNER_FIELDS if key in post})
                 values.update({'is_published': True})
-                many_2_one_fields = ['birth_state_id', 'kanha_location_id']
+                many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id']
                 if(post.get('application_type') == 'Transfer Application'):
                     values.update({key: post[key] for key in self.VOTER_INFO_FIELDS if key in post})
                     many_2_one_fields.append('state_id')
@@ -284,34 +287,19 @@ class CustomerPortal(CustomerPortal):
                         if(relative_partner):
                             partner_created.sudo().write({'family_members_ids': [(4, relative_partner.id)]})
                             relative_partner.sudo().write({'family_members_ids': [(4, partner_created.id)]})
+                    partner = partner_created
                 if redirect:
                     return request.redirect(redirect)
-                # values.update({
-                #     'error': {},
-                #     'error_message': [],
-                # })
                 form_values.update({
                     'error': {},
                     'error_message': [],
+                    'partner': partner,
                 })
                 values.update(form_values)
                 values.update({'success_message': 'Your information has been submitted successfully!'})
                 response = request.render("kanha_census.kanha_portal_form", values)
                 return response
-
-        # states = request.env['res.country.state'].sudo().search([])
-        # kanha_locations = request.env['kanha.location'].sudo().search([])
-        # partner_history = request.session.get('partner_history', [])
-        # values.update(get_records_pager(partner_history, partner))
-
-        # values.update({
-        #     'partner': partner,
-        #     'states': states,
-        #     'redirect': redirect,
-        #     'page_name': 'family',
-        #     'kanha_locations': kanha_locations,
-        #     'zipcode': post.get('zip')
-        # })
+        form_values.update({'partner': partner})
         values.update(form_values)
         response = request.render("kanha_census.kanha_portal_form", values)
         response.headers['X-Frame-Options'] = 'DENY'
@@ -320,23 +308,26 @@ class CustomerPortal(CustomerPortal):
     @http.route(['/add_partner'], type='http', auth="public", website=True)
     def add_family_members(self, redirect=None, **post):
         values = self._prepare_portal_layout_values()
-        values.update({
-            'error': {},
-            'error_message': [],
-        })
-        states = request.env['res.country.state'].sudo().search([])
-        kanha_locations = request.env['kanha.location'].sudo().search([])
+        # Fetch the state of India
+        country = request.env['res.country'].sudo().search([('code', '=', 'IN')])
+        states = request.env['res.country.state'].sudo().search([('country_id', '=', country.id)])
+        # Fetch the record who doesnt have any child records
+        kanha_location_parents_ids = request.env['kanha.location'].sudo().search([]).parent_id.ids
+        kanha_locations_nth_child = request.env['kanha.location'].sudo().search([('id', 'not in', kanha_location_parents_ids)])
         current_partner = request.env.user.partner_id
 
         values.update({
-            'partner': 0,
+            'partner': None,
             'states': states,
             'redirect': redirect,
             'page_name': 'family',
-            'kanha_locations': kanha_locations,
+            'kanha_locations': kanha_locations_nth_child,
             'surname': current_partner.surname,
             'relative_surname': current_partner.surname,
-            'relative_name': current_partner.name
+            'relative_name': current_partner.name,
+            'country_id': country,
+            'error': {},
+            'error_message': []
 
         })
         response = request.render("kanha_census.kanha_portal_form", values)

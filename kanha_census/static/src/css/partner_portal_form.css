@@ -11,6 +11,9 @@
 .attachment-input-container input {
     border: none;
 }
+.empty-row{
+	height: 33px;
+}
 /* Style the tab */
 .kanha-portal-tab-wrap{
     padding: 50px 0px;

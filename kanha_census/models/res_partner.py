@@ -84,3 +84,4 @@ class ResPartner(models.Model):
     ], string="Room Details")
     family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members')
     relative_aadhaar_card_number = fields.Char(string="Relative Aadhar Card Number")
+    vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')

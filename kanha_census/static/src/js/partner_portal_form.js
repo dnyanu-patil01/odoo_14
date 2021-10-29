@@ -7,7 +7,7 @@ var Dialog = require('web.Dialog');
 publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     selector: '.o_portal_partner_details',
     events: {
-		'change select[name="application_type"]': '_onApplicationTypeChange',
+		'change select[name="change_voter_id_address"]': '_onVoterAddressChange',
 		'change #passport_photo': '_onPassportPhotoChange',
 		'change select[name="citizenship"]': '_onCitizenshipChange',
 		
@@ -59,9 +59,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
      *
      * @private
      */
-    _onApplicationTypeChange: function () {
-       var application_type = this.$('select[name="application_type"]');
-		if(application_type.val() == 'Transfer Application'){
+    _onVoterAddressChange: function () {
+		var voter_address_change = this.$('select[name="change_voter_id_address"]');
+		if(voter_address_change.val() == 'Yes'){
 			$('.voter_id_tab').removeClass('d-none');
 		}
 		else{
