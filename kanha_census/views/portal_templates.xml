@@ -121,7 +121,7 @@
 		                         	</div>
 		                         	
             						<div class="col-lg-6">
-		                                <label class="col-form-label" for="application_type">Application Type</label>
+		                                <label class="col-form-label" for="application_type">Voter Application</label>
           								<span> *</span>
           							</div>
 		                            <div t-attf-class="form-group #{error.get('application_type') and 'o_has_error' or ''} col-xl-6">
@@ -360,6 +360,21 @@
 							            		<div class="row">
 							              			<div class="col-md-12">
 														<div class="row col-lg-6">
+												    		
+												    		<div class="col-lg-6">
+														  		<label class="col-form-label" for="country_id">Country</label>
+														  		<span> *</span>
+												          	</div>
+														    <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-xl-6">
+												      	 		<select name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}">
+								                                   <t t-foreach="country_id" t-as="country">
+								                                  		<option t-att-value="country.id" >
+								                                           <t t-esc="country.name" />
+								                                       </option>
+								                            		</t>
+							                               		</select>
+												            </div>
+												    		
 												    		<div class="col-lg-6">
 														  		<label class="col-form-label" for="birth_state_id">State</label>
 														  		<span> *</span>
@@ -368,7 +383,7 @@
 												      	 		<select name="birth_state_id" t-attf-class="form-control #{error.get('birth_state_id') and 'is-invalid' or ''}">
 								                                   <option value="">Select...</option>
 								                                   <t t-foreach="states" t-as="birth_state">
-								                                  		<option t-att-value="birth_state.id" t-att-selected="birth_state.id == int(birth_state_id) if birth_state_id else birth_state.id == partner.birth_state_id.id if partner else null">
+								                                  		<option t-att-value="birth_state.id" t-att-country="birth_state.country_id.id" t-att-selected="birth_state.id == int(birth_state_id) if birth_state_id else birth_state.id == partner.birth_state_id.id if partner else null">
 								                                           <t t-esc="birth_state.name" />
 								                                       </option>
 								                            		</t>
@@ -806,7 +821,7 @@
         								<div id="collapse-vehicle" class="collapse" role="tabpanel" data-parent="#content" aria-labelledby="heading-vehicle">
           									<div class="card-body">
             									<div class="row">
-              										<div class="col-md-12">
+              										<div class="col-md-12 vehicle-details">
                 										<div class="row col-lg-6">
 												            <div class="col-lg-6">
 														   		<label class="col-form-label" for="vehicle_number">Vehicle Number</label>
@@ -851,6 +866,48 @@
  				</div>
  			</form>
 		</t>
+	</template>
+	
+	<template id="vehicle_details" name="Vehicle Details">
+		<div class="modal fade" id="OpenVehicleDetails" tabindex="-1" role="dialog" aria-labelledby="OpenVehicleDetails" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content col-lg-12">
+                    <div class="modal-header d-flex align-items-center pb-0">
+                        <button type="button" class="close align-self-start" data-dismiss="modal"><span aria-label="Close">×</span></button>
+                    </div>
+                    <div class="modal-body bg-100 row">
+			            <div class="col-lg-6">
+					   		<label class="col-form-label" for="vehicle_number">Vehicle Number</label>
+			          	</div>
+			    	 	<div t-attf-class="form-group #{error.get('vehicle_number') and 'o_has_error' or ''} col-xl-6">
+			      			<input type="text" name="vehicle_number" t-attf-class="form-control #{error.get('vehicle_number') and 'is-invalid' or ''}" t-att-value="vehicle_number or vehicle.vehicle_number" />
+			            </div>
+			            <div class="col-lg-6">
+					   		<label class="col-form-label" for="vehicle_owner">Vehicle Owner</label>
+			          	</div>
+			    	 	<div t-attf-class="form-group #{error.get('vehicle_owner') and 'o_has_error' or ''} col-xl-6">
+			      			<input type="text" name="vehicle_owner" t-attf-class="form-control #{error.get('vehicle_owner') and 'is-invalid' or ''}" t-att-value="vehicle_owner or vehicle.vehicle_owner" />
+			            </div>
+			             <div class="col-lg-6">
+					        <label class="col-form-label" for="vehicle_type">Vehicle Type</label>
+			          	</div>
+			    	 	<div t-attf-class="form-group #{error.get('vehicle_type') and 'o_has_error' or ''} col-xl-6">
+							<input type="text" name="vehicle_type" t-attf-class="form-control #{error.get('vehicle_type') and 'is-invalid' or ''}" t-att-value="vehicle_type or vehicle.vehicle_type" />
+			            </div>
+			            <div class="col-lg-6">
+					   		<label class="col-form-label" for="additional_vehicle_number">Additional Vehicle Number</label>
+			          	</div>
+			    	 	<div t-attf-class="form-group #{error.get('additional_vehicle_number') and 'o_has_error' or ''} col-xl-6">
+			      			<input type="text" name="additional_vehicle_number" t-attf-class="form-control #{error.get('additional_vehicle_number') and 'is-invalid' or ''}" t-att-value="additional_vehicle_number or vehicle.additional_vehicle_number"  />
+	            		</div> -->
+                    </div>
+                    <div class="modal-footer justify-content-start">
+                        <button type="button" class="btn btn-primary o_wforum_mark_spam">Mark as spam</button>
+                        <a class="btn btn-sm btn-default o_wforum_select_all_spam" href="#" type="button">Select All</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 	</template>
   
 </odoo>

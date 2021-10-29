@@ -77,18 +77,26 @@
                         		</group>
                     		</page>
                     		<page string="Vehicle Details" name="vehicle_details" >
-                        		<group>
-		                            <group string="Vehicle Details" name="vehicle_details">
-		                                <field name="vehicle_number" />
+                    			<field name="vehicle_details_ids" colspan="4" nolabel="1">
+	                            	<tree string="Vehicle Details">
+	                               		<field name="vehicle_number" />
 		                                <field name="vehicle_owner" />
 		                                <field name="vehicle_type" />
 		                              	<field name="additional_vehicle_number" />
-		                            </group>
-                        		</group>
+	                            	</tree>
+	                            	<form string="Vehicle Details">
+		                                <group col="4">
+		                                    <field name="vehicle_number" />
+				                                <field name="vehicle_owner" />
+				                                <field name="vehicle_type" />
+				                              	<field name="additional_vehicle_number" />
+		                                </group>
+	                            	</form>
+                        		</field>
                     		</page>
-                    		<page string="Voter ID Details" name="voter_id_details" >
+                    		<page string="Existing Voter ID Details" name="existing_voter_id_details" >
                         		<group>
-		                            <group string="Voter ID Details" name="voter_id_details">
+		                            <group string="Existing Voter ID Details" name="existing_voter_id_details">
 		                                <field name="existing_voter_id_number" />
 		                                <field name="country_id" invisible="1"/>
 		                                <field name="state_id" />
