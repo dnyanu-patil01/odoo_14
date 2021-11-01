@@ -7,36 +7,38 @@
                     <div class="wrapper ">
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                <div class="col-lg-8 col-md-8 col-sm-8 text-justify">
                                     <div class="name">
-                                        <a class="navbar-brand" href="/"><img src="/theme_boec/static/src/images/logo/logo.png" alt=""/></a>
+                                        <a class="navbar-brand" href="/">
+                                        <!-- <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/> -->
+                                        <img src="/theme_boec/static/src/images/logo/logo.jpg" style="height: 100px; width: 260px;" alt=""/>
+                                        </a>
                                         <p>
-                                            Cu decore tamquam democritum qui. Cu quem probatus vix. Cu per sanctus mnesarchum, ut civibus
-                                            signiferumque eum.
+                                        Heartyculture is more than a Brand. We use our Heart in all of what we do and this has become a new culture. 'That's Heartyculture'. What started as a simple suggestion to be self-sufficient and self-sustaining, has now expanded to become the state's self-esteem. With a need to consume naturally grown food and have it healthy, we started becoming organic and in this process we learnt the art of being kind to mother earth. As a community, we produce more than we consume, and we take immense pleasure in sharing with others. We would like to make this earth a much better place to live than what we saw when we came here for the very first time.
                                         </p>
-                                        <div class="footer_icons">
+                                        <!-- <div class="footer_icons">
                                             <a href="#"><span class="fab fa-cc-visa"/></a>
                                             <a href="#"> <span class="fab fa-cc-paypal"/></a>
                                             <a href="#"><span class="fab fa-cc-mastercard"/></a>
                                             <a href="#"> <span class="fab fa-bitcoin"/></a>
                                             <a href="#"> <span class="fab fa-cc-amex"/></a>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
-                                <div class="col-lg-2 col-md-3 col-sm-6">
+                                <div class="col-lg-4 col-md-4 col-sm-4">
                                     <div class="i_wrapper">
                                         <h5 class="footer_heading">ABOUT US</h5>
                                         <ul class="footer_items">
-                                            <li><a href="#">Who we are</a></li>
-                                            <li><a href="#">Work with us</a></li>
-                                            <li><a href="#">Become a supplier</a></li>
-                                            <li><a href="#">Investor relations</a></li>
-                                            <li><a href="#">Our delivery</a></li>
-                                            <li><a href="#">Affiliate program</a></li>
+                                            <li><a href="/contactus">Contact Us</a></li>
+                                            <li><a href="/termsofuse">Terms Of Use</a></li>
+                                            <li><a href="/privacypolicy">Privacy  Policy</a></li>
+                                            <li><a href="/refundpolicy">Refund Policy</a></li>
+                                            <li><a href="/returnpolicy">Return Policy</a></li>
+                                            <li><a href="/termsofservice">Terms of Service</a></li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="col-lg-2 col-md-3 col-sm-6">
+                                <!-- <div class="col-lg-2 col-md-3 col-sm-6">
                                     <div class="s_wrapper">
                                         <h5 class="footer_heading">SHOPPING</h5>
                                         <ul class=" footer_items">
@@ -48,8 +50,8 @@
                                             <li><a href="#">Sale</a></li>
                                         </ul>
                                     </div>
-                                </div>
-                                <div class="col-lg-4 col-md-12 col-sm-6">
+                                </div> -->
+                                <!-- <div class="col-lg-4 col-md-12 col-sm-6">
                                     <div class="s_wrapper">
                                         <h5 class="footer_heading">NEWSLETTER</h5>
                                         <div class="send">
@@ -64,9 +66,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
-                            <div class="row">
+                            <!-- <div class="row">
                                 <div class="copyright">
                                     <hr/>
                                     <div class="copy">
@@ -74,7 +76,7 @@
                                         <span class="far fa-heart"/> by <a href="https://www.cybrosys.com/" target="_blank">Cybrosys</a>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </section>

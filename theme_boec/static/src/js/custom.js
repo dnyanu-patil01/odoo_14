@@ -19,19 +19,19 @@ odoo.define('theme_boec.theme_boec', function (require) {
             autoPlaySpeed: 1000,
             autoPlayTimeout: 1000,
             autoplayHoverPause: true,
-            onInitialized: counter,
+            // onInitialized: counter,
             dots: true,
             nav: true,
             navText: ['<div class="pre"><i class="material-icons" style="font-size:36px">keyboard_arrow_left</i></div>', '<div class="nxt"><i class="material-icons" style="font-size:36px">keyboard_arrow_right</i></div>'],
             animateOut: 'fadeOut'
         });
 
-        function counter() {
-            var buttons = $('.owl-dots button');
-            buttons.each(function (index, item) {
-                $(item).find('span').text(index + 1);
-            });
-        }
+        // function counter() {
+        //     var buttons = $('.owl-dots button');
+        //     buttons.each(function (index, item) {
+        //         $(item).find('span').text(index + 1);
+        //     });
+        // }
 
         //add another class for banner_added
         var banner = $(".banner_added");

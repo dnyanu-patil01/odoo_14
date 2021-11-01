@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="termsofuse_boec" model="ir.ui.view">
+            <field name="name">Terms of Use</field>
+            <field name="type">qweb</field>
+            <field name="key">theme_boec.about_boec</field>
+            <field name="arch" type="xml">
+                <t name="Terms of Use" t-name="theme_boec.about_boec">
+                    <t t-call="website.layout">
+                        <div id="wrap">
+                            <Section class="banner_sub">
+                                <div class="wrapper">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="sub_page">
+                                                <div class="name">Terms of Use</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+                            <!-- Terms of Use section ends here -->
+                            <section class="termsofuse">
+                                <div class="container">
+                                    <div class="about_bottom">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Customer Terms of Use</h3>
+                                                    <h4 class="abt_d_head">USER TERMS OF USE  -  Last updated: 21st October 2020</h4>
+                                                    <p>PLEASE READ THESE TERMS OF USE CAREFULLY BEFORE USING THE PLATFORM
+https://www.heartyculture.com (the “Website” and made available by Heartyculture Natural ProductsLLP , having its registered office at 13-110, Kanha Shanti Vanam, Kanha Village, Chegur, Ranga Reddy, Pin Code 509325 (“Company”, “us”, “we”, “our”). The Website are collectively referred to as the “Platform”.</p>
+                                                    <p>These User Terms of Use (“User Terms”) are the terms on which you may make use of the Platform. Use of the Platform includes without limitation, accessing, browsing, using (including making purchases on the Platform), or registering to use the Platform. Any reference to “you” or “your” or “user” (if applicable) refers to you as a user using the Platform and availing the Services; and any reference to “Services” shall mean the services provided by us through the Platform.</p>
+                                                    <p>These User Terms refer to, incorporate, and include our Privacy Policy. In consideration of your use of the Platform and the Services (defined hereinafter), you agree to comply with all the provisions of the User Terms. We may revise these User Terms, update the Platform, and change the Content (defined below) uploaded by us and Services at any time. Further, we may delete any Content uploaded by you if it conflicts with these Terms or is in contravention of any applicable law or these User Terms, as may be updated from time to time. Please check this page from time to time to take notice of any changes we make, as they are binding on you. Under the User Terms, “Content” means any information, text, graphics, or other materials uploaded by you or by us. If you do not agree to these User Terms, you must not use the Platform. If you do not agree with any amendments made by us to these User Term at any time in future, you must stop using the Platform with immediate effect.</p>
+                                                    <p>PLEASE NOTE THAT THE ITALICIZED PROVISIONS OF THESE USER TERMS ARE MERE SUMMARIES AND INDICATIVE OF THE KEY ELEMENTS OF THE PRECEDING CLAUSE. THE ITALICIZED PROVISIONS DO NOT FORM A PART OF THE AGREEMENT AND HAVE BEEN INCLUDED ONLY FOR YOUR CONVENIENCE. PLEASE READ THE DOCUMENT IN ITS ENTIRETY. READING THE SUMMARY DOES NOT ABSOLVE YOU OF YOUR RESPONSIBILITY TO READ THESE USER TERMS IN ITS ENTIRETY. IN CASE OF ANY CONFLICT BETWEEN THE SUMMARY AND THE CLAUSE PRECEDING IT, THE CLAUSE SHALL PREVAIL.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Who May Use Our Services</h3>
+                                                    <p>You may use our Services only if you are legally permitted and capable of forming a binding agreement with us and are legally permitted to use our Services. If you are accepting these User Terms on behalf of a company or any legal persons, then you represent and warrant that you have the authority to bind such entity to these User Terms and effectively “you” and “your” shall refer to such entity.</p>
+                                                    <p>You must be legally competent to enter into an agreement to use our Services.
+Services Offered
+We manufacture, purchase and resell home staples, pesticide free food and any other products that, in our view, promote conscious and balanced living (“Products”) and are listed thereon at the prices indicated from us. We deliver the Products to your doorstep. Such services referred in preceding two sentences is hereinafter referred to as “Services”.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">How To Register For Our Services</h3>
+                                                    <p>You are not required to register yourself to browse through the Platform. You may purchase the Product(s) or avail any of the Services offered on the Platform as a (i) registered user, or (ii) a guest user. For the purposes of either registering with us to set up an account, or purchasing as a guest user, you will need to share your email address and mobile phone number with us as required. You may also register via third party social networking sites such as Facebook and Twitter (“Third Party Account(s)”).</p>
+                                                    <p>If you register using Third Party Accounts, you will share some information with us regarding your user name, likes, dislikes, friend lists, contacts and other information regarding your usage of the websites with whom you have Third Party Accounts, as and to the extent permitted under the privacy policy of such third-party websites. By registering the email and mobile phone number with the Platform, you consent to being contacted by us via emails, phone calls and/or SMS notifications, in case of any order or shipment or delivery related updates. For more information regarding this please refer to our Privacy Policy.
+You need to share certain information with us to buy any of the Products listed on the Platform.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Privacy Policy</h3>
+                                                    <p>To effectively provide and introduce any new services to you, we may collect certain personal as well as sensitive information such as your email, mobile phone number, address, financial information such as credit card and debit card numbers, etc., from you. We may request further information to be provided by you. Additionally, we may use cookies, pixel tags, web beacons, mobile device IDs, flash cookies and similar files or technologies to collect and store information with respect to your use of the Platform and third-party websites.</p>
+                                                    <p>The Privacy Policy explains how we collect, use, share and store the information collected. The Privacy Policy also details your rights under law and how you may control the data you provide us.</p>
+                                                    <p>All websites store and retain data as well as use cookies and store them on your web browser so that usage information can be logged in your browser. Please read our Privacy Policy to understand what information we store and how.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Third Party Links and Embeds</h3>
+                                                    <p>The Platform may contain references and links to third-party websites and products in such websites. However, we are not liable in any manner, whatsoever, for any content as may be displayed on such third-party websites you may be redirected to while accessing the Platform. You agree that we are not responsible for any consequences arising from your interaction with such third-party websites or products sold on the same. Your conduct and experience with such third-parties is subject to and governed by their terms of use and privacy policy and is in no way governed by these User Terms.</p>
+                                                    <p>How companies and persons choose to behave and interact with you is outside our control. We are not responsible for your actions and experiences on third party websites, even if you access them through our Platform.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Availability of Goods</h3>
+                                                    <p>We list availability information for Products on our Platform. Beyond what we say on the Product page or otherwise on the Platform, we cannot be more specific about availability of the Product. Further, the Products displayed may not be available for delivery or sale to you. Further, please note that dispatch and delivery date estimates are just estimates and are provided to us by our delivery partners. We do not guarantee the delivery of the Products to you as per the estimates. As we process your order, you will be informed by email if any Products you order turn out to be unavailable or if there is a delay in delivery of the purchased Product. Additionally, please note that there might be a case or incident whereby we have to cancel your order or shipment owing to any reason. In such a case, we will only be required to return the amounts already paid by you for the Products. The return of the amounts will be made in accordance with our Cancellation; Returns and Refund Policy, as detailed in these User Terms below.</p>
+                                                    <p>Product availability and timelines will be informed to you by the Platform, however we do not guarantee any timelines or availability.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Shipping Policy</h3>
+                                                    <p>We currently deliver across India to all metros and certain non-metro cities. We have tied up with a reliable logistics partner that ensures reliable delivery of non-perishable items across cities. We try our very best to ensure that there are no delays in shipments, but sometimes it's beyond our control.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Shipping Time</h3>
+                                                    <p>This time is indicated alongside each product and reflects in the checkout page. Typically the lead time is 2-4 days.
+The logistics partner gets a notification once the product is ready for dispatch. They will then pick it up and deliver it to you between 8am to 9pm on all days Monday to Saturday.
+We ship on all days (Monday to Saturday) except Sundays and public holidays.
+If you feel that the packaging of the product is tampered or damaged at the time of delivery, please refuse to accept delivery of the product and contact us immediately at care@heartyculture.com, mentioning your order reference number. We shall ensure a replacement delivery is made to you at the earliest.</p>
+                                                    <p>In case your shipment is delayed:</p>
+                                                    <p>In case there is a delay, please send us an email on care@heartyculture.com with your order number.</p>
+                                                    <p>In the unfortunate scenario that your shipment has been misplaced or lost enroute, we can either resend the order to you (if the same products are still in stock), or issue a credit note to you, or reimburse the amount completely to you.</p>
+                                                    <p>Delivery Service Mechanism We shall enable delivery services for any Products ordered through the Platform by the users and shall engage third-party service providers to deliver the Products and/or pick up the return packages, as required. The costs involved with regard to the delivery will be disclosed and shared with you at the time of making the purchase. We will deliver the Products to your provided addresses and inform you of the costs related to the delivery.</p>
+                                                    <p>Payment Terms Registration on the Platform is available free of cost and we do not charge any fee for browsing the Platform. However, you will be required to pay via our secured payment gateway for purchasing the listed Products.  In connection with your use of the Services and remittance of payments from and to you, we may obtain certain financial details from you, which we will use solely in accordance with our Privacy Policy. Payment details provided are not stored by us and are encrypted by the payment provider selected to ensure security. We are not responsible for any loss or damage caused to you during this process as these third parties involved in the processing of the payment are beyond our control. As required by applicable law, if you make a purchase of an amount equal to or above INR 2,00,000 (Indian Rupees Two Lakhs), you will be required to upload a scanned copy of your PAN card on the Platform, within 4 (four) days of making the purchase, failing which, the purchase made by the you will be cancelled. The requirement to submit the PAN card arises only once and if it has been submitted by you once, you will not be required to submit it again. Your purchase shall stand cancelled if there is a discrepancy between your name and the name on the PAN Card. While browsing is free, you will have to pay via our payment gateway provider for the purchases you make with us. If you make any purchase equal to or more than INR 2,00,000 (Indian Rupees Two Lakhs), you will need to provide your PAN Card information.</p>
+                                                    <p>Cancellation; Replacement and Refund Policy In the event you wish to cancel an order placed on the Platform, you must do so only before the shipping ID is created and/or the cancellation option is available for your order on the Platform. If upon receiving an order, you are dissatisfied with a part of/the complete order for any reason (such as products being the wrong fit, or colour etc.), however, such reason not being that the Product is damaged, and desire a replacement or a refund for the order, you must report the same to us within 7 (seven) days of receiving such order, pursuant to which we may replace the order placed or refund the amount to you as per our discretion and the policy that would be mentioned on the Platform. In the event that you have received a damaged product and desire a replacement or a refund for the order, you must report the same to us within 24 (twenty-four) hours of receipt of such order. You may cancel the orders placed with us only before the shipping ID is created and/or the option to cancel is available on the Platform. You may demand a refund/replacement of the delivered order within 24 (twenty-four) hours of it being delivered to you, if delivered damaged, and within 7 (seven) days, if you are dissatisfied with the order.</p>
+                                                    <p>Limitation of Our Liability To the extent permitted by law, we will not be liable to any user for any direct, indirect, consequential loss or damage, of any kind whatsoever, even if you have informed us of the same, arising under or in connection with:  use of, or inability to use, the Platform;  use of or reliance on any Content displayed on the Platform;  use of the Services provided through the Platform;  loss of profits, sales, business, business opportunity or revenue;   business interruption; or  loss of business opportunity, goodwill or reputation.  We will not be liable for any of the losses or costs incurred by you on grounds of your use or inability to use our Services.</p>
+                                                    <p>Indemnification To the maximum extent permitted by applicable law, you shall indemnify and hold harmless us, our owners, licensee, affiliates, sister associations, subsidiaries, group companies (as applicable) and their respective officers, directors, functionaries, trustees, agents, and employees, from any claim or demand, or actions including reasonable attorneys' fees, made by any third party or penalty imposed due to or arising out of your breach of these User Terms, or your violation of the applicable law or the rights (including infringement of intellectual property rights) of a third party.  You will indemnify us for all costs incurred by us because of your violation of these User Terms</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Opt-Out Request</h3>
+                                                    <p>In case you do not want to continue using the Platform and our Services/ want to deactivate your account with us, /unsubscribe from our mailing lists, stop using our services or have any other query or need any clarification regarding these terms of use, then please contact us at care@heartyculture.com.
+ 
+If you wish to stop using our Services, please write to us at care@heartyculture.com.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Electronic Communication</h3>
+                                                    <p>You consent to receiving communications from us electronically. We will communicate with you by e-mail or by posting notices on this Platform. You agree that all agreements, notices, disclosures and other communications that we provide to you electronically, satisfy any legal requirement that such communications be in writing. You agree that in case there are any changes to any information provided by you to us, including your email address and other contact details, you will be solely responsible to update them regularly. If we send any communication by email, it shall be sent to your e-mail address available on the records created by you on the Platform and it shall be deemed to have been received by you once it is reflected as sent in the outbox of our email id.</p>
+                                                    <p>We will communicate with you through email and the messenger boards we place on the Platform.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Intellectual Property</h3>
+                                                    <p>Subject to your compliance with these User Terms we grant you a limited licence to access and make personal use of the Platform, but not to download (other than page caching) or modify it, or any portion of it, except with our express written consent. You do not have any right to the content included on the Platform, such as text, graphics, logos, button icons, images, audio clips, digital downloads, data compilations, and software, and their compilation. All Content used on the Platform is the property of us, our affiliates/associated organizations or its software suppliers and is protected by applicable intellectual property laws. You shall not systematically extract/or reutilise parts of the Contents of the Platform. In particular, you shall not utilise any data mining, robots, or similar data gathering and extraction tools to extract (whether once or many times) for re-utilisation of any substantial parts of the Platform or probe our system architecture for any purpose. You shall not create and/or publish your own database that features any parts of the Platform (including but not limited to (e.g.: prices and Product(s) listings). If you violate the intellectual property rights or infringe upon our rights, we may report your actions to the appropriate authorities and initiate appropriate legal proceedings against you.</p>
+                                                    <p>Please do not infringe upon our intellectual property rights or attempt to jeopardise the Platform. If you do so, we may initiate legal action against your violations and infringements.</p>
+                                                    <p>Viruses You will be responsible for implementing protection from any viruses, trojans, or other malicious technology that may be harmful material to you. You must not attempt to gain unauthorised access to the Platform, the server on which the Platform is stored, or any server, computer or database connected to the Platform. You must not attack the Platform via a denial-of-service attack or a distributed denial-of-service attack. By breaching this provision, you would commit a criminal offence under the Information Technology Act, 2000, the Indian Penal Code, 1860 and/or any other statute in force in India. We will report any such breach to the relevant law enforcement authorities and we will co-operate with those authorities by disclosing your identity to them. In the event of such a breach, your right to use the Platform will cease immediately.</p>
+                                                    <p>We will not be liable for any loss or damage to your computer equipment, computer programs, data or other proprietary material due to your use of the Platform or your downloading of any Content from it, or on any website linked to it. You will not hack into or introduce malicious software of any kind onto the Platform. If you commit such actions, we may remove you from the Platform and even have to report your actions to the police.</p>
+                                                    <p>Reviews, Comments and Other Material You may post reviews, comments and other content, send communications; and submit suggestions, ideas, comments, questions, or other information, as long as the content is not illegal, obscene, abusive, threatening, defamatory, invasive of privacy, infringing of intellectual property rights, or otherwise injurious to third parties, or objectionable and does not consist of or contain software viruses, political campaigning, commercial solicitation, chain letters, mass mailings, or any form of "spam". In the event you use a false email address, impersonate any person or entity, or otherwise mislead as to the origin of any content, we reserve the right, to remove, refuse, delete or edit any content that in our sole discretion violates these User Terms and may terminate your permission to access or use the Platform and/or Services.</p>
+                                                    <p>If you do post content or submit material, and unless we indicate otherwise, you grant us and our affiliates a non-exclusive, royalty-free, irrevocable, perpetual and fully sublicensable rights to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, and display such content, including your user name and profile throughout the world in any media.</p>
+                                                    <p>You agree that the rights you grant above are irrevocable during the entire period of protection of your intellectual property rights associated with such content and material. You agree to waive your right to be identified as the author of such content and your right to object to derogatory treatment of such content. You agree to perform all further acts necessary to perfect any of the above rights granted by you to us, including the execution of deeds and documents, at its request.</p>
+                                                    <p>You represent and warrant that you own or otherwise control all of the rights to the content that you post or that you otherwise provide on or through the Platform; that, as at the date that the Content or material is submitted to us: (i) is accurate; (ii) use of the content and material you supply does not breach any applicable laws and third party rights (including intellectual property rights), our policies or guidelines and will not cause injury to any person or entity (including that the content or material is not defamatory); (iii) the content is lawful. You agree to indemnify us and our affiliates for all claims brought by a third party against us or our affiliates or sister organizations arising out of or in connection with a breach of any of these warranties.</p>
+                                                    <p>We may allow you to post comments and reviews relating to the various Products and Services provided as under these User Terms, as long as you do not violate any law, our policies, or third-party rights. You will allow us to republish and share your comments, content created and user profile as appropriate.</p>
+                                                    <p>Term and Termination We reserve the right to refuse to continue providing you with access to this Platform and the Services at our sole discretion. This Platform is not available to persons whose account has been suspended or terminated by us for any reason whatsoever. Provided, however, certain sections of these User Terms such as Intellectual Property Rights, Disclaimer of Warranties, Limitation of Liability, Indemnification and General Terms (as given below), shall continue to remain in full force and effect indefinitely.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">General Terms</h3>
+                                                    <h3 class="abt_d_head">Who Has Rights Under these User Terms</h3>
+                                                    <p>The rights and obligations under these User Terms are granted only to you and shall not be assigned to any third party without our consent. We are, however, permitted to assign our rights and obligations under these User Terms to others.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">How We Will Handle Disputes</h3>
+                                                    <p>In all cases, you agree that disputes will be subject to the laws of the Republic of India and the courts of Hyderabad shall have exclusive jurisdiction over all such disputes.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Unsolicited Material</h3>
+                                                    <p>We always appreciate feedback or other suggestions. We may use the same without any restrictions or obligation to compensate you for them and are under no obligation to keep them confidential.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Miscellaneous</h3>
+                                                    <p>Use of the Services and the Platform will be in compliance with all laws in force in the territory of the Republic of India.</p>
+                                                    <p>If any aspect of these User Terms is unenforceable, the rest will remain in effect.</p>
+                                                    <p>Any amendment or waiver to these User Terms must be in writing and signed by us. However, we may amend these User Terms at our discretion at any time which will be binding on you if you use the Platform in any manner.</p>
+                                                    <p>If we fail to enforce any aspect of these User Terms, such failure will not be a waiver.</p>
+                                                    <p>We reserve all rights not expressly granted to you.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Contact Us</h3>
+                                                    <p>If you have any general queries relating to the Platform, or come across any abuse or violation of these User Terms, or for general feedback, please email us at care@heartyculture.com  contact number:- 18008333005 or write to our Grievance Officer at the following address:</p>
+                                                    <p>Name: Grievance Officer</p>
+                                                    <p>Complete Address: 13-110, Kanha Shanti Vanam, Kanha Village, Chegur, Dist:-Rangareddy</p>
+                                                    <p>Email: privacy@heartfulness.org</p>
+                                                    <p>Office Hours: 9 Am to 6 pm</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="termsofuse_boec_page" model="website.page">
+            <field name="url">/termsofuse</field>
+            <field name="is_published">True</field>
+            <field name="view_id" ref="termsofuse_boec" />
+            <field name="track">True</field>
+        </record>
+        <record id="menu_termsofuse_boec" model="website.menu">
+            <field name="name">Terms of Use</field>
+            <field name="url">/termsofuse</field>
+            <field name="page_id" ref="theme_boec.termsofuse_boec_page" />
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">50</field>
+        </record>
+    </data>
+</odoo>

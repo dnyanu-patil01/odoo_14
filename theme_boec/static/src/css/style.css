@@ -1200,7 +1200,7 @@ header .top_nav .wrapper .left .currency .dropdown:hover .dropbtn {
   letter-spacing: 1px;
 }
 
-.banner .owl-carousel .owl-dots {
+/* .banner .owl-carousel .owl-dots {
   position: absolute;
   position: absolute;
   bottom: 8em;
@@ -1240,7 +1240,7 @@ header .top_nav .wrapper .left .currency .dropdown:hover .dropbtn {
     bottom: 3%;
     right: 18em;
   }
-}
+} */
 
 .banner .owl-carousel .owl-dot {
   background-color: deepskyblue;
@@ -1324,7 +1324,7 @@ header .top_nav .wrapper .left .currency .dropdown:hover .dropbtn {
 }
 
 .footer {
-  background-color: #222831;
+  background-color: #000000;
   padding: 80px 0;
 }
 
@@ -3680,7 +3680,7 @@ header .top_nav .wrapper .left .currency .dropdown:hover .dropbtn {
 
 .preview_details .wrapper .p_head {
   text-align: center;
-  color: #222831;
+  color: #D4AF37;
   font-weight: 700;
   padding-bottom: 0px;
 }
@@ -5274,7 +5274,7 @@ header .top_nav .wrapper .left .currency .btn-secondary {
 
 .preview_details .wrapper .p_head span {
   text-align: center;
-  color: #222831;
+  color: #D4AF37;
   font-weight: 700;
   padding-bottom: 0px;
   font-size: 1.75rem;
@@ -5368,7 +5368,7 @@ header .top_nav .wrapper .left .currency .btn-secondary {
     background-color: transparent !important;
 }
 .oe_product_cart .o_wsale_product_information .o_wsale_product_information_text h6{
-    color: #222831;
+    color: #D4AF37;
     font-weight: 600;
     letter-spacing: 1px;
     opacity: 1;
@@ -5376,7 +5376,7 @@ header .top_nav .wrapper .left .currency .btn-secondary {
     text-align: left;
 }
 .oe_product_cart .o_wsale_product_information .o_wsale_product_information_text h6 a{
-    color: #000 !important;
+    color: #D4AF37 !important;
     text-decoration: none;
     font-size: 18px;
 }

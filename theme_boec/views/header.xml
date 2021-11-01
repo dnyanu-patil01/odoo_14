@@ -2,7 +2,7 @@
 <odoo>
     <template id="boec_header" inherit_id="website.layout" name="Boec Header" active="False">
         <xpath expr="//header//nav" position="replace">
-            <section class="top_nav">
+            <!-- <section class="top_nav">
                 <div class="wrapper">
                     <div class="container ">
                         <div class="row">
@@ -13,14 +13,14 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="left">
-                                    <div class="sign_in">
+                                    <div class="sign_in"> -->
                                         <!-- Sign In -->
-                                        <t t-call="portal.placeholder_user_sign_in">
+                                        <!-- <t t-call="portal.placeholder_user_sign_in">
                                             <t t-set="_item_class" t-value="'nav-item ml-lg-auto'"/>
                                             <t t-set="_link_class" t-value="'nav-link'"/>
-                                        </t>
+                                        </t> -->
                                         <!-- User Dropdown -->
-                                        <t t-call="portal.user_dropdown">
+                                        <!-- <t t-call="portal.user_dropdown">
                                             <t t-set="_user_name" t-value="True"/>
                                             <t t-set="_item_class" t-value="'nav-item dropdown ml-lg-auto'"/>
                                             <t t-set="_link_class" t-value="'nav-link'"/>
@@ -39,14 +39,14 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> -->
             <!-- navbar  -->
             <section class="navigation ">
                 <div class="container ms">
                     <nav class="navbar navbar-expand-lg navbar-light bg-light">
                         <a class="navbar-brand" href="/">
                             <!--Brand-->
-                            <t t-call="website.placeholder_header_brand"/>
+                            <t t-call="website.placeholder_header_brand" style="height"/>
                             <!--<img src="/theme_boec/static/src/images/logo/logo.png" alt=""/>-->
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
@@ -91,6 +91,23 @@
                                     </a>
                                 </li>
                             </div>
+                            <!-- <div class="col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="left"> -->
+                                    <div class="sign_in">
+                                        <!-- Sign In -->
+                                        <t t-call="portal.placeholder_user_sign_in">
+                                            <t t-set="_item_class" t-value="'nav-item ml-lg-auto'"/>
+                                            <t t-set="_link_class" t-value="'nav-link'"/>
+                                        </t>
+                                        <!-- User Dropdown -->
+                                        <t t-call="portal.user_dropdown">
+                                            <t t-set="_user_name" t-value="True"/>
+                                            <t t-set="_item_class" t-value="'nav-item dropdown ml-lg-auto'"/>
+                                            <t t-set="_link_class" t-value="'nav-link'"/>
+                                        </t>
+                                    </div>
+                                <!-- </div>
+                            </div> -->
                         </div>
                     </nav>
                 </div>

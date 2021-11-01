@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="privacypolicy_boec" model="ir.ui.view">
+            <field name="name">Privacy Policy</field>
+            <field name="type">qweb</field>
+            <field name="key">theme_boec.about_boec</field>
+            <field name="arch" type="xml">
+                <t name="Privacy Policy" t-name="theme_boec.about_boec">
+                    <t t-call="website.layout">
+                        <div id="wrap">
+                            <Section class="banner_sub">
+                                <div class="wrapper">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="sub_page">
+                                                <div class="name">Privacy Policy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Section>
+                            <!-- Privacy Policy section ends here -->
+                            <section class="privacypolicy">
+                                <div class="container">
+                                    <div class="about_bottom">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Privacy Policy</h3>
+                                                    <h4 class="abt_d_head">Last updated: 21st October 2020</h4>
+                                                    <p>We at Heartyculture Natural Products LLP  take privacy of your data seriously. This policy (  "Privacy Policy ") sets out how we collect, use, store and share your data when you use our website heartyulture.com  (  "Website  ") and/or any future mobile application (  "App  ") or mobile version of Website (collectively referred to as the   "Platform  "). References to   "we  ", "our", "us" or the "Company" shall mean the Platform. Any references to "you", "your" or "user" shall mean any person or entity, including the vendors, using our Platform. We will not use or share your information with anyone except as described in this Privacy Policy. This Privacy Policy is a part of the User Terms of Use and Vendor Terms of Use  (collectively Terms ). By using this Platform, you agree to the terms and conditions of this Privacy Policy and consent to our use and disclosure of data provided by you in the manner described in this Privacy Policy. The capitalized words not defined in this Privacy Policy, shall have the meaning given to such words in the Terms. If you do not agree with this Privacy Policy, please do not use this Platform.</p>
+                                                    <p>We may revise this Privacy Policy, update the Platform, and change our services at any time. Please check this page from time to time to notice any changes we make, as they are binding on you.</p>
+                                                    <p>THE INFORMATION WE COLLECT AND HOW WE USE IT</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Disclosure Of Your Information</h3>
+                                                    <h4 class="abt_d_head">The information we collect may be disclosed to third-parties for operationalizing the services offered to you over the Platform. The information shall be disclosed to the following third-parties:</h4>
+                                                </div>
+                                            </div>
+                                            <table width="720" cellpadding="1" cellspacing="0">
+                                                <colgroup>
+                                                    <col width="357" />
+                                                    <col width="9" />
+                                                    <col width="346" />
+                                                </colgroup>
+                                                <tbody>
+                                                    <tr valign="top">
+                                                        <td width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Information
+			We Collect</b>
+                                                                    </font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="2" width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>How
+			We Use It</b>
+                                                                    </font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <td width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Registration
+			and Log-in Data:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">Name,
+			mobile phone number, email address, user-id, password and IP
+			address of your Device (defined below) (“</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Personal
+			Information</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">”)</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="2" width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			set-up your Account on the Platform and facilitate log-in;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			notify you about new arrivals, discounts, and promotional offers
+			subject to your consent;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			notify you about changes to the Platform, including these Terms
+			and this Privacy Policy;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			facilitate communication with you, including provision of user
+			support;</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <td width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Log
+			Data:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">“</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Log
+			Data</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">”
+			is information that we automatically collect when you use the
+			Platform, whether through the use of cookies, web beacons, log
+			files, scripts, including, but not limited to:</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm" />
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">(i)
+			technical information, such as configuration information made
+			available by your web browser or other programs you use to access
+			the Platform, your IP address and your Device’s version and
+			identification number;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">(ii)
+			any searches you make over the Platform, such as web search terms
+			used and details of other information and content accessed or
+			requested by you while using the Platform;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm" />
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">(iii)</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Cookies:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">We
+			may use cookies and store information with respect to your use of
+			the Platform. This helps us to provide you with a good user
+			experience when you browse our Platform and also allows us to
+			improve the Platform. You may anytime opt to restrict our
+			collection of such information.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="2" width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			enforce our terms, conditions, and policies and any of our rights,
+			or the rights of our Affiliates (defined below);</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			develop new services and improve the existing services on Platform
+			and integrate user preferences, feedback and requests;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			provide you quick access to your previous searches over the
+			Platform;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			administer the Platform and for internal operations, including but
+			not limited to, troubleshooting, data analysis, testing, research,
+			security, fraud-detection, and Account management;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			better understand how you use and access the Platform and to
+			improve your experience on the Platform;</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <td width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Surveys:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">If
+			you choose to participate in a survey, we may request you to
+			provide certain personally identifiable information. We may use a
+			third-party service provider to conduct these surveys and this
+			will be notified to you prior to you completing the survey.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="2" width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			pseudonymise and aggregate your information, including Personal
+			Information, for collection of web and Account traffic statistics
+			of what content and services are used when users access
+			third-party services;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			assess effectiveness of and improve advertising and other
+			marketing and promotional activities.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <td width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Location
+			Information:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">“</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Location
+			Data</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">”
+			is information that is derived from your Device and/or from the
+			address/location details you provide while using the Platform.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="2" width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">For
+			security, fraud-detection and Account management (such as to
+			ensure that there are no suspicious log-ins on your Account);</font>
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			provide you with location customisation.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <td width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Order
+			Processing Information:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">This
+			may include using your bank account details, credit/debit card
+			information, details regarding your payment wallets or other
+			payment instrument details. (“</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Sensitive
+			Personal Information</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">”),
+			in addition to your Personal Information, and Location Data.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="2" width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			enable processing, tracking and delivery of Products or services
+			(if any) ordered by you over the Platform;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			facilitate return and refund of Products or services ordered by
+			you over the Platform.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <td width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Customer
+			Support Information:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">Any
+			information that you provide to our customer support team
+			regarding any assistance or support that you may require for using
+			our Platform from time to time.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="2" width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			investigate your support issue and assist you in resolving your
+			concern or query;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			internally help us in improving and developing our customer
+			support systems.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top">
+                                                        <td width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Device
+			Data:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">“</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Device</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">”
+			includes your personal computer, laptop, tablet, mobile phone, or
+			any device you use to access the Platform. “</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>Device
+			Data</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">”
+			includes without limitation, the following:</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">§</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <u>Device
+			attributes</u>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">:
+			information such as the operating system, hardware and software
+			versions, available storage space, browser type, app and file
+			names and types, and plugins.</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">§</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <u>Identifiers:</u>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">unique
+			identifiers, Device IDs, and other identifiers, such as from
+			applications or accounts you use.</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">§</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <u>Data
+			from Device settings</u>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <b>:</b>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">information
+			you allow us to receive through Device settings you turn on, such
+			as access to your GPS location.</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">§</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <u>Network
+			and connections:</u>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">information
+			such as the name of your mobile operator or ISP, language, time
+			zone, mobile phone number, IP address and connection speed.</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">§</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <u>Application:</u>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">Any
+			mobile applications that are stored on your mobile Device.
+			However, we shall obtain your consent before accessing this
+			information and you shall have the option to deny us such access.</font>
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">§</font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">
+                                                                        <u>Contacts
+			List</u>
+                                                                    </font>
+                                                                </font>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">:
+			We may access the contacts list on your mobile Device. We shall
+			always ask for your consent before accessing your contacts list
+			and you have the option to deny us access to your contacts list.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                        <td colspan="2" width="357" style="border: 1px solid #000000; padding-top: 0.03cm; padding-bottom: 0.03cm; padding-left: 0.04cm; padding-right: 0.03cm">
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			make your Device compatible with our Platform;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p style="margin-bottom: 0cm">
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			customize and optimize your experience on our Platform;</font>
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                                <font face="Times New Roman, serif">
+                                                                    <font size="3" style="font-size: 12pt">To
+			verify your identity so as to enforce our terms, conditions, and
+			policies.</font>
+                                                                </font>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Sharing with our Sister Concerns</h3>
+                                                    <p>We may share your information with any of our sister concerns who may use it in the same manner, as we could use under the table above.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Sharing with Third Parties</h3>
+                                                    <h4 class="abt_d_head">We may share your information with selected third parties including:</h4>
+                                                    <p>Sellers on the platform, Business partners, suppliers and sub-contractors ("Affiliates"). Affiliates may use this information to help provide, understand, and improve our service and Affiliate's own services for the performance of any contract we enter into with you.</p>
+                                                    <p>Advertisers and advertising networks that require the data to select and serve relevant advertisements to you and others. We do not disclose information about identifiable individuals to our advertisers, but we may provide them with aggregate information about our users (for example, we may inform them that any given number of women in a specified age group clicked on their advertisement on any given day). We may also use such aggregate information to help advertisers reach the kind of audience they want to target.</p>
+                                                    <p>Courier service providers, manufacturers and vendors and other carrier agencies to effect delivery and tracking of the Products purchased by you through our Platform. Such information sharing is also necessary to provide you with services like warranty, return and refund of Products.</p>
+                                                    <p>If we are under a duty to disclose or share your personal data in order to comply with any legal obligation, or in order to enforce or apply our Terms https://www.heartyculture.com/ or other agreements; or to protect the rights, property, or safety of the Company, our users, or others. This includes exchanging information with other companies, organizations or law enforcement agencies or judicial/quasi-judicial bodies or any other administrative or governmental or autonomous bodies for the purposes of fraud detection, protection and credit risk reduction.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Security Practices</h3>
+                                                    <p>We use AWS services from third party service providers to protect the information provided by you. Where we have given you (or where you have chosen) a username and password which enables you to access the Platform, you are responsible for keeping these details confidential. We ask you not to share your password with anyone. The Platform shall not be held responsible for any liability or obligation you might face due to your sharing of your Account details with anyone.</p>
+                                                    <p>Where We Store Your Personal Information</p>
+                                                    <p>Our website development partner may utilize the cloud services of third party providers, which may store this data on their servers located outside of India. We ensure adequate security measures in place to protect the loss, misuse and alteration of the information, details of which are available at [please insert link]. The privacy policy adopted by Shopify are detailed in their privacy policy. In the event you have questions or concerns about the security measures adopted by Odoo, you can contact their data protection/privacy team/legal team or the designated grievance officer at their organization, whose contact details are available in their privacy policy. Alternatively, you can also write to our Grievance Officer at the address provided below.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Disclaimer</h3>
+                                                    <p>It may kindly be noted that the transmission of information via the internet is not completely secure. We will do our best to protect your Personal Information and Sensitive Personal Information but we cannot guarantee the security of your data transmitted to the Platform. Any transmission is at your own risk. Once we have received your information, we will use strict procedures and security features to try to prevent unauthorised access.</p>
+                                                    <p>Your Rights</p>
+                                                    <p>You may remove or delete your information from your user Account/profile at any point in time. You may amend, add or delete Personal Information and/or Sensitive Personal Information from your Account at any time by logging in and visiting your profile page. As noted above, you may opt out from unwanted email communications from us by following certain instructions available on the Platform. However, you will continue to receive emails until your Account is deleted.</p>
+                                                    <p>Under Rule 5(6) of the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 (  "Rules  "), you have a right to ask us to review, correct and amend the information we collect about you at any point in time. Under Rule 5(7) of the Rules, you also have the right to revoke your consent to the collection of your information going forward. However, please note that revoking your consent may negatively affect your use of the Platform. You may also ask us not to process your personal data for marketing purposes. You can exercise any of these rights at any time by contacting us at  care@heartyculture.com However, we require a reasonable period of 15 (fifteen) days to comply with any of your requests.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Data Retention</h3>
+                                                    <p>We may retain the information you provide to facilitate your smooth and uninterrupted use of our Platform, for the purposes (i) to provide, improve and personalize our services; (ii) to contact you about your Account and give customer service; (iii) to personalise our advertising and marketing communications; and (iv) to prevent, detect, mitigate, and investigate fraudulent or illegal activities. We do not retain your Sensitive Personal Information for longer than required for the purpose for which the information may be lawfully used. For any other information, we will entertain your request for deletion, however, this might affect your smooth and uninterrupted use of our services on the Platform.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Third Party Links</h3>
+                                                    <p>The Platform may contain references and links to third party websites and products in such websites. However, we are not liable in any manner, whatsoever, for any content as may be displayed on such third-party websites. If you follow a link to any of these websites, please note that these websites have their own privacy policies, terms of use and cookie policies that we do not accept any responsibility or liability for. Please check these documents before you submit any personal data to these websites, mobile applications or their own affiliates.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Communications From Us</h3>
+                                                    <p>We may from time to time send you service-related announcements when we consider it necessary to do so (such as when we temporarily suspend the Platform for maintenance, or security, privacy, or administrative-related communications). We send these to you via SMS or/and emails. You may not opt-out of these service-related announcements, which are not promotional in nature and used solely to protect your Account and keep you informed of important changes to the Platform.</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 col-md-12 col-sm-6 col-12">
+                                                <div class="about_details">
+                                                    <h3 class="abt_d_head">Grievance Officer</h3>
+                                                    <p>In accordance with the Information Technology Act, 2000 and rules made thereunder we have a Grievance Officer to address your concerns regarding data safety, privacy, and the Platform usage concerns. We will resolve the issues raised by you within 30 (thirty) days from receiving them. You may contact the</p>
+                                                    <p>Grievance Officer at any of the following:</p>
+                                                    <p>Name: Grievance Officer</p>
+                                                    <p>Address: D. No: 13-110, Kanha Village, Nandigama Mandal, Telangana 509325</p>
+                                                    <p>Office Hours: 9 Am- 6 Pm</p>
+                                                    <p>Email: privacy@heartfulness.org</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </t>
+                </t>
+            </field>
+        </record>
+        <record id="privacypolicy_boec_page" model="website.page">
+            <field name="url">/privacypolicy</field>
+            <field name="is_published">True</field>
+            <field name="view_id" ref="privacypolicy_boec" />
+            <field name="track">True</field>
+        </record>
+        <record id="menu_privacypolicy_boec" model="website.menu">
+            <field name="name">Privacy Policy</field>
+            <field name="url">/privacypolicy</field>
+            <field name="page_id" ref="theme_boec.privacypolicy_boec_page" />
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">50</field>
+        </record>
+    </data>
+</odoo>
