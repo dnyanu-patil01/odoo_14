@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
         <template id="boec_shop" name="Boec Shop" inherit_id="website_sale.products">
             <xpath expr="//div[hasclass('container')]" position="before">
                 <Section class="banner_sub">
-                    <div class="wrapper">
+                    <div>
                         <div class="container">
                             <div class="row">
-                                <div class="sub_page">
-                                    <div class="name">
+                                <div>
+                                    <!-- <div class="name">
                                         Shop
                                     </div>
                                     <nav aria-label="breadcrumb">
@@ -17,18 +17,124 @@
                                             <i class="material-icons">&#xe315;</i>
                                             <li class="breadcrumb-item active" aria-current="page">Shop</li>
                                         </ol>
-                                    </nav>
+                                    </nav> -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </Section>
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img href="/shop/category/Essential-Oils-17" class="d-block w-100" src="/theme_boec/static/src/images/banner/banner1.jpg" alt="First slide" />
+                        </div>
+                        <div class="carousel-item">
+                            <img href="/shop/category/Honey-20" class="d-block w-100" src="/theme_boec/static/src/images/banner/banner2.jpg" alt="Second slide" />
+                        </div>
+                        <div class="carousel-item">
+                            <img href="/shop/category/Health-Care-30" class="d-block w-100" src="/theme_boec/static/src/images/banner/banner3.jpg" alt="Third slide" />
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true" />
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true" />
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <!-- <Section class="banner">
+          <div class="owl-carousel">
+                <div>
+                    <section class="banner_bg1" style="height:575px;">
+                        <div class="container h-100">
+                            <div class="wrapper">
+                                <div class="card ">
+                                     <h5 class="card-header afload">Summer Collection</h5> 
+                                     <div class="card-body">
+                                        <h5 class="card-title afload">Fall - Winter <br/>
+                                            Collection 2030</h5>
+                                        <p class="card-text afload">A specialist label creating luxury essentials. Ethically crafted with an
+                                            unwavering
+                                            commitment to exceptional quality.</p>
+                                        <a href="/shop" class="btn btn-banner afload">
+                                            SHOP NOW <span class="fas fa-long-arrow-alt-right"/> </a>
+                                    </div>
+                                    <div class="footer_icon">
+                                        <a href="#"><span class="fab fa-pinterest"/></a>
+                                        <a href="#"><span class="fab fa-instagram"/></a>
+                                        <a href="#"><span class="fab fa-facebook-f"/></a>
+                                        <a href="#"><span class="fab fa-twitter"/></a>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div>
+                    <section class="banner_bg2" style="height:575px;">
+                        <div class="container h-100">
+                            <div class="wrapper">
+                                <div class="card ">
+                                     <h5 class="card-header afload">Summer Collection</h5>
+                                    <div class="card-body">
+                                        <h5 class="card-title afload">Fall - Winter <br/>
+                                            Collection 2030</h5>
+                                        <p class="card-text afload">A specialist label creating luxury essentials. Ethically crafted with an
+                                            unwavering
+                                            commitment to exceptional quality.</p>
+                                        <a href="/shop" class="btn btn-banner afload">
+                                            SHOP NOW <span class="fas fa-long-arrow-alt-right"/></a>
+                                    </div>
+                                    <div class="footer_icon">
+                                        <a href="#"><span class="fab fa-pinterest"/></a>
+                                        <a href="#"><span class="fab fa-instagram"/></a>
+                                        <a href="#"><span class="fab fa-facebook-f"/></a>
+                                        <a href="#"><span class="fab fa-twitter"/></a>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div>
+                    <section class="banner_bg3" style="height:575px;">
+                        <div class="container h-100">
+                            <div class="wrapper">
+                                <div class="card">
+                                     <h5 class="card-header afload">Summer Collection</h5>
+                                    <div class="card-body">
+                                        <h5 class="card-title afload">Fall - Winter <br/>
+                                            Collection 2030</h5>
+                                        <p class="card-text afload">A specialist label creating luxury essentials. Ethically crafted with an
+                                            unwavering
+                                            commitment to exceptional quality.</p>
+                                        <a href="/shop" class="btn btn-banner afload">
+                                            SHOP NOW <span class="fas fa-long-arrow-alt-right"/> </a>
+                                    </div>
+                                    <div class="footer_icon">
+                                        <a href="#"><span class="fab fa-pinterest"/></a>
+                                        <a href="#"><span class="fab fa-instagram"/></a>
+                                        <a href="#"><span class="fab fa-facebook-f"/></a>
+                                        <a href="#"><span class="fab fa-twitter"/></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </Section> -->
             </xpath>
-
             <xpath expr="//div[@id='products_grid']" position="replace">
                 <t t-if="category">
-                    <t t-set='editor_msg'>Drag building blocks here to customize the header for "<t t-esc='category.name'/>" category.</t>
-                    <div class="mb16" id="category_header" t-att-data-editor-message="editor_msg" t-field="category.website_description"/>
+                    <t t-set="editor_msg">
+                        Drag building blocks here to customize the header for "
+                        <t t-esc="category.name" />
+                        " category.
+                    </t>
+                    <div class="mb16" id="category_header" t-att-data-editor-message="editor_msg" t-field="category.website_description" />
                 </t>
                 <section t-attf-class="shop gap col #{'o_wsale_layout_list' if layout_mode == 'list' else ''}">
                     <div class="wrapper">
@@ -40,14 +146,13 @@
                                             <t t-foreach="tr_product" t-as="td_product">
                                                 <t t-if="td_product">
                                                     <t t-set="product" t-value="td_product['product']" />
-                                                    <t t-attf-class="wrapper"
-                                                       t-att-data-ribbon-id="td_product['ribbon'].id">
+                                                    <t t-attf-class="wrapper" t-att-data-ribbon-id="td_product['ribbon'].id">
                                                         <div t-attf-class="img_wrapper">
-                                                            <t t-call="website_sale.products_item"/>
+                                                            <t t-call="website_sale.products_item" />
                                                         </div>
                                                     </t>
                                                 </t>
-                                                <t t-else=""/>
+                                                <t t-else="" />
                                             </t>
                                         </t>
                                     </div>
@@ -58,16 +163,13 @@
                 </section>
             </xpath>
         </template>
-
         <template id="boec_shop_add_to_cart" name="Boec Shop Cart Button" inherit_id="website_sale.products_item" customize_show="True" priority="2" active="True">
             <xpath expr="//h6[hasclass('o_wsale_products_item_title')]" position="before">
                 <div class="add_to_c">
-                    <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()"/>
-                    <input name="product_id" t-att-value="product_variant_id" type="hidden"/>
+                    <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()" />
+                    <input name="product_id" t-att-value="product_variant_id" type="hidden" />
                     <t t-if="product_variant_id">
-                        <a href="#" aria-label="Shopping cart" title="Shopping cart" class="a-submit">
-                            + Add to cart
-                        </a>
+                        <a href="#" aria-label="Shopping cart" title="Shopping cart" class="a-submit">+ Add to cart</a>
                     </t>
                 </div>
             </xpath>
@@ -77,21 +179,15 @@
                 <div class="three">
                     <ul>
                         <li>
-                            <t t-set="in_wish" t-value="product._is_in_wishlist()"/>
-                            <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()"/>
-                            <button t-if="product_variant_id" type="button" role="button" class="btn btn-secondary o_add_wishlist"
-                                    t-att-disabled='in_wish or None' title="Add to Wishlist"
-                                    t-att-data-product-template-id="product.id"
-                                    t-att-data-product-product-id="product_variant_id" data-action="o_wishlist">
-                                <span class="far fa-heart" role="img" aria-label="Add to wishlist"/>
+                            <t t-set="in_wish" t-value="product._is_in_wishlist()" />
+                            <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()" />
+                            <button t-if="product_variant_id" type="button" role="button" class="btn btn-secondary o_add_wishlist" t-att-disabled="in_wish or None" title="Add to Wishlist" t-att-data-product-template-id="product.id" t-att-data-product-product-id="product_variant_id" data-action="o_wishlist">
+                                <span class="far fa-heart" role="img" aria-label="Add to wishlist" />
                             </button>
                         </li>
                         <li>
-                            <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()"/>
-                            <button t-if="product_variant_id" type="button" role="button"
-                                    class="d-none d-md-inline-block btn btn-secondary o_add_compare cmp" title="Compare"
-                                    aria-label="Compare" t-att-data-product-product-id="product_variant_id"
-                                    data-action="o_comparelist">
+                            <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()" />
+                            <button t-if="product_variant_id" type="button" role="button" class="d-none d-md-inline-block btn btn-secondary o_add_compare cmp" title="Compare" aria-label="Compare" t-att-data-product-product-id="product_variant_id" data-action="o_comparelist">
                                 <span class="material-icons">compare_arrows</span>
                             </button>
                         </li>

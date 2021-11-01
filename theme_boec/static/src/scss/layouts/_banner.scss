@@ -165,45 +165,45 @@
         letter-spacing: 1px;
       }
     }
-    .owl-dots {
-      position: absolute;
-      position: absolute;
-      bottom: 8em;
-      right: 24em;
-      z-index: 999;
-      @media screen and(max-width:996px) {
-        bottom: 9.5em;
-        right: 30em;
-      }
-      @media screen and(max-width:768px) {
-        bottom: 4em;
-        right: 20em;
-      }
-      @media screen and(max-width:576px) {
-        bottom: 10%;
-      }
-      @media screen and(max-width:500px) {
-        bottom: 10%;
-        right: 12em;
-      }
-      @media screen and(max-width:375px) {
-        bottom: 3%;
-        right: 18em;
-      }
-    }
-    .owl-dot {
-      background-color: deepskyblue;
-      &.active {
-        background: #7cd279 !important;
-      }
-      span {
-        border: 1px solid;
-        color: white;
-        font-size: 1em;
-        padding: 0.1em 0.6em;
-        outline: none;
-      }
-    }
+    // // .owl-dots {
+    // //   position: absolute;
+    // //   position: absolute;
+    // //   bottom: 8em;
+    // //   right: 24em;
+    // //   z-index: 999;
+    // //   @media screen and(max-width:996px) {
+    // //     bottom: 9.5em;
+    // //     right: 30em;
+    // //   }
+    // //   @media screen and(max-width:768px) {
+    // //     bottom: 4em;
+    // //     right: 20em;
+    // //   }
+    // //   @media screen and(max-width:576px) {
+    // //     bottom: 10%;
+    // //   }
+    // //   @media screen and(max-width:500px) {
+    // //     bottom: 10%;
+    // //     right: 12em;
+    // //   }
+    // //   @media screen and(max-width:375px) {
+    // //     bottom: 3%;
+    // //     right: 18em;
+    // //   }
+    // // }
+    // .owl-dot {
+    //   background-color: deepskyblue;
+    //   &.active {
+    //     background: #7cd279 !important;
+    //   }
+    //   span {
+    //     border: 1px solid;
+    //     color: white;
+    //     font-size: 1em;
+    //     padding: 0.1em 0.6em;
+    //     outline: none;
+    //   }
+    // }
   }
 }
 // Sub pages

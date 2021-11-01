@@ -211,26 +211,11 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="types">
-                                <ul>
-                                    <t t-if="product.l10n_in_hsn_code">
-                                        <li>HSN/SAC:<span t-esc="product.l10n_in_hsn_code"/></li>
-                                    </t>
-                                    <t t-if="product.public_categ_ids">
-                                        <li>Categories:<span t-esc="product.public_categ_ids.name"/></li>
-                                    </t>
-                                </ul>
-                            </div>
                             <div class="description">
                                 <nav>
                                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                                         <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
                                                 type="button" role="tab" aria-controls="nav-home" aria-selected="true">Description</button>
-                                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
-                                                type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Customer Reviews</button>
-                                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
-                                                type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Additional
-                                            information</button>
                                     </div>
                                 </nav>
                                 <div class="tab-content" id="nav-tabContent">
@@ -293,7 +278,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                                    <!-- <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
                                         <p class="top">
                                             Terms and Conditions
                                         </p>
@@ -302,7 +287,7 @@
                                             Shipping: 2-3 Business Days<br/>
                                             <a class="text-muted" href="/shop/terms">Read more...</a>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
