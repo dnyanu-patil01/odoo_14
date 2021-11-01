@@ -207,6 +207,10 @@ class SaleOrder(models.Model):
             carrier = delivery_carrier_obj.search([('delivery_type','=','shiprocket')])
             if carrier:
                 self.write({"carrier_id": carrier.id})
+        elif self.seller_id and self.seller_id.fulfilment_type == 'self_fulfilment':
+            carrier = delivery_carrier_obj.search([('delivery_type','=','self')])
+            if carrier:
+                self.write({"carrier_id": carrier.id})
                 # shipping_product = carrier.product_id
                 # self.shopify_create_sale_order_line(line, shipping_product, 1,
                 #                                     shipping_product.name or line.get("title"),
@@ -816,7 +820,9 @@ class SaleOrder(models.Model):
         for picking in picking_ids:
             carrier_name = self.get_shopify_carrier_code(picking)
             sale_order = picking.sale_id
-
+            # Added By Leela To Handle Merged DO
+            # sale_orders = picking.get_related_sale_orders()
+            # for sale_order in self.env['sale.order'].browse(sale_orders):
             _logger.info("We are processing Sale order '%s' and Picking '%s'" % (sale_order.name, picking.name))
 
             try:
@@ -844,7 +850,7 @@ class SaleOrder(models.Model):
 
             if not line_items:
                 message = "No order lines found for the update order shipping status for order [%s]" \
-                          % sale_order.name
+                        % sale_order.name
                 _logger.info(message)
                 self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
                 continue
@@ -855,11 +861,11 @@ class SaleOrder(models.Model):
                     [("warehouse_for_order", "=", sale_order.warehouse_id.id), ("instance_id", "=", instance.id)])
                 if not shopify_location_id:
                     shopify_location_id = shopify_location_obj.search([("is_primary_location", "=", True),
-                                                                       ("instance_id", "=", instance.id)])
+                                                                    ("instance_id", "=", instance.id)])
                 if not shopify_location_id:
                     message = "Primary Location not found for instance %s while update order " \
-                              "shipping status." % (
-                                  instance.name)
+                            "shipping status." % (
+                                instance.name)
                     _logger.info(message)
                     self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
                     continue
@@ -876,8 +882,8 @@ class SaleOrder(models.Model):
                 fulfillment_result = new_fulfillment.save()
                 if not fulfillment_result:
                     message = "Order [%s] status not updated due to some issue in fulfillment " \
-                              "request/response." % (
-                                  sale_order.name)
+                            "request/response." % (
+                                sale_order.name)
                     _logger.info(message)
                     self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
                     continue
@@ -892,9 +898,15 @@ class SaleOrder(models.Model):
                 _logger.info(message)
                 self.create_shopify_log_line(message, False, log_book, sale_order.client_order_ref)
                 continue
-
-            picking.write({"updated_in_shopify": True})
             sale_order.shopify_location_id = shopify_location_id
+            # ADDED By Leela
+            if picking.carrier_id.delivery_type in ('self','shiprocket') and not picking.carrier_tracking_ref:
+                picking.write({"updated_in_shopify": False})
+            elif picking.carrier_id.delivery_type in ('self','shiprocket') and picking.carrier_tracking_ref:
+                picking.write({"updated_in_shopify": True})
+            else:
+                picking.write({"updated_in_shopify":True})
+            # sale_order.shopify_location_id = shopify_location_id
 
         if not log_book.log_lines:
             log_book.unlink()

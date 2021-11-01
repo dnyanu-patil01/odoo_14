@@ -20,6 +20,8 @@
         "wizard/set_courier_wizard_views.xml",
         "wizard/barcodes_read_views.xml",
         "wizard/get_order_cancel_reason_view.xml",
+        "wizard/update_pickup_location_view.xml",
+        "wizard/ndr_action_wizard_views.xml",
         "views/company_views.xml",
         "views/shiprocket_views.xml",
         "views/delivery_shiprocket_views.xml",

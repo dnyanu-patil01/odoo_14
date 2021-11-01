@@ -4,10 +4,12 @@ from .shiprocket_request import ShipRocket
 from odoo.exceptions import UserError
 import requests
 import base64
+from datetime import datetime
 
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
+    _order = "id desc"
 
     def _get_default_channel_id(self):
         custom_channel =  self.env['shiprocket.channel'].search(
@@ -44,7 +46,7 @@ class StockPicking(models.Model):
     comment = fields.Char(copy=False)
     # To Store The Error Response Message
     response_comment = fields.Char(readonly=True, copy=False, tracking=True)
-    # To Auto Fetch From Vendor
+    # To Auto Fetch From Seller
     pickup_location = fields.Many2one("shiprocket.pickup.location", copy=False,default=_get_default_pickup_location_id)
     channel_id = fields.Many2one("shiprocket.channel", copy=False,default=_get_default_channel_id)
     # Serviceablity Related Fields
@@ -75,6 +77,9 @@ class StockPicking(models.Model):
     is_order_rto = fields.Boolean(copy=False, readonly=True)
     bulk_order_id = fields.Many2one("shiprocket.bulk.process",copy=False, readonly=True)
     cancel_reason = fields.Text("Reason",copy=False, readonly=True)
+    #To Show NDR History
+    ndr_history_line = fields.One2many("shiprocket.ndr.history.line","picking_id",readonly=True,copy=False)
+    is_ndr = fields.Boolean('Is NDR',readonly=True,copy=False)
 
     def _send_confirmation_email(self):
         super(StockPicking, self)._send_confirmation_email()
@@ -192,9 +197,6 @@ class StockPicking(models.Model):
         shipping_id = int(self.shiprocket_shipping_id)
         response_data = shiprocket._generate_label_request([shipping_id])
         if response_data:
-            data = shiprocket.get_tracking_link(self)
-            if data:
-                response_data.update(data)
             self.write(response_data)
         if 'label_url' in response_data:
             self.generate_attachment_pdf(response_data['label_url'],'Label')
@@ -208,9 +210,6 @@ class StockPicking(models.Model):
         response_data = shiprocket._print_manifest_request([order_id])
         self.get_shiprocket_status()
         if response_data:
-            data = shiprocket.get_tracking_link(self)
-            if data:
-                response_data.update(data)
             self.write(response_data)
         if 'manifest_url' in response_data:
             self.generate_attachment_pdf(response_data['manifest_url'],'Manifest')
@@ -225,8 +224,11 @@ class StockPicking(models.Model):
             shiprocket = ShipRocket(self.env.company)
             # API Call To Generate Label
             order_id = int(transfer.shiprocket_order_id)
-            response_data = "Order Cancelled!"
             response_data = shiprocket._cancel_order_request([order_id])
+            #Creating Return DO for order status before manifest
+            if response_data in (200,204) and transfer.shiprocket_order_status_id.status_code in ('1','2','3','4','12','13','14'):
+                transfer.create_return_picking()
+                response_data = "Order Cancellation In Shiprocket And Return Order Also Created."
             transfer.get_shiprocket_status()
             transfer.write({'response_comment':str(response_data)})
         return True
@@ -256,15 +258,17 @@ class StockPicking(models.Model):
                 )
             #Auto Generation Of Return Of The Delivery Order
             if response_data['order_status_code'] == '16':
-                self.create_return_picking_for_rto()
+                self.create_return_picking()
             if response_data['order_status_code'] == "4":
                 vals.update(
                     {"is_pickup_request_done": True}
                 )
+            if response_data['order_status_code'] == "36":
+                vals.update({'is_ndr':True})
             self.write(vals)
         return True
 
-    def create_return_picking_for_rto(self):
+    def create_return_picking(self):
         '''
         Create Return Picking For RTO Delivered Order
         '''
@@ -392,3 +396,99 @@ class StockPicking(models.Model):
         shiprocket = ShipRocket(self.env.company)
         shiprocket._get_order_details(self)
         return True
+
+    
+    def get_ndr_details(self):
+        shiprocket = ShipRocket(self.env.company)
+        ctx = dict(self.env.context)
+        if 'specific_ndr' in ctx:
+            data = shiprocket._get_specific_ndr_shipments(self.shiprocket_awb_code)
+        else:
+            data = shiprocket._get_all_ndr_shipments()
+        ndr_values = []
+        ShiprocketNDR = self.env['shiprocket.ndr']
+        if 'response_comment' not in data:
+            for value in data:
+                prev_ndr=ShiprocketNDR.search([('shiprocket_ndr_id','=',value['id'])])
+                if prev_ndr:
+                    prev_ndr.unlink()
+                picking_id = self.get_picking_id(value['awb_code'],value['shipment_id'])
+                vals={
+                    'picking_id':picking_id,
+                    'shiprocket_ndr_id':value['id'],
+                    'ndr_shipment_id':value['shipment_id'],
+                    'attempts':value['attempts'],
+                    'ndr_raised_at':value['ndr_raised_at'],
+                    'reason':value['reason'],
+                    'escalation_status':value['escalation_status'],
+                    'shipment_channel_id':value['shipment_channel_id'],
+                    'courier':value['courier'],
+                }
+                history_list = []
+                for rec in value['history']:
+                    history_data = (
+                            0,
+                            0,
+                            {
+                                'picking_id':picking_id,
+                                "ndr_history_id": rec["id"],
+                                "ndr_id": rec["ndr_id"],
+                                "ndr_reason": rec["ndr_reason"],
+                                'ndr_raised_at':value['ndr_raised_at'],
+                                "ndr_attempt": rec["ndr_attempt"],
+                                "comment": rec["comment"],
+                                "ndr_push_status":rec["ndr_push_status"],
+                                "action_by":rec['action_by']
+                            },
+                        )
+                    history_list.append(history_data)
+                vals.update({'history_line':history_list})
+                ndr_values.append(vals) 
+            ShiprocketNDR.create(ndr_values)       
+        return True
+    
+    def get_picking_id(self,awb_code,shipment_id):
+        picking_id = False
+        picking_id = self.search([('shiprocket_awb_code','=',awb_code)],limit=1)
+        if not picking_id:
+            picking_id = self.search([('shiprocket_shipping_id','=',shipment_id)],limit=1)
+        if picking_id:
+            picking_id.write({'is_ndr':True})
+            return picking_id.id
+        else:
+            return False
+    
+    def format_ndr_raised_at(self,ndr_raised):
+        if ndr_raised:
+            return datetime.strptime(ndr_raised,'%Y-%m-%d %H:%M:%S')
+
+    def action_ndr(self):
+        picking_ids = self.env.context.get('active_ids') or False
+        if not picking_ids:
+            ctx={'picking_ids':self.ids}
+        else:
+            ctx = {"picking_ids": picking_ids}
+        return {
+            "name": ("Action NDR"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "ndr.action.wizard",
+            "target": "new",
+            "context":ctx,
+        }
+
+    def action_update_pickup_location(self):
+        '''popup wizard to choose new pickup location and update the same in shiprocket'''
+        picking_ids = self.env.context.get('active_ids') or False
+        if not picking_ids:
+            ctx={'picking_ids':self.ids}
+        else:
+            ctx = {"picking_ids": picking_ids}
+        return {
+            "name": ("Update Pickup Location In Shiprocket"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "update.pickup.location",
+            "target": "new",
+            "context":ctx,
+        }

@@ -377,9 +377,12 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_basic_detail:
             if template.description:
                 new_product.body_html = template.description
-            if template.product_tmpl_id.seller_ids:
-                new_product.vendor = template.product_tmpl_id.seller_ids[0].display_name
-            new_product.product_type = template.shopify_product_category.name
+            #By Leela To Pass Seller Name 
+            # if template.product_tmpl_id.seller_ids:
+            #     new_product.vendor = template.product_tmpl_id.seller_ids[0].display_name
+            if template.product_tmpl_id.seller_id:
+                new_product.vendor = template.product_tmpl_id.seller_id.name
+            new_product.product_type = template.product_tmpl_id.categ_id.name
             new_product.tags = [tag.name for tag in template.tag_ids]
             if template.template_suffix:
                 new_product.template_suffix = template.template_suffix

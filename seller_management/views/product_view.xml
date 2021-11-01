@@ -35,7 +35,7 @@
         <field name="model">product.template</field>
         <field name="priority">30</field>
         <field name="arch" type="xml">
-            <form string="Seller Products" delete="0">
+            <form string="Seller Products" duplicate="0" delete="0">
                 <header>
                     <button string="Update Quantity" type="object"
                         name="seller_update_stock_quantity"
@@ -43,8 +43,8 @@
                     <field name="state" invisible="1"/>
                     <button name="button_draft" string="Set Draft" states="approve,reject" type="object"  groups="seller_management.group_product_approval,seller_management.group_sellers_management_user"/>
                     <button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
-                    <button name="button_approve" string="Approve" states="draft,to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
-                    <button name="button_reject" string="Reject" states="draft,to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
+                    <button name="button_approve" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
+                    <button name="button_reject" string="Reject" states="to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
                     
                 </header>
                 <sheet>
@@ -91,8 +91,10 @@
                                 <group name="group_general">
                                     <field name="active" invisible="1"/>
                                     <field name="seller_id" required="1" attrs="{'readonly':[('state','!=','draft')]}" domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]" options="{'no_create': True,'no_open':True}" />
-                                    <field name="type" attrs="{'readonly':[('state','!=','draft')]}"/>
-                                    <field name="categ_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_open':True}" string="Product Category"/>
+                                    <field name="type" invisible="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                    <field name="categ_id" invisible="1" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_open':True}" string="Product Category"/>
+                                    <field name="l10n_in_hsn_code" attrs="{'required':[('state','=','draft')],'readonly':[('state','!=','draft')]}"/>
+                                    <field name="l10n_in_hsn_description" attrs="{'readonly':[('state','!=','draft')]}"/>
                                 </group>
                                 <group name="group_standard_price">
                                     <label for="list_price" attrs="{'readonly':[('state','!=','draft')]}"/>
@@ -116,7 +118,7 @@
                                         </span>
                                     </div>
                                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
-                                    <field name="uom_id" groups="uom.group_uom" options="{'no_create': True,'no_open':True}" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                    <field name="taxes_id" widget="many2many_tags" options="{'no_create': True,'no_open':True}" attrs="{'readonly':[('state','!=','draft')]}"/>
                                     <field name="currency_id" invisible="1"/>
                                     <field name="cost_currency_id" invisible="1"/>
                                     <field name="product_variant_id" invisible="1"/>
@@ -151,8 +153,8 @@
             <xpath expr="//form/header" position="inside">
                 <button name="button_draft" string="Set Draft" states="approve,reject" type="object"  groups="seller_management.group_product_approval,seller_management.group_sellers_management_user"/>
                 <button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
-                <button name="button_approve" string="Approve" states="draft,to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
-                <button name="button_reject" string="Reject" states="draft,to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
+                <button name="button_approve" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
+                <button name="button_reject" string="Reject" states="to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approve,reject"/>
             </xpath>
             <xpath expr="//sheet" position="after">
@@ -186,7 +188,17 @@
             </xpath>
         </field>
     </record>
-    
+    <!-- Added To Make HSN Code Mandatory -->
+    <record id="product_template_hsn_code_inherit_l10n_in" model="ir.ui.view">
+        <field name="name">product.template.view.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="l10n_in.product_template_hsn_code"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='l10n_in_hsn_code']" position="attributes">
+                <attribute name="required">True</attribute>
+            </xpath>
+        </field>
+    </record>
     <record model="ir.ui.view" id="product_search_tree_view_inherit">
         <field name="name">product.template.search.inherit</field>
         <field name="model">product.template</field>

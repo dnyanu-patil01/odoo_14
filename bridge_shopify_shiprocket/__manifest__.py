@@ -21,5 +21,6 @@
         'view/product_template_view.xml',
         "view/seller_delivery_order_view.xml",
         "view/seller_pickup_location.xml",
+        "view/res_partner_view.xml",
     ],
 }

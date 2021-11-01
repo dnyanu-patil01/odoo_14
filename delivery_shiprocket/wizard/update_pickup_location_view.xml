@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_update_pickup_location_form" model="ir.ui.view">
+        <field name="name">update.pickup.location.form</field>
+        <field name="model">update.pickup.location</field>
+        <field name="arch" type="xml">
+            <form>
+                <p colspan="2" class="alert alert-info" role="alert">
+                    <b>
+                        <u>
+                            <h3 style="font-weight:bold;color:#7d5a29">Important Note:</h3>
+                        </u>
+
+                        <ol>
+                            <li>
+                              To change pickup location order state must be <b> New Order </b> and shiprocket order ID is required 
+                            </li>
+                            <li>
+                              Below Selected Pickup Location Will Be Updated In Selected Delivery Orders In Shiprocket
+                            </li>
+                        </ol>
+                    </b>
+                </p>
+                <group>
+                    <field name="pickup_location_id" required="1" options="{'no_create': True,'no_edit':True,'no_open':True}"/>
+                </group>
+                <footer>
+                    <button name="update_pickup_location" string="Update Pickup Location" type="object" default_focus="1" class="oe_highlight" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

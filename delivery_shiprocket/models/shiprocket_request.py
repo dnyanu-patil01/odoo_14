@@ -2,11 +2,23 @@
 import requests
 import json
 import phonenumbers
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError,AccessError
 from werkzeug.urls import url_join
 
 API_BASE_URL = "https://apiv2.shiprocket.in/v1/external/"
 
+ERROR_MAP = {
+'400': 'Bad Request	The request was invalid or cannot be otherwise served',
+'401': 'Unauthorized	There is some error in validation. You need to check your token or credentials',
+'404': 'Not Found	The URI requested is invalid or the resource requested does not exist',
+'405': 'Method Not Allowed	The API was accessed using the wrong method. Check your HTTP method',
+'422': 'Unprocessable Entity - It means the request contains invalid date or incorrect syntax or cannot be fulfilled. Try checking your code for errors',
+'429': 'Too Many Requests - You have exceeded the API call rate limit',
+'500': 'Server Errors - Some server error occurred. Some APIs may show this due to syntax or parameter errors',
+'502': 'Server Errors - Some server error occurred. Some APIs may show this due to syntax or parameter errors',
+'503': 'Server Errors - Some server error occurred. Some APIs may show this due to syntax or parameter errors',
+'504': 'Server Errors - Some server error occurred. Some APIs may show this due to syntax or parameter errors',
+}
 
 class ShipRocket:
     """
@@ -31,9 +43,18 @@ class ShipRocket:
         auth_token_url = "auth/login"
         url = url_join(API_BASE_URL, auth_token_url)
         headers = {"Content-Type": "application/json"}
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        response_dict = response.json()
-        return response_dict
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            response_dict = response.json()
+            return response_dict
+        except requests.exceptions.HTTPError as errh:
+            raise AccessError(('An Http Error occurred: %s'%(errh)))
+        except requests.exceptions.ConnectionError as errc:
+            raise AccessError(('An Error Connecting to the API occurred:Please Check Your Internet And Try Again'))
+        except requests.exceptions.Timeout as errt:
+            raise AccessError(("A Timeout Error occurred: %s"%(repr(errt))))
+        except requests.exceptions.RequestException as err:
+            raise AccessError(("An Unknown Error occurred: %s"%(repr(err))))
 
     def _import_all_channels(self):
         """Request to pull channels from shiprocket to Odoo.
@@ -41,9 +62,21 @@ class ShipRocket:
         """
         channel_url = "channels"
         url = url_join(API_BASE_URL, channel_url)
-        response = requests.get(url, headers=self.headers, data={})
-        response_dict = response.json()
-        return response_dict
+        try:
+            response = requests.get(url, headers=self.headers, data={})
+            if response.status_code == 200:
+                response_dict = response.json()
+                return response_dict
+            elif response.status_code == 404:
+                raise AccessError("No Channels Found!")
+        except requests.exceptions.HTTPError as errh:
+            raise AccessError(('An Http Error occurred: %s'%(errh)))
+        except requests.exceptions.ConnectionError as errc:
+            raise AccessError(('An Error Connecting to the API occurred:Please Check Your Internet And Try Again'))
+        except requests.exceptions.Timeout as errt:
+            raise AccessError(("A Timeout Error occurred: %s"%(repr(errt))))
+        except requests.exceptions.RequestException as err:
+            raise AccessError(("An Unknown Error occurred: %s"%(repr(err))))
 
     def _import_picking_address(self):
         """Request to pull pickup address from shiprocket to Odoo.
@@ -52,9 +85,21 @@ class ShipRocket:
         """
         get_pickup_address_url = "settings/company/pickup"
         url = url_join(API_BASE_URL, get_pickup_address_url)
-        response = requests.get(url, headers=self.headers, data={})
-        response_dict = response.json()
-        return response_dict
+        try:
+            response = requests.get(url, headers=self.headers, data={})
+            if response.status_code == 200:
+                response_dict = response.json()
+                return response_dict
+            elif response.status_code == 404:
+                raise AccessError("No Channels Found!")
+        except requests.exceptions.HTTPError as errh:
+            raise AccessError(('An Http Error occurred: %s'%(errh)))
+        except requests.exceptions.ConnectionError as errc:
+            raise AccessError(('An Error Connecting to the API occurred:Please Check Your Internet And Try Again'))
+        except requests.exceptions.Timeout as errt:
+            raise AccessError(("A Timeout Error occurred: %s"%(repr(errt))))
+        except requests.exceptions.RequestException as err:
+            raise AccessError(("An Unknown Error occurred: %s"%(repr(err))))
 
     def check_required_address_value(self, pickup_location):
         """Check the required fields need to create pickup location in shiprocket and check phone number format.
@@ -179,8 +224,17 @@ class ShipRocket:
         data = self.prepare_pickup_location(partner)
         add_pickup_url = "settings/company/addpickup"
         url = url_join(API_BASE_URL, add_pickup_url)
-        response = requests.post(url, headers=self.headers, data=json.dumps(data))
-        return response.json()
+        try:
+            response = requests.post(url, headers=self.headers, data=json.dumps(data))
+            return response.json()
+        except requests.exceptions.HTTPError as errh:
+            raise AccessError(('An Http Error occurred: %s'%(errh)))
+        except requests.exceptions.ConnectionError as errc:
+            raise AccessError(('An Error Connecting to the API occurred:Please Check Your Internet And Try Again'))
+        except requests.exceptions.Timeout as errt:
+            raise AccessError(("A Timeout Error occurred: %s"%(repr(errt))))
+        except requests.exceptions.RequestException as err:
+            raise AccessError(("An Unknown Error occurred: %s"%(repr(err))))
 
     def prepare_pickup_location(self, partner):
         """Request To Create New Pickup Location In Shiprocket.
@@ -250,19 +304,32 @@ class ShipRocket:
         data = self.prepare_order_data(picking, "return")
         return_order_url = "orders/create/return"
         url = url_join(API_BASE_URL, return_order_url)
-        response = requests.post(url, headers=self.headers, data=json.dumps(data))
-        response_dict = response.json()
-        if "errors" in response_dict:
-            raise UserError(self.format_error_message(response_dict["errors"]))
-        if "message" in response_dict:
-            raise UserError(response_dict["message"])
-        if response.status_code == 200:
-            response_data = {
-                "shiprocket_order_id": response_dict["order_id"],
-                "shiprocket_shipping_id": response_dict["shipment_id"],
-            }
-            return response_data
-        return False
+        try:
+            response = requests.post(url, headers=self.headers, data=json.dumps(data))
+            response_dict = response.json()
+            if response.status_code == 422:
+                if "errors" in response_dict:
+                    raise UserError(self.format_error_message(response_dict["errors"]))
+                if "message" in response_dict:
+                    raise UserError(self.format_error_message(response_dict["message"]))
+            if response.status_code == 200:
+                response_data = {
+                    "shiprocket_order_id": response_dict["order_id"],
+                    "shiprocket_shipping_id": response_dict["shipment_id"],
+                }
+                return response_data
+            if response.status_code not in (200,422):
+                if ERROR_MAP.get(str(response.status_code)):
+                    raise AccessError('%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code))))
+            return False
+        except requests.exceptions.HTTPError as errh:
+            raise AccessError(('An Http Error occurred: %s'%(errh)))
+        except requests.exceptions.ConnectionError as errc:
+            raise AccessError(('An Error Connecting to the API occurred:Please Check Your Internet And Try Again'))
+        except requests.exceptions.Timeout as errt:
+            raise AccessError(("A Timeout Error occurred: %s"%(repr(errt))))
+        except requests.exceptions.RequestException as err:
+            raise AccessError(("An Unknown Error occurred: %s"%(repr(err))))
 
     def create_channel_specific_order(self, picking):
         """Create Order In Shiprocket
@@ -280,52 +347,41 @@ class ShipRocket:
         payload = json.dumps(data)
         order_creation_url = "orders/create/adhoc"
         url = url_join(API_BASE_URL, order_creation_url)
-        response = requests.post(url, headers=self.headers, data=payload)
-        response_dict = response.json()
-        if "errors" in response_dict:
-            picking.write({'response_comment':self.format_error_message(response_dict["errors"])})
-            return False
-        if "message" in response_dict:
-            picking.write({'response_comment':response_dict["message"]})
-            return False
-        if response.status_code == 200:
-            if 'order_id' in response_dict and 'shipment_id' in response_dict:
-                response_data = {
-                    "shiprocket_order_id": response_dict["order_id"],
-                    "shiprocket_shipping_id": response_dict["shipment_id"],
-                    "shiprocket_order_status_id":1,
-                    "response_comment":response_dict,
-                }
-                return response_data
+        try:
+            response = requests.post(url, headers=self.headers, data=payload)
+            response_dict = response.json()
+            if response.status_code == 422:
+                if "errors" in response_dict:
+                    picking.write({'response_comment':self.format_error_message(response_dict["errors"])})
+                    return False
+                if "message" in response_dict:
+                    picking.write({'response_comment':response_dict["message"]})
+                    return False
+            if response.status_code == 200:
+                if 'order_id' in response_dict and 'shipment_id' in response_dict:
+                    response_data = {
+                        "shiprocket_order_id": response_dict["order_id"],
+                        "shiprocket_shipping_id": response_dict["shipment_id"],
+                        "shiprocket_order_status_id":1,
+                        "response_comment":'Order Placed Successfully In Shiprocket',
+                    }
+                    return response_data
+                else:
+                    picking.write({"response_comment":response_dict})
+            if response.status_code not in (200,422):
+                if ERROR_MAP.get(str(response.status_code)):
+                    return {'response_comment':'%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code)))}
             else:
                 picking.write({"response_comment":response_dict})
-        else:
-            picking.write({"response_comment":response_dict})
-        return False
-
-    def get_tracking_link(self, picking):
-        """To get tracking link from shiprocket
-        :param picking: stock.picking object
-        """
-        tracking_url = "courier/track/shipment/"
-        url = url_join(API_BASE_URL, tracking_url)
-        request_tracking_url = url_join(url, str(picking.shiprocket_shipping_id))
-        payload = {}
-        response = requests.get(
-             request_tracking_url, headers=self.headers, data=payload
-        )
-        response_dict = response.json()
-        if (
-            "track_url" in response_dict["tracking_data"]
-            and response.status_code == 200
-        ):
-            return {
-                "carrier_tracking_ref": response_dict["tracking_data"][
-                    "shipment_track"
-                ][0]["awb_code"],
-                "carrier_tracking_url": response_dict["tracking_data"]["track_url"],
-            }
-        return False
+            return False
+        except requests.exceptions.HTTPError as errh:
+            raise AccessError(('An Http Error occurred: %s'%(errh)))
+        except requests.exceptions.ConnectionError as errc:
+            raise AccessError(('An Error Connecting to the API occurred:Please Check Your Internet And Try Again'))
+        except requests.exceptions.Timeout as errt:
+            raise AccessError(("A Timeout Error occurred: %s"%(repr(errt))))
+        except requests.exceptions.RequestException as err:
+            raise AccessError(("An Unknown Error occurred: %s"%(repr(err))))
 
     def prepare_order_items(self, picking):
         """Prepare Order Line Items Need For Order Creation Request
@@ -530,8 +586,8 @@ class ShipRocket:
         """
         message_format = """"""
         for error, message in errors.items():
-            msg_format = "%s : %s \n" % (error, message[-1])
-            message_format = msg_format
+            msg_format = "%s : %s \n" % (str(error), str(message))
+            message_format += msg_format
         return message_format
 
     def _convert_phone_number(self, number, country_code):
@@ -597,48 +653,62 @@ class ShipRocket:
             data.update({"is_return": 1})
         check_serviceability_url = "courier/serviceability/"
         url = url_join(API_BASE_URL, check_serviceability_url)
-        response = requests.get(url, headers=self.headers, data=json.dumps(data))
-        response_dict = response.json()
-        if response.status_code == 200 and "data" in response_dict:
-            courier_list = []
-            for rec in response_dict["data"]["available_courier_companies"]:
-                courier_data = (
-                    0,
-                    0,
-                    {
-                        "courier_company_id": picking.get_courier_id(
-                            rec["courier_company_id"], rec["courier_name"]
-                        ),
-                        "courier_name": rec["courier_company_id"],
-                        "rate": rec["rate"],
-                        "rating": rec["rating"],
-                        "etd_hours": rec["etd_hours"],
-                        "etd": rec["etd"],
-                        "estimated_delivery_days": rec["estimated_delivery_days"],
-                        "picking_id": picking.id,
-                    },
-                )
-                courier_list.append(courier_data)
-            response_data = {
-                "recommended_courier_company_id": picking.get_courier_id(
-                    response_dict["data"]["recommended_courier_company_id"], False
-                ),
-                "shiprocket_recommended_courier_id": picking.get_courier_id(
-                    response_dict["data"]["shiprocket_recommended_courier_id"], False
-                ),
-                "shiprocket_serviceability_matrix": courier_list,
-            }
-            return response_data
-        else:
-            if "errors" in response_dict:
-                return {
-                    "response_comment": self.format_error_message(
-                        response_dict["errors"]
+        try:
+            response = requests.get(url, headers=self.headers, data=json.dumps(data))
+            response_dict = response.json()
+            if response.status_code == 200 and "data" in response_dict:
+                courier_list = []
+                for rec in response_dict["data"]["available_courier_companies"]:
+                    courier_data = (
+                        0,
+                        0,
+                        {
+                            "courier_company_id": picking.get_courier_id(
+                                rec["courier_company_id"], rec["courier_name"]
+                            ),
+                            "courier_name": rec["courier_company_id"],
+                            "rate": rec["rate"],
+                            "rating": rec["rating"],
+                            "etd_hours": rec["etd_hours"],
+                            "etd": rec["etd"],
+                            "estimated_delivery_days": rec["estimated_delivery_days"],
+                            "picking_id": picking.id,
+                        },
                     )
+                    courier_list.append(courier_data)
+                response_data = {
+                    "recommended_courier_company_id": picking.get_courier_id(
+                        response_dict["data"]["recommended_courier_company_id"], False
+                    ),
+                    "shiprocket_recommended_courier_id": picking.get_courier_id(
+                        response_dict["data"]["shiprocket_recommended_courier_id"], False
+                    ),
+                    "shiprocket_serviceability_matrix": courier_list,
                 }
-            if "message" in response_dict:
-                return {"response_comment": response_dict["message"]}
-        return False
+                return response_data
+            elif response.status_code in (422,404):
+                if "errors" in response_dict:
+                    return {
+                        "response_comment": self.format_error_message(
+                            response_dict["errors"]
+                        )
+                    }
+                if "message" in response_dict:
+                    return {"response_comment": self.format_error_message(response_dict["message"])}
+            if response.status_code not in (200,422):
+                if ERROR_MAP.get(str(response.status_code)):
+                    return {'response_comment':'%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code)))}
+                else:
+                    return {"response_comment":response_dict}
+            return False
+        except requests.exceptions.HTTPError as errh:
+            raise AccessError(('An Http Error occurred: %s'%(errh)))
+        except requests.exceptions.ConnectionError as errc:
+            raise AccessError(('An Error Connecting to the API occurred:Please Check Your Internet And Try Again'))
+        except requests.exceptions.Timeout as errt:
+            raise AccessError(("A Timeout Error occurred: %s"%(repr(errt))))
+        except requests.exceptions.RequestException as err:
+            raise AccessError(("An Unknown Error occurred: %s"%(repr(err))))
 
     def _create_awb(self, data, picking):
         """Request To Create AWB for current order.
@@ -648,28 +718,35 @@ class ShipRocket:
         """
         create_awb_url = "courier/assign/awb"
         url = url_join(API_BASE_URL, create_awb_url)
-        response = requests.post(url, headers=self.headers, data=json.dumps(data))
-        response_dict = response.json()
-        if response.status_code != 200:
-            return {
-                "response_comment": response.text
-            }
-        if response.status_code == 200 and 'response' in response_dict:
-            if 'awb_code' in response_dict["response"]["data"] and response_dict["response"]["data"]["awb_code"] != False:
-                response_data = {
-                    "shiprocket_awb_code": response_dict["response"]["data"]["awb_code"],
-                    "response_comment":response_dict,
-                    "is_awb_generated":True,
+        try:
+            response = requests.post(url, headers=self.headers, data=json.dumps(data))
+            response_dict = response.json()
+            if response.status_code in (400,422):
+                return {
+                    "response_comment": response.text
                 }
-                #Some Courier Partner like Amazon Shipping Are Creating AWB Request While Generating AWB
-                status_code = self._get_order_status(picking)
-                if 'order_status_code' in status_code and status_code['order_status_code'] == '4':
-                    response_data.update({'is_pickup_request_done':True,'pickup_request_note':'Automatically Pickup Requested While Creating AWB'})
-                return response_data
+            if response.status_code not in (400,422,500):
+                if ERROR_MAP.get(str(response.status_code)):
+                    return {'response_comment':'%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code)))}
+            if response.status_code == 200 and 'response' in response_dict:
+                if 'awb_code' in response_dict["response"]["data"] and response_dict["response"]["data"]["awb_code"] != False:
+                    response_data = {
+                        "shiprocket_awb_code": response_dict["response"]["data"]["awb_code"],
+                        "carrier_tracking_ref":response_dict["response"]["data"]["awb_code"],
+                        "response_comment":'AWB Assigned Successfully!',
+                        "is_awb_generated":True,
+                    }
+                    #Some Courier Partner like Amazon Shipping Are Creating AWB Request While Generating AWB
+                    status_code = self._get_order_status(picking)
+                    if 'order_status_code' in status_code and status_code['order_status_code'] == '4':
+                        response_data.update({'is_pickup_request_done':True,'pickup_request_note':'Automatically Pickup Requested While Creating AWB'})
+                    return response_data
+                else:
+                    return {"response_comment": response_dict}
             else:
                 return {"response_comment": response_dict}
-        return {"response_comment": response_dict}
-
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
 
     def _generate_pickup_request(self, shipping_id):
         """To Create Pickup Request For AWB Generated Records
@@ -679,20 +756,24 @@ class ShipRocket:
         generate_pickup_url = "courier/generate/pickup"
         url = url_join(API_BASE_URL, generate_pickup_url)
         payload = {"shipment_id": shipping_id}
-        response = requests.post(url, headers=self.headers, data=json.dumps(payload))
-        response_dict = response.json()
-        if "errors" in response_dict:
-            return {
-                "response_comment": self.format_error_message(response_dict["errors"])
-            }
-        if "message" in response_dict:
-            return {"response_comment": response_dict["message"]}
-        if response.status_code == 200 and "response" in response_dict and response_dict['pickup_status'] == 1:
-            note = "%s" % (
-                response_dict["response"]["data"],
-            )
-            return {"pickup_request_note": note,"shiprocket_order_status_id":3,"response_comment": response_dict}
-        return {"response_comment": response_dict}
+        try:
+            response = requests.post(url, headers=self.headers, data=json.dumps(payload))
+            response_dict = response.json()
+            if "errors" in response_dict:
+                return {
+                    "response_comment": self.format_error_message(response_dict["errors"])
+                }
+            if "message" in response_dict:
+                return {"response_comment": response_dict["message"]}
+            if response.status_code == 200 and "response" in response_dict and response_dict['pickup_status'] == 1:
+                note = "%s" % (
+                    response_dict["response"]["data"],
+                )
+                return {"pickup_request_note": note,"shiprocket_order_status_id":3,"response_comment": 'Pickup Request Created Successfully'}
+            return {"response_comment": response_dict}
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
+
 
     def _generate_manifest_request(self, shipping_id):
         """To Create Manifest For Pickup Request Generated Records
@@ -702,17 +783,21 @@ class ShipRocket:
         generate_manifest_url = "manifests/generate"
         url = url_join(API_BASE_URL, generate_manifest_url)
         payload = {"shipment_id": shipping_id}
-        response = requests.post(url, headers=self.headers, data=json.dumps(payload))
-        response_dict = response.json()
-        if "errors" in response_dict:
-            return {
-                "response_comment": self.format_error_message(response_dict["errors"])
-            }
-        if "message" in response_dict:
-            return {"response_comment": response_dict["message"]}
-        if response.status_code == 200 and "manifest_url" in response_dict:
-            return {"manifest_url": response_dict["manifest_url"],"is_manifest_generated":True}
-        return False
+        try:
+            response = requests.post(url, headers=self.headers, data=json.dumps(payload))
+            response_dict = response.json()
+            if "errors" in response_dict:
+                return {
+                    "response_comment": self.format_error_message(response_dict["errors"])
+                }
+            if "message" in response_dict:
+                return {"response_comment": response_dict["message"]}
+            if response.status_code == 200 and "manifest_url" in response_dict:
+                return {"manifest_url": response_dict["manifest_url"],"is_manifest_generated":True}
+            return False
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
+
 
     def _generate_label_request(self, shipping_id):
         """To Generate Label For AWB Generated Records
@@ -722,23 +807,27 @@ class ShipRocket:
         generate_label_url = "courier/generate/label"
         url = url_join(API_BASE_URL, generate_label_url)
         payload = {"shipment_id": shipping_id}
-        response = requests.post(url, headers=self.headers, data=json.dumps(payload))
-        response_dict = response.json()
-        if "not_created" in response_dict and response_dict['not_created'] != []:
-            return {
-                "response_comment": "Lables are not created for the following %s"%(response_dict['not_created'])
-            }
+        try:
+            response = requests.post(url, headers=self.headers, data=json.dumps(payload))
+            response_dict = response.json()
+            if "not_created" in response_dict and response_dict['not_created'] != []:
+                return {
+                    "response_comment": "Lables are not created for the following %s"%(response_dict['not_created'])
+                }
 
-        if "errors" in response_dict:
-            return {
-                "response_comment": self.format_error_message(response_dict["errors"])
-            }
-        if "message" in response_dict:
-            return {"response_comment": response_dict["message"]}
-        if response.status_code == 200 and "label_url" in response_dict:
-            response_data = {"label_url": response_dict["label_url"],"response_comment": response_dict}
-            return response_data
-        return False
+            if "errors" in response_dict:
+                return {
+                    "response_comment": self.format_error_message(response_dict["errors"])
+                }
+            if "message" in response_dict:
+                return {"response_comment": response_dict["message"]}
+            if response.status_code == 200 and "label_url" in response_dict:
+                response_data = {"label_url": response_dict["label_url"],"response_comment": 'Label Generated Successfully'}
+                return response_data
+            return False
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
+
 
     def _print_manifest_request(self, order_ids):
         """To Print Manifest Request For Manifest Generated Records
@@ -748,18 +837,22 @@ class ShipRocket:
         print_manifest_url = "manifests/print"
         url = url_join(API_BASE_URL, print_manifest_url)
         payload = {"order_ids": order_ids}
-        response = requests.post(url, headers=self.headers, data=json.dumps(payload))
-        response_dict = response.json()
-        if "errors" in response_dict:
-            return {
-                "response_comment": self.format_error_message(response_dict["errors"])
-            }
-        if "message" in response_dict:
-            return {"response_comment": response_dict["message"]}
-        if response.status_code == 200 and "manifest_url" in response_dict:
-            response_data = {"manifest_url": response_dict["manifest_url"],"response_comment": response_dict}
-            return response_data
-        return False
+        try:
+            response = requests.post(url, headers=self.headers, data=json.dumps(payload))
+            response_dict = response.json()
+            if "errors" in response_dict:
+                return {
+                    "response_comment": self.format_error_message(response_dict["errors"])
+                }
+            if "message" in response_dict:
+                return {"response_comment": response_dict["message"]}
+            if response.status_code == 200 and "manifest_url" in response_dict:
+                response_data = {"manifest_url": response_dict["manifest_url"],"response_comment": 'Manifest Generated Successfully'}
+                return response_data
+            return False
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
+
 
     def _cancel_order_request(self, order_ids):
         """To Cancel Order In Shiprocket
@@ -769,14 +862,19 @@ class ShipRocket:
         cancel_order_url = "orders/cancel"
         url = url_join(API_BASE_URL, cancel_order_url)
         payload = json.dumps({"ids": order_ids})
-        response = requests.post(url, headers=self.headers, data=payload)
-        response_dict = response.json()
-        if "errors" in response_dict:
-            return self.format_error_message(response_dict["errors"])
-        if "message" in response_dict:
-            return response_dict["message"]
-        return response_dict
+        try:
+            response = requests.post(url, headers=self.headers, data=payload)
+            response_dict = response.json()
+            if response.status_code in (200,204):
+                return response.status_code
+            elif "errors" in response_dict or "message" in response_dict:
+                return self.format_error_message(response_dict)
+            else:
+                return response_dict
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
 
+        
     def _get_order_status(self, picking):
         """To Get Status Of Current Record
         :param picking: stock.picking object
@@ -786,19 +884,23 @@ class ShipRocket:
         url = url_join(API_BASE_URL, order_status_url)
         request_url = url_join(url, str(picking.shiprocket_order_id))
         payload = {}
-        response = requests.get(
-            request_url, headers=self.headers, data=payload
-        )
-        response_dict = response.json()
-        if "errors" in response_dict:
-            return {
-                "response_comment": self.format_error_message(response_dict["errors"])
-            }
-        if "message" in response_dict:
-            return {"response_comment": response_dict["message"]}
-        if "data" in response_dict and response.status_code == 200:
-            return {"order_status_code": str(response_dict["data"]["status_code"])}
-        return False
+        try:
+            response = requests.get(
+                request_url, headers=self.headers, data=payload
+            )
+            response_dict = response.json()
+            if "errors" in response_dict:
+                return {
+                    "response_comment": self.format_error_message(response_dict["errors"])
+                }
+            if "message" in response_dict:
+                return {"response_comment": response_dict["message"]}
+            if "data" in response_dict and response.status_code == 200:
+                return {"order_status_code": str(response_dict["data"]["status_code"])}
+            return False
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
+
 
     def bulk_awb_creation_request(self,picking,bulk_process):
         check_serviceability_vals = {
@@ -808,10 +910,13 @@ class ShipRocket:
         }
         check_serviceability_url = "courier/serviceability/"
         url = url_join(API_BASE_URL, check_serviceability_url)
-        serviceability_response = requests.get(url, headers=self.headers, data=json.dumps(check_serviceability_vals))
         response_data_error = None
         serviceability_response_dict = None
         selected_courier_dict = None
+        try:
+            serviceability_response = requests.get(url, headers=self.headers, data=json.dumps(check_serviceability_vals))
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            response_data_error = "The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."
         try:
             serviceability_response_dict = serviceability_response.json()
         except json.JSONDecodeError:
@@ -819,9 +924,13 @@ class ShipRocket:
         if response_data_error:
             picking.write({'response_comment':response_data_error})
             return False
-        if serviceability_response.status_code != 200:
+        if serviceability_response.status_code in (422,404):
             picking.write({'response_comment':serviceability_response.text})
             return False
+        if serviceability_response.status_code not in (200,422,404):
+            if ERROR_MAP.get(str(serviceability_response.status_code)):
+                picking.write({'response_comment':'%s Error Occured! %s'%(str(serviceability_response.status_code),ERROR_MAP.get(str(serviceability_response.status_code)))})
+                return False
         if serviceability_response.status_code == 200 and "data" in serviceability_response_dict:
             available_courier_list = serviceability_response_dict["data"]["available_courier_companies"]
             if available_courier_list:
@@ -829,8 +938,8 @@ class ShipRocket:
                     selected_courier_dict = max(available_courier_list, key=lambda d: d['rating'])
                 if bulk_process.shiprocket_courier_priority == 'price':
                     selected_courier_dict = min(available_courier_list, key=lambda d: d['rate'])
-                if bulk_process.shiprocket_courier_priority == 'rate':
-                    selected_courier_dict = min(available_courier_list, key=lambda d: d['fast'])
+                if bulk_process.shiprocket_courier_priority == 'fast':
+                    selected_courier_dict = min(available_courier_list, key=lambda d: d['etd_hours'])
                 if bulk_process.shiprocket_courier_priority == 'custom':
                     selected_courier_dict = [x for x in available_courier_list if x["courier_company_id"] == serviceability_response_dict['data']['recommended_courier_company_id']][-1]
                 if bulk_process.shiprocket_courier_priority == 'recommend':
@@ -857,34 +966,248 @@ class ShipRocket:
         url = url_join(API_BASE_URL, order_url)
         request_order_url = url_join(url, str(picking.shiprocket_order_id))
         payload = {}
-        response = requests.get(
-             request_order_url, headers=self.headers, data=payload
-        )
-        response_dict = response.json()
-        picking_vals = {}
-        if response.status_code != 200:
-            picking_vals.update({'response_comment':response_dict})
-        if response.status_code == 200 and 'data' in response_dict:
-            if 'shipments' in response_dict['data']:
-                awb_code = response_dict['data']['shipments']['awb'] or False
-                courier_name = response_dict['data']['shipments']['courier'] or False
-                courier_code = response_dict['data']['shipments']['courier_id'] or False
-                if awb_code and courier_code and courier_name:
-                    picking_vals.update({
-                        'shiprocket_awb_code':awb_code,
-                        'courier_id':picking.get_courier_id(str(courier_code),str(courier_name)),
-                        'courier_rate':response_dict['data']['awb_data']['charges']['freight_charges'],
-                        'is_awb_generated':True
-                    })
-                if response_dict['data']['shipments']['manifest_id']:
-                    picking_vals.update({'is_manifest_generated':True,'is_pickup_request_done':True})
+        try:
+            response = requests.get(
+                request_order_url, headers=self.headers, data=payload
+            )
+            response_dict = response.json()
+            picking_vals = {}
+            if response.status_code in (400,404):
+                picking_vals.update({'response_comment':response_dict})
+            if response.status_code not in (200,400,404):
+                if ERROR_MAP.get(str(response.status_code)):
+                    picking_vals.update({'response_comment':'%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code)))})
+            if response.status_code == 200 and 'data' in response_dict:
+                if 'shipments' in response_dict['data']:
+                    awb_code = response_dict['data']['shipments']['awb'] or False
+                    courier_name = response_dict['data']['shipments']['courier'] or False
+                    courier_code = response_dict['data']['shipments']['courier_id'] or False
+                    if awb_code and courier_code and courier_name:
+                        picking_vals.update({
+                            'shiprocket_awb_code':awb_code,
+                            'carrier_tracking_ref':awb_code,
+                            'courier_id':picking.get_courier_id(str(courier_code),str(courier_name)),
+                            'courier_rate':response_dict['data']['awb_data']['charges']['freight_charges'],
+                            'is_awb_generated':True
+                        })
+                    if response_dict['data']['shipments']['manifest_id']:
+                        picking_vals.update({'is_manifest_generated':True,'is_pickup_request_done':True})
+                else:
+                    picking_vals.update({'response_comment':'No Shipment Details Found To Update AWB Details'})
             else:
-                picking_vals.update({'response_comment':'No Shipment Details Found To Update AWB Details'})
-        else:
-            picking_vals.update({'response_comment':'No Data Found In Response To AWB Details'})
-        self._get_order_status(picking)
-        picking.write(picking_vals)
+                picking_vals.update({'response_comment':'No Data Found In Response To AWB Details'})
+            self._get_order_status(picking)
+            picking.write(picking_vals)
+            return True
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            picking.write({"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."})
+            return True
+
+
+    def _update_pickup_location(self,picking_ids,pickup_location):
+        """To Update Pickup Location In Shiprocket
+        :param picking_ids: stock.picking objects
+        :param pickup_location: new picking_location
+        """
+        update_pickup_location_url = "orders/address/pickup/"
+        url = url_join(API_BASE_URL, update_pickup_location_url)
+        for picking in picking_ids:
+            payload = json.dumps({
+                "order_id":[int(picking.shiprocket_order_id)],
+                "pickup_location":str(pickup_location.pickup_location)
+            })
+            response = requests.request("PATCH", url, headers=self.headers, data=payload)
+            vals = {"response_comment": self.format_error_message(response.json())}
+            if response.status_code == 200:
+                vals.update({'pickup_location':pickup_location.id})
+            elif response.status_code == 400:
+                vals.update({'response_comment':'Pickup Code does not exist or Order Id does not exists'})
+            else:
+                vals.update({'Invalid Arguments supplied!'})
+            picking.write(vals)
         return True
 
+    def create_wrapper_order(self, picking):
+        """Wrapper API Call To Create, Ship and Generate Label and Manifest for Order
+        :param picking: stock.picking object
+        """
+        if not picking.package_ids:
+            picking._pre_put_in_pack_hook(picking.move_line_ids)
+        data = self.prepare_order_data(picking, "forward")
+        if not picking.pickup_location:
+            picking.write({'response_comment':"Please Select Shiprocket Pickup Location Before Validate"})
+            return False
+        if not picking.channel_id:
+            picking.write({'response_comment':"Please Select Shiprocket Channel Before Validate."})
+            return False
+        payload = json.dumps(data)
+        order_creation_url = "shipments/create/forward-shipment"
+        url = url_join(API_BASE_URL, order_creation_url)
+        try:
+            response = requests.post(url, headers=self.headers, data=payload)
+            response_dict = response.json()
+            if "errors" in response_dict:
+                return {'response_comment':self.format_error_message(response_dict)}
+            if "status" in response_dict and response_dict['status'] == 0:
+                return {'response_comment':self.format_error_message(response_dict)}
+            if response.status_code == 200 and response_dict['status'] == 1:
+                response_data = {}
+                if 'order_id' in response_dict['payload'] and 'shipment_id' in response_dict['payload']:
+                    response_data.update({
+                        "shiprocket_order_id": response_dict['payload']["order_id"],
+                        "shiprocket_shipping_id": response_dict['payload']["shipment_id"],
+                        "shiprocket_order_status_id":1,
+                    })
+                if response_dict['payload']['awb_generated'] == 1 and 'awb_code' in response_dict['payload'] and response_dict['payload']['awb_code']:
+                    response_data.update({
+                        'shiprocket_awb_code':response_dict['payload']["awb_code"],
+                        'is_awb_generated':True,
+                        'courier_id':picking.get_courier_id(str(response_dict['payload']['courier_company_id']),str(response_dict['payload']['courier_name']))
+                    })
+                if response_dict['payload']['label_generated'] == 1 and 'label_url' in response_dict['payload']:
+                    response_data.update({
+                        'label_url':response_dict['payload']['label_url']
+                    })
+                if response_dict['payload']['pickup_generated'] == 1 and 'pickup_token_number' in response_dict['payload'] and response_dict['payload']['pickup_token_number'] != False:
+                    response_data.update({
+                        'pickup_request_note':response_dict['payload']['pickup_token_number'],
+                        'is_pickup_request_done':True,
+                        "shiprocket_order_status_id":4,
+                    })
+                if response_dict['payload']['manifest_generated'] == 1 and 'manifest_url' in response_dict['payload']:
+                    response_data.update({
+                        'manifest_url':response_dict['payload']['manifest_url'],
+                        'is_manifest_generated':True
+                    })
+                return response_data
+            else:
+                picking.write({"response_comment":self.format_error_message(response_dict)})
+            return False
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            picking.write({"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."})
+            return False
 
-        
+    def format_ndr_data(self,response_dict):
+        response_values = []
+        if 'data' in response_dict and response_dict.get('data') != []:
+            for value in response_dict['data']:
+                ndr_values = {}
+                if 'id' in value:
+                    ndr_values.update({'id':str(value['id'])})
+                else:
+                    ndr_values.update({"id":False})
+                if 'shipment_id' in value:
+                    ndr_values.update({'shipment_id':str(value['shipment_id'])})
+                else:
+                    ndr_values.update({"shipment_id":False})
+                if 'awb_code' in value:
+                    ndr_values.update({'awb_code':str(value['awb_code'])})
+                else:
+                    ndr_values.update({"awb_code":False})
+                if 'ndr_raised_at' in value:
+                    ndr_values.update({'ndr_raised_at':str(value['ndr_raised_at'])})
+                else:
+                    ndr_values.update({"ndr_raised_at":False})
+                if 'attempts' in value:
+                    ndr_values.update({'attempts':str(value['attempts'])})
+                else:
+                    ndr_values.update({"attempts":False})
+                if 'reason' in value:
+                    ndr_values.update({'reason':str(value['reason'])})
+                else:
+                    ndr_values.update({"reason":False})
+                if 'escalation_status' in value:
+                    ndr_values.update({'escalation_status':str(value['escalation_status'])})
+                else:
+                    ndr_values.update({"escalation_status":False})
+                if 'shipment_channel_id' in value:
+                    ndr_values.update({'shipment_channel_id':str(value['shipment_channel_id'])})
+                else:
+                    ndr_values.update({"shipment_channel_id":False})
+                if 'courier' in value:
+                    ndr_values.update({'courier':str(value['courier'])})
+                else:
+                    ndr_values.update({"courier":False})
+                if 'history' in value:
+                    ndr_values.update({'history':value['history']})
+                else:
+                    ndr_values.update({"history":False})
+                response_values.append(ndr_values)
+        return response_values
+
+    def _get_specific_ndr_shipments(self,awb_code):
+        """To Get Specific NDR Shipment Informations
+        :param:awb_code of particular shipment"""
+        payload = {}
+        ndr_url = "ndr/%s"%('D82183221')
+        url = url_join(API_BASE_URL, ndr_url)
+        try:
+            response = requests.get(url, headers=self.headers, data=payload)
+            if response.status_code == 200:
+                response_dict = response.json()
+                return self.format_ndr_data(response_dict)
+            else:
+                if ERROR_MAP.get(str(response.status_code)):
+                    return {'response_comment':'%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code)))}
+                else:
+                    return {"response_comment":response.text}
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}
+
+
+    def _get_all_ndr_shipments(self):
+        """To Get All NDR Shipment Informations"""
+        payload = {}
+        all_ndr_url = "ndr/all"
+        url = url_join(API_BASE_URL, all_ndr_url)
+        all_ndr_values = []
+        response = requests.get(url, headers=self.headers, data=payload)
+        next_url = False
+        response_dict = response.json()
+        if response.status_code == 200:
+            all_ndr_values.extend(self.format_ndr_data(response_dict))
+            if 'meta' in response_dict and response_dict['meta'] != False:
+                if 'pagination' in response_dict['meta']:
+                    if "links" in  response_dict['meta']['pagination']:
+                        if "next" in response_dict['meta']['pagination']['links']:
+                            next_url = response_dict['meta']['pagination']['links']['next']
+        else:
+            if ERROR_MAP.get(str(response.status_code)):
+                return {'response_comment':'%s Error Occured! %s'%(str(response.status_code),ERROR_MAP.get(str(response.status_code)))}
+            else:
+                return {"response_comment":response_dict}
+        while next_url:
+            next_response = requests.get(next_url, headers=self.headers, data=payload)    
+            next_response_dict = next_response.json()
+            if next_response.status_code == 200:
+                all_ndr_values.extend(self.format_ndr_data(next_response_dict))
+                if 'meta' in next_response_dict and next_response_dict['meta'] != False:
+                    if 'pagination' in next_response_dict['meta']:
+                        if "links" in  next_response_dict['meta']['pagination']:
+                            if "next" in next_response_dict['meta']['pagination']['links']:
+                                next_url = next_response_dict['meta']['pagination']['links']['next']             
+            else:
+                if ERROR_MAP.get(str(next_response.status_code)):
+                    return {'response_comment':'%s Error Occured! %s'%(str(next_response.status_code),ERROR_MAP.get(str(next_response.status_code)))}
+                else:
+                    return {"response_comment":next_response_dict}
+        if all_ndr_values != []:
+            return all_ndr_values
+        else:
+            return {"response_comment":"No NDR Details Found!"}
+
+    def _action_ndr(self,data,awb_code):
+        action_ndr_url = "ndr/%s/action"%(awb_code)
+        url = url_join(API_BASE_URL, action_ndr_url)
+        payload = json.dumps(data)
+        try:
+            response = requests.post(url, headers=self.headers, data=payload)
+            response_dict = response.json()
+            if response.status_code in (200,204):
+                return response.status_code
+            elif "errors" in response_dict or "message" in response_dict:
+                return self.format_error_message(response_dict)
+            else:
+                return response_dict
+        except (ValueError, requests.exceptions.ConnectionError, requests.exceptions.MissingSchema, requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            return {"response_comment":"The url that this service requested returned an error.Please check your internet connectivity and try again once after few minutes."}

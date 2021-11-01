@@ -11,3 +11,7 @@ access_message_box,message.box,model_message_box,base.group_user,1,1,1,0
 access_wiz_stock_picking_lines,wiz.stock.picking.lines,model_wiz_stock_picking_lines,base.group_user,1,1,1,0
 access_shiprocket_bulk_process_log,shiprocket.bulk.process.log,model_shiprocket_bulk_process_log,base.group_user,1,1,1,1
 access_order_cancel_reason,order.cancel.reason,model_order_cancel_reason,base.group_user,1,1,1,0
+access_update_pickup_location,update.pickup.location,model_update_pickup_location,base.group_user,1,1,1,0
+access_shiprocket_ndr,shiprocket.ndr,model_shiprocket_ndr,base.group_user,1,1,1,1
+access_shiprocket_ndr_history_line,shiprocket.ndr.history.line,model_shiprocket_ndr_history_line,base.group_user,1,1,1,1
+access_ndr_action_wizard,ndr.action.wizard,model_ndr_action_wizard,base.group_user,1,1,1,1

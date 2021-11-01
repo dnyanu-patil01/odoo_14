@@ -48,18 +48,46 @@
         <record id="base.res_partner_rule_private_employee" model="ir.rule">
             <field name="groups" eval="[(6, 0, [ref('seller_management.group_all_contacts')])]" />
         </record>
+        <!-- All Journal Entries - Invoice Billing Admin -->
+        <record id="account.account_move_see_all" model="ir.rule">
+            <field name="groups" eval="[(6, 0, [ref('account.group_account_manager')])]" />
+        </record>
+        <!-- Readonly Move -Invoice Billing Admin	 -->
+        <record id="account.account_move_rule_group_invoice" model="ir.rule">
+            <field name="groups" eval="[(6, 0, [ref('account.group_account_manager')])]" />
+        </record>
+        <!-- All Journal Items - Invoice Billing Admin	 -->
+        <record id="account.account_move_line_see_all" model="ir.rule">
+            <field name="groups" eval="[(6, 0, [ref('account.group_account_manager')])]" />
+        </record>
+        <!-- Readonly Move Line - Invoice Billing Admin	 -->
+        <record id="account.account_move_line_rule_group_invoice" model="ir.rule">
+            <field name="groups" eval="[(6, 0, [ref('account.group_account_manager')])]" />
+        </record>
         <!-- Seller User Group Rules -->
         <record id="seller_account_move_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Invoices</field>
             <field ref="account.model_account_move" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
-            <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user'))]" />
+            <field name="domain_force">[('seller_id','=',user.partner_id.id),('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]</field>
+            <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user')),(4,ref('account.group_account_invoice'))]" />
         </record>
         <record id="seller_account_items_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Invoices Lines</field>
             <field ref="account.model_account_move_line" name="model_id" />
-            <field name="domain_force">[('move_id.seller_id','=',user.partner_id.id)]</field>
-            <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user'))]" />
+            <field name="domain_force">[('move_id.seller_id','=',user.partner_id.id),('move_id.move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]</field>
+            <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user')),(4,ref('account.group_account_invoice'))]" />
+        </record>
+        <record id="seller_account_move_paymentpersonal_rule" model="ir.rule">
+            <field name="name">Seller Personal Payment Move</field>
+            <field ref="account.model_account_move" name="model_id" />
+            <field name="domain_force">[('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]</field>
+            <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user')),(4,ref('account.group_account_invoice'))]" />
+        </record>
+        <record id="seller_account_move_items_personal_rule" model="ir.rule">
+            <field name="name">Seller Personal Payment Move Lines</field>
+            <field ref="account.model_account_move_line" name="model_id" />
+            <field name="domain_force">[('move_id.move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]</field>
+            <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user')),(4,ref('account.group_account_invoice'))]" />
         </record>
         <record id="seller_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Rule</field>

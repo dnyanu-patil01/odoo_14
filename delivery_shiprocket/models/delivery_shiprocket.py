@@ -43,7 +43,11 @@ class ProviderShiprocket(models.Model):
         shiprocket = ShipRocket(self.env.company)
         # API Call To Create Order Request
         for picking in pickings:
-            response_data = shiprocket.create_channel_specific_order(picking)
+            #Used To Automate Shiprocket Process Create Order To Generate Manifest
+            if picking.automate_shiprocket_process:
+                response_data = shiprocket.create_wrapper_order(picking)
+            else:
+                response_data = shiprocket.create_channel_specific_order(picking)
             if response_data:
                 picking.write(response_data)
                 response_data.update(
@@ -53,6 +57,9 @@ class ProviderShiprocket(models.Model):
                     }
                 )
                 res.append(response_data)
+                if 'shiprocket_awb_code' in response_data:
+                    #To Update AWB Code And Courier Cost
+                    shiprocket._get_order_details(picking)
             else:
                 res.append({
                         "exact_price": 0,
@@ -79,4 +86,4 @@ class ProviderShiprocket(models.Model):
 
     def shiprocket_get_tracking_link(self, picking):
         shiprocket = ShipRocket(self.env.company)
-        return "https://app.shiprocket.co//tracking/%s" % picking.carrier_tracking_ref
+        return "https://shiprocket.co/tracking/%s" % picking.carrier_tracking_ref

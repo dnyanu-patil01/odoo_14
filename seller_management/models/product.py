@@ -7,6 +7,8 @@ class ProductTemplate(models.Model):
     seller_id = fields.Many2one("res.partner",'Seller',index=True, copy=False,default=lambda self: self.env.user.partner_id.id if self.env.user.partner_id.seller else False)
     state = fields.Selection([('draft','Draft'),('to_approve','Waiting For Approval'),('approve','Approved'),('reject','Rejected')],string='State',default='draft',copy=False)
     rejection_reason = fields.Text('Reason For Rejection')
+    #added to make storable type as default
+    type = fields.Selection(selection_add=[],default="product")
 
     def button_approve(self):
         return self.write({'state': 'approve'})

@@ -7,12 +7,14 @@
       <field name="arch" type="xml">
          <form string="Shiprocket Bulk Process" duplicate="0">
             <header>
-               <button name="shiprocket_create_awb" confirm="This action will be done by backgroud.We will notify you soon." string="Create AWB" type="object" states="draft,awb_created_partially" />
+               <button name="shiprocket_create_awb" class="oe_highlight" confirm="This action will be done by backgroud.We will notify you soon." string="Create AWB" type="object" states="draft,awb_created_partially" />
                <button name="shiprocket_open_wizard" type="object" string="Generate Manifest" states="ready_to_manifest,manifest_generated_partially" />
                <button name="generate_pickup_request_bulk" confirm="This action will be done by backgroud.We will notify you soon." string="Create Pickup Request" type="object" states="awb_created,pickup_created_partially" />
                <button name="shiprocket_get_ready_to_manifest" string="Get Ready To Generate Manifest" type="object" states="pickup_created" />
                <button name="print_label_group_by" string="Get Label Attachment" type="object" states="awb_created,waiting_to_manifest,pickup_created,pickup_created_partially,manifest_generated,done" />
                <button name="print_manifest_bulk" string="Get Manifest Attachment" type="object" states="manifest_generated,done" />
+               <button name="cancel_bulk_process" string="Close" type="object" states="draft" />
+               <button name="completed_bulk_process" class="oe_highlight" string="Mark As Done" type="object" states="manifest_generated" />
                <field name="state" widget="statusbar" statusbar_visible="waiting_awb,awb_created,waiting_to_manifest,ready_to_manifest" />
             </header>
             <sheet>
@@ -23,20 +25,20 @@
                </div>
                <group>
                   <group>
-                     <field name="name" />
-                     <field name="pickup_location_id" />
-                     <field name="channel_id" />
-                     <field name="shiprocket_courier_priority" help="Based On This Courier Will Be Selected To Generated AWB" />
+                     <field name="name" attrs="{'readonly':[('state','!=','draft')]}"/>
+                     <field name="pickup_location_id" attrs="{'readonly':[('state','not in',('awb_created_partially','draft'))]}"/>
+                     <field name="channel_id" attrs="{'readonly':[('state','not in',('draft','awb_created_partially'))]}"/>
+                     <field name="shiprocket_courier_priority" attrs="{'readonly':[('state','not in',('draft','awb_created_partially'))]}" help="Based On This Courier Will Be Selected To Generated AWB" />
                   </group>
                   <group>
                      <field name="generate_labels_group_by_courier" />
-                     <field name="user_id" />
-                     <field name="response_comment" />
+                     <field name="user_id" attrs="{'readonly':[('state','not in',('draft','awb_created_partially'))]}"/>
+                     <field name="response_comment" attrs="{'readonly':[('state','not in',('draft','awb_created_partially'))]}" />
                   </group>
                </group>
                <notebook>
                   <page name="all_stock_picking_ids" string="Delivery Orders">
-                     <field name="stock_picking_ids">
+                     <field name="stock_picking_ids" attrs="{'readonly':[('state','not in',('draft','awb_created_partially'))]}">
                         <tree>
                            <field name="partner_id" />
                            <field name="name"/>
