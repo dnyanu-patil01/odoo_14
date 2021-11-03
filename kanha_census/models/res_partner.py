@@ -85,3 +85,8 @@ class ResPartner(models.Model):
     family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members')
     relative_aadhaar_card_number = fields.Char(string="Relative Aadhar Card Number")
     vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
+    birth_country_id = fields.Many2one('res.country', string="Birth Country", required=True)
+
+    # _sql_constraints = [
+    #     ('aadhaar_card_number_unique', 'UNIQUE(aadhaar_card_number)', 'An Adhar Card Number must be unique!'),
+    # ]
