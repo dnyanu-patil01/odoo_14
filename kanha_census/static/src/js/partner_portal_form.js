@@ -40,6 +40,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'change .age_declaration_form_upload': '_onFileUploadChange',
 		'click .age_declaration_form_browse': '_onBrowseFile',
 		'click .age_declaration_form_clear': '_onClearFile',
+		//'click .add_vehicle_line': '_onAddLine',
+		
+		'change select[name="birth_country_id"]': '_onBirthCountryChange',
+		'change select[name="country_id"]': '_onCountryChange',
     },
  
     /**
@@ -47,6 +51,13 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
      */
     start: function () {
         var def = this._super.apply(this, arguments);
+		this.$birth_state = this.$('select[name="birth_state_id"]');
+        this.$birth_stateOptions = this.$birth_state.filter(':enabled').find('option:not(:first)');
+        this._adaptBirthAddressForm();
+		this.$state = this.$('select[name="state_id"]');
+        this.$stateOptions = this.$state.filter(':enabled').find('option:not(:first)');
+        this._adaptAddressForm();
+
         return def;
     },
 
@@ -63,10 +74,35 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var voter_address_change = this.$('select[name="change_voter_id_address"]');
 		if(voter_address_change.val() == 'Yes'){
 			$('.voter_id_tab').removeClass('d-none');
+			
+			/*Add or Remove Disabled property for the fields is to 
+			Avoid Mandatory check if the tab is hide*/
+			$('#existing_voter_id_number_id').removeAttr('disabled');
+			$('#voter_country_id').removeAttr('disabled');
+			$('#voter_state_id').removeAttr('disabled');
+			$('#assembly_constituency_id').removeAttr('disabled');
+			$('#house_number_id').removeAttr('disabled');
+			$('#locality_id').removeAttr('disabled');
+			$('#town_id').removeAttr('disabled');
+			$('#post_office_id').removeAttr('disabled');
+			$('#zip_id').removeAttr('disabled');
+			$('#district_id').removeAttr('disabled');
 		}
 		else{
 			var is_voter_tab_active = $('a.voter_id_tab').hasClass('active');
 			$('.voter_id_tab').addClass('d-none');
+			
+			$('#existing_voter_id_number_id').attr('disabled', true);
+			$('#voter_country_id').attr('disabled', true);
+			$('#voter_state_id').attr('disabled', true);
+			$('#assembly_constituency_id').attr('disabled', true);
+			$('#house_number_id').attr('disabled', true);
+			$('#locality_id').attr('disabled', true);
+			$('#town_id').attr('disabled', true);
+			$('#post_office_id').attr('disabled', true);
+			$('#zip_id').attr('disabled', true);
+			$('#district_id').attr('disabled', true);
+			
 			// Show Birth place tab if Voter ID tab hides
 			if(is_voter_tab_active)
 			{
@@ -142,6 +178,45 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         $form.find('.'+filename_input).val('');
 		$form.find('.'+fileupload_input).val('');
     },
+
+    /**
+     * @private
+     */
+    _adaptBirthAddressForm: function () {
+        var $birth_country = this.$('select[name="birth_country_id"]');
+        var birth_countryID = ($birth_country.val() || 0);
+        this.$birth_stateOptions.detach();
+        var $birth_displayedState = this.$birth_stateOptions.filter('[data-country_id=' + birth_countryID + ']');
+        var nb = $birth_displayedState.appendTo(this.$birth_state).show().length;
+        //this.$state.parent().toggle(nb >= 1);
+    },
+
+	/**
+     * @private
+     */
+    _onBirthCountryChange: function () {
+        this._adaptBirthAddressForm();
+    },
+
+    /**
+     * @private
+     */
+    _adaptAddressForm: function () {
+        var $country = this.$('select[name="country_id"]');
+        var countryID = ($country.val() || 0);
+        this.$stateOptions.detach();
+        var $displayedState = this.$stateOptions.filter('[data-country_id=' + countryID + ']');
+        var nb = $displayedState.appendTo(this.$state).show().length;
+        //this.$state.parent().toggle(nb >= 1);
+    },
+
+	/**
+     * @private
+     */
+    _onCountryChange: function () {
+        this._adaptAddressForm();
+    },
+
 
 });
 });

@@ -50,7 +50,7 @@
                 <tbody>
                     <tr t-foreach="partners" t-as="partner">
                         <td>
-                            <a t-attf-href="/family/#{partner.id}?{{ keep_query() }}"><span t-field="partner.name"/></a>
+                        	<a t-attf-href="/website_form_family/#{partner.id}/res.partner?{{ keep_query() }}"><span t-field="partner.name"/></a>
                         </td>
                         <td>
                        		<t t-esc="partner.email" />
@@ -67,8 +67,957 @@
         </t>
     </template>
     
+	<template id="kanha_portal_form">
+        <t t-call="portal.portal_layout">
+        	<form t-attf-action="/website_form/#{partner.id if partner else 0}/" method="post" enctype="multipart/form-data" class="s_website_form o_mark_required s_website_form_no_recaptcha" data-mark="*" data-model_name="res.partner" data-success-mode="redirect" data-success-page="/family-success-page" hide-change-model="true">
+           		<div class="s_website_form_rows row s_col_no_bgcolor">
+                	<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                	<div class="o_portal_partner_details">
+                    	<div class="col-lg-12">
+                        	<div class="row">
+	                           	<div class="col-lg-12 mt-3">
+	                           		<!-- <div t-if="error_message" class="alert alert-danger" role="alert">
+	                                	<t t-foreach="error_message" t-as="err"><t t-esc="err"/><br /></t>
+	                              	</div>
+	                             		<div class="alert alert-success" role="alert" t-if="success_message">
+	                   					<t t-esc="success_message"></t>
+	               					</div> -->
+	               					<div role="alert">
+	               						<span id="s_website_form_result"></span> 
+	               					</div> 
+	               					<br></br>
+	                           	</div>
+                         		<div class="col-lg-6">
+                        			<div class="row">
+                        				<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="name">
+		                                            <span class="s_website_form_label_content">Name</span>
+		                                            <span class="s_website_form_mark"> *</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="name_id" type="text" class="form-control s_website_form_input" name="name" required="" t-att-value="name or partner and partner.name" />
+		                                        </div>
+		                                    </div>
+                                		</div>
+            						
+		                            	<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="email">
+		                                            <span class="s_website_form_label_content">Email</span>
+		                                            <span class="s_website_form_mark"> *</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="email_id" type="email" class="form-control s_website_form_input" name="email" required="" t-att-value="email or partner and partner.email" />
+		                                        </div>
+		                                    </div>
+                                		</div>
+		                          
+				                       <div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="gender">
+		                                            <span class="s_website_form_label_content">Gender</span>
+		                                            <span class="s_website_form_mark"> *</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <select name="gender" t-attf-class="form-control s_website_form_input #{error.get('gender') and 'is-invalid' or ''}" required="">
+				                                    <option value="">Select...</option>
+				                                    <t t-foreach="['Male', 'Female', 'Other']" t-as="gen">
+				                                        <option t-att-value="gen" t-att-selected="gen == gender if gender else gen == partner.gender if partner else null">
+				                                            <t t-esc="gen" />
+				                                        </option>
+				                                    </t>
+				                                </select> 
+		                                        </div>
+		                                    </div>
+		                                </div>
+		                        
+		                         		<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+                                    		<div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="application_type">
+		                                            <span class="s_website_form_label_content">Voter Application</span>
+		                                            <span class="s_website_form_mark"> *</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <select name="application_type" t-attf-class="form-control s_website_form_input #{error.get('application_type') and 'is-invalid' or ''}" required="" >
+				                                    	<option value="">Select...</option>
+					                                    <t t-foreach="['New Application', 'Transfer Application']" t-as="application">
+					                                		<option t-att-value="application" t-att-selected="application == application_type if application_type else application == partner.application_type if partner else null">
+					                                            <t t-esc="application" />
+					                                        </option>
+					                                    </t>
+				                                	</select> 
+		                                        </div>
+                                    		</div>
+                                		</div>
+		                         	
+		                         	 	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="voter_id_number_id">
+		                                            <span class="s_website_form_label_content">Voter ID Number</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="voter_id_number_id" type="text" class="form-control s_website_form_input" name="voter_number" t-att-value="voter_number or partner and partner.voter_number" />
+		                                        </div>
+		                                    </div>
+                                		</div>
+		                          
+		                         	 	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+		                             		<div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="pan_card_number">
+		                                            <span class="s_website_form_label_content">PAN Card Number</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="pan_card_number_id" type="text" t-attf-class="form-control s_website_form_input #{error.get('pan_card_number') and 'is-invalid' or ''}" name="pan_card_number" t-att-value="pan_card_number or partner and partner.pan_card_number"/>
+		                                        </div>
+		                                    </div>
+                                		</div>
+		                         	
+		                         	 	<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+	                                    	<div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="aadhaar_card_number">
+		                                            <span class="s_website_form_label_content">Aadhaar Card Number</span>
+		                                            <span class="s_website_form_mark"> *</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="aadhaar_card_number_id" type="text" t-attf-class="form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}" name="aadhaar_card_number" required =""  t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number"/>
+		                                        </div>
+		                                    </div>
+	                               	 	</div>
+							      
+							      		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="abhyasi_id">
+		                                            <span class="s_website_form_label_content">Abhyasi ID</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="abhyasi_id_id" type="text" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id"/>
+		                                        </div>
+		                                    </div>
+                                		</div>
+	                       			</div>
+                        		</div>
+                        		<div class="col-lg-6">
+	                    			<div class="row">
+			                    		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="surname">
+		                                            <span class="s_website_form_label_content">Surname</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="surname_id" type="text" class="form-control s_website_form_input" name="surname" t-att-value="surname or partner and partner.surname"/>
+		                                        </div>
+		                                    </div>
+		                                </div>
+                        			
+		                         		<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="mobile">
+		                                            <span class="s_website_form_label_content">Mobile Number</span>
+		                                            <span class="s_website_form_mark"> *</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="mobile_id_id" type="tel" class="form-control s_website_form_input" name="mobile" required="" t-att-value="mobile or partner and partner.mobile"/>
+		                                        </div>
+		                                    </div>
+                                		</div>
+            						
+            							<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="date_of_birth">
+		                                            <span class="s_website_form_label_content">Date of Birth</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="date_of_birth_id" type="date" class="form-control s_website_form_input" name="date_of_birth" required="" t-att-value="date_of_birth or partner and partner.date_of_birth"/>
+		                                        </div>
+		                                    </div>
+                                		</div>
+            						
+            							<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="members_count_id">
+		                                            <span class="s_website_form_label_content">How many members staying with you?</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="members_count_id" type="text" class="form-control s_website_form_input" name="members_count" t-att-value="members_count or partner and partner.members_count"/>
+		                                        </div>
+		                                    </div>
+                                		</div>
+            						
+		                           		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+	                                    	<div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="change_voter_id_address_id">
+		                                            <span class="s_website_form_label_content">Do you want to change your Voter Id card Address</span>
+		                                        </label>
+		                                        <div class="col-sm">
+													<select name="change_voter_id_address" t-attf-class="form-control s_website_form_input #{error.get('change_voter_id_address') and 'is-invalid' or ''}">
+										                <option value="">Select...</option>
+										                <t t-foreach="['Yes', 'No']" t-as="change_address">
+										                    <option t-att-value="change_address" t-att-selected="change_address == change_voter_id_address if change_voter_id_address else change_address == partner.change_voter_id_address if partner else null">
+										                        <t t-esc="change_address" />
+										                    </option>
+										                </t>
+										            </select>                                       
+										       </div>
+	                                    	</div>
+                                		</div>
+		                           	
+		                           		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+		                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="room_details">
+		                                            <span class="s_website_form_label_content">Room Detail</span>
+		                                        </label>
+		                                        <div class="col-sm">
+													<select name="room_details" t-attf-class="form-control #{error.get('room_details') and 'is-invalid' or ''}">
+									                	<option value="">Select...</option>
+										                <t t-foreach="['Rented', 'Owner']" t-as="room">
+										              		<option t-att-value="room" t-att-selected="room == room_details if room_details else room == partner.room_details if partner else null">
+										                        <t t-esc="room" />
+										                    </option>
+										                </t>
+									            	</select>                                      
+										       	</div>
+		                                    </div>
+                                		</div>
+		                           	
+		                           		<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+                                    		<div class="row s_col_no_resize s_col_no_bgcolor">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="citizenship">
+		                                            <span class="s_website_form_label_content">Citizenship</span>
+		                                            <span class="s_website_form_mark"> *</span>
+		                                        </label>
+		                                        <div class="col-sm">
+													<select name="citizenship" t-attf-class="form-control #{error.get('citizenship') and 'is-invalid' or ''}">
+				                                    	<option value="">Select...</option>
+					                                    <t t-foreach="['Indian', 'NRI', 'Overseas']" t-as="citizenship_val">
+					                                		<option t-att-value="citizenship_val" t-att-selected="citizenship_val == citizenship if citizenship else citizenship_val == partner.citizenship if partner else null">
+					                                            <t t-esc="citizenship_val" />
+					                                        </option>
+					                                    </t>
+				                                	</select>                                      
+										       	</div>
+                                    		</div>
+                                		</div>
+            					
+						         		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+		                                    <div t-attf-class="row s_col_no_resize s_col_no_bgcolor passport_field #{(partner and partner.citizenship != 'Overseas') and 'd-none' or ''}    ">
+		                                        <label class="col-form-label col-sm-auto s_website_form_label" for="passport_number">
+		                                            <span class="s_website_form_label_content">Passport Number</span>
+		                                        </label>
+		                                        <div class="col-sm">
+		                                            <input id="passport_number_id" type="text" class="form-control s_website_form_input" name="passport_number" t-att-value="passport_number or partner and partner.passport_number"/>
+		                                        </div>
+		                                    </div>
+		                                </div>
+	                       			</div>
+                        		</div> 
+                        	</div>
+		  					<section class="kanha-portal-tab-wrap">
+						  		<div class="container">
+		                     		<ul id="tabs" class="nav nav-tabs" role="tablist">
+		                     			<li class="nav-item">
+				                            <a class="nav-link active"
+				                                id="tab-birthplace"
+				                                data-toggle="tab"
+				                                href="#pane-birthplace"
+				                                role="tab">Birthplace Info</a>
+				                        </li>
+				                        <li class="nav-item">
+				                            <a class="nav-link"
+				                                id="tab-relation"
+				                                data-toggle="tab"
+				                                href="#pane-relation"
+				                                role="tab">Relation Info</a>
+				                        </li>
+				                        <li class="nav-item">
+				                            <a class="nav-link"
+				                                id="tab-kanha"
+				                                data-toggle="tab"
+				                                href="#pane-kanha"
+				                                role="tab">Kanha Address</a>
+				                        </li>
+				                        <li class="nav-item">
+				                            <a class="nav-link"
+				                                id="tab-documents"
+				                                data-toggle="tab"
+				                                href="#pane-documents"
+				                                role="tab">Documents</a>
+				                        </li>
+										<!-- Hides Voter Info If application type is not a Transfer Application -->			                        
+				                        <!-- <t t-if="(application_type != 'Transfer Application') or (partner and partner.application_type != 'Transfer Application')"> -->
+					                    <t t-if="(partner and partner.change_voter_id_address != 'Yes')"> 
+					                        <li class="nav-item">
+					                            <a t-attf-class="voter_id_tab nav-link d-none"
+					                                id="tab-voter"
+					                                data-toggle="tab"
+					                                href="#pane-voter"
+					                                role="tab">Existing Voter ID Details</a>
+					                        </li>
+				                        </t>
+				                        
+				                     	<!-- <t t-if="(application_type == 'Transfer Application') or (partner and partner.application_type == 'Transfer Application')"> -->
+				                        <t t-if="(partner and partner.change_voter_id_address == 'Yes')">
+				                        	<li class="nav-item">
+					                            <a t-attf-class="voter_id_tab nav-link"
+					                                id="tab-voter"
+					                                data-toggle="tab"
+					                                href="#pane-voter"
+					                                role="tab">Existing Voter ID Details</a>
+					                        </li>
+				                        </t>
+				                         
+				                        <li class="nav-item">
+				                            <a class="nav-link"
+				                                id="tab-vehicle"
+				                                data-toggle="tab"
+				                                href="#pane-vehicle"
+				                                role="tab">Vehicle Details</a>
+				                        </li>
+		                    		</ul>
+		                   
+	    							<div id="content" class="tab-content" role="tablist">
+								  		
+								  		<div id="pane-birthplace" class="card tab-pane fad show active" role="tabpanel" aria-labelledby="tab-birthplace">
+								        	<div class="card-header" role="tab" id="heading-birthplace">
+								          		<h5 class="mb-0">
+										            <a data-toggle="collapse" href="#collapse-birthplace" aria-expanded="true" aria-controls="collapse-birthplace">
+										              Birthplace Info
+										              <i class="fa fa-plus"></i>
+										            </a>
+								          		</h5>
+								        	</div>
+								        	<div id="collapse-birthplace" class="collapse show" data-parent="#content" role="tabpanel" aria-labelledby="heading-birthplace">
+								          		<div class="card-body  new-card-body">
+								            		<div class="row">
+								              			<div class="col-md-12">
+															<div class="row col-lg-6">
+													    		<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="birth_country_id">
+								                                            <span class="s_website_form_label_content">Country</span>
+								                                            <span class="s_website_form_mark"> *</span>
+								                                        </label>
+								                                        <div class="col-sm">
+																			<select name="birth_country_id" t-attf-class="form-control s_website_form_input #{error.get('birth_country_id') and 'is-invalid' or ''}" required="">
+											                                   <t t-foreach="birth_countries" t-as="birth_country">
+											                                  		<option t-att-value="birth_country.id" t-att-selected="birth_country.id == int(birth_country_id) if birth_country_id else birth_country.id == partner.birth_country_id.id if partner else birth_country.code == 'IN' if birth_country.code else null">
+											                                       	<!-- <option t-att-value="birth_country.id" t-att-selected="birth_country.code == 'IN'"> -->
+											                                           <t t-esc="birth_country.name" />
+											                                       </option>
+											                            		</t>
+										                               		</select>                                     
+																       </div>
+								                                    </div>
+	                                							</div>
+													    		<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="birth_state_id">
+								                                            <span class="s_website_form_label_content">State</span>
+								                                            <span class="s_website_form_mark"> *</span>
+								                                        </label>
+								                                        <div class="col-sm">
+																			<select name="birth_state_id" t-attf-class="form-control s_website_form_input #{error.get('birth_state_id') and 'is-invalid' or ''}" required ="" >
+											                                   <option value="">Select...</option>
+											                                   <t t-foreach="states" t-as="birth_state">
+											                                  		<option t-att-value="birth_state.id" t-att-data-country_id="birth_state.country_id.id" t-att-country="birth_state.country_id.id" t-att-selected="birth_state.id == int(birth_state_id) if birth_state_id else birth_state.id == partner.birth_state_id.id if partner else null">
+											                                           <t t-esc="birth_state.name" />
+											                                       </option>
+											                            		</t>
+										                               		</select>
+																       </div>
+								                                    </div>
+	                                							</div>
+													          	<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="birth_district">
+								                                            <span class="s_website_form_label_content">District</span>
+								                                            <span class="s_website_form_mark"> *</span>
+								                                        </label>
+								                                        <div class="col-sm">
+								                                            <input id="birth_district_id" type="text" class="form-control s_website_form_input" name="birth_district" required =""  t-att-value="birth_district or partner and partner.birth_district"/>
+								                                        </div>
+								                                    </div>
+							                                	</div>
+													           	<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+								                                  	<div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="birth_town">
+								                                            <span class="s_website_form_label_content">Town</span>
+								                                            <span class="s_website_form_mark"> *</span>
+								                                        </label>
+								                                        <div class="col-sm">
+								                                            <input id="birth_town_id" type="text" class="form-control s_website_form_input" name="birth_town" required =""  t-att-value="birth_town or partner and partner.birth_town"/>
+								                                        </div>
+								                                    </div>
+						                                		</div>  
+															</div>
+	              										</div>
+	            									</div>
+	          									</div>
+	        								</div>
+	      								</div>
+								  		<div id="pane-relation" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-relation">
+								        	<div class="card-header" role="tab" id="heading-relation">
+								          		<h5 class="mb-0">
+										            <a class="collapsed" data-toggle="collapse" href="#collapse-relation" aria-expanded="false" aria-controls="collapse-relation">
+										              Relation Info
+										              <i class="fa fa-plus"></i>
+										            </a>
+								          		</h5>
+								        	</div>
+								        	<div id="collapse-relation" class="collapse" data-parent="#content" role="tabpanel" aria-labelledby="heading-relation">
+								          		<div class="card-body">
+								            		<div class="row">
+								              			<div class="col-md-12">
+															<div class="row col-lg-6">
+													    		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="relation_type">
+								                                            <span class="s_website_form_label_content">Relation</span>
+								                                        </label>
+								                                        <div class="col-sm">
+																			<select name="relation_type" t-attf-class="form-control #{error.get('relation_type') and 'is-invalid' or ''}">
+																                <option value=''>Select...</option>
+																                <t t-foreach="['Father', 'Mother', 'Husband', 'Wife', 'Other']" t-as="relation">
+																                    <option t-att-value="relation" t-att-selected="relation == relation_type if relation_type else relation == partner.relation_type if partner else null">
+																                        <t t-esc="relation" />
+																                    </option>
+																                </t>
+																            </select>
+																       </div>
+								                                    </div>
+	                                							</div>
+													        	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="relative_aadhaar_card_number">
+								                                            <span class="s_website_form_label_content">Aadhaar Card Number</span>
+								                                        </label>
+								                                        <div class="col-sm">
+								                                            <input id="relative_aadhaar_card_number_id" type="text" class="form-control s_website_form_input" name="relative_aadhaar_card_number" t-att-value="relative_aadhaar_card_number or partner and partner.relative_aadhaar_card_number"/>
+								                                        </div>
+								                                    </div>
+								                                </div>
+														     	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+							                                    	<div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="relative_name">
+								                                            <span class="s_website_form_label_content">Name of Relative</span>
+								                                        </label>
+								                                        <div class="col-sm">
+								                                            <input id="relative_name_id" type="text" class="form-control s_website_form_input" name="relative_name" t-att-value="relative_name or partner and partner.relative_name"/>
+								                                        </div>
+							                                    	</div>
+							                                	</div>   
+																<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="relative_name">
+								                                            <span class="s_website_form_label_content">Surname of Relative</span>
+								                                        </label>
+								                                        <div class="col-sm">
+								                                            <input id="relative_surname_id" type="text" class="form-control s_website_form_input" name="relative_surname" t-att-value="relative_surname or partner and partner.relative_surname"/>
+								                                        </div>
+								                                    </div>
+								                                </div>               
+															</div>
+	              										</div>
+	            									</div>
+	          									</div>
+	        								</div>
+	      								</div>
+								  		
+								  		<div id="pane-kanha" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-kanha">
+		        							<div class="card-header" role="tab" id="heading-kanha">
+									       		<h5 class="mb-0">
+										            <a class="collapsed" data-toggle="collapse" href="#collapse-kanha" aria-expanded="false" aria-controls="collapse-kanha">
+										              Kanha Address
+										              <i class="fa fa-plus"></i>
+										            </a>
+									          	</h5>
+		        							</div>
+									        <div id="collapse-kanha" class="collapse" role="tabpanel" data-parent="#content" aria-labelledby="heading-kanha">
+									      		<div class="card-body">
+									            	<div class="row">
+									              		<div class="col-md-12">
+						                            		<div class="row col-lg-6">
+													           	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="resident_of_kanha_from_date">
+								                                            <span class="s_website_form_label_content">Resident of Kanha From Date</span>
+								                                            <span class="s_website_form_mark"> *</span>
+								                                        </label>
+								                                        <div class="col-sm">
+								                                            <input id="resident_of_kanha_from_date_id" type="date" class="form-control s_website_form_input" name="resident_of_kanha_from_date" t-att-value="resident_of_kanha_from_date or partner and partner.resident_of_kanha_from_date" required=""/>
+								                                        </div>
+								                                    </div>
+								                                </div>             
+													     		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="work_profile">
+								                                            <span class="s_website_form_label_content">Work Profile</span>
+								                                        </label>
+								                                        <div class="col-sm">
+																			<select name="work_profile" t-attf-class="form-control #{error.get('work_profile') and 'is-invalid' or ''}">
+																                <option value="">Select...</option>
+																                <t t-foreach="['Resident', 'Volunteer', 'Employee', 'NMR', 'Contractor']" t-as="profile">
+																                  	<option t-att-value="profile" t-att-selected="profile == work_profile if work_profile else profile == partner.work_profile if partner else null">
+																                        <t t-esc="profile" />
+																                    </option>
+																                </t>
+																            </select>
+																       </div>
+								                                    </div>
+	                                							</div>
+													      		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="kanha_location_id">
+								                                            <span class="s_website_form_label_content">Kanha Location</span>
+								                                            <span class="s_website_form_mark"> *</span>
+								                                        </label>
+								                                        <div class="col-sm">
+																			<select name="kanha_location_id" t-attf-class="form-control s_website_form_input #{error.get('kanha_location_id') and 'is-invalid' or ''}" required="">
+											                                    <option value="">Select...</option>
+											                                    <t t-foreach="kanha_locations or []" t-as="kanha_location">
+											                        				<option t-att-value="kanha_location.id" t-att-selected="kanha_location.id == int(kanha_location_id) if kanha_location_id else kanha_location.id == partner.kanha_location_id.id if partner else null">
+											                                            <t t-esc="kanha_location.display_name" />
+											                                        </option>
+											                                    </t>
+											                                </select>    
+																       </div>
+								                                    </div>
+	                                							</div>
+									                       		<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label class="col-form-label col-sm-auto s_website_form_label" for="kanha_house_number">
+								                                            <span class="s_website_form_label_content">House Number</span>
+								                                            <span class="s_website_form_mark"> *</span>
+								                                        </label>
+								                                        <div class="col-sm">
+								                                            <input id="kanha_house_number_id" type="text" class="form-control s_website_form_input" name="kanha_house_number" t-att-value="kanha_house_number or partner and partner.kanha_house_number" required=""/>
+								                                        </div>
+								                                    </div>
+								                                </div>             
+															</div>
+		              									</div>
+		            								</div>
+		          								</div>
+											</div>
+										</div>
+								  		
+								  		<div id="pane-documents" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-documents">
+								        	<div class="card-header" role="tab" id="heading-documents">
+								          		<h5 class="mb-0">
+										            <!-- Note: `data-parent` removed from here -->
+										            <a class="collapsed" data-toggle="collapse" href="#collapse-documents" aria-expanded="false" aria-controls="collapse-documents">
+										              Documents
+										              <i class="fa fa-plus"></i>
+										            </a>
+								          		</h5>
+								        	</div>
+									        <div id="collapse-documents" class="collapse" data-parent="#content" role="tabpanel" aria-labelledby="heading-documents">
+									       		<div class="card-body">
+									            	<div class="row">
+									              		<div class="col-md-12">
+									              			<div class="row col-lg-10">
+									              				<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
+									                         		<div class="row s_col_no_resize s_col_no_bgcolor">
+									                              		<label style="width:25%" class="col-form-label col-sm-auto s_website_form_label" for="adhar_card">
+									                                 		<span class="s_website_form_label_content">Adhar Card Front</span>
+									                                  		<span class="s_website_form_mark"> *</span>
+									                             		</label>
+									                             		<div class="col-xl-4">
+									                                		<input type="file" t-att-filename_input="'adhar_card_filename'" class="d-none adhar_file_upload form-control s_website_form_input" name="adhar_card"/>
+									                                  		<div class="attachment-input-container">
+			    										               			<input type="text" required=""  name="adhar_card_filename" t-attf-class="adhar_card_filename form-control s_website_form_input #{error.get('adhar_card_filename') and 'is-invalid' or ''}" t-att-value="adhar_card_filename or partner and partner.adhar_card_filename"/>
+																			    <t t-if="partner and partner.adhar_card">
+																				    <a id="download_adhar" target='_blank' t-attf-href="/web/content?model=res.partner&amp;field=adhar_card&amp;field_filename=adhar_card_filename&amp;id={{partner.id}}"
+										                                           		class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
+										                                            	<i class="fa fa-download" />
+										                                        	</a>
+																			    </t>
+																			</div>
+									                           			</div>
+							                                          	<div class="col-lg-3">
+			        														<t t-if="partner and partner.adhar_card">
+			        															<button t-att-fileupload="'adhar_file_upload'" type="button" class="btn btn-secondary fa fa-pencil adhar_file_edit" title="Select" aria-label="Select"/>
+			        														</t>
+			        														<t t-else="">
+			        															<button t-att-fileupload="'adhar_file_upload'" type="button" class="btn btn-primary fa fa-upload adhar_file_browse" title="Select" aria-label="Select"/>
+			        														</t>
+			        														<button type="button" t-att-fileupload_input="'adhar_file_upload'" t-att-filename_input="'adhar_card_filename'" class="btn btn-secondary fa fa-trash-o adhar_file_clear" title="Clear" aria-label="Clear"/>
+			    														</div>
+									                         		</div>
+	                                							</div>
+									              				<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
+							                                    	<div class="row s_col_no_resize s_col_no_bgcolor">
+							                                        	<label style="width:25%" class="col-form-label col-sm-auto s_website_form_label" for="adhar_card_back_side">
+							                                            	<span class="s_website_form_label_content">Adhar Card Back</span>
+							                                        	</label>
+								                                        <div class="col-xl-4">
+								                                            <input type="file" t-att-filename_input="'adhar_card_back_side_filename'" class="d-none adhar_file_back_side_upload form-control s_website_form_input" name="adhar_card_back_side"/>
+								                                            <div class="attachment-input-container">
+																			    <input type="text" required=""  name="adhar_card_back_side_filename" t-attf-class="adhar_card_back_side_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="adhar_card_back_side_filename or partner and partner.adhar_card_back_side_filename"/>
+																			    <t t-if="partner and partner.adhar_card_back_side">
+																				    <a id="download_adhar_back_side" target='_blank' t-attf-href="/web/content?model=res.partner&amp;field=adhar_card_back_side&amp;field_filename=adhar_card_back_side_filename&amp;id={{partner.id}}"
+										                                           		class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
+										                                            	<i class="fa fa-download" />
+										                                        	</a>
+																			    </t>
+																			</div>
+								                                        </div>
+								                                    	<div class="col-lg-3">
+			        														<t t-if="partner and partner.adhar_card_back_side">
+			        															<button type="button" t-att-fileupload="'adhar_file_back_side_upload'" class="btn btn-secondary fa fa-pencil adhar_file_back_side_edit" title="Select" aria-label="Select"/>
+			        														</t>
+			        														<t t-else="">
+			        															<button type="button" t-att-fileupload="'adhar_file_back_side_upload'" class="btn btn-primary fa fa-upload adhar_file_back_side_browse" title="Select" aria-label="Select"/>
+			        														</t>
+			        														<button type="button" t-att-fileupload_input="'adhar_file_back_side_upload'" t-att-filename_input="'adhar_card_back_side_filename'" class="btn btn-secondary fa fa-trash-o adhar_file_back_side_clear" title="Clear" aria-label="Clear"/>
+			    														</div>
+							                                    	</div>
+							                                	</div>
+										              			<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label style="width:25%" class="col-form-label col-sm-auto s_website_form_label" for="passport_photo">
+								                                            <span class="s_website_form_label_content">Passport Photo</span>
+								                                        </label>
+								                                        <div class="col-xl-4">
+								                                            <input type="file" t-att-filename_input="'passport_photo_filename'" class="d-none passport_photo_upload form-control s_website_form_input" name="passport_photo" accept=".jpg, .jpeg"/>
+							                                            	<div class="attachment-input-container">
+																			    <input required="" type="text" name="passport_photo_filename" t-attf-class="passport_photo_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="passport_photo_filename or partner and partner.passport_photo_filename"/>
+																			    <t t-if="partner and partner.passport_photo">
+																				    <a id="download_passport_photo" target='_blank' t-attf-href="/web/content?model=res.partner&amp;field=passport_photo&amp;field_filename=passport_photo_filename&amp;id={{partner.id}}"
+											                                           class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
+											                                            <i class="fa fa-download" />
+											                                        </a>
+																			    </t>
+																			</div>
+								                                        </div>
+						                                          		<div class="col-lg-3">
+																			<t t-if="partner and partner.passport_photo">
+																				<button type="button" t-att-fileupload="'passport_photo_upload'" class="btn btn-secondary fa fa-pencil passport_photo_edit" title="Select" aria-label="Select"/>
+																			</t>
+																			<t t-else="">
+																				<button type="button" t-att-fileupload="'passport_photo_upload'" class="btn btn-primary fa fa-upload passport_photo_browse" title="Select" aria-label="Select"/>
+																			</t>
+																			<button type="button" t-att-fileupload_input="'passport_photo_upload'" t-att-filename_input="'passport_photo_filename'" class="btn btn-secondary fa fa-trash-o passport_photo_clear" title="Clear" aria-label="Clear"/>
+																		</div>
+								                                    </div>
+		                                						</div>
+														        <div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
+						                                    		<div class="row s_col_no_resize s_col_no_bgcolor">
+						                                        		<label style="width:25%" class="col-form-label col-sm-auto s_website_form_label" for="age_proof">
+						                                            		<span class="s_website_form_label_content">Age Proof</span>
+						                                             		<span class="s_website_form_mark"> *</span>
+						                                        		</label>
+					                                        			<div class="col-xl-4">
+					                                            			<input type="file"  t-att-filename_input="'age_proof_filename'" class="d-none age_proof_upload form-control s_website_form_input" name="age_proof"/>
+					                                           				<div class="attachment-input-container">
+																			    <input type="text" required="" name="age_proof_filename" t-attf-class="age_proof_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="age_proof_filename or partner and partner.age_proof_filename"/>
+																			    <t t-if="partner and partner.age_proof">
+																					<a id="download_age_proof" target='_blank' t-attf-href="/web/content?model=res.partner&amp;field=age_proof&amp;field_filename=age_proof_filename&amp;id={{partner.id}}"
+											                                     		class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
+											                                    		<i class="fa fa-download" />
+											                                    	</a>
+																				</t>
+																			</div>
+					                                        			</div>
+															            <div class="col-lg-3">
+				       														<t t-if="partner and partner.age_proof">
+				       															<button type="button" t-att-fileupload="'age_proof_upload'" class="btn btn-secondary fa fa-pencil age_proof_edit" title="Select" aria-label="Select"/>
+				       														</t>
+				       														<t t-else="">
+				       															<button type="button" t-att-fileupload="'age_proof_upload'" class="btn btn-primary fa fa-upload age_proof_browse" title="Select" aria-label="Select"/>
+				       														</t>
+				       														<button type="button" t-att-fileupload_input="'age_proof_upload'" t-att-filename_input="'age_proof_filename'" class="btn btn-secondary fa fa-trash-o age_proof_clear" title="Clear" aria-label="Clear"/>
+				   														</div>
+						                                  			</div>
+						                               			</div>
+									              				<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
+	                                    							<div class="row s_col_no_resize s_col_no_bgcolor">
+	                                        							<label style="width:25%" class="col-form-label col-sm-auto s_website_form_label"  for="address_proof">
+		                                            						<span class="s_website_form_label_content">Address Proof</span>
+		                                                					<span class="s_website_form_mark"> *</span>
+	                                        							</label>
+								                                        <div class="col-xl-4">
+								                                            <input type="file" t-att-filename_input="'address_proof_filename'" class="d-none address_proof_upload form-control s_website_form_input" name="address_proof"/>
+								                                            <div class="attachment-input-container">
+																				<input type="text" required=""  name="address_proof_filename" t-attf-class="address_proof_filename form-control s_website_form_input #{error.get('age_proof_filename') and 'is-invalid' or ''}" t-att-value="address_proof_filename or partner and partner.address_proof_filename"/>
+																			   	<t t-if="partner and partner.address_proof">
+																				    <a id="download_age_proof" target='_blank' t-attf-href="/web/content?model=res.partner&amp;field=age_proof&amp;field_filename=age_proof_filename&amp;id={{partner.id}}"
+										                                           		class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
+										                                            	<i class="fa fa-download" />
+										                                       	 	</a>
+																			    </t>
+																			</div>
+								                                        </div>
+															           <div class="col-lg-3">
+			        														<t t-if="partner and partner.address_proof">
+			        															<button type="button" t-att-fileupload="'address_proof_upload'" class="btn btn-secondary fa fa-pencil address_proof_edit" title="Select" aria-label="Select"/>
+			        														</t>
+			        														<t t-else="">
+			        															<button type="button" t-att-fileupload="'address_proof_upload'" class="btn btn-primary fa fa-upload address_proof_browse" title="Select" aria-label="Select"/>
+			        														</t>
+			        														<button type="button" t-att-fileupload_input="'address_proof_upload'" t-att-filename_input="'address_proof_filename'" class="btn btn-secondary fa fa-trash-o address_proof_clear" title="Clear" aria-label="Clear"/>
+			    														</div>
+	                                    							</div>
+	                                							</div>
+									                		
+									              				<div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
+								                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+								                                        <label style="width:25%" class="col-form-label col-sm-auto s_website_form_label"  for="age_declaration_form">
+								                                            <span class="s_website_form_label_content">Age Declaration Form</span>
+								                                        </label>
+								                                        <div class="col-xl-4">
+								                                            <input type="file" t-att-filename_input="'age_declaration_form_filename'" class="d-none age_declaration_form_upload form-control s_website_form_input" name="age_declaration_form"/>
+							                                            		<div class="attachment-input-container">
+																			  		<input type="text" required="" name="age_declaration_form_filename" t-attf-class="age_declaration_form_filename form-control s_website_form_input #{error.get('age_declaration_form_filename') and 'is-invalid' or ''}" t-att-value="age_declaration_form_filename or partner and partner.age_declaration_form_filename"/>
+																				   	<t t-if="partner and partner.age_declaration_form">
+																						<a id="download_age_declaration_form" target='_blank' t-attf-href="/web/content?model=res.partner&amp;field=age_declaration_form&amp;field_filename=age_declaration_form_filename&amp;id={{partner.id}}"
+											                                           		class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
+											                                            	<i class="fa fa-download" />
+											                                       	 	</a>
+																				    </t>
+																				</div>
+								                                        	</div>
+								                                   			<div class="col-lg-3">
+				        														<t t-if="partner and partner.age_declaration_form">
+				        															<button type="button" t-att-fileupload="'age_declaration_form_upload'" class="btn btn-secondary fa fa-pencil age_declaration_form_edit" title="Select" aria-label="Select"/>
+				        														</t>
+				        														<t t-else="">
+				        															<button type="button" t-att-fileupload="'age_declaration_form_upload'" class="btn btn-primary fa fa-upload age_declaration_form_browse" title="Select" aria-label="Select"/>
+				        														</t>
+				        														<button type="button" t-att-fileupload_input="'age_declaration_form_upload'" t-att-filename_input="'age_declaration_form_filename'" class="btn btn-secondary fa fa-trash-o age_declaration_form_clear" title="Clear" aria-label="Clear"/>
+			    															</div>
+								                                    	</div>
+								                                	</div>
+										    					</div>
+	              											</div>
+											    		</div>
+											     	</div>
+												</div>
+											</div>
+	
+		      								<div id="pane-voter" class="voter_id_tab card tab-pane fade" role="tabpanel" aria-labelledby="tab-voter">
+										 		<div class="card-header" role="tab" id="heading-voter">
+										       		<h5 class="mb-0">
+										           		<a class="collapsed" data-toggle="collapse" href="#collapse-voter" aria-expanded="false" aria-controls="collapse-voter">
+											             	Voter ID Details
+											             	<i class="fa fa-plus"></i>
+										           		</a>
+										         	</h5>
+										       	</div>
+										       	<div id="collapse-voter" class="collapse" role="tabpanel" data-parent="#content" aria-labelledby="heading-voter">
+										      		<div class="card-body">
+										           		<div class="row">
+										             		<div class="col-md-12">
+		              											<div class="row col-lg-8">
+															      	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="existing_voter_id_number">
+									                                            <span class="s_website_form_label_content">Existing Voter Number</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="existing_voter_id_number_id" type="text" class="form-control s_website_form_input" name="existing_voter_id_number" t-att-value="existing_voter_id_number or partner and partner.existing_voter_id_number" required=""/>
+									                                        </div>
+									                                    </div>
+									                                </div>             
+																	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="country_id">
+									                                            <span class="s_website_form_label_content">Country</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+																				<select t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="voter_country_id" name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}">
+												                                   <t t-foreach="countries" t-as="country">
+												                                  		<option t-att-value="country.id" t-att-selected="country.id == int(country_id) if country_id else country.id == partner.country_id.id if partner else country.code == 'IN' if country.code else null">
+												                                           <t t-esc="country.name" />
+												                                       </option>
+												                            		</t>
+											                               		</select>  
+																	       </div>
+									                                    </div>
+									                                </div>  		      	
+															      	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="state_id">
+									                                            <span class="s_website_form_label_content">State</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+																				<select t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="voter_state_id" name="state_id" t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}">
+											                                   		<option value="">Select...</option>
+												                                   	<t t-foreach="states" t-as="state">
+												               							<option t-att-value="state.id" t-att-data-country_id="state.country_id.id" t-att-selected="state.id == int(state_id) if state_id else state.id == partner.state_id.id if partner else null">
+												                                           <t t-esc="state.name" />
+												                                       </option>
+												                            		</t>
+										                               			</select>  
+																	       	</div>
+									                                    </div>
+									                                </div>      
+														            
+														            <div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="existing_voter_id_number">
+									                                            <span class="s_website_form_label_content">Assembly/Parliamentary Constituency</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="assembly_constituency_id" type="text" class="form-control s_website_form_input" name="assembly_constituency" t-att-value="assembly_constituency or partner and partner.assembly_constituency" required=""/>
+									                                        </div>
+									                                    </div>
+									                                </div>             
+														            <div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="existing_voter_id_number">
+									                                            <span class="s_website_form_label_content">House Number</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="house_number_id" type="text" class="form-control s_website_form_input" name="house_number" t-att-value="house_number or partner and partner.house_number" required=""/>
+									                                        </div>
+									                                    </div>
+									                                </div>              
+														
+																	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="existing_voter_id_number">
+									                                            <span class="s_website_form_label_content">Locality</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="locality_id" type="text" class="form-control s_website_form_input" name="locality" t-att-value="locality or partner and partner.locality" required=""/>
+									                                        </div>
+									                                    </div>
+									                                </div>              
+														
+																	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="town">
+									                                            <span class="s_website_form_label_content">Town</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="town_id" type="text" class="form-control s_website_form_input" name="town" t-att-value="town or partner and partner.town" required=""/>
+									                                        </div>
+									                                    </div>
+									                                </div>          
+																	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="town">
+									                                            <span class="s_website_form_label_content">Post Office</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="post_office_id" type="text" class="form-control s_website_form_input" name="post_office" t-att-value="post_office or partner and partner.post_office" required=""/>
+									                                        </div>
+									                                    </div>
+									                                </div>          
+																	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="town">
+									                                            <span class="s_website_form_label_content">Pin Code</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="zip_id" type="text" class="form-control s_website_form_input" name="zip" t-att-value="zipcode or partner and partner.zip" required=""/>
+									                                        </div>
+									                                    </div>
+									                                </div>  
+									                                <div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="town">
+									                                            <span class="s_website_form_label_content">District</span>
+									                                            <span class="s_website_form_mark"> *</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'" id="district_id" type="text" class="form-control s_website_form_input" name="district" t-att-value="district or partner and partner.district" required=""/>
+									                                        </div>
+									                                    </div>
+									                                </div>  
+																</div>
+		              										</div>
+		            									</div>
+		          									</div>
+		        								</div>
+		      								</div> 
+									      	<div id="pane-vehicle" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-vehicle">
+									     		<div class="card-header" role="tab" id="heading-vehicle">
+									          		<h5 class="mb-0">
+											            <a class="collapsed" data-toggle="collapse" href="#collapse-vehicle" aria-expanded="false" aria-controls="collapse-vehicle">
+											              Vehicle
+											              <i class="fa fa-plus"></i>
+											            </a>
+									          		</h5>
+									        	</div>
+		        								<div id="collapse-vehicle" class="collapse" role="tabpanel" data-parent="#content" aria-labelledby="heading-vehicle">
+		          									<div class="card-body">
+		            									<div class="row">
+		              										<div class="col-md-12 vehicle-details">
+		                										<div class="row col-lg-6">
+									                           	 	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="kanha_house_number">
+									                                            <span class="s_website_form_label_content">Vehicle Number</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input id="vehicle_number_id" type="text" class="form-control s_website_form_input" name="vehicle_number" t-att-value="vehicle_number or partner and partner.vehicle_number"/>
+									                                        </div>
+									                                    </div>
+									                                </div>             
+									                           	 	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="vehicle_owner">
+									                                            <span class="s_website_form_label_content">Vehicle Owner</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input id="vehicle_owner_id" type="text" class="form-control s_website_form_input" name="vehicle_owner" t-att-value="vehicle_owner or partner and partner.vehicle_owner"/>
+									                                        </div>
+									                                    </div>
+									                                </div>             
+																    <div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="vehicle_owner">
+									                                            <span class="s_website_form_label_content">Vehicle Type</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input id="vehicle_type_id" type="text" class="form-control s_website_form_input" name="vehicle_type" t-att-value="vehicle_type or partner and partner.vehicle_type"/>
+									                                        </div>
+									                                    </div>
+									                                </div>                     
+																	<div class="form-group col-12 s_website_form_field" data-type="char" data-name="Field">
+									                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+									                                        <label class="col-form-label col-sm-auto s_website_form_label"  for="additional_vehicle_number">
+									                                            <span class="s_website_form_label_content">Additional Vehicle Number</span>
+									                                        </label>
+									                                        <div class="col-sm">
+									                                            <input id="additional_vehicle_number_id" type="text" class="form-control s_website_form_input" name="additional_vehicle_number" t-att-value="additional_vehicle_number or partner and partner.additional_vehicle_number"/>
+									                                        </div>
+									                                    </div>
+									                         		</div>                     
+																</div>
+		              										</div>
+		            									</div>
+		          									</div>
+		        								</div>
+		      								</div>
+	    								</div>
+									</div>
+								</section>
+								<div class="clearfix">
+				             	<div class="form-group col-12 s_website_form_submit" data-name="Submit Button">
+	                            	<div style="width: 200px;" class="s_website_form_label"/>
+                                 	<a href="#" role="button" class="btn btn-primary btn-lg s_website_form_send">Submit</a>  
+	         					</div>
+		           			</div>
+     					</div>
+ 					</div>
+   				</div>
+			</form>
+		</t>
+	</template>
+    
     <!-- Portal Form -->
-    <template id="kanha_portal_form">
+    <template id="kanha_portal_form_old">
         <t t-call="portal.portal_layout">
             <form t-attf-action="/family/#{partner.id if partner else 0}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -312,7 +1261,8 @@
 			                                role="tab">Documents</a>
 			                        </li>
 									<!-- Hides Voter Info If application type is not a Transfer Application -->			                        
-			                        <t t-if="(application_type != 'Transfer Application') or (partner and partner.application_type != 'Transfer Application')">
+			                        <!-- <t t-if="(application_type != 'Transfer Application') or (partner and partner.application_type != 'Transfer Application')"> -->
+				                    <t t-if="(change_voter_id_address != 'Yes') or (partner and partner.change_voter_id_address != 'Yes')"> 
 				                        <li class="nav-item">
 				                            <a t-attf-class="voter_id_tab nav-link d-none"
 				                                id="tab-voter"
@@ -322,7 +1272,8 @@
 				                        </li>
 			                        </t>
 			                        
-			                     	<t t-if="(application_type == 'Transfer Application') or (partner and partner.application_type == 'Transfer Application')">
+			                     	<!-- <t t-if="(application_type == 'Transfer Application') or (partner and partner.application_type == 'Transfer Application')"> -->
+			                        <t t-if="(change_voter_id_address == 'Yes') or (partner and partner.change_voter_id_address == 'Yes')">
 			                        	<li class="nav-item">
 				                            <a t-attf-class="voter_id_tab nav-link"
 				                                id="tab-voter"
@@ -362,14 +1313,15 @@
 														<div class="row col-lg-6">
 												    		
 												    		<div class="col-lg-6">
-														  		<label class="col-form-label" for="country_id">Country</label>
+														  		<label class="col-form-label" for="birth_country_id">Country</label>
 														  		<span> *</span>
 												          	</div>
-														    <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-xl-6">
-												      	 		<select name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}">
-								                                   <t t-foreach="country_id" t-as="country">
-								                                  		<option t-att-value="country.id" >
-								                                           <t t-esc="country.name" />
+														    <div t-attf-class="form-group #{error.get('birth_country_id') and 'o_has_error' or ''} col-xl-6">
+												      	 		<select name="birth_country_id" t-attf-class="form-control #{error.get('birth_country_id') and 'is-invalid' or ''}">
+								                                   <t t-foreach="birth_countries" t-as="birth_country">
+								                                  		<option t-att-value="birth_country.id" t-att-selected="birth_country.id == int(birth_country_id) if birth_country_id else birth_country.id == partner.birth_country_id.id if partner else birth_country.code == 'IN' if birth_country.code else null">
+								                                       	<!-- <option t-att-value="birth_country.id" t-att-selected="birth_country.code == 'IN'"> -->
+								                                           <t t-esc="birth_country.name" />
 								                                       </option>
 								                            		</t>
 							                               		</select>
@@ -383,7 +1335,7 @@
 												      	 		<select name="birth_state_id" t-attf-class="form-control #{error.get('birth_state_id') and 'is-invalid' or ''}">
 								                                   <option value="">Select...</option>
 								                                   <t t-foreach="states" t-as="birth_state">
-								                                  		<option t-att-value="birth_state.id" t-att-country="birth_state.country_id.id" t-att-selected="birth_state.id == int(birth_state_id) if birth_state_id else birth_state.id == partner.birth_state_id.id if partner else null">
+								                                  		<option t-att-value="birth_state.id" t-att-data-country_id="birth_state.country_id.id" t-att-country="birth_state.country_id.id" t-att-selected="birth_state.id == int(birth_state_id) if birth_state_id else birth_state.id == partner.birth_state_id.id if partner else null">
 								                                           <t t-esc="birth_state.name" />
 								                                       </option>
 								                            		</t>
@@ -550,8 +1502,6 @@
 																<input type="file" t-att-filename_input="'adhar_card_filename'" class="d-none adhar_file_upload" name="adhar_card"/>
 												            	<div class="attachment-input-container">
     										               			<input type="text" name="adhar_card_filename" t-attf-class="adhar_card_filename form-control #{error.get('adhar_card_filename') and 'is-invalid' or ''}" t-att-value="adhar_card_filename or partner and partner.adhar_card_filename"/>
-<!-- 																    <input type="text" name="adhar_card_back_side_filename" t-attf-class="adhar_card_back_side_filename form-control #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="adhar_card_back_side_filename or partner and partner.adhar_card_back_side_filename"/>
- -->																    
 																    <t t-if="partner and partner.adhar_card">
 																	    <a id="download_adhar" target='_blank' t-attf-href="/web/content?model=res.partner&amp;field=adhar_card&amp;field_filename=adhar_card_filename&amp;id={{partner.id}}"
 							                                           		class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
@@ -740,6 +1690,21 @@
 								    						<div t-attf-class="form-group #{error.get('existing_voter_id_number') and 'o_has_error' or ''} col-xl-6">
 								                          		<input type="text" name="existing_voter_id_number" t-attf-class="form-control #{error.get('existing_voter_id_number') and 'is-invalid' or ''}" t-att-value="existing_voter_id_number or partner and partner.existing_voter_id_number"/>
 													      	</div>
+													      	
+													      	<div class="col-lg-6">
+														  		<label class="col-form-label" for="country_id">Country</label>
+														  		<span> *</span>
+												          	</div>
+														    <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-xl-6">
+												      	 		<select name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}">
+								                                   <t t-foreach="countries" t-as="country">
+								                                  		<option t-att-value="country.id" t-att-selected="country.id == int(country_id) if country_id else country.id == partner.country_id.id if partner else country.code == 'IN' if country.code else null">
+								                                           <t t-esc="country.name" />
+								                                       </option>
+								                            		</t>
+							                               		</select>
+												            </div>
+													      	
 												    		<div class="col-lg-6">
 							                               		<label class="col-form-label" for="state_id">State</label>
 							                               		<span> *</span>
@@ -748,7 +1713,7 @@
 												      			<select name="state_id" t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}">
 								                                   <option value="">Select...</option>
 								                                   <t t-foreach="states" t-as="state">
-								               							<option t-att-value="state.id" t-att-selected="state.id == int(state_id) if state_id else state.id == partner.state_id.id if partner else null">
+								               							<option t-att-value="state.id" t-att-data-country_id="state.country_id.id" t-att-selected="state.id == int(state_id) if state_id else state.id == partner.state_id.id if partner else null">
 								                                           <t t-esc="state.name" />
 								                                       </option>
 								                            		</t>
@@ -899,15 +1864,46 @@
 			          	</div>
 			    	 	<div t-attf-class="form-group #{error.get('additional_vehicle_number') and 'o_has_error' or ''} col-xl-6">
 			      			<input type="text" name="additional_vehicle_number" t-attf-class="form-control #{error.get('additional_vehicle_number') and 'is-invalid' or ''}" t-att-value="additional_vehicle_number or vehicle.additional_vehicle_number"  />
-	            		</div> -->
+	            		</div>
                     </div>
                     <div class="modal-footer justify-content-start">
-                        <button type="button" class="btn btn-primary o_wforum_mark_spam">Mark as spam</button>
-                        <a class="btn btn-sm btn-default o_wforum_select_all_spam" href="#" type="button">Select All</a>
+                        <button type="button" class="btn btn-primary add_vehicle_line">Add</button>
                     </div>
                 </div>
             </div>
         </div>
 	</template>
+	
+	<record id="family_success_page" model="website.page">
+        <field name="name">Family Success Page</field>
+        <field name="type">qweb</field>
+        <field name="url">/family-success-page</field>
+        <field name="website_indexed" eval="False"/>
+        <field name="is_published">True</field>
+        <field name="key">kanha_census.family_success_page</field>
+        <field name="arch" type="xml">
+            <t name="Family Success Page" t-name="kanha_census.family_success_page">
+                <t t-call="website.layout">
+                  <div id="wrap">
+                    <div class="oe_structure" id="oe_structure_website_form_contact_us_thanks_1"/>
+	                    <div class="container mt-4">
+	                        <div class="row">
+	                            <div class="col-lg-7 col-xl-6 mr-lg-auto oe_structure">
+	                                <section class="pt40 s_text_block pb40 o_colored_level o_cc o_cc1" data-snippet="s_text_block" data-name="Text">
+	                                    <div class="container">
+	                                        <span class="d-block fa fa-4x fa-thumbs-up mx-auto rounded-circle bg-primary"/><br/>
+											<h4 class="text-center text-success">
+	           									<i class="fa fa-check mr4" role="img" aria-label="Success" title="Success"/>The form has been sent successfully.
+	       									</h4>                                        
+	                                    </div>
+	                                </section>
+	                            </div>
+	                        </div>
+	                    </div>
+             		</div>
+         		</t>
+     		</t>
+   		</field>
+	</record>
   
 </odoo>
