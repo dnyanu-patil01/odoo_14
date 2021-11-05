@@ -91,7 +91,7 @@ class ShiprocketNDR(models.Model):
 class ShiprocketNDRHistoryLine(models.Model):
     _name = "shiprocket.ndr.history.line"
     _rec_name = "ndr_history_id"
-    _order_by = "ndr_attempt"
+    _order_by = "ndr_history_id,ndr_attempt"
 
     odoo_ndr_id = fields.Many2one('shiprocket.ndr',index=True, ondelete="cascade")
     ndr_history_id = fields.Char()
@@ -103,3 +103,14 @@ class ShiprocketNDRHistoryLine(models.Model):
     ndr_raised_at = fields.Datetime("NDR Raised At")
     ndr_push_status = fields.Char()
     action_by = fields.Char()
+
+    def take_ndr_action(self):
+        if self.picking_id:
+            return {
+                "name": ("Action NDR"),
+                "type": "ir.actions.act_window",
+                "view_mode": "form",
+                "res_model": "ndr.action.wizard",
+                "target": "new",
+                "context":{'picking_ids':self.picking_id.ids},
+            }

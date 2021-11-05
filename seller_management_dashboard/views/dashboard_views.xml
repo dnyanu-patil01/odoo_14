@@ -10,10 +10,10 @@
                   name="Dashboard"
                   action="seller_management_action_dashboard"
                   web_icon="seller_management_dashboard,static/description/icon.png"
-                  sequence="-100" groups="base.group_user"/>
+                  sequence="-100" groups="seller_management.group_sellers_management_manager"/>
     </data>
 
-    <template id="assets_backend_dashboard" name="Hr Dashboard assets inherit" inherit_id="web.assets_backend">
+    <template id="assets_backend_dashboard" name="Fulfilment Dashboard assets inherit" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/scss" href="/seller_management_dashboard/static/src/scss/stock_picking.scss"/>
             <script type="text/javascript" src="/seller_management_dashboard/static/src/js/seller_management_dashboard.js"/>

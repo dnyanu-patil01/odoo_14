@@ -11,12 +11,91 @@ class Dashboard(models.Model):
 
     @api.model
     def check_user_group(self):
-        uid = request.session.uid
-        user = self.env['res.users'].sudo().search([('id', '=', uid)], limit=1)
+        user = self.env['res.users'].sudo().search([('id', '=', self.env.user.id)], limit=1)
         if user.has_group('seller_management.group_sellers_management_manager'):
             return True
         else:
             return False
+
+    @api.model
+    def get_ndr_details(self):
+        result = {
+            'total_ndr':0,
+            'total_ndr_attempts':0,
+            'first_ndr_attempts':0,
+            'second_ndr_attempts':0,
+            'third_ndr_attempts':0,
+            'rto':0,
+        }
+        pickings = self.env['stock.picking']
+        ndr_lines = self.env['shiprocket.ndr.history.line']
+        result['total_ndr'] = pickings.search_count([('is_ndr','=',True)])
+        result['total_ndr_attempts'] = ndr_lines.search_count([])
+        result['first_ndr_attempts'] = ndr_lines.search_count([('ndr_attempt','=',1)])
+        result['second_ndr_attempts'] = ndr_lines.search_count([('ndr_attempt','=',2)])
+        result['third_ndr_attempts'] = ndr_lines.search_count([('ndr_attempt','=',3)])
+        result['rto'] = pickings.search_count([('shiprocket_order_status_id.status_code', 'in', ('15','16','17','45','46'))])
+        return result
+    
+    @api.model
+    def ndr_action_dashboard_total_ndr_list(self):
+        return self._action_view_action_ndr(mode='total_ndr')
+    @api.model
+    def ndr_action_dashboard_first_ndr_attempts_list(self):
+        return self._action_view_action_ndr(mode='first_ndr_attempts')
+    @api.model
+    def ndr_action_dashboard_second_ndr_attempts_list(self):
+        return self._action_view_action_ndr(mode='second_ndr_attempts')
+    @api.model
+    def ndr_action_dashboard_third_ndr_attempts_list(self):
+        return self._action_view_action_ndr(mode='third_ndr_attempts')
+    @api.model
+    def ndr_action_dashboard_total_ndr_attempts_list(self):
+        return self._action_view_action_ndr(mode='total_ndr_attempts')
+    @api.model
+    def ndr_action_dashboard_rto_list(self):
+        return self._action_view_action_ndr(mode='rto')
+    
+    def _action_view_action_ndr(self, mode=False):
+        if mode == 'total_ndr':
+            domain = [('is_ndr','=',True)]
+            return {'name': 'Transfer',
+                'type': 'ir.actions.act_window',
+                'res_model': 'stock.picking',
+                'view_mode': 'tree,form',
+                'views': [(self.env.ref('stock.vpicktree').id, 'list'),
+                           (self.env.ref('stock.view_picking_form').id, 'form')],
+                'domain': domain,
+                'target': 'current'
+            }
+        if mode == 'rto':
+            domain = [('shiprocket_order_status_id.status_code', 'in', ('15','16','17','45','46'))]
+            return {'name': 'Transfer',
+                'type': 'ir.actions.act_window',
+                'res_model': 'stock.picking',
+                'view_mode': 'tree,form',
+                'views': [(self.env.ref('stock.vpicktree').id, 'list'),
+                           (self.env.ref('stock.view_picking_form').id, 'form')],
+                'domain': domain,
+                'target': 'current'
+            }
+        if mode == 'total_ndr_attempts':
+            domain = []
+        if mode == 'first_ndr_attempts':
+            domain = [('ndr_attempt','=',1)]
+        if mode == 'second_ndr_attempts':
+            domain = [('ndr_attempt','=',2)]
+        if mode == 'third_ndr_attempts':
+            domain = [('ndr_attempt','=',3)]
+        return {'name': ('NDR Attempts'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'shiprocket.ndr.history.line',
+                'view_mode': 'tree,form',
+                'views': [(self.env.ref('delivery_shiprocket.ndr_action_view_tree').id, 'list'),
+                           (self.env.ref('delivery_shiprocket.ndr_attempts_view_form').id, 'form')],
+                'domain': domain,
+                'target': 'current'
+            }
 
     @api.model
     def get_product_details(self):
@@ -194,6 +273,7 @@ class Dashboard(models.Model):
         }
         # easy counts
         pickings = self.env['stock.picking']
+        ndr_lines = self.env['shiprocket.ndr.history.line']
         result['unfulfiled'] = pickings.search_count([('shiprocket_order_status_id.status_code', 'not in', ('5','7','9','16','26','33','39','40','41','42'))])
         result['new_orders'] = pickings.search_count([('shiprocket_order_status_id.status_code', '=', '1'),('is_awb_generated','=',False)])
         result['ready_to_ship'] = pickings.search_count([('shiprocket_order_status_id.status_code', '=', '3'),('is_awb_generated','=',True)])
@@ -207,6 +287,7 @@ class Dashboard(models.Model):
         result['gen_pickup'] = bulk_process.search_count([('state','=','pickup_created')])
         result['wp_manifest'] = bulk_process.search_count([('state','in',('waiting_to_manifest','ready_to_manifest'))])
         result['gen_manifest'] = bulk_process.search_count([('state','=','manifest_generated')])
+        
         return result
 
     @api.model

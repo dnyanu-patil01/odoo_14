@@ -14,12 +14,6 @@ var QWeb = core.qweb;
 var SellerManagementDashboard = AbstractAction.extend({
 
     template: 'SellerManagementDashboardMain',
-    cssLibs: [
-        '/seller_management_dashboard/static/src/css/lib/nv.d3.css'
-    ],
-    jsLibs: [
-        '/seller_management_dashboard/static/src/js/lib/d3.min.js'
-    ],
     events: {
         'click .o_dashboard_action': '_onDashboardActionClicked',
     },
@@ -59,6 +53,12 @@ var SellerManagementDashboard = AbstractAction.extend({
         this.seller_product_to_approve = [];
         this.seller_product_approve = [];
         this.seller_product_rejected  = [];
+        this.total_ndr = [];
+        this.total_ndr_attempts = [];
+        this.first_ndr_attempts = [];
+        this.second_ndr_attempts = [];
+        this.third_ndr_attempts = [];
+        this.rto = [];
     },
 
     willStart: function(){
@@ -120,20 +120,29 @@ var SellerManagementDashboard = AbstractAction.extend({
               self.seller_product_approve = res['seller_product_approve'];
               self.seller_product_rejected = res['seller_product_rejected'];
             });
+            var dashboard_ndr_def = self._rpc({
+                model: "stock.picking",
+                method: "get_ndr_details",
+            })
+            .then(function (res) {
+              self.total_ndr = res['total_ndr'];
+              self.total_ndr_attempts = res['total_ndr_attempts'];
+              self.first_ndr_attempts = res['first_ndr_attempts'];
+              self.second_ndr_attempts = res['second_ndr_attempts'];
+              self.third_ndr_attempts = res['third_ndr_attempts'];
+              self.rto = res['rto'];
+            });
             
-        return $.when(def0,dashboard_def,dashboard_sale_order_def,dashboard_product_def);
+        return $.when(def0,dashboard_def,dashboard_sale_order_def,dashboard_product_def,dashboard_ndr_def);
         });
     },
 
 
     start: function() {
-            console.log("START FUNCTION")
             var self = this;
             this.set("title", 'Dashboard');
             return this._super().then(function() {
-                self.update_cp();
                 self.render_dashboards();
-                // self.render_graphs();
                 self.$el.parent().addClass('oe_background_grey');
             });
         },
@@ -194,8 +203,20 @@ var SellerManagementDashboard = AbstractAction.extend({
           self.seller_product_approve = res['seller_product_approve'];
           self.seller_product_rejected = res['seller_product_rejected'];
         });
+        var dashboard_ndr_def = self._rpc({
+            model: "stock.picking",
+            method: "get_ndr_details",
+        })
+        .then(function (res) {
+          self.total_ndr = res['total_ndr'];
+          self.total_ndr_attempts = res['total_ndr_attempts'];
+          self.first_ndr_attempts = res['first_ndr_attempts'];
+          self.second_ndr_attempts = res['second_ndr_attempts'];
+          self.third_ndr_attempts = res['third_ndr_attempts'];
+          self.rto = res['rto'];
+        });
 
-        return $.when(def0,dashboard_def,dashboard_sale_order_def,dashboard_product_def);
+        return $.when(def0,dashboard_def,dashboard_sale_order_def,dashboard_product_def,dashboard_ndr_def);
     },
 
 
@@ -243,6 +264,12 @@ var SellerManagementDashboard = AbstractAction.extend({
                         'sale_action_dashboard_seller_product_to_approve_list',
                         'sale_action_dashboard_seller_product_approve_list',
                         'sale_action_dashboard_seller_product_rejected_list',
+                        'ndr_action_dashboard_total_ndr_list',
+                        'ndr_action_dashboard_first_ndr_attempts_list',
+                        'ndr_action_dashboard_second_ndr_attempts_list',
+                        'ndr_action_dashboard_third_ndr_attempts_list',
+                        'ndr_action_dashboard_total_ndr_attempts_list',
+                        'ndr_action_dashboard_rto_list',
                     ], action_name)) {
             return this._rpc({model: 'stock.picking', method: action_name})
                 .then(function (data) {

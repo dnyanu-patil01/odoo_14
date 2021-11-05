@@ -68,7 +68,7 @@
                                 </td>
                                 <td class="o_main o_dashboard_action" title="Products Waiting For Approval"
                                     name="sale_action_dashboard_seller_product_to_approve">
-                                    <a href="#"><t t-esc="widget.seller_product_to_approve"/><br/>Waiting For Approval</a>
+                                    <a href="#"><t t-esc="widget.seller_product_to_approve"/><br/>Waiting For Approval<br/>Products</a>
                                 </td>
                                 <td class="o_main o_dashboard_action table-success" title="Approved Products"
                                     name="sale_action_dashboard_seller_product_approve">
@@ -138,6 +138,35 @@
                                 <td class="o_main o_dashboard_action" title="All Late Quotes"
                                     name="stock_bulk_action_dashboard_gen_manifest">
                                     <a href="#"><t t-esc="widget.gen_manifest"/><br/>Manifest <br/>Generated</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="o_text">
+                                    <div>NDR Process</div>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All NDR Process"
+                                    name="ndr_action_dashboard_total_ndr">
+                                    <a href="#"><t t-esc="widget.total_ndr"/><br/>Total NDR <br/> Count</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="1st NDR Attempts Count"
+                                    name="ndr_action_dashboard_first_ndr_attempts">
+                                    <a href="#"><t t-esc="widget.first_ndr_attempts"/><br/>1st NDR Attempts <br/>Count</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="2nd NDR Attempts Count"
+                                    name="ndr_action_dashboard_second_ndr_attempts">
+                                    <a href="#"><t t-esc="widget.second_ndr_attempts"/><br/>2nd NDR Attempts<br/>Count</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="3rd NDR Attempts Count"
+                                    name="ndr_action_dashboard_third_ndr_attempts">
+                                    <a href="#"><t t-esc="widget.third_ndr_attempts"/><br/>3rd NDR Attempts <br/>Count</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Total NDR Attempts"
+                                    name="ndr_action_dashboard_total_ndr_attempts">
+                                    <a href="#"><t t-esc="widget.total_ndr_attempts"/><br/>Total NDR <br/>Attempts</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="RTO Orders"
+                                    name="ndr_action_dashboard_rto">
+                                    <a href="#"><t t-esc="widget.rto"/><br/>RTO <br/>Orders</a>
                                 </td>
                             </tr>
                         </tbody>
