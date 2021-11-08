@@ -1,7 +1,7 @@
 /* Style the file attachment input */
 .attachment-input-container {
     display: flex;
-    width: 250px;
+  /*  width: 250px;*/
     border: 1px solid #a9a9a9;
     justify-content: space-between;
 }

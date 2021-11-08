@@ -22,8 +22,6 @@
 								<field name="pan_card_number" />
 								<field name="aadhaar_card_number"/>
 								<field name="abhyasi_id" />
-								
-								
 							</group>
 							<group>
 								
@@ -32,7 +30,7 @@
 								<field name="date_of_birth"/>
 								<field name="members_count" />
 								<field name="change_voter_id_address" />
-								<field name="room_details" />
+								<field name="residence_type" />
 								<field name="citizenship" />
 								<field name="passport_number" />
 								
