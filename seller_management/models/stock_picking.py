@@ -3,4 +3,4 @@ from odoo import _, api, fields, models
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    seller_id = fields.Many2one("res.partner",string="Seller",copy=False)
+    seller_id = fields.Many2one("res.partner",string="Seller",copy=False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")

@@ -338,7 +338,7 @@
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('oe_title')]" position="after">
                     <group id="header_left_group">
-                        <field name="seller_id" attrs="{'readonly':[('seller_id','!=',False)],'invisible': [('seller_id','=',False),('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
+                        <field name="seller_id" attrs="{'readonly':[('seller_id','!=',False)],'invisible': [('seller_id','=',False)]}"/>
                     </group>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">

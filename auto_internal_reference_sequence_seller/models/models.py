@@ -54,23 +54,24 @@ class ProductTemplate(models.Model):
         return super(ProductTemplate, self).create(vals)
 
     def write(self, vals):
-        if 'seller_id' in vals:
-            seller = self.env['res.partner'].browse(vals['seller_id'])
-            if self.seller_id.id != vals['seller_id'] and seller.is_auto_generate_product_internal_reference:
-                sequence = self.get_product_sequence(vals['seller_id'])
-                vals['product_sequence'] = sequence
-                article_code = str(seller.seller_code)+str(sequence).zfill(5)
-                vals['article_code'] = article_code
-                if 'default_code' in vals and vals['default_code'] == False:
-                    vals['default_code'] = vals['article_code']
-                self._update_default_code(vals,article_code)
-            elif not seller.is_auto_generate_product_internal_reference:
-                if 'default_code' in vals:
-                    vals['default_code'] = vals['default_code']
+        for rec in self:
+            if 'seller_id' in vals:
+                seller = self.env['res.partner'].browse(vals['seller_id'])
+                if rec.seller_id.id != vals['seller_id'] and seller.is_auto_generate_product_internal_reference:
+                    sequence = rec.get_product_sequence(vals['seller_id'])
+                    vals['product_sequence'] = sequence
+                    article_code = str(seller.seller_code)+str(sequence).zfill(5)
+                    vals['article_code'] = article_code
+                    if 'default_code' in vals and vals['default_code'] == False:
+                        vals['default_code'] = vals['article_code']
+                    rec._update_default_code(vals,article_code)
+                elif not seller.is_auto_generate_product_internal_reference:
+                    if 'default_code' in vals:
+                        vals['default_code'] = vals['default_code']
+                    else:
+                        vals['default_code'] = False
                 else:
-                    vals['default_code'] = False
-            else:
-                vals['default_code'] = self.default_code
+                    vals['default_code'] = rec.default_code
         return super(ProductTemplate, self).write(vals)
     
     @api.onchange('seller_id')

@@ -3,7 +3,7 @@ from odoo import _, api, fields, models
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    seller_id = fields.Many2one('res.partner','Seller', index=True, copy=False)
+    seller_id = fields.Many2one('res.partner','Seller', index=True, copy=False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")
     seller_shopify_sequence = fields.Char(readonly=True)
 
     @api.model
