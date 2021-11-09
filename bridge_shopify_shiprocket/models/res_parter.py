@@ -6,6 +6,11 @@ class ResPartner(models.Model):
     pickup_location_lines = fields.One2many('shiprocket.pickup.location', 'seller_id', string='Pickup Locations')
     automate_shiprocket_process = fields.Boolean("Automate Shiprocket Process")
 
+    @api.onchange('fulfilment_type')
+    def _onchange_fulfilment_type(self):
+        if self.fulfilment_type == 'self_fulfilment':
+            self.automate_shiprocket_process = False
+
 class StockMove(models.Model):
     _inherit = "stock.move"
     

@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="seller_management.view_seller_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='fulfilment_type']" position="after">
-                <field name="automate_shiprocket_process" groups="seller_management.group_sellers_management_manager"/>
+                <field name="automate_shiprocket_process" attrs="{'invisible':[('fulfilment_type','=','self_fulfilment')]}" groups="seller_management.group_sellers_management_manager"/>
             </xpath>
             <xpath expr="//page[last()]" position="after">
                 <page name="seller_pickup_location" string="Pickup Location">
