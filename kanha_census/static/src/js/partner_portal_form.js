@@ -44,11 +44,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'click .address_proof_browse': '_onBrowseFile',
 		'click .address_proof_clear': '_onClearFile',
 		
-		'click .age_declaration_form_edit': '_onBrowseFile',
-		'change .age_declaration_form_upload': '_onFileUploadChange',
-		'click .age_declaration_form_browse': '_onBrowseFile',
-		'click .age_declaration_form_clear': '_onClearFile',
-				
 		'click .passport_photo_edit': '_onBrowseFile',
 		'change .passport_photo_upload': '_onUploadPassportPhoto',
 		'click .passport_photo_browse': '_onBrowseFile',
@@ -417,7 +412,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#voter_id_file_field').removeAttr('disabled');
 			$('#declaration_form_field').removeAttr('disabled');
 			
-			var is_relation_required = document.getElementById("is_relation_required_input").value;
+			/*var is_relation_required = document.getElementById("is_relation_required_input").value;
 			if(is_relation_required){
 				$('#relation_type_field').attr('required', true);
 				$('#relative_name_field').attr('required', true);
@@ -427,13 +422,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 				$('#relation_type_field').attr('required', false);
 				$('#relative_name_field').attr('required', false);
 				$('#relative_surname_field').attr('required', false);
-			}
+			}*/
 			$('#relation_type_field').removeAttr('disabled');
 			$('#relative_name_field').removeAttr('disabled');
 			$('#relative_surname_field').removeAttr('disabled');
-			
-			
-			
 		}
     },
 
@@ -616,17 +608,15 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
             $modal.on('click', '.save_vehicle_line', function (ev) {
 				var vehicle_number = $modal.find('input[name="vehicle_number"]').val();
 				var vehicle_owner = $modal.find('input[name="vehicle_owner"]').val();
-				var vehicle_type = $modal.find('input[name="vehicle_type"]').val();
-				var additional_vehicle_number = $modal.find('input[name="additional_vehicle_number"]').val();		
+				var vehicle_type = $modal.find('select[name="vehicle_type"]').val();
 				if(id){
 					$('#vehicle_table tr#'+id).find('.vehicle_number').text(vehicle_number)
 					$('#vehicle_table tr#'+id).find('.vehicle_owner').text(vehicle_owner)
 					$('#vehicle_table tr#'+id).find('.vehicle_type').text(vehicle_type)
-					$('#vehicle_table tr#'+id).find('.additional_vehicle_number').text(additional_vehicle_number)
 				}
 				else{
 					// Add new line only if any one of the field is filled
-					if(vehicle_number || vehicle_owner || vehicle_type || additional_vehicle_number)
+					if(vehicle_number || vehicle_owner || vehicle_type)
 					{
 						// Insert New line before the last row
 						var vehicle_table = document.getElementById('vehicle_table');
@@ -636,7 +626,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 						if(!$row.hasClass('empty-row')){
 							$row.remove();
 						}
-						newRow.innerHTML = '<td></td><td name="vehicle_number" class="vehicle_number">'+vehicle_number+'</td><td name="vehicle_owner">'+vehicle_owner+'</td><td name="vehicle_type">'+vehicle_type+'</td><td name="additional_vehicle_number">'+additional_vehicle_number+'</td><td class="text-right"><button type="button" class="btn btn-secondary fa fa-pencil mr-1 vehicle_edit_new" title="Edit" aria-label="Edit"/><button type="button" class="btn btn-secondary fa fa-trash-o vehicle_clear" title="Clear" aria-label="Clear"/></td>';
+						newRow.innerHTML = '<td class="d-none"></td><td name="vehicle_number" class="vehicle_number">'+vehicle_number+'</td><td name="vehicle_owner">'+vehicle_owner+'</td><td name="vehicle_type">'+vehicle_type+'</td><td class="text-right"><button type="button" class="btn btn-secondary fa fa-pencil mr-1 vehicle_edit_new" title="Edit" aria-label="Edit"/><button type="button" class="btn btn-secondary fa fa-trash-o vehicle_clear" title="Clear" aria-label="Clear"/></td>';
 					}
 				}
 			 	$modal.modal('hide');	

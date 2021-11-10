@@ -15,10 +15,9 @@ class CustomerPortal(CustomerPortal):
     form_fields = {
         "adhar_card_filename": 'Adhar Card File Front',
         "adhar_card_back_side_filename": "Adhar Card File Back",
-        "passport_photo_filename": "Passport Photo File",
-        "age_proof_filename": "Age Proof File",
-        "address_proof_filename": "Address Proof File",
-        "age_declaration_form_filename": "Age Declaration Form",
+        "passport_photo_filename": "Passport Photo",
+        "age_proof_filename": "Age Proof",
+        "address_proof_filename": "Kanha Address Proof",
         }
     
     
@@ -199,7 +198,6 @@ class CustomerPortal(CustomerPortal):
                                   'passport_photo',
                                   'age_proof',
                                   'address_proof',
-                                  'age_declaration_form',
                                   'voter_id_file',
                                   'declaration_form',
                                   'kanha_voter_id_image']) & set(values.keys()):
@@ -313,7 +311,7 @@ class CustomerPortal(CustomerPortal):
             'birth_countries': countries,
             'error': {},
             'error_message': [],
-            'is_relation_required': True
+            # 'is_relation_required': True
         })
         response = request.render("kanha_census.kanha_family_portal_form", values)
         return response

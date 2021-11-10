@@ -8,5 +8,7 @@ class Vote(models.Model):
     partner_id = fields.Many2one('res.partner', string='Family', ondelete='cascade', required=True)
     vehicle_number = fields.Char(string="Vehicle number")
     vehicle_owner = fields.Char(string="Vehicle owner")
-    vehicle_type = fields.Char(string="Vehicle type")
-    additional_vehicle_number = fields.Char(string="Additional Vehicle number")
+    vehicle_type = fields.Selection([
+        ('Two Wheeler', 'Two Wheeler'),
+        ('Four Wheeler', 'Four Wheeler'),
+    ])
