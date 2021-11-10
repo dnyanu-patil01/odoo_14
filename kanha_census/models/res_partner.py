@@ -18,7 +18,7 @@ class ResPartner(models.Model):
     district = fields.Char(string='District', required=True)
     birth_town = fields.Char(string='Birth Town/Village Name', required=True)
     birth_district = fields.Char(string='Birth District', required=True)
-    birth_state_id = fields.Many2one("res.country.state", string='Birth State', ondelete='restrict', required=True)
+    birth_state_id = fields.Many2one("res.country.state", string='Birth State', ondelete='restrict')
     relation_type = fields.Selection([
         ('Father', 'Father'),
         ('Mother', 'Mother'),
@@ -78,14 +78,31 @@ class ResPartner(models.Model):
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Do you want to change your Voter Id card Address")
-    room_details = fields.Selection([
-        ('Rented', 'Rented'),
+    residence_type = fields.Selection([
+        ('Rented Place', 'Rented Place'),
         ('Owner', 'Owner'),
     ], string="Room Details")
     family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members')
     relative_aadhaar_card_number = fields.Char(string="Relative Aadhar Card Number")
     vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
-    birth_country_id = fields.Many2one('res.country', string="Birth Country", required=True)
+    birth_country_id = fields.Many2one('res.country', string="Birth Country")
+    already_have_kanha_voter_id = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Already Have Kanha Voter ID")
+    kanha_voter_id_number = fields.Char(string="Kanha Voter ID Number", required=True)
+    kanha_voter_id_image = fields.Binary('Kanha Voter ID Image', attachment=True, required=True)
+    kanha_voter_id_image_filename = fields.Char()
+    
+    voter_id_file = fields.Binary('Voter ID/EPIC File', attachment=True, required=True)
+    voter_id_file_filename = fields.Char()
+    declaration_form = fields.Binary('Declaration Form File', attachment=True, required=True)
+    declaration_form_filename = fields.Char()
+
+    need_new_kanha_voter_id = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Need New Kanha Voter ID")
 
     # _sql_constraints = [
     #     ('aadhaar_card_number_unique', 'UNIQUE(aadhaar_card_number)', 'An Adhar Card Number must be unique!'),

@@ -17,29 +17,62 @@
 								<field name="name" />
 								<field name="email" />
 								<field name="gender"/>
-								<field name="application_type" />
+								<!-- <field name="application_type" /> -->
 								<field name="voter_number"/>
 								<field name="pan_card_number" />
 								<field name="aadhaar_card_number"/>
 								<field name="abhyasi_id" />
-								
+								<field name="residence_type" />
 								
 							</group>
 							<group>
-								
 								<field name="surname" />
 								<field name="mobile" />
 								<field name="date_of_birth"/>
-								<field name="members_count" />
-								<field name="change_voter_id_address" />
-								<field name="room_details" />
 								<field name="citizenship" />
 								<field name="passport_number" />
+								<field name="members_count" />
+								<field name="relative_aadhaar_card_number" />
 								
 							</group>
 						</group>
 						<notebook>
-							<page string="Birth Place Info" name="birthplace" >
+							<page string="Kanha Address" name="kanha_address" >
+                        		<group>
+		                            <group string="Kanha Address" name="kanha_address">
+		                            	<field name="resident_of_kanha_from_date" />
+		                                <field name="work_profile" />
+		                                <field name="kanha_location_id" />
+		                                <field name="kanha_house_number" />
+		                            </group>
+                        		</group>
+                    		</page>
+                    		<page string="Kanha Voter ID" name="kanha_voter_id_info" >
+                    			<group>
+		                            <group>
+			                            <field name="birth_country_id" />
+		                                <field name="birth_state_id" />
+		                                <field name="birth_district" />
+		                              	<field name="birth_town" />
+		                              	<field name="change_voter_id_address" />
+		                              	<field name="voter_number" />
+		                            	<field name="relation_type" />
+		                                <field name="relative_name" />
+		                                <field name="relative_surname" />
+                              		</group>
+                              		<group>
+		                              	<field name="already_have_kanha_voter_id" />
+		                              	<field name="kanha_voter_id_number" />
+		                              	<field name="kanha_voter_id_image" />
+		                              	<field name="need_new_kanha_voter_id" />
+		                              	<field name="application_type" />
+		                              	<field name="declaration_form" />
+		                              	<field name="existing_voter_id_number" />
+		                              	<field name="voter_id_file" />
+                                	</group>
+                                </group>
+                    		</page>
+							<!-- <page string="Birth Place Info" name="birthplace" >
                         		<group>
 		                            <group string="Birth Place Info" name="birthplace">
 		                            	<field name="birth_country_id" />
@@ -58,17 +91,8 @@
 		                                <field name="relative_surname" />
 		                            </group>
                         		</group>
-                    		</page>
-                    		<page string="Kanha Address" name="kanha_address" >
-                        		<group>
-		                            <group string="Kanha Address" name="kanha_address">
-		                            	<field name="resident_of_kanha_from_date" />
-		                                <field name="work_profile" />
-		                                <field name="kanha_location_id" />
-		                                <field name="kanha_house_number" />
-		                            </group>
-                        		</group>
-                    		</page>
+                    		</page> -->
+                    		
 							<page string="Documents" name="documents" >
                         		<group>
 		                            <group string="Documents" name="documents">
