@@ -94,11 +94,11 @@
 								<div class="col-lg-12 mt-3">
 									<div id="form_result_error"
 										class="d-none alert alert-danger" role="alert">
-										<span class="family_website_form_result"></span>
+										<span class="family_website_form_result word-wrap"></span>
 									</div>
 									<div id="form_result_success"
 										class="d-none alert alert-success" role="alert">
-										<span class="family_website_form_result"></span>
+										<span class="family_website_form_result word-wrap"></span>
 									</div>
 								</div>
 								<div class="col-lg-6">
@@ -114,6 +114,18 @@
 												<input id="name_input" type="text"
 													class="form-control s_website_form_input" name="name"
 													required="" t-att-value="name or partner and partner.name" />
+											</div>
+										</div>
+										
+										<div class="col-lg-12 row form-group s_website_form_field">
+											<div class="col-lg-6">
+												<label class="col-form-label" for="surname">Surname</label>
+											</div>
+											<div
+												t-attf-class=" col-xl-6 #{error.get('surname') and 'o_has_error' or ''}">
+												<input id="surname_id" type="text"
+													class="form-control s_website_form_input" name="surname"
+													t-att-value="surname or partner and partner.surname" />
 											</div>
 										</div>
 
@@ -184,54 +196,14 @@
 										</div>
 
 
-										<div class="col-lg-12 row form-group s_website_form_field">
-											<div class="col-lg-6">
-												<label class="col-form-label" for="abhyasi_id">Abhyasi ID</label>
-											</div>
-											<div
-												t-attf-class="col-xl-6 #{error.get('abhyasi_id') and 'o_has_error' or ''}">
-												<input id="abhyasi_id_id" type="text"
-													class="form-control s_website_form_input" name="abhyasi_id"
-													t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
-											</div>
-										</div>
 
-										<div class="col-lg-12 row form-group s_website_form_field">
-											<div class="col-lg-6">
-												<label class="col-form-label" for="residence_type">Residence Type
-												</label>
-											</div>
-											<div
-												t-attf-class="col-xl-6 #{error.get('residence_type') and 'o_has_error' or ''}">
-												<select name="residence_type"
-													t-attf-class="form-control #{error.get('residence_type') and 'is-invalid' or ''}">
-													<option value="">Select...</option>
-													<t t-foreach="['Rented Place', 'Owner']" t-as="room">
-														<option t-att-value="room"
-															t-att-selected="room == residence_type if residence_type else room == partner.residence_type if partner else null">
-															<t t-esc="room" />
-														</option>
-													</t>
-												</select>
-											</div>
-										</div>
 
 									</div>
 								</div>
 								<div class="col-lg-6">
 									<div class="row">
 
-										<div class="col-lg-12 row form-group s_website_form_field">
-											<div class="col-lg-6">
-												<label class="col-form-label" for="surname">Surname</label>
-											</div>
-											<div
-												t-attf-class=" col-xl-6 #{error.get('surname') and 'o_has_error' or ''}">
-												<input id="surname_id" type="text"
-													class="form-control s_website_form_input" name="surname"
-													t-att-value="surname or partner and partner.surname" />
-											</div>
-										</div>
+										
 
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
@@ -282,15 +254,14 @@
 											</div>
 										</div>
 
-										<div class="col-lg-12 row form-group s_website_form_field">
-											<div
-												t-attf-class="col-lg-6 passport_field #{not partner and 'd-none' or ''} #{(partner and partner.citizenship != 'Overseas') and 'd-none' or ''}  ">
+										<div
+											t-attf-class="col-lg-12 row form-group s_website_form_field passport_field #{not partner and 'd-none' or ''} #{(partner and partner.citizenship != 'Overseas') and 'd-none' or ''} ">
+											<div t-attf-class="col-lg-6">
 												<label class="col-form-label">Passport Number
 												</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
-											<div
-												t-attf-class="col-xl-6 #{error.get('passport_number') and 'o_has_error' or ''} passport_field #{not partner and 'd-none' or ''} #{(partner and partner.citizenship != 'Overseas') and 'd-none' or ''}  ">
+											<div t-attf-class="col-xl-6">
 												<input
 													t-att-disabled="'true' if partner and partner.citizenship != 'Overseas' else None"
 													t-att-required="'true' if partner and partner.citizenship == 'Overseas' else None"
@@ -315,25 +286,43 @@
 													t-att-value="members_count or partner and partner.members_count" />
 											</div>
 										</div>
-
+										
+										
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
-												<label class="col-form-label">Relative Aadhaar Card
-													No.</label>
-
-												<span class="s_website_form_mark"> *</span>
+												<label class="col-form-label" for="residence_type">Residence Type
+												</label>
 											</div>
 											<div
-												t-attf-class="col-xl-6 #{error.get('relative_aadhaar_card_number') and 'o_has_error' or ''}">
-												<input id="relative_aadhaar_card_number_field"
-													t-att-required="'true' if is_relation_required == True else None"
-													type="text" class="form-control s_website_form_input"
-													name="relative_aadhaar_card_number"
-													t-att-value="relative_aadhaar_card_number or partner and partner.relative_aadhaar_card_number" />
+												t-attf-class="col-xl-6 #{error.get('residence_type') and 'o_has_error' or ''}">
+												<select name="residence_type"
+													t-attf-class="form-control #{error.get('residence_type') and 'is-invalid' or ''}">
+													<option value="">Select...</option>
+													<t t-foreach="['Rented Place', 'Owner']" t-as="room">
+														<option t-att-value="room"
+															t-att-selected="room == residence_type if residence_type else room == partner.residence_type if partner else null">
+															<t t-esc="room" />
+														</option>
+													</t>
+												</select>
 											</div>
 										</div>
-										<input class="d-none" id="is_relation_required_input"
-											type="text" t-att-value="is_relation_required" />
+										
+										
+										<div class="col-lg-12 row form-group s_website_form_field">
+											<div class="col-lg-6">
+												<label class="col-form-label" for="abhyasi_id">Abhyasi ID</label>
+											</div>
+											<div
+												t-attf-class="col-xl-6 #{error.get('abhyasi_id') and 'o_has_error' or ''}">
+												<input id="abhyasi_id_id" type="text"
+													class="form-control s_website_form_input" name="abhyasi_id"
+													t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
+											</div>
+										</div>
+
+										<!-- <input class="d-none" id="is_relation_required_input" type="text" 
+											t-att-value="is_relation_required" /> -->
 									</div>
 								</div>
 							</div>
@@ -597,20 +586,27 @@
 						</div>
 						<div
 							t-attf-class="form-group #{error.get('vehicle_type') and 'o_has_error' or ''} col-xl-6">
-							<input type="text" name="vehicle_type"
-								t-attf-class="form-control #{error.get('vehicle_type') and 'is-invalid' or ''}"
-								t-att-value="vehicle_type" />
+							<!-- <input type="text" name="vehicle_type" t-attf-class="form-control 
+								#{error.get('vehicle_type') and 'is-invalid' or ''}" t-att-value="vehicle_type" 
+								/> -->
+
+
+							<select name="vehicle_type"
+								t-attf-class="form-control #{error.get('vehicle_type') and 'is-invalid' or ''}">
+								<option value="">Select...</option>
+								<t t-foreach="['Two Wheeler', 'Four Wheeler']" t-as="vehicle">
+									<option t-att-value="vehicle"
+										t-att-selected="vehicle == vehicle_type if vehicle_type else vehicle == partner.vehicle_type if partner else null">
+										<t t-esc="vehicle" />
+									</option>
+								</t>
+							</select>
+
+
+
+
 						</div>
-						<div class="col-lg-6">
-							<label class="col-form-label"
-								for="additional_vehicle_number">Additional Vehicle Number</label>
-						</div>
-						<div
-							t-attf-class="form-group #{error.get('additional_vehicle_number') and 'o_has_error' or ''} col-xl-6">
-							<input type="text" name="additional_vehicle_number"
-								t-attf-class="form-control #{error.get('additional_vehicle_number') and 'is-invalid' or ''}"
-								t-att-value="additional_vehicle_number" />
-						</div>
+
 					</div>
 					<div class="modal-footer justify-content-start">
 						<button type="button"
@@ -672,7 +668,6 @@
 						<th>Vehicle Number</th>
 						<th>Vehicle Owner</th>
 						<th>Vehicle Type</th>
-						<th>Additional Vehicle Number</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -692,10 +687,7 @@
 							<td name="vehicle_type" class="vehicle_type">
 								<t t-esc="vehicle.vehicle_type" />
 							</td>
-							<td name="additional_vehicle_number"
-								class="additional_vehicle_number">
-								<t t-esc="vehicle.additional_vehicle_number" />
-							</td>
+
 							<td class="text-right">
 								<button t-att-id="vehicle.id" type="button"
 									class="btn btn-secondary fa fa-pencil vehicle_edit_exist"
@@ -728,7 +720,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="country_id">Country</label>
+				<label class="col-form-label" for="Country">Country</label>
 				<span class="s_website_form_mark"> *</span>
 			</div>
 			<div
@@ -749,7 +741,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="state_id">State</label>
+				<label class="col-form-label" for="State">State</label>
 				<span class="s_website_form_mark"> *</span>
 			</div>
 			<div
@@ -772,7 +764,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="assembly_constituency">Assembly/Parliamentary
+				<label class="col-form-label" for="Assembly Constituency">Assembly/Parliamentary
 					Constituency
 				</label>
 				<span class="s_website_form_mark"> *</span>
@@ -791,7 +783,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="house_number">House Number</label>
+				<label class="col-form-label" for="House Number">House Number</label>
 				<span class="s_website_form_mark"> *</span>
 			</div>
 			<div
@@ -807,7 +799,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="locality">Locality</label>
+				<label class="col-form-label" for="Locality">Locality</label>
 				<span class="s_website_form_mark"> *</span>
 			</div>
 			<div
@@ -822,7 +814,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="town">Town</label>
+				<label class="col-form-label" for="Town">Town</label>
 				<span class="s_website_form_mark"> *</span>
 			</div>
 			<div
@@ -837,7 +829,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="post_office">Post Office</label>
+				<label class="col-form-label" for="Post Office">Post Office</label>
 				<span class="s_website_form_mark"> *</span>
 			</div>
 			<div
@@ -853,7 +845,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="zip">Pin Code</label>
+				<label class="col-form-label" for="Pin Code">Pin Code</label>
 				<span class="s_website_form_mark"> *</span>
 			</div>
 			<div
@@ -868,7 +860,7 @@
 
 		<div class="col-lg-12 row form-group s_website_form_field">
 			<div class="col-lg-6">
-				<label class="col-form-label" for="district">District</label>
+				<label class="col-form-label" for="District">District</label>
 				<span class="s_website_form_mark"> *</span>
 			</div>
 			<div
@@ -889,7 +881,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="birth_country_id">Country</label>
+						<label class="col-form-label" for="Birth Country">Country</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -909,7 +901,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="birth_state_id">State</label>
+						<label class="col-form-label" for="Birth State">State</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -932,7 +924,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="birth_district">District</label>
+						<label class="col-form-label" for="Birth District">District</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -946,7 +938,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="birth_town">Town</label>
+						<label class="col-form-label" for="Birth Town">Town</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -995,7 +987,7 @@
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-6 ">
 						<label class="col-form-label"
-							for="already_have_kanha_voter_id">Already have Kanha Voter ID</label>
+							for="Already have Kanha Voter ID">Already have Kanha Voter ID</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1018,7 +1010,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field kanha_voter_id_number #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'Yes') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="voter_id_number_id">Kanha Voter ID Number
+						<label class="col-form-label" for="Kanha Voter ID Number">Kanha Voter ID Number
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
@@ -1035,7 +1027,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field kanha_voter_id_image #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'Yes') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="kanha_voter_id_image">Kanha Voter ID Image
+						<label class="col-form-label" for="Kanha Voter ID Image">Kanha Voter ID Image
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
@@ -1086,7 +1078,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field need_new_kanha_voter_id #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'No') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="need_new_kanha_voter_id">Need New Kanha Voter ID
+						<label class="col-form-label" for="Need New Kanha Voter ID">Need New Kanha Voter ID
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
@@ -1110,7 +1102,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field voter_application_type #{not partner and 'd-none' or ''} #{(partner and partner.need_new_kanha_voter_id != 'Yes') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="application_type">Voter Application Type
+						<label class="col-form-label" for="Voter Application Type">Voter Application Type
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
@@ -1134,7 +1126,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field existing_voter_id_number #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'Transfer Application') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="voter_id_number_id">Existing Voter ID Number
+						<label class="col-form-label" for="Existing Voter ID Number">Existing Voter ID Number
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
@@ -1152,7 +1144,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field voter_id_file #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'Transfer Application') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6">
-						<label class="col-form-label" for="voter_id_file">Voter ID/EPIC</label>
+						<label class="col-form-label" for="Voter ID/EPIC">Voter ID/EPIC</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1201,14 +1193,12 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="relation_type">Relation</label>
-						<span class="s_website_form_mark"> *</span>
+						<label class="col-form-label" for="Relation">Relation</label>
+						<!-- <span class="s_website_form_mark"> *</span> -->
 					</div>
 					<div
 						t-attf-class="col-xl-6 #{error.get('relation_type') and 'o_has_error' or ''} ">
 						<select id="relation_type_field" name="relation_type"
-							t-att-required="'true' if is_relation_required == True else None"
-
 							t-attf-class="form-control s_website_form_input #{error.get('relation_type') and 'is-invalid' or ''}">
 							<option value=''>Select...</option>
 							<t t-foreach="['Father', 'Mother', 'Husband', 'Wife', 'Other']"
@@ -1223,14 +1213,29 @@
 				</div>
 
 				<div class="col-lg-12 row form-group s_website_form_field">
+					<div class="col-lg-6">
+						<label class="col-form-label">Relative Aadhaar Card
+							No.
+						</label>
+						<!-- <span class="s_website_form_mark"> *</span> -->
+					</div>
+					<div
+						t-attf-class="col-xl-6 #{error.get('relative_aadhaar_card_number') and 'o_has_error' or ''}">
+						<input id="relative_aadhaar_card_number_field" type="text"
+							class="form-control s_website_form_input"
+							name="relative_aadhaar_card_number"
+							t-att-value="relative_aadhaar_card_number or partner and partner.relative_aadhaar_card_number" />
+					</div>
+				</div>
+
+				<div class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="relative_name">Name of Relative</label>
-						<span class="s_website_form_mark"> *</span>
+						<label class="col-form-label" for="Name of Relative">Name of Relative</label>
+						<!-- <span class="s_website_form_mark"> *</span> -->
 					</div>
 					<div
 						t-attf-class="col-xl-6 #{error.get('relative_name') and 'o_has_error' or ''} ">
 						<input id="relative_name_field" type="text"
-							t-att-required="'true' if is_relation_required == True else None"
 							class="form-control s_website_form_input" name="relative_name"
 							t-att-value="relative_name or partner and partner.relative_name" />
 					</div>
@@ -1238,49 +1243,25 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="relative_surname">Surname of Relative
+						<label class="col-form-label" for="Surname of Relative">Surname of Relative
 						</label>
-						<span class="s_website_form_mark"> *</span>
+						<!-- <span class="s_website_form_mark"> *</span> -->
 					</div>
 					<div
 						t-attf-class="col-xl-6 #{error.get('relative_surname') and 'o_has_error' or ''}  ">
 						<input id="relative_surname_field" type="text"
-							t-att-required="'true' if is_relation_required == True else None"
 							class="form-control s_website_form_input" name="relative_surname"
 							t-att-value="relative_surname or partner and partner.relative_surname" />
 					</div>
 				</div>
-
-
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field declaration_form #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'New Application') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6">
-						<label class="col-form-label" for="declaration_form">Declaration Form</label>
+						<label class="col-form-label" for="Declaration Form">Declaration Form</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
-					<t t-if="partner">
-						<t t-if="not partner.declaration_form_filename">
-							<div t-attf-class="col-lg-1">
-								<a id="download_sample_declaration_form" target='_blank'
-									t-attf-href="https://raw.githubusercontent.com/rba-odoo/for-hfn-projects/main/test.jpg"
-									class="btn btn-primary text-decoration-none ml-1 ml-sm-2"
-									title="Download Content" role="img" aria-label="Download">
-									<i class="fa fa-download" />
-								</a>
-							</div>
-						</t>
-					</t>
-					<t t-else="">
-						<div t-attf-class="col-lg-1">
-							<a id="download_sample_declaration_form" target='_blank'
-								t-attf-href="https://raw.githubusercontent.com/rba-odoo/for-hfn-projects/main/test.jpg"
-								class="btn btn-primary text-decoration-none ml-1 ml-sm-2"
-								title="Download Content" role="img" aria-label="Download">
-								<i class="fa fa-download" />
-							</a>
-						</div>
-					</t>
-					<div t-attf-class="col-xl-3">
+
+					<div t-attf-class="col-xl-4">
 						<input type="file" id="declaration_form_field"
 							t-att-filename_input="'declaration_form_filename'"
 							class="d-none declaration_form_upload form-control s_website_form_input"
@@ -1321,7 +1302,29 @@
 							title="Clear" aria-label="Clear" />
 					</div>
 				</div>
-
+				<div
+					t-attf-class="col-lg-12 row form-group s_website_form_field declaration_form #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'New Application') and 'd-none' or ''}">
+					<div t-attf-class="col-lg-6 ">
+					</div>
+					<div t-attf-class="col-lg-6">
+						<t t-if="partner">
+							<t t-if="not partner.declaration_form_filename">
+								<a id="download_sample_declaration_form" target='_blank'
+									t-attf-href="https://raw.githubusercontent.com/rba-odoo/for-hfn-projects/main/test.jpg"
+									title="Download Declaration">
+									Download Declaration Form
+								</a>
+							</t>
+						</t>
+						<t t-else="">
+							<a id="download_sample_declaration_form" target='_blank'
+								t-attf-href="https://raw.githubusercontent.com/rba-odoo/for-hfn-projects/main/test.jpg"
+								title="Download Declaration">
+								Download Declaration Form
+							</a>
+						</t>
+					</div>
+				</div>
 			</div>
 		</div>
 	</template>
@@ -1341,7 +1344,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="adhar_card">Adhar Card Front</label>
+						<label class="col-form-label" for="Adhar Card Front">Adhar Card Front</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1390,7 +1393,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="adhar_card_back_side">Adhar Card Back</label>
+						<label class="col-form-label" for="Adhar Card Back">Adhar Card Back</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1439,7 +1442,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="passport_photo">Passport Photo</label>
+						<label class="col-form-label" for="Passport Photo">Passport Photo</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1487,7 +1490,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="age_proof">Age Proof</label>
+						<label class="col-form-label" for="Age Proof">Age Proof</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1535,7 +1538,8 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="address_proof">Address Proof</label>
+						<label class="col-form-label" for="Kanha Address Proof">Kanha Address Proof
+						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1580,54 +1584,6 @@
 					</div>
 				</div>
 
-				<div
-					t-attf-class="col-lg-12 row form-group s_website_form_field">
-					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="age_declaration_form">Age Declaration Form
-						</label>
-						<span class="s_website_form_mark"> *</span>
-					</div>
-					<div
-						t-attf-class="col-xl-5 #{error.get('age_declaration_form') and 'o_has_error' or ''} ">
-						<input type="file"
-							t-att-filename_input="'age_declaration_form_filename'"
-							class="d-none age_declaration_form_upload form-control s_website_form_input"
-							name="age_declaration_form" />
-						<div class="attachment-input-container">
-							<input type="text" id="age_declaration_file" required=""
-								name="age_declaration_form_filename"
-								t-attf-class="age_declaration_form_filename form-control s_website_form_input #{error.get('age_declaration_form_filename') and 'is-invalid' or ''}"
-								t-att-value="age_declaration_form_filename or partner and partner.age_declaration_form_filename" />
-							<t t-if="partner and partner.age_declaration_form">
-								<a id="download_age_declaration_form" target='_blank'
-									t-attf-href="/web/content?model=res.partner&amp;field=age_declaration_form&amp;field_filename=age_declaration_form_filename&amp;id={{partner.id}}"
-									class="btn btn-primary text-decoration-none ml-1 ml-sm-2"
-									title="Download Content" role="img" aria-label="Download">
-									<i class="fa fa-download" />
-								</a>
-							</t>
-						</div>
-					</div>
-					<div class="col-lg-2">
-						<t t-if="partner and partner.age_declaration_form">
-							<button type="button"
-								t-att-fileupload="'age_declaration_form_upload'"
-								class="btn btn-secondary fa fa-pencil age_declaration_form_edit"
-								title="Select" aria-label="Select" />
-						</t>
-						<t t-else="">
-							<button type="button"
-								t-att-fileupload="'age_declaration_form_upload'"
-								class="btn btn-primary fa fa-upload age_declaration_form_browse"
-								title="Select" aria-label="Select" />
-						</t>
-						<button type="button"
-							t-att-fileupload_input="'age_declaration_form_upload'"
-							t-att-filename_input="'age_declaration_form_filename'"
-							class="btn btn-secondary fa fa-trash-o age_declaration_form_clear"
-							title="Clear" aria-label="Clear" />
-					</div>
-				</div>
 			</div>
 		</div>
 	</template>
@@ -1639,7 +1595,7 @@
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
 						<label class="col-form-label"
-							for="resident_of_kanha_from_date">Resident of Kanha From Date</label>
+							for="Resident of Kanha From Date">Resident of Kanha From Date</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1675,7 +1631,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="kanha_location_id">Kanha Location</label>
+						<label class="col-form-label" for="Kanha Location">Kanha Location</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1697,7 +1653,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="kanha_house_number">House Number</label>
+						<label class="col-form-label" for="Kanha House Number">House Number</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div

@@ -45,10 +45,8 @@ class ResPartner(models.Model):
     adhar_card_back_side_filename = fields.Char()
     age_proof = fields.Binary(string='Age Proof', required=True)
     age_proof_filename = fields.Char()
-    address_proof = fields.Binary( string='Address Proof', required=True)
+    address_proof = fields.Binary( string='Kanha Address Proof', required=True)
     address_proof_filename = fields.Char()
-    age_declaration_form = fields.Binary(string='Age Declaration Form', required=True)
-    age_declaration_form_filename = fields.Char()
     application_type = fields.Selection([
         ('New Application', 'New Application'),
         ('Transfer Application', 'Transfer Application'),
@@ -63,10 +61,6 @@ class ResPartner(models.Model):
         ('Overseas', 'Overseas')
     ], required=True)
     passport_number = fields.Char(string="Passport Number")
-    vehicle_number = fields.Char(string="Vehicle number")
-    vehicle_owner = fields.Char(string="Vehicle owner")
-    vehicle_type = fields.Char(string="Vehicle type")
-    additional_vehicle_number = fields.Char(string="Additional Vehicle number")
     work_profile = fields.Selection([
         ('Resident', 'Resident'),
         ('Volunteer', 'Volunteer'),
