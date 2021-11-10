@@ -18,7 +18,7 @@ class ResPartner(models.Model):
     district = fields.Char(string='District', required=True)
     birth_town = fields.Char(string='Birth Town/Village Name', required=True)
     birth_district = fields.Char(string='Birth District', required=True)
-    birth_state_id = fields.Many2one("res.country.state", string='Birth State', ondelete='restrict', required=True)
+    birth_state_id = fields.Many2one("res.country.state", string='Birth State', ondelete='restrict')
     relation_type = fields.Selection([
         ('Father', 'Father'),
         ('Mother', 'Mother'),
@@ -85,7 +85,7 @@ class ResPartner(models.Model):
     family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members')
     relative_aadhaar_card_number = fields.Char(string="Relative Aadhar Card Number")
     vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
-    birth_country_id = fields.Many2one('res.country', string="Birth Country", required=True)
+    birth_country_id = fields.Many2one('res.country', string="Birth Country")
     already_have_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
@@ -102,9 +102,7 @@ class ResPartner(models.Model):
     need_new_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="New Kanha Voter ID")
-
-
+    ], string="Need New Kanha Voter ID")
 
     # _sql_constraints = [
     #     ('aadhaar_card_number_unique', 'UNIQUE(aadhaar_card_number)', 'An Adhar Card Number must be unique!'),

@@ -11,90 +11,17 @@ from odoo.addons.portal.controllers.portal import CustomerPortal, pager as porta
 class CustomerPortal(CustomerPortal):
 
    
-    MANDATORY_PARTNER_FIELDS = ["name",
-                                "email",
-                                "mobile",
-                                "gender",
-                                "date_of_birth",
-                                # "application_type",
-                                "citizenship",
-                                
-                                "resident_of_kanha_from_date",
-                                "kanha_location_id",
-                                "kanha_house_number",
-                                "passport_photo_filename",
-                                "age_proof_filename",
-                                "address_proof_filename",
-                                "age_declaration_form_filename",
-                                ]
-    OPTIONAL_PARTNER_FIELDS = ["surname",
-                               "room_type",
-                               "abhyasi_id",
-                               "members_count",
-                               # "passport_number",
-                               "vehicle_number",
-                               "vehicle_owner",
-                               "vehicle_type",
-                               "additional_vehicle_number",
-                               "work_profile",
-                               "change_voter_id_address",
-                               "residence_type",
-                               "pan_card_number",
-                               "voter_number",
-                               "adhar_card",
-                               "adhar_card_back_side",
-                               "passport_photo",
-                               "age_proof",
-                               "address_proof",
-                               "age_declaration_form",
-                               "vehicle_details_ids",
-                               "vehicle_new_lines",
-                               "declaration_form",
-                               "voter_id_file",
-                               "already_have_kanha_voter_id",
-                               "need_new_kanha_voter_id",
-                               "relative_aadhaar_card_number"
-                               ]
-    VOTER_INFO_FIELDS = [
-                        # "existing_voter_id_number",
-                         "country_id",
-                         "state_id",
-                         "assembly_constituency",
-                         "house_number",
-                         "locality",
-                         "town",
-                         "post_office",
-                         "zip",
-                         "district",
-                         ]
-    CONTIONALLY_MANDATORY_FIELDS = ["aadhaar_card_number",
-                                "adhar_card_filename",
-                                "adhar_card_back_side_filename",
-                                "birth_country_id",
-                                "birth_state_id",
-                                "birth_district",
-                                "birth_town",
-                                "relation_type",
-                               "relative_name",
-                               "relative_surname",
-                              
-                                ]
-    # ADHAR_MANDATORY_FIELDS =  ["relative_aadhaar_card_number",]
-    ALREADY_HAVE_KANHA_VOTER_ID_MANDATORY_FIELDS = [
-                                "kanha_voter_id_number",
-                                "kanha_voter_id_image"
-                                ]
-    NEW_KANHA_VOTER_ID_MANDATORY_FIELDS = [
-                                "application_type",
-                                ]
-    TRANSFER_APPLICATION_MANDATORY_FIELDS = [
-                                "existing_voter_id_number",
-                                "voter_id_file_filename"
-                                ]
-    NEW_APPLICATION_MANDATORY_FIELDS = [
-                                "declaration_form_filename",
-                                ]
-    OVERSEAS_MANDATORY_FIELDS = ["passport_number"]
+    missing_fields = dict()
+    form_fields = {
+        "adhar_card_filename": 'Adhar Card File Front',
+        "adhar_card_back_side_filename": "Adhar Card File Back",
+        "passport_photo_filename": "Passport Photo File",
+        "age_proof_filename": "Age Proof File",
+        "address_proof_filename": "Address Proof File",
+        "age_declaration_form_filename": "Age Declaration Form",
+        }
+    
+    
     @http.route(['/family', '/family/page/<int:page>'], type='http', auth="user", website=True)
     def partner_list(self, page=1,  **kw):
         values = {}
@@ -128,55 +55,7 @@ class CustomerPortal(CustomerPortal):
     def kanha_portal_form_validate(self, data, partner_id):
         error = dict()
         error_message = []
-        missing_fields = dict()
-        form_fields = {"name": "Name",
-                       "email":"Email",
-                       "mobile":"Mobile",
-                       "gender":"Gender",
-                       "date_of_birth": "Date of Birth",
-                       "application_type": "Voter Application",
-                       "aadhaar_card_number":"Adhar Card Number",
-                       "citizenship": "Citizenship",
-                       "passport_number": "Passport Number",
-                       "birth_country_id": "Birth Country",
-                       "birth_state_id": "Birth State",
-                       "birth_district":"Birth District",
-                       "birth_town": "Birth Town",
-                       "relation_type": "Relation Type",
-                       "relative_surname": "Relative Surname",
-                       "relative_name": "Relative Name",
-                       "relative_aadhaar_card_number": "Relative Aadhaar Card Number",
-                       "resident_of_kanha_from_date": "Resident of Kanha From Date",
-                       "kanha_location_id": "Kanha Location",
-                       "kanha_house_number":"Kanha House Number",
-                       "adhar_card_filename": 'Adhar Card File Front',
-                       "adhar_card_back_side_filename": "Adhar Card File Back",
-                       "passport_photo_filename": "Passport Photo File",
-                       "age_proof_filename": "Age Proof File",
-                       "address_proof_filename": "Address Proof File",
-                       "age_declaration_form_filename": "Age Declaration Form",
-                       "existing_voter_id_number": "Existing Voter ID Number",
-                       "state_id": "State",
-                       "assembly_constituency": "Assembly Constituency",
-                       "house_number": "House Number",
-                       "locality": "Locality",
-                       "town": "Town",
-                       "post_office": "Post Office",
-                       "zip": "Pin Code",
-                       "district": "District",
-                       "kanha_voter_id_number":"Kanha Voter ID Number",
-                       "kanha_voter_id_image": 'Kanha Voter ID Image',
-                       "voter_id_file_filename": "Voter ID/EPIC File",
-                       "declaration_form_filename": "Declaration Form File",
-                       
-                       
-        }
-        # Validation
-        for field_name in self.MANDATORY_PARTNER_FIELDS:
-            if not data.get(field_name):
-                error[field_name] = 'missing'
-                missing_fields[field_name] = form_fields.get(field_name)
-
+        self.missing_fields = dict()
         for field_name, field_value in data.items():
             # If the value of the field if a file
             if hasattr(field_value, 'filename'):
@@ -185,43 +64,6 @@ class CustomerPortal(CustomerPortal):
                 field_name = field_name.split('[', 1)[0]
                 data[field_name] = field_value
 
-        if(data.get('change_voter_id_address') == 'Yes'):
-            for field_name in self.VOTER_INFO_FIELDS:
-                if not data.get(field_name):
-                    error[field_name] = 'missing'
-                    missing_fields[field_name] = form_fields.get(field_name)
-        if(data.get('citizenship') == 'Overseas'):
-            for field_name in self.OVERSEAS_MANDATORY_FIELDS:
-                if not data.get(field_name):
-                    error[field_name] = 'missing'
-                    missing_fields[field_name] = form_fields.get(field_name)
-        if(data.get('citizenship') != 'Overseas'):
-            for field_name in self.CONTIONALLY_MANDATORY_FIELDS:
-                if not data.get(field_name):
-                    error[field_name] = 'missing'
-                    missing_fields[field_name] = form_fields.get(field_name)
-            if(data.get('already_have_kanha_voter_id') == 'Yes'):
-                for field_name in self.ALREADY_HAVE_KANHA_VOTER_ID_MANDATORY_FIELDS:
-                    if not data.get(field_name):
-                        error[field_name] = 'missing'
-                        missing_fields[field_name] = form_fields.get(field_name)
-            
-            if(data.get('need_new_kanha_voter_id') == 'Yes'):
-                for field_name in self.NEW_KANHA_VOTER_ID_MANDATORY_FIELDS:
-                    if not data.get(field_name):
-                        error[field_name] = 'missing'
-                        missing_fields[field_name] = form_fields.get(field_name)
-            
-            if(data.get('application_type') == 'Transfer Application'):
-                for field_name in self.TRANSFER_APPLICATION_MANDATORY_FIELDS:
-                    if not data.get(field_name):
-                        error[field_name] = 'missing'
-                        missing_fields[field_name] = form_fields.get(field_name)
-            if(data.get('application_type') == 'New Application'):
-                for field_name in self.NEW_APPLICATION_MANDATORY_FIELDS:
-                    if not data.get(field_name):
-                        error[field_name] = 'missing'
-                        missing_fields[field_name] = form_fields.get(field_name)
         # email validation
         if data.get('email') and not tools.single_email_re.match(data.get('email')):
             error["email"] = _('Invalid Email! Please enter a valid email address.')
@@ -251,9 +93,7 @@ class CustomerPortal(CustomerPortal):
             if(not is_adhar_exsist): 
                 error["relative_aadhaar_card_number"] = _('Given Relative Aadhar Number does not exist!')
                 error_message.append(_('Given Relative Aadhar Number does not exist!'))              
-        if ((data.get('relation_type')) and (not data.get('relative_aadhaar_card_number'))):
-            error["relative_aadhaar_card_number"] = _('Relative Aadhar Number is Mandatory!')
-            error_message.append(_('Relative Aadhar Number is Mandatory!'))
+        
         # Mobile number validation
         if data.get('mobile'):
             is_valid = self.is_valid_mobile_number(data.get('mobile'))
@@ -261,15 +101,9 @@ class CustomerPortal(CustomerPortal):
                 error["mobile"] = _('Invalid Mobile Number!')
                 error_message.append(_('Invalid Mobile Number!')) 
         # error message for empty required fields
-        if(missing_fields):
-            error_message.append("Please fill these required field(s): '%s'" % ','.join(missing_fields.values()))
+        if(self.missing_fields):
+            error_message.append(" Please fill these required field(s): '%s'" % ','.join(self.missing_fields.values()))
                 # Undo file upload field name indexing
-                
-        unknown = [k for k in data if k not in self.MANDATORY_PARTNER_FIELDS + self.OPTIONAL_PARTNER_FIELDS + self.VOTER_INFO_FIELDS + self.CONTIONALLY_MANDATORY_FIELDS + self.ALREADY_HAVE_KANHA_VOTER_ID_MANDATORY_FIELDS + self.NEW_KANHA_VOTER_ID_MANDATORY_FIELDS + self.TRANSFER_APPLICATION_MANDATORY_FIELDS + self.NEW_APPLICATION_MANDATORY_FIELDS + self.OVERSEAS_MANDATORY_FIELDS]
-        if unknown:
-            error['common'] = 'Unknown field'
-            error_message.append("Unknown field '%s'" % ','.join(unknown))
-
         return error, error_message
 
     def is_valid_pan_number(self,pan_number):
@@ -313,7 +147,8 @@ class CustomerPortal(CustomerPortal):
     @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="public",methods=['POST'], website=True)
     def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         request.params.pop('csrf_token', None)
-        values = self._prepare_portal_layout_values()
+        # values = self._prepare_portal_layout_values()
+        values = {}
         values.update({
             'error': {},
             'error_message': [],
@@ -338,7 +173,7 @@ class CustomerPortal(CustomerPortal):
             error, error_message = self.kanha_portal_form_validate(post, partner_id)
             values.update({'error': error, 'error_message': error_message})
             values.update(post)
-            # Checks Aadhar Number is already exist
+            # Checks Aadhar Number is already exist for new record
             if(not partner):
                 ResPartner = request.env['res.partner']
                 is_adhar_no_exsist = ResPartner.search([('aadhaar_card_number', '=', post.get('aadhaar_card_number'))])
@@ -346,19 +181,12 @@ class CustomerPortal(CustomerPortal):
                     error["aadhaar_card_number"] = 'error'
                     error_message.append(_('Aadhar Number is already exist!'))
             if not error:
-                values = {key: post[key] for key in self.MANDATORY_PARTNER_FIELDS}
-                values.update({key: post[key] for key in self.OPTIONAL_PARTNER_FIELDS if key in post})
-                values.update({key: post[key] for key in self.CONTIONALLY_MANDATORY_FIELDS if key in post})
-                values.update({key: post[key] for key in self.ALREADY_HAVE_KANHA_VOTER_ID_MANDATORY_FIELDS if key in post})
-                values.update({key: post[key] for key in self.NEW_KANHA_VOTER_ID_MANDATORY_FIELDS if key in post})
-                values.update({key: post[key] for key in self.TRANSFER_APPLICATION_MANDATORY_FIELDS if key in post})
-                values.update({key: post[key] for key in self.NEW_APPLICATION_MANDATORY_FIELDS if key in post})
-                values.update({key: post[key] for key in self.OVERSEAS_MANDATORY_FIELDS if key in post})
-
+                values = {}
+                values.update(post)
                 values.update({'is_published': True})
                 many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id']
                 if(post.get('change_voter_id_address') == 'Yes'):
-                    values.update({key: post[key] for key in self.VOTER_INFO_FIELDS if key in post})
+                    # values.update({key: post[key] for key in self.VOTER_INFO_FIELDS if key in post})
                     many_2_one_fields.append('state_id')
                 for field in set(many_2_one_fields) & set(values.keys()):
                     try:
@@ -406,6 +234,8 @@ class CustomerPortal(CustomerPortal):
                             vehicle_vals = vehicle_details_ids.get(str(partner_vehicle))
                             vehicle_details_vals.append([1, partner_vehicle, vehicle_vals])
                     values['vehicle_details_ids'] = vehicle_details_vals
+                    if not (values.get('application_type')):
+                        values['application_type'] = ''
                     partner.sudo().write(values)
                 else:
                     values['vehicle_details_ids'] = vehicle_details_vals
@@ -422,7 +252,7 @@ class CustomerPortal(CustomerPortal):
                 return json.dumps(values)
         return json.dumps({
             'id': False,
-            'error': error_message,
+            'error': error,
             'error_message': error_message,
             'error_fields': error,
             })
@@ -437,6 +267,13 @@ class CustomerPortal(CustomerPortal):
         # Fetch the record who doesnt have any child records
         kanha_location_parent_ids = request.env['kanha.location'].sudo().search([]).parent_id.ids
         kanha_locations_nth_child = request.env['kanha.location'].sudo().search([('id', 'not in', kanha_location_parent_ids)])
+        is_relation_required = False
+        current_partner = request.env.user.partner_id
+        if current_partner.id != partner_id:
+            is_relation_required = True
+        is_kanha_voter_info_required = True
+        if partner.citizenship == 'Overseas':
+            is_kanha_voter_info_required = False
         values.update({
             'states': states,
             'page_name': 'family',
@@ -447,6 +284,8 @@ class CustomerPortal(CustomerPortal):
             'partner': partner,
             'error': {},
             'error_message': [],
+            'is_relation_required': is_relation_required,
+            'is_kanha_voter_info_required': is_kanha_voter_info_required
         })
         response = request.render("kanha_census.kanha_family_portal_form", values)
         response.headers['X-Frame-Options'] = 'DENY'
@@ -473,7 +312,8 @@ class CustomerPortal(CustomerPortal):
             'countries': countries,
             'birth_countries': countries,
             'error': {},
-            'error_message': []
+            'error_message': [],
+            'is_relation_required': True
         })
         response = request.render("kanha_census.kanha_family_portal_form", values)
         return response
