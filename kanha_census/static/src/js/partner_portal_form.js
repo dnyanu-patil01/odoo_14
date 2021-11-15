@@ -149,6 +149,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			var transfer_application = '<option value="Transfer Application">Transfer Application</option>'
 			if(voter_is_there.val() == 'Yes'){
 				$('#application_type_field').empty().append(transfer_application);
+				$('#application_type_field').change()
 			}
 			
 			/*$('.kanha_voter_id_number').addClass('d-none');
@@ -276,6 +277,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#application_type_field').attr('required', true);
 			var new_application = '<option value="New Application">New Application</option>'
 			$('#application_type_field').empty().append(new_application);
+			$('#application_type_field').change()
 		}
 		else{
 			// Hide Voter Application Type field
