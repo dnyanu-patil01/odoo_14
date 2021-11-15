@@ -944,7 +944,7 @@
 							t-att-required="'true' if is_kanha_voter_info_required == True else None"
 							name="already_have_kanha_voter_id"
 							t-attf-class="form-control s_website_form_input #{error.get('already_have_kanha_voter_id') and 'is-invalid' or ''}">
-							<option value="Select">Select...</option>
+							<option value="">Select...</option>
 							<t t-foreach="['Yes', 'No']" t-as="have_kanha_voter_id">
 								<option t-att-value="have_kanha_voter_id"
 									t-att-selected="have_kanha_voter_id == already_have_kanha_voter_id if already_have_kanha_voter_id else have_kanha_voter_id == partner.already_have_kanha_voter_id if partner else null">
@@ -967,7 +967,7 @@
 						<select id="change_voter_id_address_field"
 							name="change_voter_id_address"
 							t-attf-class="form-control s_website_form_input #{error.get('change_voter_id_address') and 'is-invalid' or ''}">
-							<option value="Select">Select...</option>
+							<option value="">Select...</option>
 							<t t-foreach="['Yes', 'No']" t-as="change_address">
 								<option t-att-value="change_address"
 									t-att-selected="change_address == change_voter_id_address if change_voter_id_address else change_address == partner.change_voter_id_address if partner else null">
