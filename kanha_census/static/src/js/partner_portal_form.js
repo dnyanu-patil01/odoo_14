@@ -146,7 +146,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('.voter_application_type').removeClass('d-none');
 			$('#application_type_field').attr('required', true);
 
-			var transfer_application = '<option value="">Select...</option><option value="Transfer Application">Transfer Application</option>'
+			var transfer_application = '<option value="Transfer Application">Transfer Application</option>'
 			if(voter_is_there.val() == 'Yes'){
 				$('#application_type_field').empty().append(transfer_application);
 			}
@@ -220,7 +220,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		}
 		else if(already_have_kanha_voter_id.val() == 'No'){
 			
-			$('#change_voter_id_address_field').val("Select");
+			$('#change_voter_id_address_field').val("");
 			$('#change_voter_id_address_field').change();
 
 			// Hide Kanha Voter ID number and Kanha Voter ID image fields and remove required attribute			
@@ -274,7 +274,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			// show Voter Application Type field
 			$('.voter_application_type').removeClass('d-none');
 			$('#application_type_field').attr('required', true);
-			var new_application = '<option value="">Select...</option><option value="New Application">New Application</option>'
+			var new_application = '<option value="New Application">New Application</option>'
 			$('#application_type_field').empty().append(new_application);
 		}
 		else{
@@ -351,9 +351,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 	_onCitizenshipChange: function () {
 		var citizenship = this.$('select[name="citizenship"]');
 		if(citizenship.val() == 'Overseas'){
-			$('#change_voter_id_address_field').val("Select");
+			$('#change_voter_id_address_field').val("");
 			$('#change_voter_id_address_field').change();
-			$('#already_have_kanha_voter_id_field').val("Select")
+			$('#already_have_kanha_voter_id_field').val("")
 			$('#already_have_kanha_voter_id_field').change()
 			// Show Passport Number and add Required attribute
 			$('.passport_field').removeClass('d-none');
