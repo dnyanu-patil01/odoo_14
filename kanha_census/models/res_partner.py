@@ -34,7 +34,6 @@ class ResPartner(models.Model):
     house_number = fields.Char(string='House Number', required=True)
     kanha_house_number = fields.Char(string='Kanha House Number', required=True)
     resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date', required=True)
-    voter_number = fields.Char(string="Voter ID Number")
     existing_voter_id_number = fields.Char(string="Existing Voter ID Number", required=True)
     assembly_constituency = fields.Char(string="Assembly Constituency", required=True)
     locality = fields.Char(string="Locality", required=True)
@@ -47,7 +46,7 @@ class ResPartner(models.Model):
     adhar_card_back_side_filename = fields.Char()
     age_proof = fields.Binary(string='Age Proof', required=True)
     age_proof_filename = fields.Char()
-    address_proof = fields.Binary( string='Kanha Address Proof', required=True)
+    address_proof = fields.Binary( string='Address Proof', required=True)
     address_proof_filename = fields.Char()
     application_type = fields.Selection([
         ('New Application', 'New Application'),
@@ -84,9 +83,9 @@ class ResPartner(models.Model):
     already_have_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Already Have Kanha Voter ID")
-    kanha_voter_id_number = fields.Char(string="Kanha Voter ID Number", required=True)
-    kanha_voter_id_image = fields.Binary('Kanha Voter ID Image', attachment=True, required=True)
+    ], string="Already Have Voter ID")
+    kanha_voter_id_number = fields.Char(string="Voter ID Number", required=True)
+    kanha_voter_id_image = fields.Binary('Voter ID Image', attachment=True, required=True)
     kanha_voter_id_image_filename = fields.Char()
     
     voter_id_file = fields.Binary('Voter ID/EPIC File', attachment=True, required=True)
@@ -97,7 +96,7 @@ class ResPartner(models.Model):
     need_new_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Need New Kanha Voter ID")
+    ], string="Need New Voter ID")
 
     _sql_constraints = [
         ('aadhaar_card_number_unique', 'UNIQUE(aadhaar_card_number)', 'An Adhar Card Number must be unique!'),

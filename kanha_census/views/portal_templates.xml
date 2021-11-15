@@ -188,7 +188,7 @@
 												data-type="char" data-name="Field">
 												<input id="aadhaar_card_number_field" type="text"
 													t-attf-class="form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}"
-													name="aadhaar_card_number"
+													name="aadhaar_card_number" placeholder="ex: 2345 6789 1100"
 													t-att-required="None if partner and partner.citizenship == 'Overseas' else 'true'"
 													t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
 											</div>
@@ -931,24 +931,11 @@
 					</div>
 				</div>
 
-				
-
-				<div class="col-lg-12 row form-group s_website_form_field">
-					<div class="col-lg-6">
-						<label class="col-form-label" for="voter_id_number">Voter ID Number</label>
-					</div>
-					<div
-						t-attf-class=" col-xl-6 #{error.get('voter_id_number') and 'o_has_error' or ''}">
-						<input id="voter_id_number_field" type="text"
-							class="form-control s_website_form_input" name="voter_number"
-							t-att-value="voter_number or partner and partner.voter_number" />
-					</div>
-				</div>
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-6 ">
 						<label class="col-form-label"
-							for="Already have Kanha Voter ID">Already have Kanha Voter ID</label>
+							for="Do you have Voter ID">Do you have Voter ID</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -994,7 +981,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field kanha_voter_id_number #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'Yes') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="Kanha Voter ID Number">Kanha Voter ID Number
+						<label class="col-form-label" for="Voter ID Number">Voter ID Number
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
@@ -1011,7 +998,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field kanha_voter_id_image #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'Yes') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="Kanha Voter ID Image">Kanha Voter ID Image
+						<label class="col-form-label" for="Voter ID Image">Voter ID Image
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
@@ -1062,7 +1049,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field need_new_kanha_voter_id #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'No') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
-						<label class="col-form-label" for="Need New Kanha Voter ID">Need New Kanha Voter ID
+						<label class="col-form-label" for="Need New Voter ID">Need New Voter ID
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
@@ -1096,13 +1083,14 @@
 							t-attf-class="form-control s_website_form_input #{error.get('application_type') and 'is-invalid' or ''}"
 							t-att-required="'true' if partner and partner.need_new_kanha_voter_id == 'Yes' else None">
 							<option value="">Select...</option>
+							<!-- <option value="New Application" 
 							<t t-foreach="['New Application', 'Transfer Application']"
 								t-as="application">
 								<option t-att-value="application"
 									t-att-selected="application == application_type if application_type else application == partner.application_type if partner else null">
 									<t t-esc="application" />
 								</option>
-							</t>
+							</t> -->
 						</select>
 					</div>
 				</div>
@@ -1522,7 +1510,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="Kanha Address Proof">Kanha Address Proof
+						<label class="col-form-label" for="Address Proof">Address Proof
 						</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
