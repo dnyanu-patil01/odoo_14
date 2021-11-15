@@ -20,7 +20,6 @@
 								<field name="gender"/>
 								<field name="pan_card_number"/>
 								<field name="aadhaar_card_number"/>
-								<field name="voter_number"/>
 								<field name="abhyasi_id" />
 								<field name="residence_type" />
 							</group>
@@ -52,7 +51,6 @@
 		                                <field name="birth_district" />
 		                              	<field name="birth_town" />
 		                              	<field name="change_voter_id_address" />
-		                              	<field name="voter_number" />
 		                            	<field name="relation_type" />
 		                                <field name="relative_name" />
 		                                <field name="relative_surname" />

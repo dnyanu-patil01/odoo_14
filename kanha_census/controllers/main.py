@@ -14,7 +14,6 @@ class CustomerPortal(CustomerPortal):
                              "birth_district",
                              "birth_town",
                              "change_voter_id_address",
-                             "voter_number",
                              "already_have_kanha_voter_id",
                              "kanha_voter_id_number",
                              "kanha_voter_id_image",

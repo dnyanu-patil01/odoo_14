@@ -125,6 +125,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		document.getElementById("application_type_field").value = "";
         $(ev.currentTarget).closest('form').find('select[name="application_type"]').trigger('change');
 	
+		var voter_is_there = this.$('select[id="already_have_kanha_voter_id_field"]');
 		var voter_address_change = this.$('select[name="change_voter_id_address"]');
 		if(voter_address_change.val() == 'Yes'){
 			$('.voter_id_tab').removeClass('d-none');
@@ -144,6 +145,11 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			// show Voter Application Type field
 			$('.voter_application_type').removeClass('d-none');
 			$('#application_type_field').attr('required', true);
+
+			var transfer_application = '<option value="Transfer Application">Transfer Application</option>'
+			if(voter_is_there.val() == 'Yes'){
+				$('#application_type_field').empty().append(transfer_application);
+			}
 			
 			/*$('.kanha_voter_id_number').addClass('d-none');
 			$('#kanha_voter_id_number_field').removeAttr('required');*/
@@ -194,7 +200,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		// Hide the fields and value based on the super parent field visibility
 		document.getElementById("need_new_kanha_voter_id_field").value = "";
         $(ev.currentTarget).closest('form').find('select[name="need_new_kanha_voter_id"]').trigger('change');
-		
+
 		var already_have_kanha_voter_id = this.$('select[name="already_have_kanha_voter_id"]');
 		if(already_have_kanha_voter_id.val() == 'Yes'){
 			
@@ -265,6 +271,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			// show Voter Application Type field
 			$('.voter_application_type').removeClass('d-none');
 			$('#application_type_field').attr('required', true);
+			var new_application = '<option value="New Application">New Application</option>'
+			$('#application_type_field').empty().append(new_application);
 		}
 		else{
 			// Hide Voter Application Type field
