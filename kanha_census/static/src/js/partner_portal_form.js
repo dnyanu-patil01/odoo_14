@@ -623,6 +623,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
             $modal.appendTo('body').modal();
             // Updates the values in the table
 			$modal.on('click', '.save_vehicle_line', function (ev) {
+				$(".save_vehicle_line").addClass(spinner-border)
 				var vehicle_number = $modal.find('input[name="vehicle_number"]').val();
 				var vehicle_owner = $modal.find('input[name="vehicle_owner"]').val();
 				var vehicle_type = $modal.find('select[name="vehicle_type"]').val();
