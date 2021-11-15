@@ -220,7 +220,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		}
 		else if(already_have_kanha_voter_id.val() == 'No'){
 			
-			$('#change_voter_id_address_field').val("Select");
+			$('#change_voter_id_address_field').val("");
 			$('#change_voter_id_address_field').change();
 
 			// Hide Kanha Voter ID number and Kanha Voter ID image fields and remove required attribute			
