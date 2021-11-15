@@ -103,10 +103,9 @@
 								</div>
 								<div class="col-lg-6">
 									<div class="row">
-
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6 ">
-												<label class="col-form-label">Name</label>
+												<label class="col-form-label" for="Name">Name</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
 											<div
@@ -116,7 +115,7 @@
 													required="" t-att-value="name or partner and partner.name" />
 											</div>
 										</div>
-										
+
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
 												<label class="col-form-label" for="surname">Surname</label>
@@ -131,7 +130,7 @@
 
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
-												<label class="col-form-label">Email</label>
+												<label class="col-form-label" for="Email">Email</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
 											<div
@@ -145,7 +144,7 @@
 
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
-												<label class="col-form-label">Gender</label>
+												<label class="col-form-label" for="Gender">Gender</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
 											<div
@@ -180,7 +179,7 @@
 
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
-												<label class="col-form-label">Aadhaar Card Number
+												<label class="col-form-label" for="Aadhaar Card Number">Aadhaar Card Number
 												</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
@@ -194,20 +193,14 @@
 													t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
 											</div>
 										</div>
-
-
-
-
 									</div>
 								</div>
 								<div class="col-lg-6">
 									<div class="row">
-
 										
-
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
-												<label class="col-form-label">Mobile Number</label>
+												<label class="col-form-label" for="Mobile Number">Mobile Number</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
 											<div
@@ -221,7 +214,7 @@
 
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
-												<label class="col-form-label">Date of Birth</label>
+												<label class="col-form-label" for="Date of Birth">Date of Birth</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
 											<div
@@ -235,7 +228,7 @@
 
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
-												<label class="col-form-label">Citizenship</label>
+												<label class="col-form-label" for="Citizenship">Citizenship</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
 											<div
@@ -257,13 +250,12 @@
 										<div
 											t-attf-class="col-lg-12 row form-group s_website_form_field passport_field #{not partner and 'd-none' or ''} #{(partner and partner.citizenship != 'Overseas') and 'd-none' or ''} ">
 											<div t-attf-class="col-lg-6">
-												<label class="col-form-label">Passport Number
+												<label class="col-form-label" for="Passport Number">Passport Number
 												</label>
 												<span class="s_website_form_mark"> *</span>
 											</div>
 											<div t-attf-class="col-xl-6">
 												<input
-													t-att-disabled="'true' if partner and partner.citizenship != 'Overseas' else None"
 													t-att-required="'true' if partner and partner.citizenship == 'Overseas' else None"
 													id="passport_number_input" type="text"
 													class="form-control s_website_form_input"
@@ -286,8 +278,7 @@
 													t-att-value="members_count or partner and partner.members_count" />
 											</div>
 										</div>
-										
-										
+
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
 												<label class="col-form-label" for="residence_type">Residence Type
@@ -307,8 +298,7 @@
 												</select>
 											</div>
 										</div>
-										
-										
+
 										<div class="col-lg-12 row form-group s_website_form_field">
 											<div class="col-lg-6">
 												<label class="col-form-label" for="abhyasi_id">Abhyasi ID</label>
@@ -363,7 +353,7 @@
 											<a class="nav-link" id="tab-documents" data-toggle="tab"
 												href="#pane-documents" role="tab">Documents</a>
 										</li>
-										<t t-if="partner">
+										 <t t-if="partner">
 											<t t-if="(partner.change_voter_id_address == 'No')">
 												<li class="nav-item">
 													<a t-attf-class="voter_id_tab nav-link d-none"
@@ -567,32 +557,27 @@
 							<label class="col-form-label" for="vehicle_number">Vehicle Number</label>
 						</div>
 						<div
-							t-attf-class="form-group #{error.get('vehicle_number') and 'o_has_error' or ''} col-xl-6">
+							t-attf-class="form-group col-xl-6">
 							<input type="text" name="vehicle_number"
-								t-attf-class="vehicle_number form-control #{error.get('vehicle_number') and 'is-invalid' or ''}"
+								t-attf-class="vehicle_number form-control"
 								t-att-value="vehicle_number" />
 						</div>
 						<div class="col-lg-6">
 							<label class="col-form-label" for="vehicle_owner">Vehicle Owner</label>
 						</div>
 						<div
-							t-attf-class="form-group #{error.get('vehicle_owner') and 'o_has_error' or ''} col-xl-6">
+							t-attf-class="form-group col-xl-6">
 							<input type="text" name="vehicle_owner"
-								t-attf-class="form-control #{error.get('vehicle_owner') and 'is-invalid' or ''}"
+								t-attf-class="form-control"
 								t-att-value="vehicle_owner" />
 						</div>
 						<div class="col-lg-6">
 							<label class="col-form-label" for="vehicle_type">Vehicle Type</label>
 						</div>
 						<div
-							t-attf-class="form-group #{error.get('vehicle_type') and 'o_has_error' or ''} col-xl-6">
-							<!-- <input type="text" name="vehicle_type" t-attf-class="form-control 
-								#{error.get('vehicle_type') and 'is-invalid' or ''}" t-att-value="vehicle_type" 
-								/> -->
-
-
+							t-attf-class="form-group col-xl-6">
 							<select name="vehicle_type"
-								t-attf-class="form-control #{error.get('vehicle_type') and 'is-invalid' or ''}">
+								t-attf-class="form-control">
 								<option value="">Select...</option>
 								<t t-foreach="['Two Wheeler', 'Four Wheeler']" t-as="vehicle">
 									<option t-att-value="vehicle"
@@ -601,12 +586,7 @@
 									</option>
 								</t>
 							</select>
-
-
-
-
 						</div>
-
 					</div>
 					<div class="modal-footer justify-content-start">
 						<button type="button"
@@ -726,7 +706,7 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('country_id') and 'o_has_error' or ''}">
 				<select
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="voter_country_id" name="country_id"
 					t-attf-class="form-control s_website_form_input #{error.get('country_id') and 'is-invalid' or ''}">
 					<t t-foreach="countries" t-as="country">
@@ -747,12 +727,13 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('state_id') and 'o_has_error' or ''}">
 				<select
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="voter_state_id" name="state_id"
 					t-attf-class="form-control s_website_form_input #{error.get('state_id') and 'is-invalid' or ''}">
 					<option value="">Select...</option>
 					<t t-foreach="states" t-as="state">
 						<option t-att-value="state.id"
+							t-att-country="state.country_id.id"
 							t-att-data-country_id="state.country_id.id"
 							t-att-selected="state.id == int(state_id) if state_id else state.id == partner.state_id.id if partner else null">
 							<t t-esc="state.name" />
@@ -772,12 +753,12 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('assembly_constituency') and 'o_has_error' or ''}">
 				<input
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="assembly_constituency_field" type="text"
 					class="form-control s_website_form_input"
 					name="assembly_constituency"
 					t-att-value="assembly_constituency or partner and partner.assembly_constituency"
-					required="" />
+					/>
 			</div>
 		</div>
 
@@ -789,11 +770,11 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('house_number') and 'o_has_error' or ''}">
 				<input
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="house_number_field" type="text"
 					class="form-control s_website_form_input" name="house_number"
 					t-att-value="house_number or partner and partner.house_number"
-					required="" />
+					 />
 			</div>
 		</div>
 
@@ -805,10 +786,10 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('locality') and 'o_has_error' or ''}">
 				<input
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="locality_field" type="text"
 					class="form-control s_website_form_input" name="locality"
-					t-att-value="locality or partner and partner.locality" required="" />
+					t-att-value="locality or partner and partner.locality"/>
 			</div>
 		</div>
 
@@ -820,10 +801,10 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('town') and 'o_has_error' or ''}">
 				<input
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="town_field" type="text"
 					class="form-control s_website_form_input" name="town"
-					t-att-value="town or partner and partner.town" required="" />
+					t-att-value="town or partner and partner.town" />
 			</div>
 		</div>
 
@@ -835,11 +816,11 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('post_office') and 'o_has_error' or ''}">
 				<input
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="post_office_field" type="text"
 					class="form-control s_website_form_input" name="post_office"
 					t-att-value="post_office or partner and partner.post_office"
-					required="" />
+					 />
 			</div>
 		</div>
 
@@ -851,10 +832,10 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('zipcode') and 'o_has_error' or ''}">
 				<input
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="zip_field" type="text"
 					class="form-control s_website_form_input" name="zip"
-					t-att-value="zipcode or partner and partner.zip" required="" />
+					t-att-value="zipcode or partner and partner.zip" />
 			</div>
 		</div>
 
@@ -866,10 +847,10 @@
 			<div
 				t-attf-class="col-xl-6 #{error.get('district') and 'o_has_error' or ''}">
 				<input
-					t-att-disabled="None if partner and partner.change_voter_id_address == 'Yes' else 'true'"
+					t-att-required="'true' if partner and partner.change_voter_id_address == 'Yes' else None"
 					id="district_field" type="text"
 					class="form-control s_website_form_input" name="district"
-					t-att-value="district or partner and partner.district" required="" />
+					t-att-value="district or partner and partner.district" />
 			</div>
 		</div>
 
@@ -950,27 +931,7 @@
 					</div>
 				</div>
 
-				<div class="col-lg-12 row form-group s_website_form_field">
-					<div class="col-lg-6">
-						<label class="col-form-label" for="change_voter_id_address">Do you want to change your
-							Voter Id card Address?
-						</label>
-					</div>
-					<div
-						t-attf-class="col-xl-6 #{error.get('change_voter_id_address') and 'o_has_error' or ''}">
-						<select id="change_voter_id_address_field"
-							name="change_voter_id_address"
-							t-attf-class="form-control s_website_form_input #{error.get('change_voter_id_address') and 'is-invalid' or ''}">
-							<option value="">Select...</option>
-							<t t-foreach="['Yes', 'No']" t-as="change_address">
-								<option t-att-value="change_address"
-									t-att-selected="change_address == change_voter_id_address if change_voter_id_address else change_address == partner.change_voter_id_address if partner else null">
-									<t t-esc="change_address" />
-								</option>
-							</t>
-						</select>
-					</div>
-				</div>
+				
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
@@ -1001,6 +962,29 @@
 								<option t-att-value="have_kanha_voter_id"
 									t-att-selected="have_kanha_voter_id == already_have_kanha_voter_id if already_have_kanha_voter_id else have_kanha_voter_id == partner.already_have_kanha_voter_id if partner else null">
 									<t t-esc="have_kanha_voter_id" />
+								</option>
+							</t>
+						</select>
+					</div>
+				</div>
+				
+				<div t-attf-class="col-lg-12 row form-group s_website_form_field change_voter_id_address #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'Yes') and 'd-none' or ''}">
+
+					<div class="col-lg-6">
+						<label class="col-form-label" for="change_voter_id_address">Do you want to change your
+							Voter Id card Address?
+						</label>
+					</div>
+					<div
+						t-attf-class="col-xl-6 #{error.get('change_voter_id_address') and 'o_has_error' or ''}">
+						<select id="change_voter_id_address_field"
+							name="change_voter_id_address"
+							t-attf-class="form-control s_website_form_input #{error.get('change_voter_id_address') and 'is-invalid' or ''}">
+							<option value="">Select...</option>
+							<t t-foreach="['Yes', 'No']" t-as="change_address">
+								<option t-att-value="change_address"
+									t-att-selected="change_address == change_voter_id_address if change_voter_id_address else change_address == partner.change_voter_id_address if partner else null">
+									<t t-esc="change_address" />
 								</option>
 							</t>
 						</select>
@@ -1041,7 +1025,7 @@
 						<div class="attachment-input-container">
 							<input id="kanha_voter_id_image_filename_field"
 								t-att-required="'true' if partner and partner.already_have_kanha_voter_id == 'Yes' else None"
-								readonly="true" type="text" name="kanha_voter_id_image_filename"
+								type="text" name="kanha_voter_id_image_filename"
 								t-attf-class="kanha_voter_id_image_filename form-control s_website_form_input #{error.get('kanha_voter_id_image_filename') and 'is-invalid' or ''}"
 								t-att-value="kanha_voter_id_image_filename or partner and partner.kanha_voter_id_image_filename" />
 							<t t-if="partner and partner.kanha_voter_id_image">
@@ -1100,7 +1084,7 @@
 				</div>
 
 				<div
-					t-attf-class="col-lg-12 row form-group s_website_form_field voter_application_type #{not partner and 'd-none' or ''} #{(partner and partner.need_new_kanha_voter_id != 'Yes') and 'd-none' or ''}">
+					t-attf-class="col-lg-12 row form-group s_website_form_field voter_application_type #{not partner and 'd-none' or ''} #{((partner and partner.need_new_kanha_voter_id != 'Yes') or (partner and partner.change_voter_id_address != 'Yes')) and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
 						<label class="col-form-label" for="Voter Application Type">Voter Application Type
 						</label>
@@ -1152,11 +1136,11 @@
 						<input type="file" id="voter_id_file_field"
 							t-att-filename_input="'voter_id_file_filename'"
 							class="d-none voter_id_file_upload form-control s_website_form_input"
-							name="voter_id_file" />
+							name="voter_id_file" accept=".jpg, .jpeg" />
 						<div class="attachment-input-container">
 							<input
 								t-att-required="'true' if partner and partner.application_type == 'Transfer Application' else None"
-								readonly="true" type="text" id="voter_id_file_filename_field"
+								type="text" id="voter_id_file_filename_field"
 								name="voter_id_file_filename"
 								t-attf-class="voter_id_file_filename form-control s_website_form_input #{error.get('voter_id_file_filename') and 'is-invalid' or ''}"
 								t-att-value="voter_id_file_filename or partner and partner.voter_id_file_filename" />
@@ -1269,7 +1253,7 @@
 						<div class="attachment-input-container">
 							<input id="declaration_form_filename_field"
 								t-att-required="'true' if partner and partner.application_type == 'New Application' else None"
-								readonly="true" type="text" name="declaration_form_filename"
+								type="text" name="declaration_form_filename"
 								t-attf-class="declaration_form_filename form-control s_website_form_input #{error.get('declaration_form_filename') and 'is-invalid' or ''}"
 								t-att-value="declaration_form_filename or partner and partner.declaration_form_filename" />
 							<t t-if="partner and partner.declaration_form">
@@ -1447,7 +1431,7 @@
 					</div>
 					<div
 						t-attf-class="col-xl-5 #{error.get('passport_photo') and 'o_has_error' or ''}">
-						<input type="file"
+						<input type="file" id="passport"
 							t-att-filename_input="'passport_photo_filename'"
 							class="d-none passport_photo_upload form-control s_website_form_input"
 							name="passport_photo" accept=".jpg, .jpeg" />

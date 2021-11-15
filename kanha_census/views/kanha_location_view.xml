@@ -46,14 +46,14 @@
 	           
 	    <!-- Kanha census root menu -->       
 		<menuitem name="Kanha Census"
-	        id="menu_kanha_location_root" 
+	        id="menu_kanha_census_root" 
 	        sequence="4"/>
 	
 		<!-- Kanha Location menu -->
 		<menuitem
 		    id="kanha_location_menu"
 		    name="Kanha Location"
-		    parent="menu_kanha_location_root"
+		    parent="menu_kanha_census_root"
 		    action="kanha_location_action"
 		    sequence="1"/>
 		    

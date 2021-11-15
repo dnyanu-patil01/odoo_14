@@ -14,16 +14,15 @@
 					<sheet>
 						<group>
 							<group>
+								<field name="id" />
 								<field name="name" />
 								<field name="email" />
 								<field name="gender"/>
-								<!-- <field name="application_type" /> -->
-								<field name="voter_number"/>
-								<field name="pan_card_number" />
+								<field name="pan_card_number"/>
 								<field name="aadhaar_card_number"/>
+								<field name="voter_number"/>
 								<field name="abhyasi_id" />
 								<field name="residence_type" />
-								
 							</group>
 							<group>
 								<field name="surname" />
@@ -32,8 +31,6 @@
 								<field name="citizenship" />
 								<field name="passport_number" />
 								<field name="members_count" />
-								<field name="relative_aadhaar_card_number" />
-								
 							</group>
 						</group>
 						<notebook>
@@ -72,27 +69,7 @@
                                 	</group>
                                 </group>
                     		</page>
-							<!-- <page string="Birth Place Info" name="birthplace" >
-                        		<group>
-		                            <group string="Birth Place Info" name="birthplace">
-		                            	<field name="birth_country_id" />
-		                                <field name="birth_state_id" />
-		                                <field name="birth_district" />
-		                              	<field name="birth_town" />
-		                            </group>
-                        		</group>
-                    		</page>
-                    		<page string="Relation Info" name="reation_info" >
-                        		<group>
-		                            <group string="Relation Info" name="reation_info">
-		                            	<field name="relation_type" />
-		                                <field name="relative_aadhaar_card_number" />
-		                                <field name="relative_name" />
-		                                <field name="relative_surname" />
-		                            </group>
-                        		</group>
-                    		</page> -->
-                    		
+							
 							<page string="Documents" name="documents" >
                         		<group>
 		                            <group string="Documents" name="documents">
@@ -123,7 +100,6 @@
                     		<page string="Existing Voter ID Details" name="existing_voter_id_details" >
                         		<group>
 		                            <group string="Existing Voter ID Details" name="existing_voter_id_details">
-		                                <field name="existing_voter_id_number" />
 		                                <field name="country_id"/>
 		                                <field name="state_id" />
 		                              	<field name="assembly_constituency" />
@@ -188,7 +164,7 @@
 	
 	<!-- Menu item  -->
 	<menuitem id="menu_kanha_partner"
-          parent="kanha_census.menu_kanha_location_root" 
+          parent="kanha_census.menu_kanha_census_root" 
           action="kanha_partner_action"
           />
 </odoo>
