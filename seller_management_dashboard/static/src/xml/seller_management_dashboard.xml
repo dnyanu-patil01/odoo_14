@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="SellerManagementDashboardMain">
+        <div class="oh_dashboards">
+            <div class="container-fluid o_hr_dashboard">
+            </div>
+        </div>
+    </t>
+    <t t-name="StockPickingDashboard">
+        <div class="o_stockpicking_dashboard container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <!-- can't use th tag due to list rendering error when no values in list... -->
+                                <td class="o_text">
+                                    <div>Sale Orders</div>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Shopify Orders"
+                                    name="sale_action_dashboard_shopify_order">
+                                    <a href="#">
+                                    <t t-esc="widget.shopify_order"/>
+                                    <br/>Shopify Orders<br/></a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Sellers Order"
+                                    name="sale_action_dashboard_seller_order">
+                                    <a href="#"><t t-esc="widget.seller_order"/><br/>Sellers Orders</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Website Order"
+                                    name="sale_action_dashboard_website_order">
+                                    <a href="#"><t t-esc="widget.website_order"/><br/>Website Orders</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Today Order"
+                                    name="sale_action_dashboard_today_sale">
+                                    <a href="#"><t t-esc="widget.today_sale"/><br/>Today's Orders</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Last Seven Days Order"
+                                    name="sale_action_dashboard_last_seven_days">
+                                    <a href="#"><t t-esc="widget.last_seven_days"/><br/>Last 7 Days Orders</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Total Sales Order"
+                                    name="sale_action_dashboard_total_sale_order">
+                                    <a href="#"><t t-esc="widget.total_sale_order"/><br/>Total Sales Order</a>
+                                </td>
+                            </tr>
+                        </thead>
+                        <!-- thead needed to avoid list view rendering error for some reason -->
+                        <tbody>
+                            <tr>
+                                <!-- can't use th tag due to list rendering error when no values in list... -->
+                                <td class="o_text">
+                                    <div>Seller Products</div>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Total No Of Sellers"
+                                    name="product_action_dashboard_seller">
+                                    <a href="#">
+                                    <t t-esc="widget.seller"/>
+                                    <br/>Sellers</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Total Sellers Products"
+                                    name="product_action_dashboard_seller_product">
+                                    <a href="#"><t t-esc="widget.seller_product"/><br/>Seller&#39;s Products</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Draft Products"
+                                    name="sale_action_dashboard_seller_product_draft">
+                                    <a href="#"><t t-esc="widget.seller_product_draft"/><br/>Draft Products</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Products Waiting For Approval"
+                                    name="sale_action_dashboard_seller_product_to_approve">
+                                    <a href="#"><t t-esc="widget.seller_product_to_approve"/><br/>Waiting For Approval<br/>Products</a>
+                                </td>
+                                <td class="o_main o_dashboard_action table-success" title="Approved Products"
+                                    name="sale_action_dashboard_seller_product_approve">
+                                    <a href="#"><t t-esc="widget.seller_product_approve"/><br/>Approved Products</a>
+                                </td>
+                                <td class="o_main o_dashboard_action table-danger" title="Rejected Products"
+                                    name="sale_action_dashboard_seller_product_rejected">
+                                    <a href="#"><t t-esc="widget.seller_product_rejected"/><br/>Rejected Products</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <!-- can't use th tag due to list rendering error when no values in list... -->
+                                <td class="o_text">
+                                    <div>Shiprocket Transfers</div>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Unfulfiled Orders"
+                                    name="stock_action_dashboard_unfulfiled">
+                                    <a href="#">
+                                    <t t-esc="widget.unfulfiled"/>
+                                    <br/>Unfulfiled</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="New Orders"
+                                    name="stock_action_dashboard_new_orders">
+                                    <a href="#"><t t-esc="widget.new_orders"/><br/>New Orders</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Ready To Ship"
+                                    name="stock_action_dashboard_ready_to_ship">
+                                    <a href="#"><t t-esc="widget.ready_to_ship"/><br/>Ready To Ship</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Manifest"
+                                    name="stock_action_dashboard_manifest">
+                                    <a href="#"><t t-esc="widget.manifest"/><br/>Manifest</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Delivered Orders"
+                                    name="stock_action_dashboard_delivered">
+                                    <a href="#"><t t-esc="widget.delivered"/><br/>Delivered</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Shiprocket Transfers"
+                                    name="stock_action_dashboard_all_orders">
+                                    <a href="#"><t t-esc="widget.all_orders"/><br/>All Transfers</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="o_text">
+                                    <div>Bulk Process</div>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Draft Quotes"
+                                    name="stock_bulk_action_dashboard_wp_awb">
+                                    <a href="#"><t t-esc="widget.wp_awb"/><br/>AWB <br/>Generated Partially</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Waiting Quotes"
+                                    name="stock_bulk_action_dashboard_gen_awb">
+                                    <a href="#"><t t-esc="widget.gen_awb"/><br/>AWB <br/>Generated</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Late Quotes"
+                                    name="stock_bulk_action_dashboard_wp_pickup">
+                                    <a href="#"><t t-esc="widget.wp_pickup"/><br/>Pickup <br/>Requested Partially</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Late Quotes"
+                                    name="stock_bulk_action_dashboard_gen_pickup">
+                                    <a href="#"><t t-esc="widget.gen_pickup"/><br/>Pickup<br/> Requested</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Late Quotes"
+                                    name="stock_bulk_action_dashboard_wp_manifest">
+                                    <a href="#"><t t-esc="widget.wp_manifest"/><br/>Manifest <br/>Generated Partially</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All Late Quotes"
+                                    name="stock_bulk_action_dashboard_gen_manifest">
+                                    <a href="#"><t t-esc="widget.gen_manifest"/><br/>Manifest <br/>Generated</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="o_text">
+                                    <div>NDR Process</div>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="All NDR Process"
+                                    name="ndr_action_dashboard_total_ndr">
+                                    <a href="#"><t t-esc="widget.total_ndr"/><br/>Total NDR <br/> Count</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="1st NDR Attempts Count"
+                                    name="ndr_action_dashboard_first_ndr_attempts">
+                                    <a href="#"><t t-esc="widget.first_ndr_attempts"/><br/>1st NDR Attempts <br/>Count</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="2nd NDR Attempts Count"
+                                    name="ndr_action_dashboard_second_ndr_attempts">
+                                    <a href="#"><t t-esc="widget.second_ndr_attempts"/><br/>2nd NDR Attempts<br/>Count</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="3rd NDR Attempts Count"
+                                    name="ndr_action_dashboard_third_ndr_attempts">
+                                    <a href="#"><t t-esc="widget.third_ndr_attempts"/><br/>3rd NDR Attempts <br/>Count</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="Total NDR Attempts"
+                                    name="ndr_action_dashboard_total_ndr_attempts">
+                                    <a href="#"><t t-esc="widget.total_ndr_attempts"/><br/>Total NDR <br/>Attempts</a>
+                                </td>
+                                <td class="o_main o_dashboard_action" title="RTO Orders"
+                                    name="ndr_action_dashboard_rto">
+                                    <a href="#"><t t-esc="widget.rto"/><br/>RTO <br/>Orders</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+    <t t-name="EmployeeWarning">
+        <div>
+            <p>Error : Could not find employee linked to user</p>
+            <p>Please contact system admin for the setup</p>
+        </div>
+    </t>
+
+</templates>
