@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<odoo>
+    <template id="assets_backend" name="sale assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/scss" href="/delivery_shiprocket_dashboard/static/src/scss/stock_picking.scss"/>
+            <script type="text/javascript" src="/delivery_shiprocket_dashboard/static/src/js/stock_picking_dashboard.js"></script>
+        </xpath>
+
+    </template>
+</odoo>
