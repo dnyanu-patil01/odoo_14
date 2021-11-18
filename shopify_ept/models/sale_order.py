@@ -625,6 +625,8 @@ class SaleOrder(models.Model):
             "is_delivery": is_shipping,
         })
         order_line = sale_order_line_obj.create(order_line_vals)
+        #Added By Leela To Reset Taxes Based On Sellers Mapped!
+        order_line.product_id_change()
         return order_line
 
     @api.model

@@ -15,6 +15,7 @@
         'views/seller_view.xml',
         'views/product_view.xml',
         'views/sale_order_view.xml',
+        'views/account_tax_view.xml',
         'views/account_move_view.xml',
         'views/stock_location_view.xml',
         'views/stock_move_line_view.xml',

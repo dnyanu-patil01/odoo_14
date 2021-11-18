@@ -72,6 +72,20 @@ class SaleOrder(models.Model):
             })
         action['context'] = context
         return action
+    
+    @api.onchange('partner_shipping_id', 'partner_id', 'company_id')
+    def onchange_taxes_partner_shipping_id(self): 
+        for order in self:
+            for line in order.order_line:
+                line.product_id_change()
+
+    @api.onchange('partner_shipping_id', 'partner_id')
+    def onchange_partner_shipping_id(self):
+        res = super(SaleOrder, self).onchange_partner_shipping_id()
+        for order in self:
+            for line in order.order_line:
+                line.product_id_change()
+        return res
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"

@@ -7,3 +7,4 @@ from . import stock_move
 from . import stock_picking
 from . import stock_inventory
 from . import product_packaging
+from . import account_tax
