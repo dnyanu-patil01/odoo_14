@@ -16,7 +16,7 @@
                 <field name="cost_currency_id" invisible="1"/>
                 <field name="sequence" widget="handle" readonly="1"/>
                 <field name="name" string="Product Name"/>
-                <field name="seller_id" />
+                <field name="seller_id" readonly="1"/>
                 <field name="default_code" optional="show"/>
                 <field name="barcode" optional="hide" attrs="{'readonly': [('product_variant_count', '&gt;', 1)]}"/>
                 <field name="company_id" options="{'no_create_edit': True}" groups="base.group_multi_company" optional="hide"/>
@@ -222,7 +222,7 @@
                 <field name="state"/>
             </field>
             <field name="default_code" position="after">
-                <field name="seller_id"/>
+                <field name="seller_id"  readonly="1"/>
             </field>
         </field>
     </record>

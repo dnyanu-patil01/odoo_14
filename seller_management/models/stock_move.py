@@ -3,7 +3,7 @@ from odoo import _, api, fields, models
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    seller_id = fields.Many2one("res.partner",index=True, copy=False)
+    seller_id = fields.Many2one("res.partner",index=True, copy=False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")
     
     def _get_new_picking_values(self):
         """We need this method to set Seller in Stock Picking"""
