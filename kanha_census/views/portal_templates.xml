@@ -236,7 +236,7 @@
 												<select required="" name="citizenship"
 													t-attf-class="form-control s_website_form_input #{error.get('citizenship') and 'is-invalid' or ''}">
 													<option value="">Select...</option>
-													<t t-foreach="['Indian', 'NRI', 'Overseas']"
+													<t t-foreach="['Indian', 'Overseas']"
 														t-as="citizenship_val">
 														<option t-att-value="citizenship_val"
 															t-att-selected="citizenship_val == citizenship if citizenship else citizenship_val == partner.citizenship if partner else null">
@@ -862,7 +862,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="Birth Country">Country</label>
+						<label class="col-form-label" for="Birth Country">Birth Country</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -882,7 +882,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="Birth State">State</label>
+						<label class="col-form-label" for="Birth State">Birth State</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -905,7 +905,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="Birth District">District</label>
+						<label class="col-form-label" for="Birth District">Birth District</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -919,7 +919,7 @@
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div class="col-lg-6">
-						<label class="col-form-label" for="Birth Town">Town</label>
+						<label class="col-form-label" for="Birth Town">Birth Town</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1095,7 +1095,7 @@
 					</div>
 				</div>
 
-				<div
+				<!-- <div
 					t-attf-class="col-lg-12 row form-group s_website_form_field existing_voter_id_number #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'Transfer Application') and 'd-none' or ''}">
 					<div t-attf-class="col-lg-6 ">
 						<label class="col-form-label" for="Existing Voter ID Number">Existing Voter ID Number
@@ -1161,7 +1161,7 @@
 							class="btn btn-secondary fa fa-trash-o voter_id_file_clear"
 							title="Clear" aria-label="Clear" />
 					</div>
-				</div>
+				</div> -->
 
 				<div class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-6 ">
@@ -1181,6 +1181,20 @@
 								</option>
 							</t>
 						</select>
+					</div>
+				</div>
+				<div class="col-lg-12 row form-group s_website_form_field relation_other_class d-none">
+					<div t-attf-class="col-lg-6 ">
+						<label class="col-form-label" for="Other Relation">Other Relation</label>
+						<!-- <span class="s_website_form_mark"> *</span> -->
+					</div>
+					<div
+						t-attf-class="col-xl-6 #{error.get('voter_id_number_id') and 'o_has_error' or ''}">
+						<input id="relation_other_field" type="text"
+							t-att-required="'true' if partner and partner.relation_type == 'Other' else None"
+							class="form-control s_website_form_input"
+							name="relation_other"
+							t-att-value="relation_other or partner and partner.relation_other" />
 					</div>
 				</div>
 
@@ -1281,19 +1295,21 @@
 					<div t-attf-class="col-lg-6">
 						<t t-if="partner">
 							<t t-if="not partner.declaration_form_filename">
-								<a id="download_sample_declaration_form" target='_blank'
+								<t>Please </t><a id="download_sample_declaration_form" target='_blank'
 									t-attf-href="https://raw.githubusercontent.com/rba-odoo/for-hfn-projects/main/test.jpg"
 									title="Download Declaration">
 									Download Declaration Form
 								</a>
+								<t>and upload the filled and signed document.</t>
 							</t>
 						</t>
 						<t t-else="">
-							<a id="download_sample_declaration_form" target='_blank'
-								t-attf-href="https://raw.githubusercontent.com/rba-odoo/for-hfn-projects/main/test.jpg"
-								title="Download Declaration">
-								Download Declaration Form
-							</a>
+								<t>Please </t><a id="download_sample_declaration_form" target='_blank'
+									t-attf-href="https://raw.githubusercontent.com/rba-odoo/for-hfn-projects/main/test.jpg"
+									title="Download Declaration">
+									Download Declaration Form
+								</a>
+								<t>and upload the filled and signed document.</t>
 						</t>
 					</div>
 				</div>
@@ -1306,17 +1322,9 @@
 			<div class="row">
 
 				<div
-					class="form-group col-12 s_website_form_field s_website_form_required"
-					data-type="binary" data-name="Field">
-					<a id="download_kanha_voter_id_image" target='_blank'
-						t-attf-href="https://github.com/rba-odoo/for-hfn-projects/blob/main/list_of_documents_for_voter_01_11_21.doc?raw=true"
-						aria-label="Download">List of Approved Documents </a>
-				</div>
-
-				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="Adhar Card Front">Adhar Card Front</label>
+						<label class="col-form-label" for="Aadhar Card Front">Aadhar Card Front</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1365,7 +1373,7 @@
 				<div
 					t-attf-class="col-lg-12 row form-group s_website_form_field">
 					<div t-attf-class="col-lg-3 ">
-						<label class="col-form-label" for="Adhar Card Back">Adhar Card Back</label>
+						<label class="col-form-label" for="Aadhar Card Back">Aadhar Card Back</label>
 						<span class="s_website_form_mark"> *</span>
 					</div>
 					<div
@@ -1485,6 +1493,14 @@
 								</a>
 							</t>
 						</div>
+										<div
+					class="form-group col-12 s_website_form_field s_website_form_required"
+					data-type="binary" data-name="Field">
+					<a id="download_kanha_voter_id_image" target='_blank'
+						t-attf-href="https://github.com/rba-odoo/for-hfn-projects/raw/main/list_of_documents_for_voter_01_11_21.pdf"
+						aria-label="Download">List of Approved Documents </a>
+				</div>
+
 					</div>
 					<div class="col-lg-2">
 						<t t-if="partner and partner.age_proof">
@@ -1534,6 +1550,14 @@
 								</a>
 							</t>
 						</div>
+										<div
+					class="form-group col-12 s_website_form_field s_website_form_required"
+					data-type="binary" data-name="Field">
+					<a id="download_kanha_voter_id_image" target='_blank'
+						t-attf-href="https://github.com/rba-odoo/for-hfn-projects/raw/main/list_of_documents_for_voter_01_11_21.pdf"
+						aria-label="Download">List of Approved Documents </a>
+				</div>
+
 					</div>
 					<div class="col-lg-2">
 						<t t-if="partner and partner.address_proof">

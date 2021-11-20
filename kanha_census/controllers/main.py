@@ -22,8 +22,8 @@ class CustomerPortal(CustomerPortal):
                              "application_type",
                              "declaration_form",
                              "declaration_form_filename",
-                             "existing_voter_id_number",
-                             "voter_id_file",
+                            #  "existing_voter_id_number",
+                            #  "voter_id_file",
                              "voter_id_file_filename",
                              "relation_type",
                              "relative_aadhaar_card_number",
@@ -122,7 +122,7 @@ class CustomerPortal(CustomerPortal):
         #         error["aadhar_card_number"] = _('Invalid Aadhar Number!')
         #         error_message.append(_('Invalid Aadhar Number!'))               
         #
-        #     # Adhar card exist
+        #     # Aadhar card exist
         #     ResPartner = request.env['res.partner']
         #     is_adhar_exsist = ResPartner.search([('aadhaar_card_number', '=', relative_aadhaar_card_number)])
         #     if(not is_adhar_exsist): 
@@ -220,7 +220,7 @@ class CustomerPortal(CustomerPortal):
                                   'passport_photo',
                                   'age_proof',
                                   'address_proof',
-                                  'voter_id_file',
+                                #   'voter_id_file',
                                   'declaration_form',
                                   'kanha_voter_id_image']) & set(values.keys()):
                         file = post.get(field)
@@ -369,13 +369,13 @@ class CustomerPortal(CustomerPortal):
                 values['application_type'] = ''   
                 values['declaration_form'] = ''   
                 values['declaration_form_filename'] = ''   
-                values['existing_voter_id_number'] = ''  
-                values['voter_id_file'] = ''  
+                # values['existing_voter_id_number'] = ''  
+                # values['voter_id_file'] = ''  
                 values['voter_id_file_filename'] = ''  
-            if(values.get('application_type') == 'New Application'):
-                values['existing_voter_id_number'] = ''  
-                values['voter_id_file'] = ''  
-                values['voter_id_file_filename'] = '' 
+            # if(values.get('application_type') == 'New Application'):
+            #     # values['existing_voter_id_number'] = ''  
+            #     # values['voter_id_file'] = ''  
+            #     values['voter_id_file_filename'] = '' 
             if(values.get('application_type') == 'Transfer Application'): 
                 values['declaration_form'] = ''   
                 values['declaration_form_filename'] = '' 

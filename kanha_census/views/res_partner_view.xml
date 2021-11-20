@@ -62,8 +62,8 @@
 		                              	<field name="need_new_kanha_voter_id" />
 		                              	<field name="application_type" />
 		                              	<field name="declaration_form" />
-		                              	<field name="existing_voter_id_number" />
-		                              	<field name="voter_id_file" />
+		                              	<!-- <field name="existing_voter_id_number" />
+		                              	<field name="voter_id_file" /> -->
                                 	</group>
                                 </group>
                     		</page>
