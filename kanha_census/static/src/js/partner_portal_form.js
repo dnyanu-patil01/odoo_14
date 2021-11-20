@@ -13,6 +13,7 @@ var _t = core._t;
 publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     selector: '.o_portal_partner_details',
     events: {
+		'change select[name="relation_type"]': '_onrelationOtherChange',
 		'change select[name="change_voter_id_address"]': '_onVoterAddressChange',
 		'change select[name="citizenship"]': '_onCitizenshipChange',
 		'change select[name="application_type"]': '_onChangeVoterApplicationType',
@@ -116,6 +117,18 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		 ev.preventDefault();
 	},
 	
+	_onrelationOtherChange: function (ev) {
+		// document.getElementById("relation_type_field").value = "";
+        // $(ev.currentTarget).closest('form').find('select[name="relation_type"]').trigger('change');
+	
+		var relation_change = this.$('select[name="relation_type"]');
+		if(relation_change.val() == 'Other'){
+			$('.relation_other_class').removeClass('d-none');
+		}
+		else{
+			$('.relation_other_class').addClass('d-none');
+		}
+	},
 	/**
      * Show/Hide Voter ID details based on selected value of Change Voter ID address
      *
@@ -300,12 +313,12 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#declaration_form_field').attr('required', true);
 			
 			// Hide Existing Voter ID number and Voter ID file
-			$('.existing_voter_id_number').addClass('d-none');
-			$('#existing_voter_id_number_field').removeAttr('required');
+			// $('.existing_voter_id_number').addClass('d-none');
+			// $('#existing_voter_id_number_field').removeAttr('required');
 			//document.getElementById("existing_voter_id_number_field").value = "";
 			
-			$('.voter_id_file').addClass('d-none');
-			$('#voter_id_file_field').removeAttr('required');
+			// $('.voter_id_file').addClass('d-none');
+			// $('#voter_id_file_field').removeAttr('required');
 			//document.getElementById("voter_id_file_field").value = "";
 			//document.getElementById("voter_id_file_filename_field").value = "";
 			
@@ -318,22 +331,22 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			//document.getElementById("declaration_form_filename_field").value = "";
 			
 			// Show Existing Voter ID number and Voter ID file
-			$('.existing_voter_id_number').removeClass('d-none');
-			$('#existing_voter_id_number_field').attr('required', true);
+			// $('.existing_voter_id_number').removeClass('d-none');
+			// $('#existing_voter_id_number_field').attr('required', true);
 			
-			$('.voter_id_file').removeClass('d-none');
-			$('#voter_id_file_field').attr('required', true);
+			// $('.voter_id_file').removeClass('d-none');
+			// $('#voter_id_file_field').attr('required', true);
 			
 		}
 		else{
 			
-			// Hide Existing Voter ID number and Voter ID file
-			$('.existing_voter_id_number').addClass('d-none');
-			$('#existing_voter_id_number_field').removeAttr('required');
-			//document.getElementById("existing_voter_id_number_field").value = "";
+			// // Hide Existing Voter ID number and Voter ID file
+			// $('.existing_voter_id_number').addClass('d-none');
+			// $('#existing_voter_id_number_field').removeAttr('required');
+			// //document.getElementById("existing_voter_id_number_field").value = "";
 
-			$('.voter_id_file').addClass('d-none');
-			$('#voter_id_file_field').removeAttr('required');
+			// $('.voter_id_file').addClass('d-none');
+			// $('#voter_id_file_field').removeAttr('required');
 			//document.getElementById("voter_id_file_field").value = "";
 			//document.getElementById("voter_id_file_filename_field").value = "";
 			
@@ -363,8 +376,13 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			
 			// Remove Mandatory validation
 			$('#aadhaar_card_number_field').removeAttr('required');
+			$("label[for='Aadhaar Card Number']").next(".s_website_form_mark").addClass('d-none')
+			$("label[for='Aadhar Card Front']").next(".s_website_form_mark").addClass('d-none')
+			$("label[for='Aadhar Card Back']").next(".s_website_form_mark").addClass('d-none')
 			$('#adhar_card_file_front').removeAttr('required');
+			$("#adhar_card_file_front").next(".s_website_form_mark").addClass('d-none')
 			$('#adhar_card_file_back').removeAttr('required');
+			$("#adhar_card_file_back").next(".s_website_form_mark").addClass('d-none')
 			
 			// Show Kanha Address tab if Kanha Voter ID tab hides when Voter ID tab in active
 			var is_kanha_voter_tab_active = $('a#tab-kanha_voter_id').hasClass('active');
@@ -405,6 +423,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			//$('#passport_number_input').attr('disabled', true);
 			
 			// Add Required attribute
+			$("label[for='Aadhaar Card Number']").next(".s_website_form_mark").removeClass('d-none')
+			$("label[for='Aadhar Card Front']").next(".s_website_form_mark").removeClass('d-none')
+			$("label[for='Aadhar Card Back']").next(".s_website_form_mark").removeClass('d-none')
 			$('#aadhaar_card_number_field').attr('required', true);
 			$('#adhar_card_file_front').attr('required', true);
 			$('#adhar_card_file_back').attr('required', true);

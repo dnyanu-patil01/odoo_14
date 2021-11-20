@@ -55,7 +55,9 @@
 		    name="Kanha Location"
 		    parent="menu_kanha_census_root"
 		    action="kanha_location_action"
-		    sequence="1"/>
+		    sequence="100"/>
 		    
+
+
 	</data>
 </odoo>
