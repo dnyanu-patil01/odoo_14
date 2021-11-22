@@ -176,7 +176,7 @@ class CustomerPortal(CustomerPortal):
         else:
             return False
 
-    @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="public", methods=['POST'], website=True)
+    @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="user", methods=['POST'], website=True)
     def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         request.params.pop('csrf_token', None)
         ResPartner = request.env['res.partner']
@@ -294,7 +294,7 @@ class CustomerPortal(CustomerPortal):
             'error_fields': error,
             })
 
-    @http.route('/website_form_family/<int:partner_id>/<string:model_name>', type='http', auth="public", website=True)
+    @http.route('/website_form_family/<int:partner_id>/<string:model_name>', type='http', auth="user", website=True)
     def family_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         ResPartner = request.env['res.partner']
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
@@ -346,7 +346,7 @@ class CustomerPortal(CustomerPortal):
             })
         return values
     
-    @http.route(['/vehicle_details_form'], type='http', auth="public", methods=['POST'], website=True)
+    @http.route(['/vehicle_details_form'], type='http', auth="user", methods=['POST'], website=True)
     def get_vehicle_details_form(self, **post):
         return request.env['ir.ui.view']._render_template("kanha_census.vehicle_details_model_form", post)
 
