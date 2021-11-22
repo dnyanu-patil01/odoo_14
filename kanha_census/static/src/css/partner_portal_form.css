@@ -59,7 +59,7 @@
 
 @media(max-width:1023px){
     .kanha-portal-tab-wrap .tab-content > .tab-pane {
-        display: block !important;
+        display: block;
         opacity: 1;
         margin-bottom: 10px;
     }
