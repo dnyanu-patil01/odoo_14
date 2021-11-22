@@ -5,6 +5,15 @@ import re
 from odoo import http, tools, _
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
+from odoo.addons.website.controllers.main import Website
+
+
+class Website(Website):
+
+    #Requires Login To View Home Page
+    @http.route(auth="user")
+    def index(self, **kw):
+        return super(Website, self).index(**kw)
 
 
 class CustomerPortal(CustomerPortal):
