@@ -150,7 +150,7 @@
                                 <label for="partner_id" string="Contact" style="font-weight:bold;"
                                        attrs="{'invisible': [('picking_type_code', 'in', ['incoming', 'outgoing'])]}"/>
                             </div>
-                            <field name="partner_id" widget="res_partner_many2one" context="{'show_address': 1, 'default_type':'delivery'}" options="{'always_reload': True,'no_create': True,'no_open':True}" nolabel="1"/>
+                            <field name="partner_id" widget="res_partner_many2one" context="{'show_address': 1, 'default_type':'delivery'}" options="{'always_reload': True,'no_create': True,'no_open':True}" nolabel="1" readonly="1"/>
                             <field name="picking_type_id" options="{'no_create': True,'no_open':True}" attrs="{'invisible': [('hide_picking_type', '=', True)], 'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="location_id" options="{'no_create': True,'no_open':True}" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('picking_type_code', '=', 'incoming')]}"/>
                             <field name="carrier_id" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}" options="{'no_create': True, 'no_open': True}"/>
@@ -168,15 +168,17 @@
                                 <field name="scheduled_date" attrs="{'required': [('id', '!=', False)]}"
                                     decoration-warning="state not in ('done', 'cancel') and scheduled_date &lt; now"
                                     decoration-danger="state not in ('done', 'cancel') and scheduled_date &lt; current_date"
-                                    decoration-bf="state not in ('done', 'cancel') and (scheduled_date &lt; current_date or scheduled_date &lt; now)"/>
+                                    decoration-bf="state not in ('done', 'cancel') and (scheduled_date &lt; current_date or scheduled_date &lt; now)"
+                                    readonly="1"/>
                                 <field name="json_popover" widget="stock_rescheduling_popover" attrs="{'invisible': [('json_popover', '=', False)]}"/>
                             </div>
                             <field name="date_deadline" 
                                 attrs="{'invisible': ['|', ('state', 'in', ('done', 'cancel')), ('date_deadline', '=', False)]}"
                                 decoration-danger="date_deadline and date_deadline &lt; current_date"
-                                decoration-bf="date_deadline and date_deadline &lt; current_date"/>
+                                decoration-bf="date_deadline and date_deadline &lt; current_date"
+                                readonly="1"/>
                             <field name="date_done" string="Effective Date" attrs="{'invisible': [('state', '!=', 'done')]}"/>
-                            <field name="origin" placeholder="e.g. PO0032"/>
+                            <field name="origin" placeholder="e.g. PO0032" readonly="1"/>
                             <field name="owner_id" groups="stock.group_tracking_owner"
                                    attrs="{'invisible': [('picking_type_code', '!=', 'incoming')]}"/>
                         </group>
@@ -302,7 +304,7 @@
                             <group>
                                 <group string="Other Information" name="other_infos">
                                     <field name="picking_type_code" invisible="1"/>
-                                    <field name="move_type" attrs="{'invisible': [('picking_type_code', '=', 'incoming')]}"/>
+                                    <field name="move_type" attrs="{'invisible': [('picking_type_code', '=', 'incoming')]}" readonly="1"/>
                                     <field name="group_id" groups="base.group_no_one"/>
                                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" force_save="1"/>
                                 </group>
