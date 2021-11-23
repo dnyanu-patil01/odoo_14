@@ -191,7 +191,7 @@
             </xpath>
         </field>
     </record>
-
+<!-- Added If To Filter Only Valid Transfer -->
     <record id="action_picking_send_to_shipper" model="ir.actions.server">
         <field name="name">Send To Shipper</field>
         <field name="model_id" ref="stock.model_stock_picking"/>
@@ -200,9 +200,11 @@
         <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">
-        if records:
-            for rec in records:
-                rec.send_to_shipper()
+if records:
+    for rec in records:
+        if rec.shiprocket_order_id == False and rec.delivery_type == 'shiprocket' and rec.state == 'done' and rec.picking_type_code != 'incoming':
+            rec.send_to_shipper()
+        
         </field>
     </record>
     <record id="action_shiprocket_update_awb" model="ir.actions.server">
