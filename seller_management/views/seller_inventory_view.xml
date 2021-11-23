@@ -160,7 +160,7 @@
                                 <field name="carrier_tracking_ref" class="oe_inline" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}"/>
                             </div>
                             <field name="location_dest_id" options="{'no_create': True,'no_open':True}" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('picking_type_code', '=', 'outgoing')]}"/>
-                            <field name="backorder_id" attrs="{'invisible': [('backorder_id','=',False)]}"/>
+                            <field name="backorder_id" options="{'no_create': True,'no_open':True}" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
                         </group>
                         <group>
                             <label for="scheduled_date"/>

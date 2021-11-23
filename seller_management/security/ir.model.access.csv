@@ -9,8 +9,8 @@ access_account_journal_seller,access.account.journal.seller,account.model_accoun
 access_account_partial_reconcile_seller,access.account.partial.reconcile.seller,account.model_account_partial_reconcile,seller_management.group_sellers_management_user,1,1,1,0
 access_account_payment_seller,access.account.payment.seller,account.model_account_payment,seller_management.group_sellers_management_user,1,1,1,0
 access_account_tax_seller,access.account.tax.seller,account.model_account_tax,seller_management.group_sellers_management_user,1,1,1,0
-access_stock_picking_seller,access.stock.picking.seller,stock.model_stock_picking,seller_management.group_sellers_management_user,1,1,0,0
-access_stock_move_seller,access.stock.move.seller,stock.model_stock_move,seller_management.group_sellers_management_user,1,1,0,0
+access_stock_picking_seller,access.stock.picking.seller,stock.model_stock_picking,seller_management.group_sellers_management_user,1,1,1,0
+access_stock_move_seller,access.stock.move.seller,stock.model_stock_move,seller_management.group_sellers_management_user,1,1,1,0
 access_stock_location_seller,access.stock.location.seller,stock.model_stock_location,seller_management.group_sellers_management_user,1,1,1,0
 access_stock_rule_seller,access.stock.rule.seller,stock.model_stock_rule,seller_management.group_sellers_management_user,1,0,0,0
 access_stock_warehouse_seller,access.stock.warehouse.seller,stock.model_stock_inventory,seller_management.group_sellers_management_user,1,0,0,0
@@ -38,3 +38,5 @@ access_stock_change_product_qty,access.stock.change.product.qty,stock.model_stoc
 access_stock_warehouse_orderpoint_seller,access.stock.warehouse.orderpoint.seller,stock.model_stock_warehouse_orderpoint,seller_management.group_sellers_management_user,1,1,1,0
 access_seller_stock_backorder_confirmation_line,access.seller.backorder.confirmation.line,stock.model_stock_backorder_confirmation_line,seller_management.group_sellers_management_user,1,1,1,0
 access_seller_stock_backorder_confirmation,access.seller.backorder.confirmation,stock.model_stock_backorder_confirmation,seller_management.group_sellers_management_user,1,1,1,0
+access_seller_stock_return_picking_line,access.seller.return.picking.line,stock.model_stock_return_picking_line,seller_management.group_sellers_management_user,1,1,1,1
+access_seller_stock_return_picking,access.seller.stock.return.picking,stock.model_stock_return_picking,seller_management.group_sellers_management_user,1,1,1,0
