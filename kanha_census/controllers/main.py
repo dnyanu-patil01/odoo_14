@@ -167,9 +167,9 @@ class CustomerPortal(CustomerPortal):
         #     2.It should not start with 0 and 1.
         #     3.It should not contain any alphabet and special characters.
         #     4.It should have white space after every 4 digits.
-        regex = ("^[2-9]{1}[0-9]{3}\\" + "s[0-9]{4}\\s[0-9]{4}$")
+        regex = ("^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$")
         p = re.compile(regex)
-        if(re.search(p, emp_aadhaar)) and len(emp_aadhaar) == 14:
+        if(re.search(p, emp_aadhaar)) and len(emp_aadhaar) == 12:
             return True
         else:
             return False
