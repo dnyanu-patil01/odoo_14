@@ -74,7 +74,7 @@
             <field name="name">stock.picking.view.tree</field>
             <field name="model">stock.picking</field>
             <field name="arch" type="xml">
-                <tree string="Sellers Stock Transfer" delete="0">
+                <tree string="Sellers Stock Transfer" create="0" delete="0">
                     <field name="priority" optional="show" widget="priority" nolabel="1"/>
                     <field name="name" decoration-bf="1"/>
                     <field name="location_id" options="{'no_create': True}" string="From" groups="stock.group_stock_multi_locations" optional="show"/>
@@ -98,7 +98,7 @@
             <field name="model">stock.picking</field>
             <field eval="15" name="priority"/>
             <field name="arch" type="xml">
-                <form string="Seller Transfer">
+                <form string="Seller Transfer"  create="0" delete="0" duplicate="0">
                 <field name="is_locked" invisible="1"/>
                 <field name="show_mark_as_todo" invisible="1"/>
                 <field name="show_check_availability" invisible="1"/>

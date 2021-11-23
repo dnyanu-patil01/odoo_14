@@ -388,6 +388,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			var is_kanha_voter_tab_active = $('a#tab-kanha_voter_id').hasClass('active');
 			// Hide Kanha Voter ID tab
 			$('#tab-kanha_voter_id').addClass('d-none');
+			$('#pane-kanha_voter_id').addClass('d-none');
 			if(is_kanha_voter_tab_active)
 			{
 				$('a.active').removeClass("active");
@@ -432,6 +433,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			
 			// Hide Kanha Voter ID tab
 			$('#tab-kanha_voter_id').removeClass('d-none');
+			$('#pane-kanha_voter_id').removeClass('d-none');
 			
 			/*Remove Disabled property for the fields to 
 			validate Mandatory fields when this tab is active*/

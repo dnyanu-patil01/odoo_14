@@ -188,7 +188,7 @@
 												data-type="char" data-name="Field">
 												<input id="aadhaar_card_number_field" type="text"
 													t-attf-class="form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}"
-													name="aadhaar_card_number" placeholder="ex: 2345 6789 1100"
+													name="aadhaar_card_number" placeholder="ex: 234567891100"
 													t-att-required="None if partner and partner.citizenship == 'Overseas' else 'true'"
 													t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
 											</div>

@@ -135,10 +135,11 @@ class Dashboard(models.Model):
 
         if mode == 'seller':
             domain = [('seller', '=', True)]
+    
         
-            views = [(self.env.ref('sale.view_order_tree').id, 'list'),
-                            (self.env.ref('sale.view_order_form').id, 'form')]
-        
+            views = [(self.env.ref('seller_management.view_seller_tree').id, 'list'),
+                        (self.env.ref('seller_management.view_seller_form').id, 'form')]
+
             return {'name': ('Sellers'),
                     'type': 'ir.actions.act_window',
                     'res_model': 'res.partner',
@@ -147,8 +148,8 @@ class Dashboard(models.Model):
                     'domain': domain,
                     'target': 'current'
                 }
-        views = [(self.env.ref('seller_management.view_seller_tree').id, 'list'),
-                        (self.env.ref('seller_management.view_seller_form').id, 'form')]
+        views = [(self.env.ref('product.product_template_tree_view').id, 'list'),
+                            (self.env.ref('product.product_template_only_form_view').id, 'form')]
     
         return {'name': ('Seller Products'),
                 'type': 'ir.actions.act_window',

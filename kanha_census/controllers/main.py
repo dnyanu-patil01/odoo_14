@@ -5,6 +5,15 @@ import re
 from odoo import http, tools, _
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
+from odoo.addons.website.controllers.main import Website
+
+
+class Website(Website):
+
+    #Requires Login To View Home Page
+    @http.route(auth="user")
+    def index(self, **kw):
+        return super(Website, self).index(**kw)
 
 
 class CustomerPortal(CustomerPortal):
@@ -24,7 +33,7 @@ class CustomerPortal(CustomerPortal):
                              "declaration_form_filename",
                             #  "existing_voter_id_number",
                             #  "voter_id_file",
-                             "voter_id_file_filename",
+                            #  "voter_id_file_filename",
                              "relation_type",
                              "relative_aadhaar_card_number",
                              "relative_name",
@@ -158,9 +167,9 @@ class CustomerPortal(CustomerPortal):
         #     2.It should not start with 0 and 1.
         #     3.It should not contain any alphabet and special characters.
         #     4.It should have white space after every 4 digits.
-        regex = ("^[2-9]{1}[0-9]{3}\\" + "s[0-9]{4}\\s[0-9]{4}$")
+        regex = ("^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$")
         p = re.compile(regex)
-        if(re.search(p, emp_aadhaar)) and len(emp_aadhaar) == 14:
+        if(re.search(p, emp_aadhaar)) and len(emp_aadhaar) == 12:
             return True
         else:
             return False
@@ -176,7 +185,7 @@ class CustomerPortal(CustomerPortal):
         else:
             return False
 
-    @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="public", methods=['POST'], website=True)
+    @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="user", methods=['POST'], website=True)
     def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         request.params.pop('csrf_token', None)
         ResPartner = request.env['res.partner']
@@ -294,7 +303,7 @@ class CustomerPortal(CustomerPortal):
             'error_fields': error,
             })
 
-    @http.route('/website_form_family/<int:partner_id>/<string:model_name>', type='http', auth="public", website=True)
+    @http.route('/website_form_family/<int:partner_id>/<string:model_name>', type='http', auth="user", website=True)
     def family_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         ResPartner = request.env['res.partner']
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
@@ -346,7 +355,7 @@ class CustomerPortal(CustomerPortal):
             })
         return values
     
-    @http.route(['/vehicle_details_form'], type='http', auth="public", methods=['POST'], website=True)
+    @http.route(['/vehicle_details_form'], type='http', auth="user", methods=['POST'], website=True)
     def get_vehicle_details_form(self, **post):
         return request.env['ir.ui.view']._render_template("kanha_census.vehicle_details_model_form", post)
 
@@ -371,7 +380,7 @@ class CustomerPortal(CustomerPortal):
                 values['declaration_form_filename'] = ''   
                 # values['existing_voter_id_number'] = ''  
                 # values['voter_id_file'] = ''  
-                values['voter_id_file_filename'] = ''  
+                # values['voter_id_file_filename'] = ''  
             # if(values.get('application_type') == 'New Application'):
             #     # values['existing_voter_id_number'] = ''  
             #     # values['voter_id_file'] = ''  
