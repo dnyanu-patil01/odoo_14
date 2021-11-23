@@ -33,7 +33,7 @@ class CustomerPortal(CustomerPortal):
                              "declaration_form_filename",
                             #  "existing_voter_id_number",
                             #  "voter_id_file",
-                             "voter_id_file_filename",
+                            #  "voter_id_file_filename",
                              "relation_type",
                              "relative_aadhaar_card_number",
                              "relative_name",
@@ -380,7 +380,7 @@ class CustomerPortal(CustomerPortal):
                 values['declaration_form_filename'] = ''   
                 # values['existing_voter_id_number'] = ''  
                 # values['voter_id_file'] = ''  
-                values['voter_id_file_filename'] = ''  
+                # values['voter_id_file_filename'] = ''  
             # if(values.get('application_type') == 'New Application'):
             #     # values['existing_voter_id_number'] = ''  
             #     # values['voter_id_file'] = ''  
