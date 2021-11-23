@@ -58,7 +58,7 @@ class ProductTemplate(models.Model):
         shopify_product_template_ids = self.env['shopify.product.template.ept'].search([('product_tmpl_id','in',active_template_ids)]).ids
         import_product_obj = self.env['shopify.process.import.export'].create({
             'shopify_is_update_basic_detail':True,
-            'shopify_is_update_price':True,
+            'shopify_is_set_price':True,
             'shopify_is_set_image':True,
             'shopify_is_publish':'publish_product_web',
         })

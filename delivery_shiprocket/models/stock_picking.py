@@ -362,7 +362,9 @@ class StockPicking(models.Model):
         return True
 
     def action_get_cancel_reason(self):
-        picking_ids = self.env.context.get('active_ids') or False
+        picking_ids = False
+        if self.env.context.get('active_model') == 'stock.picking':
+            picking_ids = self.env.context.get('active_ids') or False
         if not picking_ids:
             ctx={'picking_ids':self.ids}
         else:
@@ -377,7 +379,9 @@ class StockPicking(models.Model):
         }
 
     def update_shiprocket_details_in_transfer(self):
-        picking_ids = self.env.context.get('active_ids') or False
+        picking_ids = False
+        if self.env.context.get('active_model') == 'stock.picking':
+            picking_ids = self.env.context.get('active_ids') or False
         if picking_ids:
             for picking in self.browse(picking_ids):
                 picking.with_delay().get_order_details()
@@ -463,7 +467,9 @@ class StockPicking(models.Model):
             return datetime.strptime(ndr_raised,'%Y-%m-%d %H:%M:%S')
 
     def action_ndr(self):
-        picking_ids = self.env.context.get('active_ids') or False
+        picking_ids = False
+        if self.env.context.get('active_model') == 'stock.picking':
+            picking_ids = self.env.context.get('active_ids') or False
         if not picking_ids:
             ctx={'picking_ids':self.ids}
         else:
@@ -479,7 +485,9 @@ class StockPicking(models.Model):
 
     def action_update_pickup_location(self):
         '''popup wizard to choose new pickup location and update the same in shiprocket'''
-        picking_ids = self.env.context.get('active_ids') or False
+        picking_ids = False
+        if self.env.context.get('active_model') == 'stock.picking':
+            picking_ids = self.env.context.get('active_ids') or False
         if not picking_ids:
             ctx={'picking_ids':self.ids}
         else:

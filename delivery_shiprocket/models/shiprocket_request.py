@@ -1040,6 +1040,21 @@ class ShipRocket:
         if not picking.channel_id:
             picking.write({'response_comment':"Please Select Shiprocket Channel Before Validate."})
             return False
+        if data:
+            data.update({ 
+                "vendor_details": {
+                "email": picking.pickup_location.email,
+                "phone": int(picking.pickup_location.phone),
+                "name": picking.pickup_location.name,
+                "address": picking.pickup_location.address,
+                "city": picking.pickup_location.city,
+                "state": picking.pickup_location.state_id.name,
+                "country": picking.pickup_location.country_id.name,
+                "pin_code": int(picking.pickup_location.pin_code),
+                "pickup_location": picking.pickup_location.pickup_location,},
+                "pickup_location": picking.pickup_location.pickup_location,
+})
+        
         payload = json.dumps(data)
         order_creation_url = "shipments/create/forward-shipment"
         url = url_join(API_BASE_URL, order_creation_url)
@@ -1047,9 +1062,11 @@ class ShipRocket:
             response = requests.post(url, headers=self.headers, data=payload)
             response_dict = response.json()
             if "errors" in response_dict:
-                return {'response_comment':self.format_error_message(response_dict)}
+                picking.write({'response_comment':self.format_error_message(response_dict)})
+                return
             if "status" in response_dict and response_dict['status'] == 0:
-                return {'response_comment':self.format_error_message(response_dict)}
+                picking.write({'response_comment':self.format_error_message(response_dict)})
+                return
             if response.status_code == 200 and response_dict['status'] == 1:
                 response_data = {}
                 if 'order_id' in response_dict['payload'] and 'shipment_id' in response_dict['payload']:
