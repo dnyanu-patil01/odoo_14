@@ -13,6 +13,7 @@ class CommonLogBookEpt(models.Model):
     module = fields.Selection([('amazon_ept', 'Amazon Connector'),
                                ('woocommerce_ept', 'Woocommerce Connector'),
                                ('shopify_ept', 'Shopify Connector'),
+                               ('hc_shopify_ept', 'Heartyculture Shopify Connector'),
                                ('magento_ept', 'Magento Connector'),
                                ('bol_ept', 'Bol Connector'),
                                ('ebay_ept', 'Ebay Connector'),
