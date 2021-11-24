@@ -81,6 +81,20 @@ class StockPicking(models.Model):
     ndr_history_line = fields.One2many("shiprocket.ndr.history.line","picking_id",readonly=True,copy=False)
     is_ndr = fields.Boolean('Is NDR',readonly=True,copy=False)
 
+
+    @api.model
+    def create(self, vals):
+        #To Pass pickup location,carrier_id, and channel id ile Creating Backorders
+        if 'backorder_id' in vals and vals['backorder_id'] != False:
+            orgin = self.browse(int(vals['backorder_id']))
+            if orgin.pickup_location:
+                vals.update({'pickup_location':orgin.pickup_location.id})
+            if orgin.channel_id:
+                vals.update({'channel_id':orgin.channel_id.id})
+            if orgin.carrier_id:
+                vals.update({'carrier_id':orgin.carrier_id.id})
+        return super(StockPicking ,self).create(vals)
+
     def _send_confirmation_email(self):
         super(StockPicking, self)._send_confirmation_email()
         for pick in self:
@@ -277,6 +291,12 @@ class StockPicking(models.Model):
         return_pick_wiz._onchange_picking_id()
         return_picking_id, dummy = return_pick_wiz.with_context(active_id=self.id)._create_returns()
         return_picking = self.env['stock.picking'].browse(return_picking_id)
+        return_picking.write(
+            {
+                "pickup_location": self.pickup_location.id,
+                "channel_id": self.channel_id.id,
+            }
+        )
         return_picking.action_confirm()
         for rec in return_picking.move_lines:
             rec.quantity_done = rec.product_uom_qty
