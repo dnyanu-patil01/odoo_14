@@ -100,7 +100,7 @@ class ShiprocketBulkProcess(models.Model):
         self._check_stock_picking_ids()
         self.write({"state": "waiting_awb"})
         self.with_delay().generate_awb_bulk()
-        self.create_log_lines()
+        
         
         
     def generate_awb_bulk(self):
@@ -110,7 +110,7 @@ class ShiprocketBulkProcess(models.Model):
         for picking in self.stock_picking_ids.filtered(lambda r: r.is_awb_generated == False):
             picking.with_delay(priority=1,channel='create_awb').bulk_awb_creation_request(self)
         self.with_delay(priority=30,channel='create_awb').send_mail_on_queue_completion()
-
+        self.with_delay(priority=50,channel='create_awb').create_log_lines()
     def shiprocket_get_ready_to_manifest(self):
         self._check_stock_picking_ids()
         self.write({"state": "waiting_to_manifest"})
@@ -159,7 +159,7 @@ class ShiprocketBulkProcess(models.Model):
                             response_details+=str(res)
         self.write({"response_comment": str(response_details)})
         self.with_delay().send_mail_on_queue_completion()
-        self.create_log_lines()
+        self.with_delay(priority=30).create_log_lines()
         return True
 
     def print_manifest_bulk(self):

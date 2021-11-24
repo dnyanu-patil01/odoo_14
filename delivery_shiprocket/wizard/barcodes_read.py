@@ -64,7 +64,7 @@ class WizBarcodesRead(models.TransientModel):
                             response_details+=str(res)
         self.bulk_process_id.write({"response_comment": str(response_details)})
         self.bulk_process_id.with_delay().send_mail_on_queue_completion()
-        self.bulk_process_id.create_log_lines()
+        self.bulk_process_id.with_delay(priority=30).create_log_lines()
         return True
 
 
