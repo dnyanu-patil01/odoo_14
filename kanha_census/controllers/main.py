@@ -227,6 +227,8 @@ class CustomerPortal(CustomerPortal):
                 for field in set(['adhar_card',
                                   'adhar_card_back_side',
                                   'passport_photo',
+                                  'indian_visa',
+                                  'passport_id_image',
                                   'age_proof',
                                   'address_proof',
                                 #   'voter_id_file',
@@ -340,6 +342,7 @@ class CustomerPortal(CustomerPortal):
     def get_default_values_for_kanha(self, partner_id=None):
         values = {}
         country = request.env['res.country'].sudo().search([])
+        country_india = request.env['res.country'].sudo().browse(104)
         states = request.env['res.country.state'].sudo().search([])
         # Fetch the record who doesnt have any child records
         kanha_location_parent_ids = request.env['kanha.location'].sudo().search([]).parent_id.ids
@@ -349,7 +352,7 @@ class CustomerPortal(CustomerPortal):
             'page_name': 'family',
             'kanha_locations': kanha_locations_nth_child,
             'birth_countries': country,
-            'countries': country,
+            'countries': country_india,
             'error': {},
             'error_message': [],
             })

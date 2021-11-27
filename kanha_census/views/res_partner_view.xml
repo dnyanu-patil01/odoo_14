@@ -73,7 +73,9 @@
 		                            <group string="Documents" name="documents">
 		                                <field name="adhar_card" />
 		                                <field name="adhar_card_back_side" />
+		                                <field name="indian_visa"/>
 		                                <field name="passport_photo"/>
+		                                <field name="passport_id_image"/>
 		                                <field name="address_proof" />
 		                              	<field name="age_proof" />
 		                            </group>
