@@ -39,11 +39,21 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'change .address_proof_upload': '_onFileUploadChange',
 		'click .address_proof_browse': '_onBrowseFile',
 		'click .address_proof_clear': '_onClearFile',
+		// Indian Visa upload
+		'click .indian_visa_edit': '_onBrowseFile',
+		'change .indian_visa_upload': '_onUploadIndianVisa',
+		'click .indian_visa_browse': '_onBrowseFile',
+		'click .indian_visa_clear': '_onClearFile',
 		// Passport Photot upload
 		'click .passport_photo_edit': '_onBrowseFile',
 		'change .passport_photo_upload': '_onUploadPassportPhoto',
 		'click .passport_photo_browse': '_onBrowseFile',
 		'click .passport_photo_clear': '_onClearFile',
+		// Passport ID photo upload
+		'click .passport_id_image_edit': '_onBrowseFile',
+		'change .passport_id_image_upload': '_onUploadPassportIDImage',
+		'click .passport_id_image_browse': '_onBrowseFile',
+		'click .passport_id_image_clear': '_onClearFile',
 		// Kanha voter ID image upload
 		'click .kanha_voter_id_image_browse': '_onBrowseFile',
 		'change .kanha_voter_id_image_upload': '_onUploadKanhaVoterIdImage',
@@ -75,14 +85,18 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keydown #adhar_card_file_back': '_onRestrictInput',
 		'keypress #passport_photo_file': '_onRestrictInput',
 		'keydown #passport_photo_file': '_onRestrictInput',
+		'keypress #passport_id_image_file': '_onRestrictInput',
+		'keydown #passport_id_image_file': '_onRestrictInput',
+		'keypress #indian_visa_file': '_onRestrictInput',
+		'keydown #indian_visa_file': '_onRestrictInput',
 		'keypress #age_proof_file': '_onRestrictInput',
 		'keydown #age_proof_file': '_onRestrictInput',
 		'keypress #address_proof_file': '_onRestrictInput',
 		'keydown #address_proof_file': '_onRestrictInput',
 		'keypress #kanha_voter_id_image_filename_field': '_onRestrictInput',
 		'keydown #kanha_voter_id_image_filename_field': '_onRestrictInput',
-		'keypress #voter_id_file_filename_field': '_onRestrictInput',
-		'keydown #voter_id_file_filename_field': '_onRestrictInput',
+		// 'keypress #voter_id_file_filename_field': '_onRestrictInput',
+		// 'keydown #voter_id_file_filename_field': '_onRestrictInput',
 		'keypress #declaration_form_filename_field': '_onRestrictInput',
 		'keydown #declaration_form_filename_field': '_onRestrictInput',
 		// Form submit
@@ -370,9 +384,14 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#change_voter_id_address_field').change();
 			$('#already_have_kanha_voter_id_field').val("")
 			$('#already_have_kanha_voter_id_field').change()
-			// Show Passport Number and add Required attribute
+			// Show Passport Number, Passport ID image and Visa image  and add Required attribute
 			$('.passport_field').removeClass('d-none');
 			$('#passport_number_input').attr('required', true);
+			$('.passport_id_image_div').removeClass('d-none');
+			$('#passport_id_image').attr('required', true);
+			$('.indian_visa_div').removeClass('d-none');
+			$('#indian_visa').attr('required', true);
+
 			
 			// Remove Mandatory validation
 			$('#aadhaar_card_number_field').removeAttr('required');
@@ -421,6 +440,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			// Hide Passport Number and add Required attribute
 			$('.passport_field').addClass('d-none');
 			$('#passport_number_input').removeAttr('required');
+			$('.passport_id_image_div').addClass('d-none');
+			$('#passport_id_image').removeAttr('required');
+			$('.indian_visa_div').addClass('d-none');
+			$('#indian_visa').removeAttr('required');
 			//$('#passport_number_input').attr('disabled', true);
 			
 			// Add Required attribute
@@ -455,7 +478,70 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}*/
 		}
     },
+	
+	/**
+     * Limit the size and type of a file upload. Maximum file size is 2 MB.
+     *
+     * @private
+     */
+	 _onUploadPassportIDImage: function (ev) {
+		var files = ev.target.files;
+		if (!files.length) {
+            return;
+        }
+		var file = files[0]
+		var mimeType = file.type
+		if(mimeType == 'image/jpeg'){
+		  	var fileSize = file.size / 1024 / 1024; // in MiB
+	  		if (fileSize > 2) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
+				// Reset fields
+	        	document.getElementsByName("passport_id_image_filename").value = "";
+				document.getElementsByName("passport_id_iamge").value = "";
+			}
+			else{
+				var file_name = ev.target.files[0].name
+				var $form = $(ev.currentTarget).closest('form');
+				var filename_input = $(ev.target).attr('filename_input')
+				$form.find('.'+filename_input).val(file_name);
+			}
+		}
+		else{
+			Dialog.alert(null, "Accepts only JPEG images.");
+		}
+	},
 
+	/**
+     * Limit the size and type of a file upload. Maximum file size is 2 MB.
+     *
+     * @private
+     */
+	 _onUploadIndianVisa: function (ev) {
+		var files = ev.target.files;
+		if (!files.length) {
+            return;
+        }
+		var file = files[0]
+		var mimeType = file.type
+		if(mimeType == 'image/jpeg'){
+		  	var fileSize = file.size / 1024 / 1024; // in MiB
+	  		if (fileSize > 2) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
+				// Reset fields
+	        	document.getElementsByName("indian_visa_filename").value = "";
+				document.getElementsByName("indian_visa").value = "";
+			}
+			else{
+				var file_name = ev.target.files[0].name
+				var $form = $(ev.currentTarget).closest('form');
+				var filename_input = $(ev.target).attr('filename_input')
+				$form.find('.'+filename_input).val(file_name);
+			}
+		}
+		else{
+			Dialog.alert(null, "Accepts only JPEG images.");
+		}
+	},
 	/**
      * Limit the size and type of a file upload. Maximum file size is 2 MB.
      *
