@@ -25,7 +25,7 @@
             </li>
         </xpath>
     </template>
-    <!-- Family Members list view -->
+    <!-- Family Members list view --> 
     <template id="portal_my_family_members" name="Family Members">
         <t t-call="portal.portal_layout">
             <t t-call="kanha_census.kanha_partner_topbar" />
@@ -722,7 +722,7 @@
                 </div>
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field kanha_voter_id_image #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'Yes') and 'd-none' or ''}">
                     <div t-attf-class="col-lg-6 ">
-                        <label class="col-form-label" for="Voter ID Image">Voter ID Image</label>
+                        <label class="col-form-label" for="Voter ID Image">Voter ID  Front and Back Side Image</label>
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-4 #{error.get('voter_id_number_id') and 'o_has_error' or ''}">
@@ -1004,7 +1004,8 @@
                 </div>
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field passport_id_image_div d-none">
                     <div t-attf-class="col-lg-3 ">
-                        <label class="col-form-label" for="Passport ID">Passport ID Image</label>
+                        <label class="col-form-label" for="Passport ID">Image of Passport Front and Back</label>
+                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-5   passport_id_image_div d-none">
                         <input type="file" id="passport_id_image" t-att-filename_input="'passport_id_image_filename'" class="d-none passport_id_image_upload form-control s_website_form_input" name="passport_id_image" accept=".jpg, .jpeg" />
@@ -1030,6 +1031,7 @@
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field indian_visa_div d-none">
                     <div t-attf-class="col-lg-3 ">
                         <label class="col-form-label" for="Photo of Indian Visa">Photo of Indian Visa</label>
+                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-5 indian_visa_div d-none">
                         <input type="file" id="indian_visa" t-att-filename_input="'indian_visa_filename'" class="d-none indian_visa_upload form-control s_website_form_input" name="indian_visa" accept=".jpg, .jpeg" />
@@ -1054,7 +1056,7 @@
                 </div>
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field">
                     <div t-attf-class="col-lg-3 ">
-                        <label class="col-form-label" for="Passport Photo">Passport Photo</label>
+                        <label class="col-form-label" for="Passport Size Photo">Passport Size Photo</label>
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-5 #{error.get('passport_photo') and 'o_has_error' or ''}">
