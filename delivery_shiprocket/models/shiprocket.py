@@ -17,6 +17,7 @@ class ShiprocketChannel(models.Model):
 
 class ShiprocketPickupLocation(models.Model):
     _name = "shiprocket.pickup.location"
+    _inherit = "mail.thread"
     _description = "Shiprocket Pickup Location"
     _rec_name = "pickup_location"
 

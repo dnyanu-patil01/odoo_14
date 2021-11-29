@@ -10,7 +10,7 @@
     'author': 'Leelapriskila',
 
     # Dependencies
-    'depends': ['delivery_shiprocket','shopify_ept','seller_management','product_volume_weight'],
+    'depends': ['delivery_shiprocket','shopify_ept','seller_management','product_volume_weight','common_connector_library'],
 
     # Views
     'data': [
@@ -22,5 +22,6 @@
         "view/seller_delivery_order_view.xml",
         "view/seller_pickup_location.xml",
         "view/res_partner_view.xml",
+        "view/sale_workflow_process_ept.xml",
     ],
 }

@@ -32,6 +32,13 @@
                     </div>
                   </group>
                 </xpath>
+                <!-- Added Chatter Log -->
+                <xpath expr="//sheet" position="after">
+                  <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                  </div>
+                </xpath>
         </field>
     </record>
     <record id="choose_delivery_package_view_form_inherit" model="ir.ui.view">
