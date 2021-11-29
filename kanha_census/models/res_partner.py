@@ -3,7 +3,6 @@
 
 from odoo import fields, models
 
-
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
@@ -103,6 +102,6 @@ class ResPartner(models.Model):
         ('No', 'No'),
     ], string="Need New Voter ID")
 
-    _sql_constraints = [
-        ('aadhaar_card_number_unique', 'UNIQUE(aadhaar_card_number)', 'An Aadhar Card Number must be unique!'),
-    ]
+    # _sql_constraints = [
+    #     ('aadhaar_card_number_unique', 'UNIQUE(aadhaar_card_number)', 'An Aadhar Card Number must be unique!'),
+    # ]
