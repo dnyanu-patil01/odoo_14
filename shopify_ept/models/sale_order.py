@@ -814,9 +814,11 @@ class SaleOrder(models.Model):
 
         instance.connect_in_shopify()
         customer_locations = location_obj.search([("usage", "=", "customer")])
+        # Added ("carrier_tracking_ref","!=",False) by leela
         picking_ids = stock_picking_obj.search([("shopify_instance_id", "=", instance.id),
                                                 ("updated_in_shopify", "=", False),
                                                 ("state", "=", "done"),
+                                                ("carrier_tracking_ref","!=",False),
                                                 ("location_dest_id", "in", customer_locations.ids)],
                                                order="date")
         for picking in picking_ids:
