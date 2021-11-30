@@ -5,7 +5,8 @@ from .shiprocket_request import ShipRocket
 
 
 class ProviderShiprocket(models.Model):
-    _inherit = "delivery.carrier"
+    _name = "delivery.carrier"
+    _inherit = ['mail.thread','delivery.carrier']
 
     def _get_default_channel_id(self):
         custom_channel =  self.env['shiprocket.channel'].search(

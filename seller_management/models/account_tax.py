@@ -38,8 +38,8 @@ class AccountFiscalPosition(models.Model):
             return taxes
 
 class AccountTax(models.Model):
-    _inherit = 'account.tax'
-
+    _name = 'account.tax'
+    _inherit = ["mail.thread","account.tax"]
     gst_type = fields.Selection([
                                 ('intra','Intrastate Supply'),
                                 ('inter','Interstate Supply'),

@@ -3,7 +3,8 @@ from odoo.tools.float_utils import float_compare
 
 
 class ProductPackaging(models.Model):
-    _inherit = "product.packaging"
+    _name = "product.packaging"
+    _inherit = ['mail.thread','product.packaging']
     
     #Redefined fields to change Int to Float
     height = fields.Float('Height',required=True)
