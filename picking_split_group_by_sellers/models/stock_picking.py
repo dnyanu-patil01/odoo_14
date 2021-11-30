@@ -83,6 +83,10 @@ class StockPicking(models.Model):
                 vals = self.prepare_payment_dict(invoice)
                 if invoice.amount_residual:
                     payment_id = account_payment_obj.create(vals)
+                    #To Make Sure Seller ID Is Not Getting Passed
+                    payment_move = self.env['account.move'].search([('payment_id','=',payment_id.id)],limit=1)
+                    if payment_move:
+                        payment_move.write({'seller_id':False})
                     payment_id.action_post()
                     self.reconcile_payment(payment_id, invoice)
         return True

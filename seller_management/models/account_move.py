@@ -20,6 +20,9 @@ class AccountMove(models.Model):
         if self.seller_id and self.move_type in ('out_invoice','out_refund'):
             where_string += "AND seller_id = %(seller_id)s"
             param.update({'seller_id':self.seller_id.id})
+        #To Make Sure Seller ID Is Not Getting Passed
+        elif self.move_type == 'entry':
+            self.write({'seller_id':False})
         else:
             where_string += "AND seller_id is null"
         return where_string, param
