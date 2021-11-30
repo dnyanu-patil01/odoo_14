@@ -72,16 +72,16 @@ class ChooseDeliveryPackage(models.TransientModel):
         # write shipping weight and product_packaging on 'stock_quant_package' if needed
         if self.delivery_packaging_id:
             delivery_package.packaging_id = self.delivery_packaging_id
-        # shipping_weight = 0
-        # for move in move_line_ids:
-        #     if move.product_id.weight > move.product_id.volumetric_weight:
-        #         shipping_weight+=move.product_id.weight * move.qty_done
-        #     else:
-        #         shipping_weight += move.product_id.volumetric_weight * move.qty_done
-        # if self.shipping_weight:
-        #     delivery_package.shipping_weight = self.shipping_weight + shipping_weight
-        # else:
-        #     delivery_package.shipping_weight = shipping_weight
+        shipping_weight = 0
+        for move in move_line_ids:
+            if move.product_id.weight > move.product_id.volumetric_weight:
+                shipping_weight+=move.product_id.weight
+            else:
+                shipping_weight += move.product_id.volumetric_weight
+        if self.shipping_weight:
+            delivery_package.shipping_weight = self.shipping_weight
+        else:
+            delivery_package.shipping_weight = shipping_weight
         if self.shipping_weight > self.shipping_actual_weight:
             delivery_package.shipping_weight = self.shipping_weight
         else:
