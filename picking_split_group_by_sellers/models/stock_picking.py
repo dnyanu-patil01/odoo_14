@@ -127,13 +127,13 @@ class StockPicking(models.Model):
             'partner_type': 'customer'}
 
     def get_related_sale_orders(self):
-        '''To Get Related Sale Orders For The Delivery'''
+        '''To Get Related Sale Orders For The Delivery
+        Stock Move Line->Move ID-->Sale Line ID-->Order ID'''
         order_ids = []
-        if self.seller_group_id:
-            if self.env.user.has_group('seller_management.group_sellers_management_manager'):
-                order_ids = self.sale_order_ids.ids
-            elif self.env.user.has_group('seller_management.group_sellers_management_user'):
-                order_ids = self.sale_order_ids.filtered(lambda s:s.seller_id.id == self.env.user.partner_id.id).ids
-        if self.sale_id:
-                order_ids.append(self.sale_id.id)
+        if self.env.user.has_group('seller_management.group_sellers_management_manager'):
+            order_ids = self.move_line_ids_without_package.mapped('move_id').mapped('sale_line_id').mapped('order_id').ids
+        elif self.env.user.has_group('seller_management.group_sellers_management_user'):
+            order_ids = self.move_line_ids_without_package.mapped('move_id').mapped('sale_line_id').mapped('order_id').filtered(lambda s:s.seller_id.id == self.env.user.partner_id.id).ids
+        else:
+            order_ids.append(self.sale_id.id)
         return list(set(order_ids))
