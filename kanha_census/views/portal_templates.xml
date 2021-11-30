@@ -526,7 +526,7 @@
         </div>
     </template>
     <template id="existing_voter_id_details" name="Existing Voter ID Details">
-        <!-- <div class="col-lg-12 row form-group s_website_form_field">
+        <div class="col-lg-12 row form-group s_website_form_field d-none">
 			<div class="col-lg-6">
 				<label class="col-form-label" for="Country">Country</label>
 				<span class="s_website_form_mark"> *</span>
@@ -545,7 +545,7 @@
 					</t>
 				</select>
 			</div>
-		</div> -->
+		</div>
         <div class="col-lg-12 row form-group s_website_form_field">
             <div class="col-lg-6">
                 <label class="col-form-label" for="State">State</label>
