@@ -33,13 +33,11 @@
 			<div style="padding-bottom:20px" class="row">
 				<div class="col-6 text-left">
 					<strong>Place Of Supply:</strong>
-						<t t-if="o.partner_shipping_id">
-							<div t-field="o.partner_shipping_id"
-							t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True,"no_tag_br": True}'/>
+						<t t-if="o.partner_shipping_id.state_id">
+							<t t-esc="o.partner_shipping_id.state_id.name"/>
 						</t>
-						<t t-elif="o.partner_id">
-							<div t-field="o.partner_id"
-								t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True,"no_tag_br": True}'/>
+						<t t-elif="o.partner_id.state_id">
+						    <t t-esc="o.partner_id.state_id.name"/>
 						</t>
 				</div>
 				<div class="col-6 text-right">
@@ -75,7 +73,7 @@
 
 				<div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">
 					<strong>Invoice Date:</strong>
-					<p class="m-0" t-field="o.invoice_date"/>
+					<p class="m-0" t-esc="o.invoice_date.strftime('%%d-%%m-%%Y')"/>
 				</div>
 			</div>
 		</xpath>
