@@ -34,7 +34,7 @@
         <field name="inherit_id" ref="stock.view_backorder_confirmation"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='process_cancel_backorder']" position="attributes">
-                <attribute name="groups">base.group_system</attribute>               
+                <attribute name="groups">seller_management.group_show_no_backorder_button</attribute>               
             </xpath>
         </field> 
     </record>
