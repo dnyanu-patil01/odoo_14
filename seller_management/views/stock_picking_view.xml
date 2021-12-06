@@ -27,4 +27,16 @@
         </field>
     </record>
 
+    <!-- Added Admin/Setting Group For No Backorder Button -->
+    <record model="ir.ui.view" id="view_backorder_confirmation_inherit">
+        <field name="name">stock.backorder.confirmation.form.inherit</field>
+        <field name="model">stock.backorder.confirmation</field>
+        <field name="inherit_id" ref="stock.view_backorder_confirmation"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='process_cancel_backorder']" position="attributes">
+                <attribute name="groups">seller_management.group_show_no_backorder_button</attribute>               
+            </xpath>
+        </field> 
+    </record>
+    
 </odoo>
