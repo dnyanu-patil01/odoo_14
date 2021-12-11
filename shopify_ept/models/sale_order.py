@@ -1160,6 +1160,16 @@ class SaleOrder(models.Model):
             'context': context
         }
 
+    #Added By Leela To Get Order Date as Shopify Order Date
+    def _prepare_confirmation_values(self):
+        val = super(SaleOrder, self)._prepare_invoice()
+        if not self.shopify_order_id:
+            return val
+        else:
+            return {
+                'state': 'sale',
+                'date_order': self.date_order if self.date_order else fields.Datetime.now(),
+            }
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
