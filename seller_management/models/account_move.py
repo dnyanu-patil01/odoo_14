@@ -12,7 +12,7 @@ class AccountMove(models.Model):
         return orders
 
     def print_invoice(self):
-        return self.env.ref('account.account_invoices').report_action(self)
+        return self.env.ref('seller_management.action_report_seller_invoice').report_action(self)
     
     #override _get_last_sequence_domain to fix sequence without seller
     def _get_last_sequence_domain(self, relaxed=False):

@@ -25,7 +25,9 @@
         'views/product_packaging.xml',
         'report/sale_report_view.xml',
         'report/sale_report.xml',
-        'report/invoice_report.xml',
+        'report/layout.xml',
+        'report/invoice_report_template.xml',
+        'report/reports.xml',
         'wizard/get_cancel_reason_view.xml',
     ],
     'demo': [
