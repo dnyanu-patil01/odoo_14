@@ -8,7 +8,9 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='fulfilment_type']" position="after">
                 <field name="is_auto_generate_product_internal_reference" groups="seller_management.group_sellers_management_manager" />
-                <field name="next_sequence" readonly="1"  groups="seller_management.group_sellers_management_manager"/>
+            </xpath>
+            <xpath expr="//field[@name='seller_invoice_sequence_id']" position="after">
+                <field name="seller_product_sequence_id" attrs="{'required':[('is_auto_generate_product_internal_reference','=',True)],'invisible':[('is_auto_generate_product_internal_reference','=',False)]}" groups="seller_management.group_sellers_management_manager"/>
             </xpath>
         </field>
     </record>
