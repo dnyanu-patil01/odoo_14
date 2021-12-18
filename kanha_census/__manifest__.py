@@ -8,7 +8,7 @@
     'description': """
        It Allows Portal user to add and update the Partner details.
     """,
-    'depends': ['website', 'website_form'],
+    'depends': ['website', 'website_form','fields_encrypted'],
     'data': [
         'security/ir.model.access.csv',
         'data/website_data.xml',

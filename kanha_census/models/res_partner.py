@@ -20,7 +20,7 @@ class ResPartner(models.Model):
     birth_country_id = fields.Many2one('res.country', string="Birth Country")
 
     birth_state_id = fields.Many2one("res.country.state", string='Birth State')
-    relation_other = fields.Char(stirng="Other Relative")
+    relation_other = fields.Char(string="Other Relative")
     relation_type = fields.Selection([
         ('Father', 'Father'),
         ('Mother', 'Mother'),
@@ -57,14 +57,14 @@ class ResPartner(models.Model):
         ('Transfer Application', 'Transfer Application'),
     ], required=True)
     abhyasi_id = fields.Char(string="Abhyasi ID")
-    aadhaar_card_number = fields.Char(string="Aadhar Card Number", required=True)
-    pan_card_number = fields.Char(string="Pan card number")
+    aadhaar_card_number = fields.Encrypted(string="Aadhar Card Number", required=True)
+    pan_card_number = fields.Encrypted(string="Pan card number")
     members_count = fields.Char(string="How many members staying with you?")
     citizenship = fields.Selection([
         ('Indian', 'Indian'),
         ('Overseas', 'Overseas')
     ], required=True)
-    passport_number = fields.Char(string="Passport Number")
+    passport_number = fields.Encrypted(string="Passport Number")
     work_profile = fields.Selection([
         ('Resident', 'Resident'),
         ('Volunteer', 'Volunteer'),
@@ -82,13 +82,13 @@ class ResPartner(models.Model):
         ('Owner', 'Owner'),
     ], string="Residence Type")
     family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members')
-    relative_aadhaar_card_number = fields.Char(string="Relative Aadhar Card Number")
+    relative_aadhaar_card_number = fields.Encrypted(string="Relative Aadhar Card Number")
     vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
     already_have_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Already Have Voter ID")
-    kanha_voter_id_number = fields.Char(string="Voter ID Number", required=True)
+    kanha_voter_id_number = fields.Encrypted(string="Voter ID Number", required=True)
     kanha_voter_id_image = fields.Binary('Voter ID Image', attachment=True, required=True)
     kanha_voter_id_image_filename = fields.Char()
     
