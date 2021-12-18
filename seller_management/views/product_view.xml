@@ -16,7 +16,7 @@
                 <field name="cost_currency_id" invisible="1"/>
                 <field name="sequence" widget="handle" readonly="1"/>
                 <field name="name" string="Product Name"/>
-                <field name="seller_id" readonly="1"/>
+                <field name="seller_id"/>
                 <field name="default_code" optional="show"/>
                 <field name="barcode" optional="hide" attrs="{'readonly': [('product_variant_count', '&gt;', 1)]}"/>
                 <field name="company_id" options="{'no_create_edit': True}" groups="base.group_multi_company" optional="hide"/>
@@ -171,7 +171,7 @@
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='type']" position="before">
-                <field name="seller_id" readony="False" domain="[('seller','=',True),('parent_id','=',False)]" />
+                <field name="seller_id" domain="[('seller','=',True),('parent_id','=',False)]" />
                 <field name="state" readonly="1"/>
             </xpath>
         </field>
@@ -183,7 +183,7 @@
         <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='type']" position="before">
-                <field name="seller_id" readony="False"  domain="[('seller','=',True),('parent_id','=',False)]" />
+                <field name="seller_id" domain="[('seller','=',True),('parent_id','=',False)]" />
                 <field name="state" readonly="1"/>
             </xpath>
         </field>
@@ -222,7 +222,7 @@
                 <field name="state"/>
             </field>
             <field name="default_code" position="after">
-                <field name="seller_id"  readonly="1"/>
+                <field name="seller_id" />
             </field>
         </field>
     </record>
