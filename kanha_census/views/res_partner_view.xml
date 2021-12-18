@@ -18,8 +18,8 @@
 								<field name="name" />
 								<field name="email" />
 								<field name="gender"/>
-								<field name="pan_card_number"/>
-								<field name="aadhaar_card_number"/>
+								<field name="pan_card_number" widget="Encrypted"/>
+								<field name="aadhaar_card_number" widget="Encrypted"/>
 								<field name="abhyasi_id" />
 								<field name="residence_type" />
 							</group>
@@ -28,7 +28,7 @@
 								<field name="mobile" />
 								<field name="date_of_birth"/>
 								<field name="citizenship" />
-								<field name="passport_number" />
+								<field name="passport_number" widget="Encrypted"/>
 								<field name="members_count" />
 							</group>
 						</group>
@@ -57,7 +57,7 @@
                               		</group>
                               		<group>
 		                              	<field name="already_have_kanha_voter_id" />
-		                              	<field name="kanha_voter_id_number" />
+		                              	<field name="kanha_voter_id_number" widget="Encrypted"/>
 		                              	<field name="kanha_voter_id_image" />
 		                              	<field name="need_new_kanha_voter_id" />
 		                              	<field name="application_type" />
