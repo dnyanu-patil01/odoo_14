@@ -24,7 +24,7 @@
     ],
     "external_dependencies": {
         "python": [
-            "pycrypto",
+            "pycryptodome",
         ],
     },
 }
