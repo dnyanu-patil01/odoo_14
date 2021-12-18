@@ -56,6 +56,14 @@ class ShopifyProductTemplateEpt(models.Model):
     active = fields.Boolean(default=True)
     shopify_image_ids = fields.One2many("shopify.product.image.ept", "shopify_template_id")
 
+    
+    @api.model
+    def create(self, vals):
+        if 'product_tmpl_id' in vals:
+            product = self.env['product.template'].browse(vals['product_tmpl_id'])
+            product.write({'is_shopify_product':True})
+        return super(ShopifyProductTemplateEpt,self).create(vals)
+
     @api.depends("shopify_product_ids.exported_in_shopify", "shopify_product_ids.variant_id")
     def _compute_total_sync_variants(self):
         """ This method used to compute the total sync variants.
@@ -145,7 +153,7 @@ class ShopifyProductTemplateEpt(models.Model):
             vals = {"name": product_name,
                     "type": "product",
                     "default_code": sku,
-                    "invoice_policy": "order",
+                    "invoice_policy": "delivery",
                     "description_sale": description}
 
             if barcode:

@@ -47,6 +47,13 @@ class ShopifyProductProductEpt(models.Model):
     shopify_image_ids = fields.One2many("shopify.product.image.ept", "shopify_variant_id")
     taxable = fields.Boolean(default=True)
 
+    @api.model
+    def create(self, vals):
+        if 'product_id' in vals:
+            product = self.env['product.product'].browse(vals['product_id'])
+            product.write({'is_shopify_product':True})
+        return super(ShopifyProductProductEpt,self).create(vals)
+
     def toggle_active(self):
         """
         Archiving related shopify product template if there is only one active shopify product
@@ -78,7 +85,8 @@ class ShopifyProductProductEpt(models.Model):
                                                             "type": "product",
                                                             "attribute_line_ids": attrib_line_vals,
                                                             "description_sale": result.get("body_html"),
-                                                            "invoice_policy": "order"
+                                                            "invoice_policy": "delivery",
+                                                            "is_shopify_product":True,
                                                             })
 
             self.shopify_update_price(instance, product_template, price)
