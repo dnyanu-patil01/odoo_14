@@ -6,6 +6,8 @@ from odoo import models, fields, api
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    is_shopify_product = fields.Boolean(string="Shopify Product",readonly=True)
+
     def write(self, vals):
         """
         This method use to archive/unarchive shopify product templates base on odoo product templates.
@@ -29,6 +31,8 @@ class ProductTemplate(models.Model):
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
+
+    is_shopify_product = fields.Boolean(string="Shopify Product",readonly=True)
 
     def write(self, vals):
         """
