@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+            <!-- INVOICE REPORTS -->
+    <!-- Hide Original Bill Report     -->
+    <record id="account.action_account_original_vendor_bill" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Invoices without Payment Report     -->
+    <record id="account.account_invoices_without_payment" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+            <!-- PRODUCT REPORTS -->
+    <!-- Hide Product Label PDF Report -->
+    <record id="product.report_product_label" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Template Product Label (PDF) -->
+    <record id="product.report_product_template_label" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Product Barcode (PDF) Report -->
+    <record id="product.report_product_product_barcode" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Template Product Barcode (PDF) Report -->
+    <record id="product.report_product_template_barcode" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+            <!-- Stock Reports -->
+    <!-- Hide Picking Operations Report -->
+    <record id="stock.action_report_picking" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Product Label (ZPL) Report -->
+    <record id="stock.label_product_template" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Product Label (ZPL) Report -->
+    <record id="stock.label_product_product" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Product Barcode (ZPL) Report -->
+    <record id="stock.label_barcode_product_template" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Product Barcode (ZPL) Report -->
+    <record id="stock.label_barcode_product_product" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Barcodes (ZPL) Report -->
+    <record id="stock.action_label_transfer_template_zpl" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <!-- Hide Barcodes (PDF) Report -->
+    <record id="stock.action_label_transfer_template_pdf" model="ir.actions.report">
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</odoo>

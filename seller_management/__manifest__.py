@@ -29,6 +29,7 @@
         'report/invoice_report_template.xml',
         'report/reports.xml',
         'wizard/get_cancel_reason_view.xml',
+        'views/hide_report_view.xml',
     ],
     'demo': [
         ''
