@@ -185,4 +185,7 @@ class Encrypted(fields.Field):
             return value
         return self._decrypt(value)
 
+    def convert_to_record(self, value, record):
+        return False if value is None else self._decrypt(value)
+        
 fields.Encrypted = Encrypted
