@@ -520,3 +520,37 @@ class StockPicking(models.Model):
             "target": "new",
             "context":ctx,
         }
+    
+    def action_bulk_validation_pre_hook(self):
+        '''
+        To Filtered The DO Which Carrier Type is Shiprocket & Doesn't Contain Package Details Before Bulk Validate Of DO
+        '''
+        picking_ids = False
+        if self.env.context.get('active_model') == 'stock.picking':
+            picking_ids = self.env.context.get('active_ids') or False
+        if not picking_ids:
+            picking_ids = self.ids
+        #To Get DO of carrier type shiprocket and doesn't contain packages details
+        need_to_remove_ids = self.browse(picking_ids).filtered(lambda j: not j.has_packages and j.carrier_id.delivery_type == 'shiprocket')
+        single_picking_ids = []
+        #To Get DO which contains only one product and package details are predefined in product level
+        for picking in need_to_remove_ids:
+            if len(picking.move_line_ids_without_package) == 1:
+                search_domain=[
+                        ("product_id", "=", picking.move_line_ids_without_package.product_id.id),
+                        ("delivery_package_id",'!=',False)
+                    ]
+                if picking.move_line_ids_without_package.qty_done > 0:
+                    search_domain.append(("qty", "=", picking.move_line_ids_without_package.qty_done))
+                else:
+                    search_domain.append(("qty", "=", picking.move_line_ids_without_package.product_uom_qty))
+                packaging = self.env["product.packaging"].search(search_domain,limit=1)
+                if packaging:
+                    single_picking_ids.append(picking.id)
+                else:
+                    picking.message_post(body='No Package Details Found.Please Do Put In Pack Before Validate')
+            else:
+                picking.message_post(body='No Package Details Found.Please Do Put In Pack Before Validate')
+        need_to_remove_ids = list(set(need_to_remove_ids.ids)-set(single_picking_ids))
+        need_to_process_picking_ids = list(set(picking_ids)-set(need_to_remove_ids))
+        return self.browse(need_to_process_picking_ids).button_validate()

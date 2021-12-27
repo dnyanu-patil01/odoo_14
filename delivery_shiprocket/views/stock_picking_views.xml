@@ -281,4 +281,13 @@ action = model.action_get_cancel_reason()
 action = model.action_update_pickup_location()
         </field>
     </record>
+
+    <record id="stock.action_validate_picking" model="ir.actions.server">
+        <field name="code">
+if records:
+    res = records.action_bulk_validation_pre_hook()
+    if isinstance(res, dict):
+        action = res
+        </field>
+    </record>
 </odoo>
