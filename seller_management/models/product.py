@@ -1,4 +1,6 @@
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
+
 
 class ProductTemplate(models.Model):
     _name = "product.template"
@@ -46,6 +48,19 @@ class ProductTemplate(models.Model):
         )
         return action
     
+    def write(self, vals):
+        """
+        This method use to restrict adding new attribute to variants in templates.
+        :parameter: self, vals
+        """
+        if 'attribute_line_ids' in vals.keys():
+            attribute_line_string = str(vals['attribute_line_ids'])
+            if 'attribute_id' in attribute_line_string:
+                message = "Please Contact Administrator To Add New Attribute To The Product : %s"%(self.name)
+                raise UserError(message)
+        return super(ProductTemplate, self).write(vals)
+
+
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
 
