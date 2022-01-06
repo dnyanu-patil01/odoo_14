@@ -5,11 +5,7 @@
         <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state == 'draft'"
-                  decoration-muted="state == 'reject'"
-                  decoration-warning="state == 'to_approve'" 
-                  decoration-success="state == 'approve'"
-                  string="Seller Products" delete="0">
+            <tree string="Seller Products" delete="0">
                 <field name="product_variant_count" invisible="1"/>
                 <field name="sale_ok" invisible="1"/>
                 <field name="currency_id" invisible="1"/>
@@ -25,7 +21,6 @@
                 <field name="categ_id" optional="hide"/>
                 <field name="type" optional="hide" readonly="1"/>
                 <field name="uom_id" readonly="1" optional="show" groups="uom.group_uom"/>
-                <field name="state" />
             </tree>
         </field>
     </record>
@@ -40,12 +35,6 @@
                     <button string="Update Quantity" type="object"
                         name="seller_update_stock_quantity"
                         attrs="{'invisible': [('type', '!=', 'product')]}"/>
-                    <field name="state" invisible="1"/>
-                    <button name="button_draft" string="Set Draft" states="approve,reject" type="object"  groups="seller_management.group_product_approval,seller_management.group_sellers_management_user"/>
-                    <button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
-                    <button name="button_approve" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
-                    <button name="button_reject" string="Reject" states="to_approve" type="object" class="btn-danger" groups="seller_management.group_product_approval"/>
-                    
                 </header>
                 <sheet>
                     <field name="product_variant_count" invisible="1"/>
@@ -54,30 +43,10 @@
                     <div class="oe_button_box" name="button_box"/>
                     <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                     <field name="id" invisible="True"/>
-                    <widget name="web_ribbon" title="Draft"
-                    bg_color="bg-info"
-                    attrs="{'invisible': [
-                    ('state','!=','draft')
-                    ]}"/>
-                    <widget name="web_ribbon" title="Approved"
-                    bg_color="bg-success"
-                    attrs="{'invisible': [
-                    ('state','!=','approve')
-                    ]}"/>
-                    <widget name="web_ribbon" title="Rejected"
-                    bg_color="bg-danger"
-                    attrs="{'invisible': [
-                    ('state','!=','reject')
-                    ]}"/>
-                    <widget name="web_ribbon" title="Waiting For Approval"
-                    bg_color="bg-dark"
-                    attrs="{'invisible': [
-                    ('state','!=','to_approve')
-                    ]}"/>
-                    <field name="image_1920" widget="image" class="oe_avatar" style="marign-left:300px;" attrs="{'readonly':[('state','!=','draft')]}" options="{'preview_image': 'image_128'}"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" style="marign-left:300px;"  options="{'preview_image': 'image_128'}"/>
                     <div class="oe_title">
                         <label class="oe_edit_only" for="name" string="Product Name"/>
-                        <h1><field name="name" placeholder="Product Name" attrs="{'readonly':[('state','!=','draft')]}"/></h1>
+                        <h1><field name="name" placeholder="Product Name" /></h1>
                         <!-- <div name="options" groups="base.group_user">
                             <div>
                                 <field name="sale_ok"/>
@@ -90,50 +59,50 @@
                             <group>
                                 <group name="group_general">
                                     <field name="active" invisible="1"/>
-                                    <field name="seller_id" required="1" attrs="{'readonly':[('state','!=','draft')]}" domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]" options="{'no_create': True,'no_open':True}" />
-                                    <field name="type" invisible="1" attrs="{'readonly':[('state','!=','draft')]}"/>
-                                    <field name="categ_id" invisible="1" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_open':True}" string="Product Category"/>
-                                    <field name="l10n_in_hsn_code" attrs="{'required':[('state','=','draft')],'readonly':[('state','!=','draft')]}"/>
-                                    <field name="l10n_in_hsn_description" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                    <field name="seller_id" required="1"  domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]" options="{'no_create': True,'no_open':True}" />
+                                    <field name="type" invisible="1" />
+                                    <field name="categ_id" invisible="1"  options="{'no_open':True}" string="Product Category"/>
+                                    <field name="l10n_in_hsn_code"/>
+                                    <field name="l10n_in_hsn_description" />
                                 </group>
                                 <group name="group_standard_price">
-                                    <label for="list_price" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                    <label for="list_price" />
                                     <div name="pricing">
-                                      <field name="list_price" class="oe_inline" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
-                                      <button name="open_pricelist_rules" icon="fa-arrow-right" type="object" groups="product.group_product_pricelist" class="oe_inline" attrs="{'readonly':[('state','!=','draft')]}">
-                                        <field name="pricelist_item_count" attrs="{'invisible': [('pricelist_item_count', '=', 0)],'readonly':[('state','!=','draft')]}"/>
-                                        <span attrs="{'invisible': [('pricelist_item_count', '=', 1)],'readonly':[('state','!=','draft')]}">
+                                      <field name="list_price" class="oe_inline" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" />
+                                      <button name="open_pricelist_rules" icon="fa-arrow-right" type="object" groups="product.group_product_pricelist" class="oe_inline" >
+                                        <field name="pricelist_item_count" attrs="{'invisible': [('pricelist_item_count', '=', 0)]}"/>
+                                        <span attrs="{'invisible': [('pricelist_item_count', '=', 1)]}">
                                           Extra Prices
                                         </span>
-                                        <span attrs="{'invisible': [('pricelist_item_count', '!=', 1)],'readonly':[('state','!=','draft')]}">
+                                        <span attrs="{'invisible': [('pricelist_item_count', '!=', 1)]}">
                                           Extra Price
                                         </span>
                                       </button>
                                     </div>
-                                    <label for="standard_price" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly':[('state','!=','draft')]}"/>
-                                    <div name="standard_price_uom" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)],'readonly':[('state','!=','draft')]}" class="o_row">
-                                        <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id', 'field_digits': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                    <label for="standard_price" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}"/>
+                                    <div name="standard_price_uom" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" class="o_row">
+                                        <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id', 'field_digits': True}" />
                                         <span groups="uom.group_uom" class="oe_read_only">per
-                                            <field name="uom_name" options="{'no_open':True}" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                            <field name="uom_name" options="{'no_open':True}" />
                                         </span>
                                     </div>
-                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" attrs="{'readonly':[('state','!=','draft')]}"/>
-                                    <field name="taxes_id" widget="many2many_tags" options="{'no_create': True,'no_open':True}" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" />
+                                    <field name="taxes_id" widget="many2many_tags" options="{'no_create': True,'no_open':True}" />
                                     <field name="currency_id" invisible="1"/>
                                     <field name="cost_currency_id" invisible="1"/>
                                     <field name="product_variant_id" invisible="1"/>
                                 </group>
                             </group>
                             <group string="Internal Notes">
-                                <field name="description" nolabel="1" placeholder="This note is only for internal purposes." attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="description" nolabel="1" placeholder="This note is only for internal purposes." />
                             </group>
-                            <group string="Rejection Reason" attrs="{'invisible':[('state','!=','reject')]}">
+                            <!-- <group string="Rejection Reason" attrs="{'invisible':[('state','!=','reject')]}">
                                 <field name="rejection_reason" nolabel="1" readonly="1"/>
-                            </group>
+                            </group> -->
                         </page>
                         <page string="Sales">
                             <group string="Sales Description" name="description">
-                                <field name="description_sale" nolabel="1" placeholder="This note is added to sales orders and invoices." attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="description_sale" nolabel="1" placeholder="This note is added to sales orders and invoices." />
                             </group>
                         </page>
                     </notebook>
@@ -150,7 +119,7 @@
             <xpath expr="//field[@name='type']" position="before">
                 <field name="seller_id" domain="[('seller','=',True),('parent_id','=',False)]" />
             </xpath>
-            <xpath expr="//form/header" position="inside">
+            <!-- <xpath expr="//form/header" position="inside">
                 <button name="button_draft" string="Set Draft" states="approve,reject" type="object"  groups="seller_management.group_product_approval,seller_management.group_sellers_management_user"/>
                 <button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
                 <button name="button_approve" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
@@ -161,6 +130,7 @@
                 <attribute name="delete">0</attribute>
             </xpath>
             
+            </xpath> -->
             <xpath expr="//sheet" position="after">
                 <div class="oe_chatter">
                     <field name="message_ids"/>
@@ -176,7 +146,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='type']" position="before">
                 <field name="seller_id" domain="[('seller','=',True),('parent_id','=',False)]" />
-                <field name="state" readonly="1"/>
+                <!-- <field name="state" readonly="1"/> -->
             </xpath>
         </field>
     </record>
@@ -188,7 +158,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='type']" position="before">
                 <field name="seller_id" domain="[('seller','=',True),('parent_id','=',False)]" />
-                <field name="state" readonly="1"/>
+                <!-- <field name="state" readonly="1"/> -->
             </xpath>
         </field>
     </record>
@@ -203,35 +173,22 @@
             </xpath>
         </field>
     </record>
-    <record model="ir.ui.view" id="product_search_tree_view_inherit">
-        <field name="name">product.template.search.inherit</field>
-        <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_search_view"/>
-        <field name="arch" type="xml">
-            <filter name="filter_to_sell" position="before">
-               <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
-               <filter name="filter_approve" string="Approved" domain="[('state', '=', 'approve')]"/>
-               <filter name="filter_reject" string="Rejected" domain="[('state', '=', 'reject')]"/>
-               <filter string="Status" name="status" context="{'group_by':'state'}"/>
-            </filter>
-        </field>
-    </record>
 
     <record id="view_seller_sale_product_template_tree" model="ir.ui.view">
         <field name="name">product.template.seller.tree.inherit</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
-            <field name="uom_id" position="after">
+            <!-- <field name="uom_id" position="after">
                 <field name="state"/>
-            </field>
+            </field> -->
             <field name="default_code" position="after">
                 <field name="seller_id" />
             </field>
         </field>
     </record>
     
-    <record id="action_approve_products" model="ir.actions.server">
+    <!-- <record id="action_approve_products" model="ir.actions.server">
         <field name="name">Approve</field>
         <field name="model_id" ref="product.model_product_template"/>
         <field name="binding_model_id" ref="product.model_product_template"/>
@@ -243,9 +200,9 @@
             for rec in records:
                 rec.button_approve()
         </field>
-    </record>
+    </record> -->
 
-    <record id="action_products_reject" model="ir.actions.server">
+    <!-- <record id="action_products_reject" model="ir.actions.server">
         <field name="name">Reject</field>
         <field name="model_id" ref="product.model_product_template"/>
         <field name="binding_model_id" ref="product.model_product_template"/>
@@ -269,7 +226,7 @@
             for rec in records:
                 rec.button_draft()
         </field>
-    </record>
+    </record> -->
 
     <record id="seller_product_view_action" model="ir.actions.act_window">
         <field name="name">Products</field>

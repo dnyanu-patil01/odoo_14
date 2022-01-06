@@ -7,13 +7,13 @@ class ProductTemplate(models.Model):
     _inherit = ['product.template','mail.thread']
 
     seller_id = fields.Many2one("res.partner",'Seller',index=True, copy=False,default=lambda self: self.env.user.partner_id.id if self.env.user.partner_id.seller else False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")
-    state = fields.Selection([('draft','Draft'),('to_approve','Waiting For Approval'),('approve','Approved'),('reject','Rejected')],string='State',default='draft',copy=False)
+    # state = fields.Selection([('draft','Draft'),('to_approve','Waiting For Approval'),('approve','Approved'),('reject','Rejected')],string='State',default='draft',copy=False)
     rejection_reason = fields.Text('Reason For Rejection')
     #added to make storable type as default
     type = fields.Selection(selection_add=[],default="product")
 
-    def button_approve(self):
-        return self.write({'state': 'approve'})
+    # def button_approve(self):
+    #     return self.write({'state': 'approve'})
 
     def button_reject(self):
         product_ids = self.env.context.get('active_ids') or False
@@ -30,11 +30,11 @@ class ProductTemplate(models.Model):
             "context":ctx,
         }
 
-    def button_draft(self):
-        return self.write({'state': 'draft'})
+    # def button_draft(self):
+    #     return self.write({'state': 'draft'})
     
-    def button_submit(self):
-        return self.write({'state':'to_approve'})
+    # def button_submit(self):
+    #     return self.write({'state':'to_approve'})
     
     # To Show Update Quantity Wizard Instead Of Direct Change in QTY
     def seller_update_stock_quantity(self):
@@ -98,4 +98,4 @@ class ProdductProduct(models.Model):
     _inherit = ['product.product','mail.thread']
 
     seller_id = fields.Many2one(related="product_tmpl_id.seller_id", readonly=False,store=True, index=True, copy=False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")
-    state = fields.Selection(related='product_tmpl_id.state', store=True, readonly=False,copy=False)
+    # state = fields.Selection(related='product_tmpl_id.state', store=True, readonly=False,copy=False)

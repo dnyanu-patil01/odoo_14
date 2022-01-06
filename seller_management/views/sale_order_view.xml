@@ -399,10 +399,6 @@
                     <xpath expr="//field[@name='user_id']" position="before">
                         <field name="seller_shopify_sequence" string="Seller Shopify Sequence" readonly="1" attrs="{'invisible':[('seller_id','=',False)]}" />
                     </xpath>
-                    <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
-                        <attribute name="options">{'no_create': true}</attribute>
-                        <attribute name="domain">[('state', '=', 'approve')]</attribute>
-                    </xpath>
                 </data>
             </field>
         </record>
