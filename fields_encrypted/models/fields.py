@@ -171,7 +171,7 @@ class Encrypted(fields.Field):
         """
         return self._decrypt(value)
 
-    def convert_to_export(self, value, env):
+    def convert_to_export(self, value, record):
         """
         Convert ``value`` from the cache to a valid value for export. The
         parameter ``env`` is given for managing translations.
@@ -181,8 +181,6 @@ class Encrypted(fields.Field):
         """
         if not value:
             return ''
-        if env.context.get('export_raw_data'):
-            return value
         return self._decrypt(value)
 
     def convert_to_record(self, value, record):
