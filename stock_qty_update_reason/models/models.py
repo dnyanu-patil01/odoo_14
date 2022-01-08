@@ -27,13 +27,24 @@ class StockQuant(models.Model):
             self.note = False
         return super(StockQuant,self)._onchange_inventory_quantity()
     
+    @api.model
+    def create(self, vals):
+        if 'note' in vals:
+            product_id = vals['product_id'] if 'product_id' in vals else self.product_id.id
+            product = self.env['product.product'].browse(product_id)
+            body='%s'%(vals['note'])
+            product.message_post(body=body)
+        return super(StockQuant,self).create(vals)
+    
     def write(self, vals):
+        body = None
         if 'inventory_quantity' in vals:
             product_id = vals['product_id'] if 'product_id' in vals else self.product_id.id
             product = self.env['product.product'].browse(product_id)
             body = 'On Hand Quantity Updated From %s to %s'%(str(self.inventory_quantity),str(vals['inventory_quantity']))
-            if 'note' in vals:
-                body+='<br/> %s'%(vals['note'])
+        if 'note' in vals:
+            body+='<br/> %s'%(vals['note'])
+        if body:
             product.message_post(body=body)
         return super(StockQuant,self).write(vals)
 
