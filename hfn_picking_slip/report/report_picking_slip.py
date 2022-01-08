@@ -12,6 +12,7 @@ class ReportPickingSlip(models.AbstractModel):
             select product_id as product,sm.name as product_name,sum(product_uom_qty) as qty_to_be_delivered from stock_move sm
             join stock_picking sp on (sp.id = sm.picking_id) 
             where sm.state not in ('cancel','done') and 
+            product_uom_qty > 0 and
             sp.carrier_id in (select id from delivery_carrier where delivery_type = 'shiprocket') and 
             sm.location_dest_id in (select id from stock_location 
             where usage='customer') and sm.picking_type_id in (select id from stock_picking_type 
