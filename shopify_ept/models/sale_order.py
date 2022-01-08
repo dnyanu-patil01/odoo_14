@@ -225,7 +225,6 @@ class SaleOrder(models.Model):
         @change: By Maulik Barad on Date 21-Sep-2020.
         """
         order_risk_obj = self.env["shopify.order.risk"]
-
         order_ids = []
         commit_count = 0
         instance = log_book.shopify_instance_id
@@ -246,7 +245,6 @@ class SaleOrder(models.Model):
                 else:
                     order_response = order_data_line
                 order_data_line = False
-
             order_number = order_response.get("order_number")
             _logger.info("Started processing Shopify order(%s) and order id is(%s)"
                          % (order_number, order_response.get("id")))
@@ -306,7 +304,7 @@ class SaleOrder(models.Model):
                 _logger.info("Creating order lines for Odoo order(%s) and Shopify order is (%s)." % (
                     sale_order.name, order_number))
                 sale_order.create_shopify_order_lines(lines, order_response, instance)
-
+       
                 _logger.info("Created order lines for Odoo order(%s) and Shopify order is (%s)"
                             % (sale_order.name, order_number))
 
@@ -348,6 +346,10 @@ class SaleOrder(models.Model):
     def update_seller_info_in_order_lines(self,lines, order_response, instance):
         seller_ids = []
         for line in lines:
+            if line.get('fulfillment_status') == 'fulfilled':
+                line.update({'is_fulfilled':True})
+            else:
+                line.update({'is_fulfilled':False})
             shopify_product = self.search_shopify_product_for_order_line(line, instance)
             if shopify_product:
                 product = shopify_product.product_id
@@ -623,10 +625,12 @@ class SaleOrder(models.Model):
         order_line_vals.update({
             "shopify_line_id": line.get("id"),
             "is_delivery": is_shipping,
+            "is_fulfilled":line.get('is_fulfilled'),
         })
         order_line = sale_order_line_obj.create(order_line_vals)
         #Added By Leela To Reset Taxes Based On Sellers Mapped!
         order_line.product_id_change()
+        order_line.update({'price_unit':price})
         return order_line
 
     @api.model
@@ -1175,6 +1179,7 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     shopify_line_id = fields.Char("Shopify Line", copy=False)
+    is_fulfilled = fields.Boolean("Is Fulfilled",copy=False)
 
     def unlink(self):
         """
