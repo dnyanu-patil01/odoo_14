@@ -6,7 +6,7 @@
     'description': """Market Place - Overview Dashboard""",
     'category': 'Dashboard',
     'author': 'leelapriskila',
-    'depends': ['base','seller_management','delivery_shiprocket','bridge_shopify_shiprocket'],
+    'depends': ['base','seller_management','delivery_shiprocket','bridge_shopify_shiprocket','seller_product_management'],
     'data': [
         'views/dashboard_views.xml',
     ],

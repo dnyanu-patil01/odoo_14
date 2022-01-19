@@ -6,11 +6,6 @@
             <field name="name">Show No Back Order Button</field>
             <field name="users" eval="[(4, ref('base.group_user'))]"/>
         </record>
-        <!-- Product Approval Group -->
-        <record model="res.groups" id="group_product_approval">
-            <field name="name">Product Approval</field>
-            <field name="category_id" ref="base.module_category_hidden" />
-        </record>
         <!-- Seller Categories -->
         <record model="ir.module.category" id="module_seller_management">
             <field name="name">Sellers</field>

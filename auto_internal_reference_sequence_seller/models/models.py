@@ -30,6 +30,7 @@ class ProductProduct(models.Model):
     @api.model
     def create(self, vals):
         if "default_code" not in vals or vals["default_code"] == "/":
+            seller = ''
             seller_id = vals.get("seller_id", False)
             template_id = vals.get("product_tmpl_id", False)
             seller_obj = self.env["res.partner"]
