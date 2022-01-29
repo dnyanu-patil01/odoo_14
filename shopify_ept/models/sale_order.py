@@ -628,9 +628,7 @@ class SaleOrder(models.Model):
         if discount_amount > 0.0:
             _logger.info("Adding discount to the line for Odoo order(%s) and Shopify order is (%s)"
                      % (self.name, order_number))
-            discount_amount = discount_amount / line.get("quantity")
-            discount_percentage = (float(discount_amount) * 100) / float(line.get("price"))
-            order_line_vals['discount'] = discount_percentage
+            order_line_vals['discount_fixed'] = discount_amount
 
 
         order_line_vals.update({
