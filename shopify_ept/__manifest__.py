@@ -13,7 +13,7 @@
     'maintainer': 'Emipro Technologies Pvt. Ltd.',
 
     # Dependencies
-    'depends': ['common_connector_library','seller_management','picking_split_group_by_sellers'],
+    'depends': ['common_connector_library','seller_management','picking_split_group_by_sellers','sale_fixed_discount'],
 
     # Views
     'init_xml': [],

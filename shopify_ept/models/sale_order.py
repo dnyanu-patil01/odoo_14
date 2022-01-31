@@ -174,24 +174,15 @@ class SaleOrder(models.Model):
 
         for line in lines:
             shopify_product = self.search_shopify_product_for_order_line(line, instance)
-            product = shopify_product.product_id
+            if shopify_product:
+                product = shopify_product.product_id
+            elif line.get('name') == "Tip":
+                product = self.env['product.product'].search([('default_code', '=', 'Tip')], limit=1)
+
 
             order_line = self.shopify_create_sale_order_line(line, product, line.get("quantity"),
                                                              product.name, line.get("price"),
                                                              order_response)
-            if float(total_discount) > 0.0:
-                discount_amount = 0.0
-                for discount_allocation in line.get("discount_allocations"):
-                    discount_amount += float(discount_allocation.get("amount"))
-                if discount_amount > 0.0:
-                    _logger.info("Creating discount line for Odoo order(%s) and Shopify order is (%s)"
-                                 % (self.name, order_number))
-                    self.shopify_create_sale_order_line({}, instance.discount_product_id, 1,
-                                                        product.name, float(discount_amount) * -1,
-                                                        order_response, previous_line=order_line,
-                                                        is_discount=True)
-                    _logger.info("Created discount line for Odoo order(%s) and Shopify order is (%s)"
-                                 % (self.name, order_number))
         return
 
     def create_shopify_shipping_lines(self, order_response, instance):
@@ -322,14 +313,15 @@ class SaleOrder(models.Model):
                 #         order.process_orders_and_invoices_ept()
             self.merge_quotations(order_ids)
             for order in self.env['sale.order'].browse(order_ids):
+                workflow_process_id = order.auto_workflow_process_id
                 if not order.is_risky_order:
                     if order.shopify_order_status == "fulfilled":
                         #To Automate the invoice process after grouped DO process Copied from common_connector_libary sale_order.py
                         if order.order_line.filtered(lambda l: l.product_id.invoice_policy == 'order'):
-                            order.validate_and_paid_invoices_ept(self)
+                            order.validate_and_paid_invoices_ept(workflow_process_id)
                         delivered_lines = order.order_line.filtered(lambda l: l.product_id.invoice_policy != 'order')
                         if delivered_lines:
-                            order.validate_and_paid_invoices_ept(self)
+                            order.validate_and_paid_invoices_ept(workflow_process_id)
                     else:
                         order.process_orders_and_invoices_ept()
                 _logger.info("Done auto workflow process for Odoo order(%s) and Shopify order is (%s)"
@@ -353,6 +345,8 @@ class SaleOrder(models.Model):
             shopify_product = self.search_shopify_product_for_order_line(line, instance)
             if shopify_product:
                 product = shopify_product.product_id
+            elif line.get('name') == "Tip":
+                product = self.env['product.product'].search([('default_code', '=', 'Tip')], limit=1)
             if product and product.seller_id:
                 line.update({'seller_id':product.seller_id.id,'seller_group_id':product.seller_id.seller_group_id.id})
                 seller_ids.append(product.seller_id.seller_group_id.id)
@@ -373,7 +367,6 @@ class SaleOrder(models.Model):
         shopify_product_obj = self.env["shopify.product.product.ept"]
         shopify_product_template_obj = self.env["shopify.product.template.ept"]
         mismatch = False
-
         for line in lines:
             shopify_variant = False
             sku = line.get("sku") or False
@@ -391,10 +384,12 @@ class SaleOrder(models.Model):
             if not shopify_variant:
                 line_variant_id = line.get("variant_id", False)
                 line_product_id = line.get("product_id", False)
+
                 if line_product_id and line_variant_id:
                     shopify_product_template_obj.shopify_sync_products(False, line_product_id,
                                                                        instance, log_book_id,
                                                                        order_data_queue_line)
+
                     if line.get("variant_id"):
                         shopify_variant = shopify_product_obj.search(
                             [("variant_id", "=", line.get("variant_id")),
@@ -410,6 +405,10 @@ class SaleOrder(models.Model):
                         mismatch = True
                         break
                 else:
+                    # Adding this fuzzy logic to process tip product in hfnlife
+                    if line.get('name') == "Tip":
+                        mismatch = False
+                        break
                     message = "Product ID is not available in %s Order line response. It might " \
                               "have happened that product has been deleted after order was " \
                               "placed." % order_number
@@ -622,15 +621,26 @@ class SaleOrder(models.Model):
             if instance.apply_tax_in_order == "odoo_tax" and is_discount:
                 order_line_vals["tax_id"] = previous_line.tax_id
 
+        order_number = order_response.get("order_number")
+        discount_amount = 0
+        for discount_allocation in line.get("discount_allocations"):
+            discount_amount += float(discount_allocation.get("amount"))
+        if discount_amount > 0.0:
+            _logger.info("Adding discount to the line for Odoo order(%s) and Shopify order is (%s)"
+                     % (self.name, order_number))
+            order_line_vals['discount_fixed'] = discount_amount
+
+
         order_line_vals.update({
             "shopify_line_id": line.get("id"),
             "is_delivery": is_shipping,
             "is_fulfilled":line.get('is_fulfilled'),
         })
         order_line = sale_order_line_obj.create(order_line_vals)
-        #Added By Leela To Reset Taxes Based On Sellers Mapped!
-        order_line.product_id_change()
-        order_line.update({'price_unit':price})
+
+        ## Added by ronak, to set the tax id on the order line as per odoo taxes
+        order_line._compute_tax_id()
+
         return order_line
 
     @api.model
