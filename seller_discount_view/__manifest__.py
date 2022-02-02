@@ -14,6 +14,7 @@
 
     # Views
     'data': [
-        "view/seller_view.xml"
+        "view/seller_view.xml",
+        "reports/report_sale_order.xml",
     ],
 }
