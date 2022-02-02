@@ -63,27 +63,27 @@
                     <t t-set="sale_order" t-value="o.get_sale_order_data()"/>
                     <div id="informations" style="padding-top:5px" class="row mt32 mb32">
                         <t t-if="sale_order.shopify_order_id">
-                            <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_origin" name="origin">
+                            <div class="col-auto col-4 mw-100 mb-2" t-if="o.invoice_origin" name="origin">
                                 <strong>Order Number:</strong>
                                 <p class="m-0"><t t-esc="sale_order.shopify_order_number"/>-<t t-esc="sale_order.shopify_order_id"/></p>
                             </div>
                         </t> 
                         <t t-if="not sale_order.shopify_order_id">
-                            <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_origin" name="origin">
+                            <div class="col-auto col-4 mw-100 mb-2" t-if="o.invoice_origin" name="origin">
                                 <strong>Order Number:</strong>
                                 <p class="m-0" t-field="o.invoice_origin"/>
                             </div>
                         </t>
-                        <div class="col-auto col-3 mw-100 mb-2" t-if="sale_order" name="origin">
+                        <div class="col-auto col-2 mw-100 mb-2" t-if="sale_order" name="origin">
                             <strong>Order Date:</strong>
                             <p class="m-0" t-esc="sale_order.date_order.strftime('%%d-%%m-%%Y')"/>
                         </div>
-                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.name" name="invoice_date">
+                        <div class="col-auto col-4 mw-100 mb-2" t-if="o.name" name="invoice_date">
                             <strong>Invoice Number:</strong>
                             <p class="m-0" t-field="o.name"/>
                         </div>
 
-                        <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">
+                        <div class="col-auto col-2 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">
                             <strong>Invoice Date:</strong>
                             <p class="m-0" t-esc="o.invoice_date.strftime('%%d-%%m-%%Y')"/>
                         </div>
