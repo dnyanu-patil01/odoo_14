@@ -23,7 +23,7 @@ class ReportPickingSlip(models.AbstractModel):
         product_list = []
         for rec in records:
             product_obj = self.env['product.product'].browse(int(rec['product']))
-            vals = {'product_name': rec['product_name'],
+            vals = {'product_name': product_obj.name,
                     'qty_to_be_delivered': rec['qty_to_be_delivered'],
                     'qty_available':product_obj.qty_available,
                     }
