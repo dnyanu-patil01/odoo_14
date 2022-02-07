@@ -10,7 +10,8 @@
             <t t-if="not o or not 'company_id' in o">
                 <t t-set="company" t-value="res_company"/>
             </t>
-            <div class="o_background_header">
+            <!-- o_boxed_header is added to get boxed layout changed later if you want to any other layout -->
+            <div class="o_boxed_header">
                 <div class="row">
                     <div class="col-4 mb5">
                         <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 100px;" alt="Logo"/>
@@ -18,12 +19,17 @@
                 </div>
             </div>
         </div>
-        <div t-attf-class="o_company_#{company.id}_layout article " t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
-            <t t-call="web.address_layout"/>
+        <!-- o_report_layout_boxed is added to get boxed layout changed later if you want to any other layout -->
+        <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <div class="pt-5">
+                <!-- This div ensures that the address is not cropped by the header. -->
+                <t t-call="web.address_layout"/>
+            </div>
             <t t-raw="0"/>
         </div>
 <!-- Footer Report -->
-        <div class="footer" style= "border-top: 1px solid black;font-size:13px;height:15px;">
+        <!-- o_boxed_footer is added to get boxed layout changed later if you want to any other layout -->
+        <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout" style= "border-top: 1px solid black;font-size:13px;height:15px;">
             <div class="text-center">
                 <ul class="list-inline">
                     <li t-if="company.phone" class="list-inline-item"><span class="o_force_ltr" t-field="company.phone"/></li>
