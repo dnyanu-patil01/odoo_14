@@ -1176,7 +1176,7 @@ class SaleOrder(models.Model):
 
     #Added By Leela To Get Order Date as Shopify Order Date
     def _prepare_confirmation_values(self):
-        val = super(SaleOrder, self)._prepare_invoice()
+        val = super(SaleOrder, self)._prepare_confirmation_values()
         if not self.shopify_order_id:
             return val
         else:
