@@ -573,7 +573,6 @@ class SaleOrder(models.Model):
         """
         sale_order_line_obj = self.env["sale.order.line"]
         instance = self.shopify_instance_id
-
         uom_id = product and product.uom_id and product.uom_id.id or False
         line_vals = {
             "product_id": product and product.ids[0] or False,
@@ -624,7 +623,7 @@ class SaleOrder(models.Model):
         order_number = order_response.get("order_number")
         discount_amount = 0
         for discount_allocation in line.get("discount_allocations"):
-            discount_amount += float(discount_allocation.get("amount"))
+            discount_amount = round(float(discount_allocation.get("amount")) / quantity,2)            
         if discount_amount > 0.0:
             _logger.info("Adding discount to the line for Odoo order(%s) and Shopify order is (%s)"
                      % (self.name, order_number))
