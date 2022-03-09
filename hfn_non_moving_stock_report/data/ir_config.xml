@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <function model="ir.config_parameter" name="set_param" eval="('non_moving_stock_email_recipients_1', '')" />
+        <function model="ir.config_parameter" name="set_param" eval="('non_moving_stock_email_recipients_2', '')" />
+        <function model="ir.config_parameter" name="set_param" eval="('non_moving_stock_email_recipients_3', '')" />
+        <function model="ir.config_parameter" name="set_param" eval="('non_moving_stock_periods_in_month_1', '6')" />
+        <function model="ir.config_parameter" name="set_param" eval="('non_moving_stock_periods_in_month_2', '6')" />
+        <function model="ir.config_parameter" name="set_param" eval="('non_moving_stock_periods_in_month_3', '6')" />
+    </data>
+</odoo>

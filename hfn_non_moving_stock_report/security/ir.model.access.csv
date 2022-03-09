@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inventory_non_moving_stock_report,inventory.non.moving.stock.report,model_inventory_non_moving_stock_report,,1,1,1,1

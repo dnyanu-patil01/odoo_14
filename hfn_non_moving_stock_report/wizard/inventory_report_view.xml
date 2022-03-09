@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inventory_form_view" model="ir.ui.view">
+        <field name="name">inventory.form.view</field>
+        <field name="model">inventory.non.moving.stock.report</field>
+        <field name="arch" type="xml">
+            <form string="Stock Move Report">
+                <group>
+                    <field name="company_id" readonly="1"/>
+                    <field name="start_date" required="1" />
+                    <field name="end_date" required="1" />
+                    <field name="filedata" filename="filename"/>
+                    <field name="filename" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="generate_xlsx" string="Generate " type="object"
+                        class="oe_highlight" />
+                    <span> Or </span>
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inventory_report" model="ir.actions.act_window">
+        <field name="name">Non Moving Stock Report</field>
+        <field name="res_model">inventory.non.moving.stock.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="inventory_form_view" />
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="warehouse_reporting_main_menu"
+        name="Reporting"
+        parent="stock.menu_stock_root"
+    />
+    <menuitem
+        id="inventory_report_menu"
+        action="action_inventory_report"
+        parent="stock.menu_warehouse_report"
+    />
+</odoo>
