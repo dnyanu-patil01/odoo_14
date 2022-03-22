@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_magazine_subscription">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <div class="col-xs-12" style="width:100%">
+                                <h3>Magazine Subscription Successfully Added! </h3>
+                            </div><br/><br/>
+                        </div>
+                        <div class="row">
+                            <p>Dear <t t-esc="o.name"/>,<br/>
+                            <!-- Your subscription for the <b><t t-esc="o.language"/> maganize for period of <t t-esc="o.subscription_period"/> year(s)</b> added successfully. -->
+                            </p>
+                        </div>
+                        <div class="row">
+	<div class="row" style="margin-left:10px;">
+		<div class="col-xs-12" width="100%">
+			<table class="table table-bordered" style="width:100%">
+				<tr>
+                <td style="width:25%">Language</td>
+                <td style="width:25%">Subscription Period</td>
+                <td style="width:25%">No Of Subscription</td>
+                <td style="width:25%">Amount</td>
+                </tr>
+                <tr t-foreach="o.subscriprion_line" t-as='line'>
+                <td style="width:25%"><t t-esc="line.language"/></td>
+                <td style="width:25%"><t t-esc="line.subscription_period"/></td>
+                <td style="width:25%"><t t-esc="line.no_of_subcription"/></td>
+                <td style="width:25%"><t t-esc="line.amount"/></td>
+                </tr>
+			</table>
+		</div>
+	</div>
+</div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <data>
+        <record id="action_report_magazine_subscription" model="ir.actions.report">
+            <field name="name">Magazine Subscription</field>
+            <field name="model">magazine.subscription</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hfn_magazine_subscription.report_magazine_subscription</field>
+            <field name="report_file">hfn_magazine_subscription.report_magazine_subscription</field>
+            <field name="print_report_name">'%s-Magazine Subscription' % (object.name)</field>
+            <field name="binding_model_id" ref="model_magazine_subscription"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

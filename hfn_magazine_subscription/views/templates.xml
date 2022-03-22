@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_frontend" inherit_id="website.assets_frontend">
+        <xpath expr="link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/hfn_magazine_subscription/static/src/scss/portal_schedule_meeting.scss"/>
+        </xpath>
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/hfn_magazine_subscription/static/src/js/magazine_subscription.js"></script>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hfn_magazine_subscription.model_magazine_subscription" model="ir.model">
+            <field name="website_form_access">True</field>
+        </record>
+        <function model="ir.model.fields" name="formbuilder_whitelist">
+            <value>magazine.subscription</value>
+            <value eval="[
+                'id_number',
+                'street',
+                'street2',
+                'zip',
+                'city',
+                'country_id',
+                'mobile',
+                'payment_mode',
+                'amount',
+            ]"/>
+        </function>
+    </data>
+</odoo>
