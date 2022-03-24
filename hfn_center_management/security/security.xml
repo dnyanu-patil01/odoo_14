@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <record id="group_assigned_center_user" model="res.groups">
-        <field name="name">User: Assigned Center Only</field>
-        <field name="category_id" ref="base.module_category_sales_sales" />
-        <field name="comment">The user will have access to her center sale order.</field>
-        <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]" />
+    <record id="sale.sale_order_personal_rule" model="ir.rule">
+        <field name="domain_force">['|',('user_id','=',user.id),('center_id.assigned_user_ids','in',user.id)]</field>
     </record>
 </odoo>

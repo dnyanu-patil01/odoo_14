@@ -16,6 +16,18 @@ class CustomerPortal(CustomerPortal):
         centers = request.env['res.center'].search([])
         values.update({'centers':centers})
         return values
+    
+    def details_form_validate(self, data):
+        error, error_message = super().details_form_validate(data)
+        if not data.get('center_id'):
+            error['center_id'] = 'error'
+            error_message.append(_("\n Invalid Center! Please Ensure That You Have Selected Center (or) Selected State Doesn't Contain Any Center"))
+        return error, error_message
+
+    def _prepare_home_portal_values(self, counters):
+        values = super()._prepare_home_portal_values(counters)
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',values)
+        return values
 
 class WebsiteSaleCenter(WebsiteSale):
 
@@ -59,6 +71,16 @@ class WebsiteSaleCenter(WebsiteSale):
         req += ['center_id']
         print(req)
         return req
+    
+    def checkout_form_validate(self, mode, all_form_values, data):
+        error, error_message = super().checkout_form_validate(mode, all_form_values, data)
+        if not data.get('center_id'):
+            error['center_id'] = 'error'
+            error_message.append(_("\n Invalid Center! Please Ensure That You Have Selected Center (or) Selected State Doesn't Contain Any Center"))
+        
+        print('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr',error)
+        print(error_message)
+        return error, error_message
 
     @http.route(['/shop/state_infos/'], type='json', auth="public", methods=['POST'], website=True)
     def state_infos(self, mode,**kw):

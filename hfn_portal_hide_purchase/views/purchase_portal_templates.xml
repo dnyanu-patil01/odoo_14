@@ -1,0 +1,13 @@
+<odoo>
+
+    <template id="purchase.portal_my_home_purchase" name="Show Purchase Orders" customize_show="True" inherit_id="portal.portal_my_home" priority="25">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry" groups="base.group_user">
+                <t t-set="title">Purchase Orders</t>
+                <t t-set="url" t-value="'/my/purchase'"/>
+                <t t-set="placeholder_count" t-value="'purchase_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

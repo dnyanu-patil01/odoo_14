@@ -10,7 +10,7 @@
     </template>
 
     <template id="portal_my_details" inherit_id="portal.portal_my_details">
-        <xpath expr="//div[@class='row']//input[@name='redirect']" position="before">
+        <xpath expr="//div[hasclass('row')]//input[@name='redirect']" position="before">
             <div t-attf-class="form-group #{error.get('center_id') and 'o_has_error' or ''} col-xl-6 div">
                 <label class="col-form-label label-optional" for="center_id">Center</label>
                 <select name="center_id" t-attf-class="form-control #{error.get('center_id') and 'is-invalid' or ''}">
@@ -23,6 +23,11 @@
                 </select>
             </div>
         </xpath>
+        <xpath expr="//input[@name ='vat']" position="replace"/>
+        <xpath expr="//label[@for ='vat']" position="replace"/>
+        <xpath expr="//input[@name ='company_name']" position="replace"/>
+        <xpath expr="//label[@for ='company_name']" position="replace"/>
+        <xpath expr="//p[@t-if='not partner_can_edit_vat']" position="replace"/>
     </template>
     <template id="address" inherit_id="website_sale.address">
         <xpath expr="//div[hasclass('form-row')]" position="inside">
@@ -39,4 +44,28 @@
             </div>
         </xpath>
     </template>
+
+    <template id="portal_my_home_sale" name="Show Quotations / Sales Orders" customize_show="True" inherit_id="sale.portal_my_home_sale" priority="20">
+        <xpath expr="//t[@t-call='portal.portal_docs_entry']" position="attributes">
+            <attribute name="groups">base.group_user</attribute>
+        </xpath>
+    </template>
+
+    <template id="account.portal_my_home_invoice" name="Show Invoices &amp; Bills" customize_show="True" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry" groups="base.group_user">
+                <t t-set="title">Invoices &amp; Bills</t>
+                <t t-set="url" t-value="'/my/invoices'"/>
+                <t t-set="placeholder_count" t-value="'invoice_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="address_b2b" inherit_id="website_sale.address_b2b">
+        <xpath expr="//input[@name ='vat']" position="replace"/>
+        <xpath expr="//label[@for ='vat']" position="replace"/>
+        <xpath expr="//input[@name ='company_name']" position="replace"/>
+        <xpath expr="//label[@for ='company_name']" position="replace"/>
+    </template>
+
 </odoo>
