@@ -569,7 +569,7 @@ class ShopifyProductTemplateEpt(models.Model):
 
         if not odoo_product:
             message = "Unknown error occurred. Couldn't find product %s with sku %s in Odoo." % (
-                shopify_template.title, sku)
+                shopify_template.name, sku)
             return message
 
         shopify_product = self.create_or_update_shopify_variant(variant_vals, False, shopify_template, odoo_product)
