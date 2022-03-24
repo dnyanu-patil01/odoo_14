@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		
+		<!-- Center Tree View-->
+	    <record id="center_view_tree" model="ir.ui.view">
+	        <field name="name">res.center.view.tree</field>
+	        <field name="model">res.center</field>
+	        <field name="arch" type="xml">
+	            <tree string="Center">
+	          		<field name="name" string="Center Name"/>
+					<field name="state_id" />
+	            </tree>
+	        </field>
+	    </record>
+	
+		<!-- Center Form -->
+	    <record id="res_center_view_form" model="ir.ui.view">
+	        <field name="name">res.center.view.form</field>
+	        <field name="model">res.center</field>
+	        <field name="arch" type="xml">
+	            <form string="Center">
+	                <sheet>
+                        <div class="oe_title">
+                        	<field name="active" invisible="1"/>
+                            <label for="name" string="Center" class="oe_edit_only"/>
+                            <h1><field name="name" placeholder="e.g. Center Name"/></h1>
+                        </div>
+                        <group name="first" col="2">
+                            <field name="state_id" options="{'no_open':True,'no_create': True}" domain = "[('country_id.code','=','IN')]" class="oe_inline"/>
+                        </group>
+						<group name="assigned" string="Responsible Users">
+							<field name="assigned_user_ids" options="{'no_open':True,'no_create': True}" widget="many2many_tags" />
+						</group>
+                    </sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids"/>
+						<field name="message_ids"/>
+					</div>
+	            </form>
+	        </field>
+	    </record>
+	
+		<!-- Center Action -->
+	    <record id="res_center_action" model="ir.actions.act_window">
+	        <field name="name">Center</field>
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">res.center</field>
+	        <field name="view_mode">tree,form</field>
+	        <field name="help" type="html">
+	            <p class="o_view_nocontent_smiling_face">Create a Center</p>
+	        </field>
+	    </record>
+	
+		<!-- Center menu -->
+		<menuitem
+		    id="res_center_menu"
+		    name="Center"
+		    parent="website.menu_website_global_configuration"
+		    action="res_center_action"
+		    sequence="100"/>
+		    
+		<record id="view_order_form_inherit_sale" model="ir.ui.view">
+			<field name="name">sale.order.view.form.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='payment_term_id']" position="after">
+					<field name="center_id" options="{'no_open':True,'no_create': True}"/>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="sale_quotation_tree_inherit" model="ir.ui.view">
+			<field name="name">sale.quotation.tree</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_quotation_tree" />
+			<field name="arch" type="xml">
+				<xpath expr="//tree//field[@name='partner_id']" position="after">
+					<field
+						name="center_id"
+						options="{'no_create': True}"
+						optional="show"
+					/>
+				</xpath>
+			</field>
+		</record>
+		
+		<record id="sale_order_view_search_inherit_sale" model="ir.ui.view">
+            <field name="name">sale.order.search.inherit.sale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+				<xpath expr="//field[@name='user_id']" position="after">
+				    <field name="center_id"/>
+                </xpath>
+                <xpath expr="//filter[@name='salesperson']" position="after">
+				    <filter string="Center" name="center" context="{'group_by':'center_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+		<record id="view_picking_search_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.search.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+			<field name="arch" type="xml">
+				<field name="origin" position="after">
+					<field name="center_id"/>
+				</field>
+				<xpath expr="//filter[@name='status']" position="after">
+				    <filter string="Center" name="center" context="{'group_by':'center_id'}"/>
+                </xpath>
+			</field>
+    	</record>
+
+		<record id="view_picking_tree_inherit" model="ir.ui.view">
+			<field name="name">stock.picking.tree</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.vpicktree"/>
+			<field name="arch" type="xml">
+				<field name="state" position="before">
+					<field name="center_id" optional="hide" options="{'no_create': True}"/>
+				</field>
+			</field>
+		</record>
+		<record id="view_picking_form_inherit" model="ir.ui.view">
+			<field name="name">stock.picking.form.inherit</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.view_picking_form"/>
+			<field name="arch" type="xml">
+				<field name="picking_type_id" position="before">
+					<field name="center_id" readonly="1"/>
+				</field>
+			</field>
+		</record>
+		<record id="account_invoice_groupby_inherit" model="ir.ui.view">
+            <field name="name">account.move.groupby</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_user_id']" position="after">
+                    <field name="center_id"/>
+                </xpath>
+                <xpath expr="//group/filter[@name='status']" position="after">
+                    <filter string="Center" name="center_id" domain="[]" context="{'group_by':'center_id'}"/>
+                </xpath>
+            </field>
+        </record>
+		<record id="view_invoice_tree" model="ir.ui.view">
+			<field name="name">account.invoice.tree</field>
+			<field name="model">account.move</field>
+			<field name="inherit_id" ref="account.view_invoice_tree" />
+			<field name="arch" type="xml">
+				<field name="company_id" position="before">
+					<field
+						name="center_id"
+						options="{'no_create': True}"
+						optional="hide"
+					/>
+				</field>
+			</field>
+		</record>
+		
+		<record id="view_account_invoice_inherit_sale" model="ir.ui.view">
+			<field name="name">account.move.view.form.inherit</field>
+			<field name="model">account.move</field>
+			<field name="inherit_id" ref="sale.account_invoice_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='partner_shipping_id']" position="after">
+					<field name="center_id" readonly="1" options="{'no_open':True,'no_create': True}"/>
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</odoo>
