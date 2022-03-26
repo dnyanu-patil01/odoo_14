@@ -33,7 +33,9 @@ class CheckoutSkipPayment(WebsiteSale):
         )
         order.action_confirm()
         try:
-            order._send_order_confirmation_mail()
+            pass
+            # order._send_order_confirmation_mail()
+            #command the above to fix issue while clicking multiple time confirm button
         except Exception:
             return request.render(
                 "website_sale_checkout_skip_payment.confirmation_order_error"
