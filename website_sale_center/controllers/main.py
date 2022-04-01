@@ -26,7 +26,6 @@ class CustomerPortal(CustomerPortal):
 
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',values)
         return values
 
 class WebsiteSaleCenter(WebsiteSale):
@@ -77,9 +76,6 @@ class WebsiteSaleCenter(WebsiteSale):
         if not data.get('center_id'):
             error['center_id'] = 'error'
             error_message.append(_("\n Invalid Center! Please Ensure That You Have Selected Center (or) Selected State Doesn't Contain Any Center"))
-        
-        print('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr',error)
-        print(error_message)
         return error, error_message
 
     @http.route(['/shop/state_infos/'], type='json', auth="public", methods=['POST'], website=True)

@@ -95,10 +95,11 @@ publicWidget.registry.WebsiteSaleConfirmOrder = publicWidget.Widget.extend(Varia
             if (selectCenters.data('init')===0 || selectCenters.find('option').length===1) {
                 if (data.centers.length || data.center_required) {
                     selectCenters.html('');
+                    var opt = $('<option>').text('Select Center').attr('value', "")
+                    selectCenters.append(opt);
                     _.each(data.centers, function (x) {
-                        var opt = $('<option>').text(x[1])
-                            .attr('value', x[0])
-                            selectCenters.append(opt);
+                        var opt = $('<option>').text(x[1]).attr('value', x[0])
+                        selectCenters.append(opt);
                     });
                     selectCenters.parent('div').show();
                 } else {

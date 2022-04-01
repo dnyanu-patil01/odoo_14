@@ -6,6 +6,7 @@ class Center(models.Model):
     _name = "res.center"
     _description = "Ashram Center"
     _inherit = ['mail.thread']
+    _order = 'name asc'
     
 
     name = fields.Char('Name', index=True, required=True)
