@@ -174,7 +174,9 @@ class SaleOrder(models.Model):
 
         for line in lines:
             shopify_product = self.search_shopify_product_for_order_line(line, instance)
-            if shopify_product:
+            #Order Response Contain Product ID Only For Products Not For Tips 
+            #Hence Modify The Below If Condition
+            if shopify_product and line.get('product_id'):
                 product = shopify_product.product_id
             elif line.get('name') == "Tip":
                 product = self.env['product.product'].search([('default_code', '=', 'Tip')], limit=1)
@@ -343,7 +345,9 @@ class SaleOrder(models.Model):
             else:
                 line.update({'is_fulfilled':False})
             shopify_product = self.search_shopify_product_for_order_line(line, instance)
-            if shopify_product:
+            #Order Response Contain Product ID Only For Products Not For Tips 
+            #Hence Modify The Below If Condition
+            if shopify_product and line.get('product_id'):
                 product = shopify_product.product_id
             elif line.get('name') == "Tip":
                 product = self.env['product.product'].search([('default_code', '=', 'Tip')], limit=1)
