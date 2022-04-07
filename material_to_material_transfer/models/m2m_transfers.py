@@ -1,5 +1,5 @@
 from odoo import fields, models, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class M2MTransfers(models.Model):
@@ -11,7 +11,7 @@ class M2MTransfers(models.Model):
         required=True)
     current_product_id = fields.Many2one('product.product', string='Current Product', required=True)
     quantity = fields.Float(string='Quantity', required=True)
-    current_location_id = fields.Many2one('stock.location', 'Current Location', domain=[('usage', '!=', 'inventory')], required=True)
+    current_location_id = fields.Many2one('stock.location', 'Current Location', domain=[('usage', '=', 'internal')], required=True)
     new_product_id = fields.Many2one('product.product', string='New Product', required=True)
     new_location_id = fields.Many2one('stock.location', 'New Location', domain=[('usage', '=', 'internal')], required=True)
     state = fields.Selection([
@@ -20,12 +20,17 @@ class M2MTransfers(models.Model):
         ('cancel', 'Cancelled'),
     ], string='Status', default='draft')
     
+    @api.constrains('quantity')
+    def _check_quantity(self):
+        if any([m.quantity <= 0 for m in self]):
+            raise ValidationError(_('Quantity should be more than 0.'))
+    
     def _prepare_move_values(self,val):
         """
         This function prepares move values.
         """
         return {
-            'name': val['product_name'],
+            'name': val['name'],
             'location_id': val['location_id'],
             'location_dest_id': val['location_dest_id'],
             'product_id': val['product_id'],
@@ -43,8 +48,8 @@ class M2MTransfers(models.Model):
     def button_confirm(self):
         """ Creates stock move entry """
         virtual_grown_plants_location = self.env.ref('material_to_material_transfer.virtual_grown_plants_location', raise_if_not_found=False).id
-        values = [{'product_name': self.current_product_id.name, 'product_id': self.current_product_id.id, 'location_id': self.current_location_id.id, 'location_dest_id': virtual_grown_plants_location, 'product_uom':self.current_product_id.uom_id.id},
-                  {'product_name': self.new_product_id.name, 'product_id': self.new_product_id.id, 'location_id': virtual_grown_plants_location, 'location_dest_id': self.new_location_id.id,'product_uom':self.new_product_id.uom_id.id}]
+        values = [{'name': self.name, 'product_id': self.current_product_id.id, 'location_id': self.current_location_id.id, 'location_dest_id': virtual_grown_plants_location, 'product_uom':self.current_product_id.uom_id.id},
+                  {'name': self.name, 'product_id': self.new_product_id.id, 'location_id': virtual_grown_plants_location, 'location_dest_id': self.new_location_id.id,'product_uom':self.new_product_id.uom_id.id}]
         for val in values:
             stock_move = self.env['stock.move'].create(self._prepare_move_values(val))
             stock_move._action_confirm()
@@ -60,7 +65,7 @@ class M2MTransfers(models.Model):
             self.current_location_id = False
             self.new_product_id = False
             product_location_ids = self.env['stock.quant'].search([('product_id', '=', self.current_product_id.id)]).location_id.ids
-            return {'domain': {'current_location_id': [('id', 'in', product_location_ids), ('usage', '!=', 'inventory')]}}
+            return {'domain': {'current_location_id': [('id', 'in', product_location_ids), ('usage', '=', 'internal')]}}
     
     def action_cancel(self):
         self.write({'state': 'cancel'})
