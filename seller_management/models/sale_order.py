@@ -5,6 +5,8 @@ class SaleOrder(models.Model):
 
     seller_id = fields.Many2one('res.partner','Seller', index=True, copy=False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")
     seller_shopify_sequence = fields.Char(readonly=True)
+    mobile = fields.Char(related="partner_shipping_id.mobile",readonly=True) 
+    phone = fields.Char(related="partner_shipping_id.phone",readonly=True)
 
     @api.model
     def create(self, vals):
