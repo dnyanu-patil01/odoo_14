@@ -173,7 +173,7 @@
 																<select id="center_id" name="center_id" t-attf-class="form-control">
 																	<option value="">Center...</option>
 																	<t t-foreach="centers or []" t-as="center">
-                                                                        <option t-att-value="center.id" style="display:none;" t-att-data-state_id="center.state_id.id" t-att-selected="center.id == partner.center_id.id">
+                                                                        <option t-att-value="center.id" style="display:none;" t-att-data-state_id="center.state_id.id">
                                                                             <t t-esc="center.name" />
                                                                         </option>
                                                                     </t>

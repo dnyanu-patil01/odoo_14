@@ -112,13 +112,6 @@ class MagazineSubscription(models.Model):
                 vals.update({'state':state.id})
         return vals
     
-    @api.model
-    def create(self, vals):
-        res = super(MagazineSubscription ,self).create(vals)
-        res.print_subscription()
-        res.action_receipt_to_customer()
-        return res
-    
     def print_subscription(self):
         return self.env.ref('hfn_magazine_subscription.action_report_magazine_subscription').report_action(self)
     
@@ -149,6 +142,7 @@ class MagazineSubscription(models.Model):
         mail_values.update({'attachment_ids': [(4, attachment.id)]})
         mail = self.env['mail.mail'].sudo().create(mail_values)
         mail.send()
+        return True
 
 class SubscriptionLine(models.Model):
     _name = 'magazine.subscription.line'
