@@ -150,6 +150,9 @@ _onCountryChange: function () {
         if (! id_number){
             return
         }
+        $('#s_website_form_result, #o_website_form_result').html('');
+        document.getElementById("schedule_meeting_form").reset();
+        $("#id_number").val(id_number)
         return this._rpc({
                 model: 'magazine.subscription',
                 method: 'get_abhiyasi_data',
@@ -160,8 +163,7 @@ _onCountryChange: function () {
                 }
                 else{
                     self.do_warn('Error','Details Not Found.Please Verify The Entered ID Number & Try Again Once.')
-                    document.getElementById("schedule_meeting_form").reset();
-                    $("#id_number").val(id_number)
+
                 }
                 if (data['name']){
                     $("#name").val(data['name'])
@@ -187,9 +189,8 @@ _onCountryChange: function () {
                 if (data['zip']){
                     $("#zip").val(data['zip']);
                 }
-                // _.str.sprintf(
-                //     '/report/pdf/hfn_magazine_subscription.report_magazine_subscription/7')
             })
     },
 });
 });
+

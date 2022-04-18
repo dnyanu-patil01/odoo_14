@@ -35,6 +35,8 @@ class WebsiteMagazineSubscriptionForm(WebsiteForm):
         model_record = request.env.ref('hfn_magazine_subscription.model_magazine_subscription')
         try:
             self.extract_data(model_record, kwargs)
+            if 'id_number' in kwargs and not kwargs['id_number'].isalnum():
+                return json.dumps({'error':'ID Number Must Be Combination Of Aplhabets And Numbers'})
             if 'deliver_at' not in kwargs or not kwargs['deliver_at']:
                 return json.dumps({'error':['Error','Invalid Value For Deliver At']})
             elif kwargs['deliver_at'] == 'center' and 'center_id' not in kwargs:
