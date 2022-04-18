@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_magazine_subscription,magazine.subscription.user,model_magazine_subscription,,1,1,1,0
+access_magazine_subscription_line,magazine.subscription.line.user,model_magazine_subscription_line,,1,1,1,0

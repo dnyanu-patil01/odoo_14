@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="magazine_subscription_view_tree" model="ir.ui.view">
+        <field name="name">magazine.subscription.view.tree</field>
+        <field name="model">magazine.subscription</field>
+        <field name="arch" type="xml">
+            <tree string="Magazine Subscription" delete="0" create="0" edit="0">
+                <field name="name" />
+                <field name="id_number" />
+                <field name="email" />
+                <field name="deliver_at" />
+                <field name="amount" />
+                <field name="payment_mode" />
+                <field name="subscription_added_by" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="magazine_subscription_view_form" model="ir.ui.view">
+        <field name="name">magazine.subscription.view.form</field>
+        <field name="model">magazine.subscription</field>
+        <field name="arch" type="xml">
+            <form string="Magazine Subscription" delete="0" create="0" edit="0" duplicate="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Subscriber Name"/>
+                            <field name="id_number" string="Abhyasi ID"/>
+                            <label for="street" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="center_id" placeholder="Center" options='{"no_open": True}'/>
+                                <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True}'/>
+                            </div>
+                            <field name="mobile" class="o_force_ltr"/>
+                            <field name="email"/>
+                        </group>
+                        <group>
+                            <field name="subscription_added_by"/>
+                            <field name="amount"/>
+                            <field name="payment_mode"/>
+                            <field name="deliver_at" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="Subscription Lines" string="Subscription Lines">
+                            <field name="subscriprion_line" readonly="1">
+                                <tree>
+                                    <field name="language" />
+                                    <field name="subscription_period" />
+                                    <field name="no_of_subcription" />
+                                    <field name="amount" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="magazine_subscription_view_search" model="ir.ui.view">
+        <field name="name">magazine.subscription.view.search</field>
+        <field name="model">magazine.subscription</field>
+        <field name="arch" type="xml">
+            <search string="Search Magazine Subscription">
+                <field name="id_number"/>
+                <field name="email"/>
+                <field name="subscription_added_by"/>
+                <field name="payment_mode" />
+                <separator/>
+                <filter string="Cash"
+                        name="payment_cash" help="Cash Payments"
+                        domain="[('payment_mode', '=', 'cash')]"/>
+                <filter string="Card"
+                        name="payment_card" help="Card Payments"
+                        domain="[('payment_mode', '=', 'card')]"/>
+                <filter string="Cheque"
+                        name="payment_cheque" help="Cheque Payments"
+                        domain="[('payment_mode', '=', 'cheque')]"/>
+                <filter string="UPI"
+                        name="payment_upi" help="UPI Payments"
+                        domain="[('payment_mode', '=', 'upi')]"/>
+                <separator/>
+                <group string="Group By">
+                    <filter string="Payment Modes" name="payment_mode" context="{'group_by':'payment_mode'}"/>
+                    <filter string="Subscription Added By" name="subscription_added_by" domain="[]" context="{'group_by':'subscription_added_by'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanha location Action -->
+    <record id="magazine_subscription_action" model="ir.actions.act_window">
+        <field name="name">Magazine Subscription</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">magazine.subscription</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">View a Magazine Subscription</p>
+        </field>
+    </record>
+	           
+	    <!-- Kanha census root menu -->       
+		<menuitem name="Magazine Subscription"
+	        id="menu_magazine_subscription_root" 
+	        sequence="3"/>
+	
+		<!-- Kanha Location menu -->
+		<menuitem
+		    id="magazine_subscription_menu"
+		    name="Magazine Subscription"
+		    parent="menu_magazine_subscription_root"
+		    action="magazine_subscription_action"
+		    sequence="100"/>
+
+</odoo>

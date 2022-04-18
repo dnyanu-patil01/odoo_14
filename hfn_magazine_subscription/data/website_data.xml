@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="magazine_subscription" name="Add Subscription">
+			<t t-call="website.layout">
+				<div id="wrap">
+					<div class="oe_structure">
+						<section class="s_title parallax s_parallax_is_fixed bg-black-50 pt24 pb24" data-vcss="001" data-snippet="s_title" data-scroll-background-ratio="1">
+							<span class="s_parallax_bg oe_img_bg" style="background-image: url('/web/image/website.s_banner_default_image'); background-position: 50% 0;"/>
+							<div class="o_we_bg_filter bg-black-50"/>
+							<div class="container">
+								<h1>Add Subscription</h1>
+							</div>
+						</section>
+					</div>
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-lg-12 col-xl-6">
+								<div id="schedule_meeting_section">
+									<section id="website_magazine_subscription_form" class="s_website_form" data-vcss="001" data-snippet="s_website_form">
+										<div class="container">
+											<form name="schedule_meeting_form" id="schedule_meeting_form" action="/maganize_subscription" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-force_action="magazine.subscription" data-model_name="magazine.subscription" data-success-mode="redirect" data-success-page="/subscription-thank-you">
+												<div class="s_website_form_rows row s_col_no_bgcolor">
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label s_website_form_label" style="width: 200px" for="id_number">
+																<span class="s_website_form_label_content" style="padding-left:18px;">Abhyasi ID Number</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="input-group col-sm-8">
+																<input id="id_number" type="text" class="form-control s_website_form_input" name="id_number" required=""/>
+																<div class="input-group-btn">
+																	<button id="get_details" class="btn btn-outline-primary" type="button">Get Details</button>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="name">
+																<span class="s_website_form_label_content">Name</span>
+																<span class="s_website_form_mark"></span>
+															</label>
+															<div class="col-sm">
+																<input id="name" type="text" class="form-control s_website_form_input" name="name"/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="email">
+																<span class="s_website_form_label_content">Email</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<input id="email" type="text" class="form-control s_website_form_input" name="email" required=""/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="mobile">
+																<span class="s_website_form_label_content">Mobile</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<input id="mobile" type="text" class="form-control s_website_form_input" name="mobile" required=""/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="street">
+																<span class="s_website_form_label_content">Street</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<input id="street" type="text" class="form-control s_website_form_input" name="street" required=""/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="street2">
+																<span class="s_website_form_label_content">Street2</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<input id="street2" type="text" class="form-control s_website_form_input" name="street2" required=""/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="city">
+																<span class="s_website_form_label_content">City</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<input id="city" type="text" class="form-control s_website_form_input" name="city" required=""/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="country_id">
+																<span class="s_website_form_label_content">Country</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<select id="country_id" name="country_id" t-attf-class="form-control" required="">
+																	<option value="">Country...</option>
+																	<t t-foreach="countries or []" t-as="country">
+																		<option t-att-value="country.id">
+																			<t t-esc="country.name" />
+																		</option>
+																	</t>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="state_id">
+																<span class="s_website_form_label_content">State</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<select id="state_id" name="state_id" t-attf-class="form-control">
+																	<option value="">State...</option>
+																	<t t-foreach="states or []" t-as="state">
+																		<option t-att-value="state.id"  t-att-data-country_id="state.country_id.id">
+																			<t t-esc="state.name" />
+																		</option>
+																	</t>
+																</select>
+															</div>
+														</div>
+													</div>
+                                                    <div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="zip">
+																<span class="s_website_form_label_content">Zip</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<input id="zip" type="text" class="form-control s_website_form_input" name="zip" required=""/>
+															</div>
+														</div>
+													</div>
+                                                    <div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="deliver_at">
+																<span class="s_website_form_label_content">Deliver At</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<input style="padding:5px;margin:5px;" type="radio" id="home" name="deliver_at" value="home" />
+																<label style="padding:5px;margin:5px;margin-top:-5px;" for="home">Deliver to address given</label>
+																<br/>
+                                                                <input style="padding:5px;margin:5px;" type="radio" id="center" name="deliver_at" value="center" />
+																<label style="padding:5px;margin:5px;margin-top:-5px;" for="center">Pickup at your nearest Meditation Center</label>
+															</div>
+														</div>
+													</div>
+													<div id="center_id_div" class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="center_id">
+																<span class="s_website_form_label_content">Center</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<select id="center_id" name="center_id" t-attf-class="form-control">
+																	<option value="">Center...</option>
+																	<t t-foreach="centers or []" t-as="center">
+                                                                        <option t-att-value="center.id" style="display:none;" t-att-data-state_id="center.state_id.id" t-att-selected="center.id == partner.center_id.id">
+                                                                            <t t-esc="center.name" />
+                                                                        </option>
+                                                                    </t>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="row" style="padding-left:18px;">
+														<table class="table" style="width:100%;padding:0px;" cellspacing="0">
+															<thead>
+																<th>Language</th>
+																<th>1 Year @ RS.1500</th>
+																<th>2 Year @ Rs.3000</th>
+																<th>Amount</th>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>
+																		<b>English</b>
+																	</td>
+                                                                    																	<td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="no_of_subcription_e1" type="number"  min="0" oninput="validity.valid||(value='');" class="form-control s_website_form_input no_of_subcription" name="no_of_subcription_e1" />
+																			</div>
+																		</div>
+																	</td>
+                                                                    <td>
+                                                                        <div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="no_of_subcription_e2" type="number" class="form-control s_website_form_input no_of_subcription" name="no_of_subcription_e2"  min="0" oninput="validity.valid||(value='');"/>
+																			</div>
+																		</div>
+                                                                    </td>
+
+																	<td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="amount_e1" type="number" class="form-control s_website_form_input" name="amount_e1" readonly=""  min="0" oninput="validity.valid||(value='');"/>
+																			</div>
+																		</div>
+																	</td>
+																</tr>
+                                                                <tr>
+																	<td>
+																		<b>Hindi</b>
+																	</td>
+                                                                    <td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="no_of_subcription_h1" type="number" class="form-control s_website_form_input no_of_subcription_h1" name="no_of_subcription_h1"  min="0" oninput="validity.valid||(value='');"/>
+																			</div>
+																		</div>
+																	</td>
+																	<td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="no_of_subcription_h2" type="number" class="form-control s_website_form_input no_of_subcription_h2" name="no_of_subcription_h2"  min="0" oninput="validity.valid||(value='');"/>
+																			</div>
+																		</div>
+																	</td>
+																
+																	<td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="amount_h1" type="number" class="form-control s_website_form_input" name="amount_h1" readonly="" />
+																			</div>
+																		</div>
+																	</td>
+																</tr>
+                                                                <tr>
+																	<td>
+																		<b>Tamil</b>
+																	</td>
+                                                                    <td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="no_of_subcription_ta1" type="number" class="form-control s_website_form_input no_of_subcription_ta1" name="no_of_subcription_ta1"  min="0" oninput="validity.valid||(value='');" />
+																			</div>
+																		</div>
+																	</td>
+																	<td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="no_of_subcription_ta2" type="number" class="form-control s_website_form_input no_of_subcription_ta2" name="no_of_subcription_ta2"  min="0" oninput="validity.valid||(value='');" />
+																			</div>
+																		</div>
+																	</td>
+																	
+																	<td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="amount_ta1" type="number" class="form-control s_website_form_input" name="amount_ta1" readonly="" />
+																			</div>
+																		</div>
+																	</td>
+																</tr>
+                                                                
+                                                                <tr>
+																	<td>
+																		<b>Telugu</b>
+																	</td>
+                                                                    <td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="no_of_subcription_te1" type="number" class="form-control s_website_form_input no_of_subcription_te1" name="no_of_subcription_te1"  min="0" oninput="validity.valid||(value='');"/>
+																			</div>
+																		</div>
+																	</td>
+																	<td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="no_of_subcription_te2" type="number" class="form-control s_website_form_input no_of_subcription_te2" name="no_of_subcription_te2"  min="0" oninput="validity.valid||(value='');"/>
+																			</div>
+																		</div>
+																	</td>
+																	
+																	<td>
+																		<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="integer" data-name="Field">
+																			<div class="row s_col_no_resize s_col_no_bgcolor">
+																				<input id="amount_te1" type="number" class="form-control s_website_form_input" name="amount_te1" readonly="" />
+																			</div>
+																		</div>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="amount">
+																<span class="s_website_form_label_content">Amount</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="col-sm">
+																<input id="amount" type="number" class="form-control s_website_form_input" name="amount" readonly="" required=""/>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+														<div class="row s_col_no_resize s_col_no_bgcolor">
+															<label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="payment_mode">
+																<span class="s_website_form_label_content">Payment Mode</span>
+																<span class="s_website_form_mark"> *</span>
+															</label>
+															<div class="input-group col-sm">
+																<input style="padding:5px;margin:5px;" type="radio" id="cash" name="payment_mode" value="cash" />
+																<label style="padding:5px;margin:5px;margin-top:-5px;" for="cash">Cash</label>
+																<input style="padding:5px;margin:5px;" type="radio" id="card" name="payment_mode" value="card" />
+																<label style="padding:5px;margin:5px;margin-top:-5px;" for="card">Card</label>
+																<br/>
+																<input style="padding:5px;margin:5px;" type="radio" id="upi" name="payment_mode" value="upi" />
+																<label style="padding:5px;margin:5px;margin-top:-5px;" for="upi">UPI</label>
+																<input style="padding:5px;margin:5px;" type="radio" id="cheque" name="payment_mode" value="cheque"/>
+																<label style="padding:5px;margin:5px;margin-top:-5px;" for="cheque">Cheque</label>
+															</div>
+														</div>
+													</div>
+													<div class="form-group col-12 s_website_form_submit" data-name="Submit Button">
+														<div style="width: 200px;" class="s_website_form_label"/>
+														<a href="/subscription/confirm_order" role="button"  class="btn btn-primary btn-lg s_website_form_send">Add Subscription</a>
+														<span id="s_website_form_result"></span>
+													</div>
+												</div>
+											</form>
+										</div>
+									</section>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="oe_structure mt-2"/></div>
+			</t>
+		</template>
+		<record id="magazine_subscription_thanks" model="website.page">
+			<field name="name">Thanks for Your Subscription</field>
+			<field name="type">qweb</field>
+			<field name="url">/subscription-thank-you</field>
+			<field name="website_indexed" eval="False"/>
+			<field name="is_published">True</field>
+			<field name="key">hfn_magazine_subscription.meetings_thanks</field>
+			<field name="arch" type="xml">
+				<t name="Thanks for Your Subscription" t-name="hfn_magazine_subscription.meetings_thanks">
+					<t t-call="website.layout">
+						<div id="wrap">
+							<div class="oe_structure" id="oe_structure_website_form_contact_us_thanks_1"/>
+							<div class="container mt-4">
+								<div class="row">
+									<div class="col-lg-7 col-xl-6 mr-lg-auto oe_structure">
+										<section class="pt40 s_text_block pb40 o_colored_level o_cc o_cc1" data-snippet="s_text_block" data-name="Text">
+											<div class="container">
+												<span class="d-block fa fa-4x fa-thumbs-up mx-auto rounded-circle bg-primary"/>
+												<br/>
+												<h1 class="text-center">Thank you!</h1>
+												<div class="pb16 pt16 s_hr" data-snippet="s_hr" data-name="Separator">
+													<hr class="mx-auto border-top w-50 border-dark text-center"/>
+												</div>
+												<h5 class="text-center">
+													<span class="fa fa-check-circle"/>
+													<span>Your subscription will added 
+														<b>successfully.</b>
+													</span>
+												</h5>
+											</div>
+										</section>
+									</div>
+								</div>
+							</div>
+							<div class="oe_structure" id="oe_structure_website_form_contact_us_thanks_2"/></div>
+					</t>
+				</t>
+			</field>
+		</record>
+	</data>
+	<data noupdate="1">
+		<record id="menu_magazine_subscription" model="website.menu">
+			<field name="name">Magazine Subscription</field>
+			<field name="url">/magazine_subscription</field>
+			<field name="parent_id" ref="website.main_menu"/>
+			<field name="sequence" type="int">70</field>
+		</record>
+	</data>
+</odoo>

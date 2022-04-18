@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="products_item_flex" inherit_id="website_sale.products_item" customize_show="True" active="True" name="Quick add to Cart (product list)">
+        <xpath expr="//*[hasclass('product_price')]" position="attributes">
+            <attribute name="style">display: flex;</attribute>
+        </xpath>
+        <xpath expr="//div[@class='o_wsale_product_btn']" position="replace" />
+        <xpath expr="//*[hasclass('product_price')]" position="inside">
+            <span t-if="len(product.product_variant_ids) == 1" class="quick_add_to_cart float_left input-group" style="margin-left:15px;">
+                <input name="product_id" t-att-value="product.product_variant_ids[0].id" type="hidden" />
+                <input name="no_redirect_to_cart" t-att-value="True" type="hidden" />
+                <input type="text" class="js_quantity form-control quantity" data-min="0" name="add_qty" style="text-align:center;height: 25px;" t-att-data-product="product" t-att-data-product-id="product.product_variant_ids[0].id" t-att-value="add_qty or 0" />
+            </span>
+            <div class="o_wsale_product_btn">
+                <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()" />
+                <input name="product_id" t-att-value="product_variant_id" type="hidden" />
+                <t t-if="product_variant_id">
+                    <a href="#" role="button" class="btn btn-secondary a-submit-cart" aria-label="Shopping cart" style="transform: scale(1);padding: 0px;padding-bottom: -31px;width: 36px;text-align: center;height: 23px;margin-left: 15px;" title="Shopping cart">
+                        <span class="fa fa-shopping-cart" />
+                    </a>
+                </t>
+            </div>
+        </xpath>
+    </template>
+    <template id="product" inherit_id="website_sale.product" customize_show="True" active="True" name="Quick add to Cart (product page)">
+        <xpath expr="//div[@id='product_details']//p[3]" position="replace" />
+    </template>
+    <record id="website_sale.products_add_to_cart" model="ir.ui.view">
+        <field name="active" eval="True" />
+    </record>
+    <template id="products_add_to_cart_ajax" inherit_id="website_sale.products_add_to_cart">
+        <xpath expr="//a[@class='btn btn-secondary a-submit']" position="replace">
+            <a href="#" role="button" class="btn btn-secondary a-submit-cart" aria-label="Shopping cart" style="transform: scale(1);" title="Shopping cart">
+                <span class="fa fa-shopping-cart" />
+            </a>
+        </xpath>
+    </template>
+    <template id="products_cart_ajax" inherit_id="website_sale.product">
+        <xpath expr="//a[@id='add_to_cart']" position="attributes">
+            <attribute name="class" remove="a-submit" separator=" " />
+        </xpath>
+    </template>
+    <template id="assets_frontend_cart_ajax" inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <script src="/hfn_website_add_to_cart/static/src/js/add_to_cart.js" type="text/javascript" />
+        </xpath>
+    </template>
+</odoo>

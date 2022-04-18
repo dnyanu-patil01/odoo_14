@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="view_res_company_inherit" model="ir.ui.view">
+      <field name="name">view.res.company.inherit</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form" />
+      <field name="arch" type="xml">
+         <xpath expr="//field[@name='favicon']" position="after">
+            <field name="api_token" invisible="1" />
+            <div class="alert alert-info" role="alert" attrs="{'invisible': [('api_token', '!=', False)]}">
+               <span>
+                     Unable To Generate Auth Token.Please Verify The Client ID And Secret In Config.
+               </span>
+            </div>
+            <button type="object" name="get_auth_api" string="Generate Auth Token" />
+         </xpath>
+      </field>
+   </record>
+</odoo>
