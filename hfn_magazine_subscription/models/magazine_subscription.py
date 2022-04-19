@@ -54,7 +54,7 @@ class MagazineSubscription(models.Model):
         if not self.env.company.api_token:
             raise AccessError(('Authentication Token Not Found! Please Contact IT Team And Try Again'))
         if self.env.company.api_token and id_number:
-            url="https://profile.srcm.net/api/v2/abhyasis/?ref=%s"%(id_number)
+            url="https://profile.srcm.net/api/v2/abhyasis/?ref=%s"%(id_number.upper())
             headers = {
             "Authorization": self.env.company.api_token,
             }

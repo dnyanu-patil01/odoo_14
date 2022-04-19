@@ -22,12 +22,12 @@
 			<table class="table table-bordered" style="width:100%">
 				<tr>
                 <td style="width:25%">Language</td>
-                <td style="width:25%">Subscription Period</td>
-                <td style="width:25%">No Of Subscription</td>
+                <td style="width:25%">Subscription</td>
+                <td style="width:25%">Subscription Count</td>
                 <td style="width:25%">Amount</td>
                 </tr>
                 <tr t-foreach="o.subscriprion_line" t-as='line'>
-                <td style="width:25%"><t t-esc="line.language"/></td>
+                <td style="width:25%;"><t t-esc="line.language"/></td>
                 <td style="width:25%"><t t-esc="line.subscription_period"/></td>
                 <td style="width:25%"><t t-esc="line.no_of_subcription"/></td>
                 <td style="width:25%"><t t-esc="line.amount"/></td>
