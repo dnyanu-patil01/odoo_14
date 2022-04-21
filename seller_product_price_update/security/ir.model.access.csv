@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_change_product_price_user,change.product.price.user,model_change_product_price,base.group_user,1,1,1,1
+access_product_pricelist_seller_user,product.pricelist.seller.user,product.model_product_pricelist,seller_management.group_sellers_management_user,1,0,0,0
+access_product_pricelist_item_seller_user,product.pricelist.item.seller.user,product.model_product_pricelist_item,seller_management.group_sellers_management_user,1,1,0,0

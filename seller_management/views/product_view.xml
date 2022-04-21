@@ -116,6 +116,79 @@
         </field>
     </record>
 
+    <record id="seller_product_pricelist_item_tree_view_from_product" model="ir.ui.view">
+            <!-- Access and edit price rules from a given product/product variant -->
+            <field name="name">product.pricelist.item.tree</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="arch" type="xml">
+                <tree string="Pricelist Items" create="0" edit="0" delete="0">
+                    <!-- Scope = coming from a product/product template -->
+                    <field name="pricelist_id" string="Pricelist" options="{'no_create_edit':1, 'no_open': 1}"/>
+                    <field name="name" string="Applied On"/>
+                    <field name="categ_id" invisible="1"/>
+                    <field name="product_tmpl_id"
+                      invisible="context.get('active_model')!='product.category'"
+                      attrs="{'required': [('applied_on', '=', '1_product')]}"
+                      domain="[('categ_id', '=', context.get('default_categ_id', True)), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                      options="{'no_create_edit':1, 'no_open': 1}"/>
+                    <field name="product_id"
+                      groups="product.group_product_variant"
+                      invisible="context.get('product_without_variants', False)"
+                      readonly="context.get('active_model')=='product.product'"
+                      attrs="{'required': [('applied_on', '=', '0_product_variant')]}"
+                      domain="['|', '|',
+                        ('id', '=', context.get('default_product_id', 0)),
+                        ('product_tmpl_id', '=', context.get('default_product_tmpl_id', 0)),
+                        ('categ_id', '=', context.get('default_categ_id', 0)), '|', ('company_id', '=', company_id), ('company_id', '=', False)
+                      ]"
+                      options="{'no_create_edit':1, 'no_open': 1}"
+                      />
+                    <field name="min_quantity" colspan="4"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="fixed_price" string="Price" required='1'/>
+                    <field name="date_start" optional="show"/>
+                    <field name="date_end" optional="show"/>
+                    <field name="applied_on" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show" options="{'no_create_edit':1, 'no_open': 1}"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="seller_product_pricelist_item_form_view" model="ir.ui.view">
+        <field name="name">product.pricelist.item.form</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="arch" type="xml">
+            <form string="Pricelist Items" create="0" edit="0" delete="0" duplicate="0">
+                <group>
+                <field name="pricelist_id" string="Pricelist" options="{'no_create_edit':1, 'no_open': 1}"/>
+                    <field name="name" string="Applied On"/>
+                    <field name="categ_id" invisible="1"/>
+                    <field name="product_tmpl_id"
+                      invisible="context.get('active_model')!='product.category'"
+                      attrs="{'required': [('applied_on', '=', '1_product')]}"
+                      domain="[('categ_id', '=', context.get('default_categ_id', True)), '|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                      options="{'no_create_edit':1, 'no_open': 1}"/>
+                    <field name="product_id"
+                      groups="product.group_product_variant"
+                      invisible="context.get('product_without_variants', False)"
+                      readonly="context.get('active_model')=='product.product'"
+                      attrs="{'required': [('applied_on', '=', '0_product_variant')]}"
+                      domain="['|', '|',
+                        ('id', '=', context.get('default_product_id', 0)),
+                        ('product_tmpl_id', '=', context.get('default_product_tmpl_id', 0)),
+                        ('categ_id', '=', context.get('default_categ_id', 0)), '|', ('company_id', '=', company_id), ('company_id', '=', False)
+                      ]"
+                      options="{'no_create_edit':1, 'no_open': 1}"
+                      />
+                    <field name="min_quantity" colspan="4"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="fixed_price" string="Price" required='1'/>
+                    <field name="applied_on" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create_edit':1, 'no_open': 1}"/>
+                </group>
+            </form>
+        </field>
+    </record>
     <record id="view_product_template_form_inherit" model="ir.ui.view">
         <field name="name">product.template.view.form.inherit</field>
         <field name="model">product.template</field>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view"
+        id="view_seller_product_template_form_image_ept">
+        <field name="name">seller.product.template.image.ept</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id"
+            ref="seller_management.view_seller_product_template_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='seller_update_stock_quantity']" position='after'>
+                <button string="Update Price" type="object" name="action_update_price" attrs="{'invisible': [('type', '!=', 'product')]}"/>
+            </xpath>
+        </field>
+    </record>
+   
+</odoo>
