@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_seller_sale_confirmation" model="mail.template">
+            <field name="name">Seller Sales Order: Confirmation Email</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="subject">${object.company_id.name} ${(object.get_portal_last_transaction().state == 'pending') and 'Pending Order' or 'Order'} (Ref ${object.name or 'n/a' })</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${object.seller_id.email}</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 12px;">
+        Hello,
+        <br/><br/>
+        Your have received order <strong>${object.name}</strong> amounting in <strong>${format_amount(object.amount_total, object.currency_id)}</strong>
+        % if object.state == 'sale' or (transaction and transaction.state in ('done', 'authorized')) :
+            has been confirmed.<br/>
+        % elif transaction and transaction.state == 'pending' :
+            is pending. It will be confirmed when the payment is received.
+            % if object.reference:
+                Your payment reference is <strong>${object.reference}</strong>.
+            % endif
+        % endif
+        <br/><br/>
+        Please process the order further.
+        <br/><br/>
+    </p>
+</div></field>
+            <field name="report_template" ref="sale.action_report_saleorder"/>
+            <field name="report_name">${(object.name or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>
