@@ -24,12 +24,21 @@
 <tbody>
     <!-- HEADER -->
     <tr>
-        <td align="center" style="min-width: 590px;">
-            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                <tr><td colspan="2" style="text-align:center;">
-                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+        <td align="center" style="min-width:590px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tbody><tr><td valign="middle">
+                    % set company = object.company_id or object.user_id.company_id or user.company_id
+                    <span style="font-size:10px;">Dear</span><br>
+                    <span style="font-size:20px;font-weight: bold;">
+                        ${ctx['name']}
+                    </span>
+                </td><td valign="middle" align="right">
+                    <img src="/logo.png?company=${company.id}" style="padding:0px;margin: 0px; height: auto; width: 80px;" alt="${company.name}">
                 </td></tr>
-            </table>
+                <tr><td colspan="2" style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;">
+                </td></tr>
+            </tbody></table>
         </td>
     </tr>
     <!-- CONTENT -->
@@ -37,16 +46,15 @@
         <td align="center" style="min-width: 590px;">
             <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
                 <tr><td valign="top" style="font-size: 13px;">
-                    <div style="text-align:left;"><strong>Hi</strong></div>
                     <div style="text-align: center;"><strong>You have received ${ctx['order_count']} orders on ${ctx['order_date']}.Please proceed with the fulfilment.</strong></div>
                     <div style="text-align: center; margin: 16px 0px 16px 0px; font-size: 14px;">
                         <a href="${object.get_base_url()}/web/"
                             target="_blank"
                             style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
-                            Process Order
+                            Process Orders
                         </a>
                     </div>
-                    <div style="text-align: center;"><strong>If you have any questions, please do not hesitate to contact fulfilment.</strong></div>
+                    <div style="text-align: center;"><strong>If you have any questions, please do not hesitate to contact fulfilment team.</strong></div>
                 </td></tr>
                 <tr><td style="text-align:center;">
                   <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
