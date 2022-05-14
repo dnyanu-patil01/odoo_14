@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        
+    <record id="view_seller_form_seller_management" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="seller_management.view_seller_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='fulfilment_type']" position="after">
+                <field name="is_send_order_mail" groups="seller_management.group_sellers_management_manager" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

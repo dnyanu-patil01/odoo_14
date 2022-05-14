@@ -4,6 +4,7 @@
     "category": "Product",
     "author": "Heartfulness ERP Team",
     "depends": ["seller_management"],
-    "data": ['data/mail_data.xml',],
+    "data": ['data/mail_data.xml',
+             'views/view.xml',],
     "installable": True,
 }

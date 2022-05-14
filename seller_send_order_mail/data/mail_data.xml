@@ -1,35 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
-        <record id="mail_template_seller_sale_confirmation" model="mail.template">
-            <field name="name">Seller Sales Order: Confirmation Email</field>
-            <field name="model_id" ref="sale.model_sale_order"/>
-            <field name="subject">${object.company_id.name} ${(object.get_portal_last_transaction().state == 'pending') and 'Pending Order' or 'Order'} (Ref ${object.name or 'n/a' })</field>
-            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
-            <field name="email_to">${object.seller_id.email}</field>
-            <field name="body_html" type="html">
-<div style="margin: 0px; padding: 0px;">
-    <p style="margin: 0px; padding: 0px; font-size: 12px;">
-        Hello,
-        <br/><br/>
-        Your have received order <strong>${object.name}</strong> amounting in <strong>${format_amount(object.amount_total, object.currency_id)}</strong>
-        % if object.state == 'sale' or (transaction and transaction.state in ('done', 'authorized')) :
-            has been confirmed.<br/>
-        % elif transaction and transaction.state == 'pending' :
-            is pending. It will be confirmed when the payment is received.
-            % if object.reference:
-                Your payment reference is <strong>${object.reference}</strong>.
-            % endif
-        % endif
-        <br/><br/>
-        Please process the order further.
-        <br/><br/>
-    </p>
-</div></field>
-            <field name="report_template" ref="sale.action_report_saleorder"/>
-            <field name="report_name">${(object.name or '').replace('/','_')}</field>
-            <field name="lang">${object.partner_id.lang}</field>
-            <field name="auto_delete" eval="True"/>
+    <record id="ir_cron_seller_sale_report" model="ir.cron">
+          <field name="name">Send Seller Sale Report Mail</field>
+          <field name="user_id" ref="base.user_root" />
+          <field name="model_id" ref="sale.model_sale_order"/>
+          <field name="state">code</field>
+          <field name="code">model.cron_send_seller_order_report()</field>
+          <field name="interval_number">1</field>
+          <field name="interval_type">days</field>
+          <field name="numbercall">-1</field>
+          <field name="doall" eval="True"/>
         </record>
+    <data noupdate="1">
+        <record id="mail_template_seller_sale_order" model="mail.template">
+            <field name="name">Sellers Order Mail</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="email_from">${ctx['email_from']}</field>
+            <field name="email_to">${ctx['email_to']}</field>
+            <field name="subject">${ctx['subject']}</field>
+            <field name="body_html" type="xml">
+<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+    <!-- HEADER -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td colspan="2" style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+    <!-- CONTENT -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="top" style="font-size: 13px;">
+                    <div style="text-align:left;"><strong>Hi</strong></div>
+                    <div style="text-align: center;"><strong>You have received ${ctx['order_count']} orders on ${ctx['order_date']}.Please proceed with the fulfilment.</strong></div>
+                    <div style="text-align: center; margin: 16px 0px 16px 0px; font-size: 14px;">
+                        <a href="${object.get_base_url()}/web/"
+                            target="_blank"
+                            style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                            Process Order
+                        </a>
+                    </div>
+                    <div style="text-align: center;"><strong>If you have any questions, please do not hesitate to contact fulfilment.</strong></div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+</table>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+
     </data>
 </odoo>
