@@ -27,6 +27,7 @@ class SaleOrder(models.Model):
             orders = self.env['sale.order'].search([('date_order','>=',start_date),('date_order','<=',end_date),('seller_id','=',seller.id)])
             if orders:
                 ctx.update({
+                    'name': seller.name,
                     'email_to': seller.email,
                     'order_count':len(orders.ids),
                     })
