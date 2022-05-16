@@ -23,7 +23,7 @@ class ShiprocketPickupLocation(models.Model):
 
     pickup_location_id = fields.Char(required=True)
     name = fields.Char("Shipper Name", required=True)
-    pickup_location = fields.Char("Pickup Location", size=8)
+    pickup_location = fields.Char("Pickup Location")
     email = fields.Char(required=True)
     phone = fields.Char(required=True)
     alternate_phone = fields.Char()
