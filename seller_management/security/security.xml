@@ -146,7 +146,7 @@
         <record id="seller_product_packaging_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Product Package</field>
             <field ref="product.model_product_packaging" name="model_id" />
-            <field name="domain_force">['|',('seller_id','=',False),('seller_id','=',user.seller_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
             <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <!-- Sellers Manager Rules To See All Sellers Records -->
