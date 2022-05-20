@@ -350,6 +350,13 @@ class ShipRocket:
         try:
             response = requests.post(url, headers=self.headers, data=payload)
             response_dict = response.json()
+            if response.status_code == 400:
+                if "errors" in response_dict:
+                    picking.write({'response_comment':self.format_error_message(response_dict["errors"])})
+                    return False
+                if "message" in response_dict:
+                    picking.write({'response_comment':response_dict["message"]})
+                    return False
             if response.status_code == 422:
                 if "errors" in response_dict:
                     picking.write({'response_comment':self.format_error_message(response_dict["errors"])})
@@ -1067,6 +1074,13 @@ class ShipRocket:
             if "status" in response_dict and response_dict['status'] == 0:
                 picking.write({'response_comment':self.format_error_message(response_dict)})
                 return
+            if response.status_code == 400:
+                if "errors" in response_dict:
+                    picking.write({'response_comment':self.format_error_message(response_dict["errors"])})
+                    return False
+                if "message" in response_dict:
+                    picking.write({'response_comment':response_dict["message"]})
+                    return False
             if response.status_code == 200 and response_dict['status'] == 1:
                 response_data = {}
                 if 'order_id' in response_dict['payload'] and 'shipment_id' in response_dict['payload']:
