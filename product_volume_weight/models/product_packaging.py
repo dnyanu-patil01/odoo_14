@@ -1,15 +1,18 @@
 from odoo import api, fields, models
 from odoo.tools.float_utils import float_compare
-
+from odoo.exceptions import UserError
 
 class ProductPackaging(models.Model):
     _name = "product.packaging"
     _inherit = ['mail.thread','product.packaging']
     
     #Redefined fields to change Int to Float
-    height = fields.Float('Height',required=True)
-    width = fields.Float('Breadth',required=True)
-    packaging_length = fields.Float('Length',required=True)
+    fheight = fields.Float('Height in cm')
+    height = fields.Float('Height',related='fheight')
+    fwidth = fields.Float('Breadth in cm')
+    width = fields.Float('Breadth',related='fwidth')
+    flength = fields.Float('Length in cm')
+    packaging_length = fields.Float('Length',related='flength')
     volumetric_weight = fields.Float(
         "Volumetric Weight",
         digits=(8, 3),
@@ -18,6 +21,16 @@ class ProductPackaging(models.Model):
         store=True,
         help="The Packaging volume",
     )
+
+    @api.constrains('fheight','fwidth','flength')
+    def check_product_packaging_parameter(self):
+        for record in self:
+            if record.packaging_length <= 1:
+                raise UserError("Length Must Be Greater Than One")
+            if record.width <= 1:
+                raise UserError("Breadth Must Be Greater Than One")
+            if record.height <= 1:
+                raise UserError("Height Must Be Greater Than One")
 
     @api.depends(
         "packaging_length", "width", "height"
