@@ -280,4 +280,19 @@
          parent="menu_seller_config" 
          sequence="10" 
          groups="seller_management.group_sellers_management_user" />
+    
+    <record id="seller_user_menu" model="ir.ui.view">
+        <field name="name">seller.user.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Map Seller">
+                    <group>
+                        <field name="seller_id"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
 </odoo>

@@ -73,13 +73,13 @@
         <record id="seller_account_move_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Invoices</field>
             <field ref="account.model_account_move" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id),('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id),('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]</field>
             <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user')),(4,ref('account.group_account_invoice'))]" />
         </record>
         <record id="seller_account_items_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Invoices Lines</field>
             <field ref="account.model_account_move_line" name="model_id" />
-            <field name="domain_force">[('move_id.seller_id','=',user.partner_id.id),('move_id.move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]</field>
+            <field name="domain_force">[('move_id.seller_id','=',user.seller_id.id),('move_id.move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))]</field>
             <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user')),(4,ref('account.group_account_invoice'))]" />
         </record>
         <record id="seller_account_move_paymentpersonal_rule" model="ir.rule">
@@ -97,61 +97,61 @@
         <record id="seller_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Rule</field>
             <field ref="base.model_res_partner" name="model_id" />
-            <field name="domain_force">['|','|',('id','=',user.partner_id.id),('parent_id','=',user.partner_id.id),('seller','=',False)]</field>
+            <field name="domain_force">['|','|',('id','=',user.seller_id.id),('parent_id','=',user.seller_id.id),('seller','=',False)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <record id="seller_order_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Sale Orders</field>
             <field ref="sale.model_sale_order" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <record id="seller_order_line_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Sale Orders Lines</field>
             <field ref="sale.model_sale_order_line" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <record id="seller_product_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Products</field>
             <field ref="product.model_product_product" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <record id="seller_product_template_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Products Template</field>
             <field ref="product.model_product_template" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <record id="seller_stock_transfer_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Transfers</field>
             <field ref="stock.model_stock_picking" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <record id="seller_stock_move_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Stock Moves</field>
             <field ref="stock.model_stock_move" name="model_id" />
-            <field name="domain_force">['|',('picking_id.seller_id','=',user.partner_id.id),('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">['|',('picking_id.seller_id','=',user.seller_id.id),('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <!-- <record id="seller_stock_location_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Stock Locations</field>
             <field ref="stock.model_stock_location" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <record id="seller_stock_inventory_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Stock Inventory</field>
             <field ref="stock.model_stock_inventory" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4, ref('seller_management.group_sellers_management_user'))]" />
         </record> -->
         <record id="seller_product_packaging_personal_rule" model="ir.rule">
             <field name="name">Seller Personal Product Package</field>
             <field ref="product.model_product_packaging" name="model_id" />
-            <field name="domain_force">['|',('seller_id','=',False),('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">['|',('seller_id','=',False),('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <!-- Sellers Manager Rules To See All Sellers Records -->
