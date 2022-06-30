@@ -60,9 +60,19 @@
                                     <field name="l10n_in_hsn_description" />
                                 </group>
                                 <group name="group_standard_price">
-                                    <label for="list_price" />
+                                    <label for="list_price" string="Prices"/>
                                     <div name="pricing">
-                                      <field name="list_price" class="oe_inline" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" />
+                                      <field name="list_price" invisible="1" class="oe_inline" widget='monetary'
+                                        options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                      <button name="open_seller_pricelist_rules" icon="fa-arrow-right" type="object" class="oe_inline">
+                                        <field name="pricelist_item_count" attrs="{'invisible': [('pricelist_item_count', '=', 0)]}"/>
+                                        <span attrs="{'invisible': [('pricelist_item_count', '=', 1)]}">
+                                          View Prices
+                                        </span>
+                                        <span attrs="{'invisible': [('pricelist_item_count', '!=', 1)]}">
+                                          View Price
+                                        </span>
+                                      </button>
                                     </div>
                                     <label for="standard_price" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}"/>
                                     <div name="standard_price_uom" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" class="o_row">

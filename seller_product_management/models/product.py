@@ -7,7 +7,7 @@ fields_name = {
     "name": "Name",
     "description": "Description",
     "description_sale": "Sales Description",
-    "list_price": "Sales Price",
+    # "list_price": "Sales Price",
     "taxes_id": "Customer Tax",
     "l10n_in_hsn_code": "HSN/SAC Code",
     "l10n_in_hsn_description": "HSN/SAC Description",
@@ -28,12 +28,12 @@ class ProductChangeRequest(models.Model):
         help="A description of the Product that you want to communicate to your customers. "
         "This description will be copied to every Sales Order, Delivery Order and Customer Invoice/Credit Note",
     )
-    list_price = fields.Float(
-        "Sales Price",
-        default=1.0,
-        digits="Product Price",
-        help="Price at which the product is sold to customers.",
-    )
+    # list_price = fields.Float(
+    #     "Sales Price",
+    #     default=1.0,
+    #     digits="Product Price",
+    #     help="Price at which the product is sold to customers.",
+    # )
     taxes_id = fields.Many2many(
         "account.tax",
         "product_request_taxes_rel",
@@ -98,29 +98,7 @@ class ProductChangeRequest(models.Model):
         for key, value in variant_changes_dict.items():
             product = self.env["product.product"].browse(int(key))
             for field_name, field_value in value.items():
-                if field_name == "lst_price":
-                    pricelist = self.env["product.pricelist.item"].search(
-                        [
-                            ("product_tmpl_id", "=", self.product_tmpl_id.id),
-                            ("product_id", "=", product.id),
-                        ]
-                    )
-                    if pricelist:
-                        pricelist.write({"fixed_price": float(field_value)})
-                    else:
-                        pricelist = self.env["product.pricelist"].search([], limit=1)
-                        if pricelist:
-                            self.env["product.pricelist.item"].create(
-                                {
-                                    "pricelist_id": pricelist.id,
-                                    "product_id": product.id,
-                                    "product_tmpl_id": self.product_tmpl_id.id,
-                                    "fixed_price": float(field_value),
-                                    "compute_price": "fixed",
-                                }
-                            )
-                else:
-                    product.write({field_name: field_value})
+                product.write({field_name: field_value})
         return True
 
     def button_reject(self):
@@ -235,7 +213,7 @@ class ProductChangeRequest(models.Model):
                             product.product_template_attribute_value_ids,
                         )
                     ),
-                    k.title() if k != "lst_price" else "Price",
+                    k.title(),
                     product.mapped(k)[-1],
                     v,
                 )
@@ -334,7 +312,7 @@ class ProductTemplate(models.Model):
                 vals = {
                     "product_tmpl_id": self.id,
                     "product_id": product.id,
-                    "lst_price": product.lst_price,
+                    # "lst_price": product.lst_price,
                     "name": ", ".join(
                         map(
                             lambda x: (x.display_name),
@@ -360,7 +338,7 @@ class ProductTemplate(models.Model):
                 "name": self.name,
                 "description": self.description,
                 "description_sale": self.description_sale,
-                "list_price": self.list_price,
+                # "list_price": self.list_price,
                 "l10n_in_hsn_code": self.l10n_in_hsn_code,
                 "l10n_in_hsn_description": self.l10n_in_hsn_description,
                 "active": True,
@@ -389,12 +367,12 @@ class VariantChangeRequest(models.Model):
     product_id = fields.Many2one("product.product", "Variant")
     name = fields.Char()
     product_tmpl_id = fields.Many2one("product.template", "Template")
-    lst_price = fields.Float(
-        "Price",
-        default=1.0,
-        digits="Product Price",
-        help="Price at which the product is sold to customers.",
-    )
+    # lst_price = fields.Float(
+    #     "Price",
+    #     default=1.0,
+    #     digits="Product Price",
+    #     help="Price at which the product is sold to customers.",
+    # )
     change_request_id = fields.Many2one("product.change.request", "Change Request")
     barcode = fields.Char("Barcode")
     default_code = fields.Char("Internal Reference")
