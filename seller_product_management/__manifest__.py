@@ -10,6 +10,7 @@
             'security/security.xml',
             'security/ir.model.access.csv',
             'views/product_view.xml',
+            'wizard/get_cancel_reason_view.xml'
             ],
     'installable': True,
     'auto_install': False,

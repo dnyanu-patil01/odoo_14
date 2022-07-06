@@ -7,7 +7,6 @@ fields_name = {
     "name": "Name",
     "description": "Description",
     "description_sale": "Sales Description",
-    # "list_price": "Sales Price",
     "taxes_id": "Customer Tax",
     "l10n_in_hsn_code": "HSN/SAC Code",
     "l10n_in_hsn_description": "HSN/SAC Description",
@@ -28,12 +27,6 @@ class ProductChangeRequest(models.Model):
         help="A description of the Product that you want to communicate to your customers. "
         "This description will be copied to every Sales Order, Delivery Order and Customer Invoice/Credit Note",
     )
-    # list_price = fields.Float(
-    #     "Sales Price",
-    #     default=1.0,
-    #     digits="Product Price",
-    #     help="Price at which the product is sold to customers.",
-    # )
     taxes_id = fields.Many2many(
         "account.tax",
         "product_request_taxes_rel",
@@ -78,6 +71,7 @@ class ProductChangeRequest(models.Model):
                 ):
                     self.product_tmpl_id.write({field: changes_dict.get(field)})
             self.approve_variant_change()
+            self.product_tmpl_id.button_approve()
             self.product_tmpl_id.write({"state": "approve"})
             self.write({"state": "approve", "active": False})
             action = {
@@ -94,11 +88,11 @@ class ProductChangeRequest(models.Model):
             return action
 
     def approve_variant_change(self):
-        variant_changes_dict = json.loads(self.variant_changes_text)
-        for key, value in variant_changes_dict.items():
-            product = self.env["product.product"].browse(int(key))
-            for field_name, field_value in value.items():
-                product.write({field_name: field_value})
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2',self.variant_change_request_line.mapped('new_value_ids'))
+        if self.variant_change_request_line.mapped('new_value_ids'):
+            for rec in self.variant_change_request_line:
+                value_ids = self.variant_change_request_line.mapped('new_value_ids').ids+self.variant_change_request_line.mapped('value_ids').ids 
+                self.product_tmpl_id.attribute_line_ids.filtered(lambda x:x.attribute_id == rec.attribute_id).write({'value_ids':[(6, 0, value_ids)]})
         return True
 
     def button_reject(self):
@@ -125,11 +119,10 @@ class ProductChangeRequest(models.Model):
             changes_dict.update(vals)
             changes_str = json.dumps(changes_dict)
             vals.update({"changes_text": changes_str})
-        html_note, variant_changes_text = self.get_html_note(changes_str)
+        html_note = self.get_html_note(changes_str)
         vals.update(
             {
                 "change_request_note": html_note,
-                "variant_changes_text": json.dumps(variant_changes_text),
             }
         )
         return super(ProductChangeRequest, self).write(vals)
@@ -143,7 +136,6 @@ class ProductChangeRequest(models.Model):
                 <td style="border: 1px solid black;padding:5px;"><b>Current Value</b></td>
                 <td style="border: 1px solid black;padding:5px;"><b>New Value To Be Updated</b></td>
             </tr>"""
-        variant_changes_text = None
         for field in fields_name:
             if field in change_dict.keys():
                 if field == "taxes_id":
@@ -160,7 +152,7 @@ class ProductChangeRequest(models.Model):
                             self.env["account.tax"].browse(new_taxes_ids),
                         )
                     )
-                    html_note = """<tr>
+                    html_note += """<tr>
                                     <td style="border: 1px solid black;padding:5px;">%s</td>
                                     <td style="border: 1px solid black;padding:5px;">%s</td>
                                     <td style="border: 1px solid black;padding:5px;">%s</td>
@@ -170,11 +162,13 @@ class ProductChangeRequest(models.Model):
                         new_taxes,
                     )
                 elif field == "variant_change_request_line":
-                    variant_changes_text = self.get_variant_changes(
-                        change_dict.get(field)
-                    )
+                    print('I am insideeeeeeeeeeeeeeeeeeeeeeeeeeee')
+                    # variant_changes_text = self.get_variant_changes(
+                    #     change_dict.get(field)
+                    # )
+                    html_note += "</table><br/><br/><br/><b>Note:<br/>Please To Verify The New Attribute Value Change Before You Approve<b/>"
                 else:
-                    html_note = """<tr>
+                    html_note +="""<tr>
                                     <td style="border: 1px solid black;padding:5px;">%s</td>
                                     <td style="border: 1px solid black;padding:5px;">%s</td>
                                     <td style="border: 1px solid black;padding:5px;">%s</td>
@@ -183,62 +177,29 @@ class ProductChangeRequest(models.Model):
                         str(self.product_tmpl_id.mapped(field)[0]),
                         str(change_dict.get(field)),
                     )
-        html_note = "</table><br/><br/>"
-        if variant_changes_text:
-            format_vals = self.format_variant_changes(variant_changes_text)
-            html_note = format_vals
-        return html_note, variant_changes_text
+        return html_note
 
-    def format_variant_changes(self, variant_change_dict):
-        variant_change_table = """
-        <h3>List Of Variants Changes</h3><br/>
-        <table style="border: 1px solid black;border-collapse: collapse;width:100%">
-            <tr>
-                <td style="border: 1px solid black;padding:5px;"><b>Variant Name</b></td>
-                <td style="border: 1px solid black;padding:5px;"><b>Field Name</b></td>
-                <td style="border: 1px solid black;padding:5px;"><b>Current Value</b></td>
-                <td style="border: 1px solid black;padding:5px;"><b>New Value To Be Updated</b></td>
-            </tr>
-        """
-        for key, value in variant_change_dict.items():
-            product = self.env["product.product"].browse(int(key))
-            for k, v in value.items():
-                variant_change_table = """<tr><td style="border: 1px solid black;padding:5px;"><b>%s</b></td>
-                <td style="border: 1px solid black;padding:5px;">%s</td>
-                <td style="border: 1px solid black;padding:5px;">%s</td>
-                <td style="border: 1px solid black;padding:5px;">%s</td>""" % (
-                    ", ".join(
-                        map(
-                            lambda x: (x.display_name),
-                            product.product_template_attribute_value_ids,
-                        )
-                    ),
-                    k.title(),
-                    product.mapped(k)[-1],
-                    v,
-                )
-                variant_change_table = "</tr>"
-        variant_change_table = "</table>"
-        return variant_change_table
-
-    def get_variant_changes(self, variant_changes_list):
-        variant_change = self.env["variant.change.request"]
-        change_list = json.loads(self.variant_changes_text)
-        for variant in variant_changes_list:
-            variant_obj = variant_change.browse(int(variant[1]))
-            if variant[0] == 1 and variant[-1] != False:
-                if change_list:
-                    if str(variant_obj.product_id.id) in change_list:
-                        change_list.get(str(variant_obj.product_id.id)).update(
-                            variant[-1]
-                        )
-                    else:
-                        change_list.update(
-                            {str(variant_obj.product_id.id): variant[-1]}
-                        )
-                else:
-                    change_list = {str(variant_obj.product_id.id): variant[-1]}
-        return change_list
+    
+    # def get_variant_changes(self, variant_changes_list):
+    #     variant_change = self.env["variant.change.request"]
+    #     change_list = json.loads(self.variant_changes_text)
+    #     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',variant_changes_list)
+    #     if variant_changes_list:
+    #         for variant in variant_changes_list:
+    #             variant_obj = variant_change.browse(int(variant[1]))
+    #             if variant[0] == 1 and variant[-1] != False:
+    #                 if change_list:
+    #                     if str(variant_obj.product_id.id) in change_list:
+    #                         change_list.get(str(variant_obj.product_id.id)).update(
+    #                             variant[-1]
+    #                         )
+    #                     else:
+    #                         change_list.update(
+    #                             {str(variant_obj.product_id.id): variant[-1]}
+    #                         )
+    #                 else:
+    #                     change_list = {str(variant_obj.product_id.id): variant[-1]}
+    #     return change_list
 
 
 class ProductTemplate(models.Model):
@@ -296,34 +257,22 @@ class ProductTemplate(models.Model):
         return False
 
     def create_variant_change_request(self, request_obj):
-        product_obj = self.env["product.product"].search(
-            [("product_tmpl_id", "=", self.id)]
-        )
         variant_change_request = self.env["variant.change.request"]
-        for product in product_obj:
-            prev_request = variant_change_request.search(
-                [
-                    ("product_id", "=", product.id),
-                    ("change_request_id", "=", request_obj.id),
-                ],
-                limit=1,
-            )
-            if not prev_request:
-                vals = {
+        prev_request = variant_change_request.search(
+            [
+                ("change_request_id", "=", request_obj.id),
+            ],
+            limit=1,
+        )
+        if not prev_request:
+            for rec in self.attribute_line_ids:
+                vals={
                     "product_tmpl_id": self.id,
-                    "product_id": product.id,
-                    # "lst_price": product.lst_price,
-                    "name": ", ".join(
-                        map(
-                            lambda x: (x.display_name),
-                            product.product_template_attribute_value_ids,
-                        )
-                    ),
                     "change_request_id": request_obj.id,
-                    "barcode": product.barcode,
-                    "default_code": product.default_code,
+                    'attribute_id': rec.attribute_id.id,
+                    'value_ids' :  [(6, 0, rec.value_ids.ids)]
                 }
-                variant_change_request.create(vals)
+            variant_change_request.create(vals)
 
     def create_change_request(self):
         change_request = self.env["product.change.request"]
@@ -364,15 +313,9 @@ class VariantChangeRequest(models.Model):
     _name = "variant.change.request"
     _description = "Variant Change Request"
 
-    product_id = fields.Many2one("product.product", "Variant")
-    name = fields.Char()
     product_tmpl_id = fields.Many2one("product.template", "Template")
-    # lst_price = fields.Float(
-    #     "Price",
-    #     default=1.0,
-    #     digits="Product Price",
-    #     help="Price at which the product is sold to customers.",
-    # )
     change_request_id = fields.Many2one("product.change.request", "Change Request")
-    barcode = fields.Char("Barcode")
-    default_code = fields.Char("Internal Reference")
+    attribute_id = fields.Many2one('product.attribute', string="Attribute", ondelete='restrict')
+    value_ids = fields.Many2many('product.attribute.value',string="Existing Values", domain="[('attribute_id', '=', attribute_id)]",ondelete='restrict')
+    new_value_ids = fields.Many2many('product.attribute.value',relation='product_attribute_value_change_request_rel', domain="[('attribute_id', '=', attribute_id),('id','not in',value_ids)]",string="New Values",ondelete='restrict')
+

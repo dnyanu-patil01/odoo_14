@@ -21,7 +21,7 @@
         </field>
     </record>
 
-    <record id="view_product_template_form_inherit" model="ir.ui.view">
+    <!-- <record id="view_product_template_form_inherit" model="ir.ui.view">
         <field name="name">product.template.view.form.inherit</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="seller_product_management.view_product_template_form_inherit"/>
@@ -31,6 +31,6 @@
                                         can be processed at a time.This Will Update Product Details In Shopify.Do You Want To Proceed?" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_product_management.group_product_approval"/>
             </xpath>
         </field>
-    </record>
+    </record> -->
     
 </odoo>
