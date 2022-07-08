@@ -23,5 +23,6 @@
         "view/seller_pickup_location.xml",
         "view/res_partner_view.xml",
         "view/sale_workflow_process_ept.xml",
+        "wizard/update_delivery_carrier_view.xml",
     ],
 }
