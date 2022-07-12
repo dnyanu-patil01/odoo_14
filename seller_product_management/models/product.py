@@ -88,10 +88,9 @@ class ProductChangeRequest(models.Model):
             return action
 
     def approve_variant_change(self):
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2',self.variant_change_request_line.mapped('new_value_ids'))
         if self.variant_change_request_line.mapped('new_value_ids'):
             for rec in self.variant_change_request_line:
-                value_ids = self.variant_change_request_line.mapped('new_value_ids').ids+self.variant_change_request_line.mapped('value_ids').ids 
+                value_ids = rec.mapped('new_value_ids').ids+rec.mapped('value_ids').ids 
                 self.product_tmpl_id.attribute_line_ids.filtered(lambda x:x.attribute_id == rec.attribute_id).write({'value_ids':[(6, 0, value_ids)]})
         return True
 
@@ -162,7 +161,6 @@ class ProductChangeRequest(models.Model):
                         new_taxes,
                     )
                 elif field == "variant_change_request_line":
-                    print('I am insideeeeeeeeeeeeeeeeeeeeeeeeeeee')
                     # variant_changes_text = self.get_variant_changes(
                     #     change_dict.get(field)
                     # )
@@ -258,21 +256,22 @@ class ProductTemplate(models.Model):
 
     def create_variant_change_request(self, request_obj):
         variant_change_request = self.env["variant.change.request"]
-        prev_request = variant_change_request.search(
-            [
-                ("change_request_id", "=", request_obj.id),
-            ],
-            limit=1,
-        )
-        if not prev_request:
-            for rec in self.attribute_line_ids:
+        for rec in self.attribute_line_ids:
+            prev_request = variant_change_request.search(
+                [
+                    ("change_request_id", "=", request_obj.id),
+                    ('attribute_id','=',rec.attribute_id.id)
+                ],
+                limit=1,
+            )
+            if not prev_request:
                 vals={
                     "product_tmpl_id": self.id,
                     "change_request_id": request_obj.id,
                     'attribute_id': rec.attribute_id.id,
                     'value_ids' :  [(6, 0, rec.value_ids.ids)]
                 }
-            variant_change_request.create(vals)
+                variant_change_request.create(vals)
 
     def create_change_request(self):
         change_request = self.env["product.change.request"]
