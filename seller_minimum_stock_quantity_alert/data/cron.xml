@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate='1'>
+    <record id="stock_minimum_alert_action" model="ir.cron">
+        <field name="name">Seller minimum stock quantity alert</field>
+        <field name="model_id" ref="model_product_product"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_send_minimum_stock_alert()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>        
+    </record>
+    </data>
+</odoo>
