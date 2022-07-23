@@ -48,6 +48,7 @@ class ProductTemplate(models.Model):
         )
         return action
     
+<<<<<<< HEAD
     def write(self, vals):
         """
         This method use to restrict adding new attribute to variants in templates.
@@ -59,6 +60,41 @@ class ProductTemplate(models.Model):
                 message = "Please Contact Administrator To Add New Attribute To The Product : %s"%(self.name)
                 raise UserError(message)
         return super(ProductTemplate, self).write(vals)
+=======
+    def open_seller_pricelist_rules(self):
+        self.ensure_one()
+        domain = ['|',
+            ('product_tmpl_id', '=', self.id),
+            ('product_id', 'in', self.product_variant_ids.ids)]
+        return {
+            'name': ('Price'),
+            'view_mode': 'tree',
+            'views': [(self.env.ref('seller_management.seller_product_pricelist_item_tree_view_from_product').id, 'tree'), (self.env.ref('seller_management.seller_product_pricelist_item_form_view').id, 'form')],
+            'res_model': 'product.pricelist.item',
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+            # 'flags': {'tree_view_initial_mode': 'view'},
+            'domain': domain,
+            'context': {
+                'default_product_tmpl_id': self.id,
+                'default_applied_on': '1_product',
+                'product_without_variants': self.product_variant_count == 1,
+                'form_view_initial_mode':'view',
+            },
+        }
+    
+    # def write(self, vals):
+    #     """
+    #     This method use to restrict adding new attribute to variants in templates.
+    #     :parameter: self, vals
+    #     """
+    #     if 'attribute_line_ids' in vals.keys():
+    #         attribute_line_string = str(vals['attribute_line_ids'])
+    #         if 'attribute_id' in attribute_line_string:
+    #             message = "Please Contact Administrator To Add New Attribute To The Product : %s"%(self.name)
+    #             raise UserError(message)
+    #     return super(ProductTemplate, self).write(vals)
+>>>>>>> 3a87d3b... Removed Constrains To Add New Attribute
 
 
 class StockQuant(models.Model):
