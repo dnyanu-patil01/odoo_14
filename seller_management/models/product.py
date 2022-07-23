@@ -48,19 +48,6 @@ class ProductTemplate(models.Model):
         )
         return action
     
-<<<<<<< HEAD
-    def write(self, vals):
-        """
-        This method use to restrict adding new attribute to variants in templates.
-        :parameter: self, vals
-        """
-        if 'attribute_line_ids' in vals.keys():
-            attribute_line_string = str(vals['attribute_line_ids'])
-            if 'attribute_id' in attribute_line_string:
-                message = "Please Contact Administrator To Add New Attribute To The Product : %s"%(self.name)
-                raise UserError(message)
-        return super(ProductTemplate, self).write(vals)
-=======
     def open_seller_pricelist_rules(self):
         self.ensure_one()
         domain = ['|',
@@ -94,7 +81,6 @@ class ProductTemplate(models.Model):
     #             message = "Please Contact Administrator To Add New Attribute To The Product : %s"%(self.name)
     #             raise UserError(message)
     #     return super(ProductTemplate, self).write(vals)
->>>>>>> 3a87d3b... Removed Constrains To Add New Attribute
 
 
 class StockQuant(models.Model):
