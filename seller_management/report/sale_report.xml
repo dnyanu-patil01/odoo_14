@@ -31,7 +31,7 @@
         id="seller_report_root_menu"
         name="Reporting"
         parent="seller_root_menu"
-        groups="seller_management.group_sellers_management_manager"
+        groups="seller_management.group_sellers_management_user"
         sequence="50"/>
     
     <menuitem
@@ -39,6 +39,7 @@
         name="Seller"
         action="action_seller_order_report_all"
         parent="seller_report_root_menu"
+        groups="seller_management.group_sellers_management_manager"
         sequence="10"/>
 
 </odoo>
