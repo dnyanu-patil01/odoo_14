@@ -11,7 +11,8 @@
     'data': [
         "security/ir.model.access.csv",
         'wizard/sale_report_wizard_view.xml',
-        "wizard/invoice_report_wizard_view.xml"
+        "wizard/invoice_report_wizard_view.xml",
+        "views/report_log_view.xml",
     ],
     'qweb': [],
     'installable': True,

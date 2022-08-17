@@ -47,7 +47,7 @@ class InvoiceExcelReport(models.TransientModel):
             self.start_date = self.end_date
 
     @api.model
-    def get_sale_details(self, date_start=False, date_stop=False, configs=False):
+    def get_invoice_details(self, date_start=False, date_stop=False, configs=False):
         """ Serialise the orders of the day information
 
         params: date_start, date_stop string representing the datetime of order
@@ -96,7 +96,6 @@ class InvoiceExcelReport(models.TransientModel):
             row_index = row_index + 1
             for cell_index, head in enumerate(sheet_headers+line_headers): 
                 worksheet.write(row_index, cell_index, head, header_style)
-            print(rec)
             row_index = row_index + 1
             worksheet.write(row_index , index , rec.get('invoice_date').strftime("%d-%m-%Y") if rec.get('invoice_date') else None,date_format)
             worksheet.write(row_index , index + 1, rec.get('name'),style)
@@ -124,7 +123,7 @@ class InvoiceExcelReport(models.TransientModel):
         if not xlwt:
             raise Warning("Please Install XLWT")
         else:
-            rec=self.get_sale_details(date_start=self.start_date, date_stop=self.end_date)
+            rec=self.get_invoice_details(date_start=self.start_date, date_stop=self.end_date)
             workbook = xlwt.Workbook()
             worksheet = workbook.add_sheet('invoice-report')
             sheet_headers=['Date','Invoice Ref','Customer']
@@ -136,6 +135,7 @@ class InvoiceExcelReport(models.TransientModel):
             out = base64.b64encode(fp.read())
             fp.close()
             self.write({'filedata': out, 'filename': 'invoice_report.xls'})
+            self.create_log()
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'invoice.excel.report',
@@ -144,3 +144,13 @@ class InvoiceExcelReport(models.TransientModel):
                 'res_id'    : self.id,
                 'target': 'new',
             }
+    
+    def create_log(self):
+        self.env['seller.report.log'].create({
+            'name':'Report Log on '+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+            'report_type':'invoice',
+            'user_id': self.env.user.id,
+            'report_taken_at':datetime.now(),
+            'seller_id': self.env.user.partner_id.id if not self.user_has_groups('seller_management.group_sellers_management_manager') else False,
+        })
+        return True

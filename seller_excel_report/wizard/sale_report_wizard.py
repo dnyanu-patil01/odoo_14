@@ -108,7 +108,6 @@ class SaleExcelReport(models.TransientModel):
         for rec in rows:
             for cell_index, head in enumerate(sheet_headers+line_headers): 
                 worksheet.write(row_index, cell_index, head, header_style)
-            print(rec)
             row_index = row_index + 1
             worksheet.write(row_index , index , rec.get('date_ordered').strftime("%d-%m-%Y %H:%M:%S") if rec.get('date_ordered') else None,date_format)
             worksheet.write(row_index , index + 1, rec.get('order_reference'),style)
@@ -149,6 +148,7 @@ class SaleExcelReport(models.TransientModel):
             out = base64.b64encode(fp.read())
             fp.close()
             self.write({'filedata': out, 'filename': 'sales_report.xls'})
+            self.create_log()
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'sales.excel.report',
@@ -157,3 +157,14 @@ class SaleExcelReport(models.TransientModel):
                 'res_id'    : self.id,
                 'target': 'new',
             }
+
+
+    def create_log(self):
+        self.env['seller.report.log'].create({
+            'name':'Report Log on '+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+            'report_type':'sale',
+            'user_id': self.env.user.id,
+            'report_taken_at':datetime.now(),
+            'seller_id': self.env.user.partner_id.id if not self.user_has_groups('seller_management.group_sellers_management_manager') else False,
+        })
+        return True

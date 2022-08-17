@@ -10,7 +10,6 @@
                         <field name="start_date"/>
                         <field name="end_date"/>
                         <field name="seller_ids" widget="many2many_tags" groups="seller_management.group_sellers_management_manager"/>
-
                    </group>
                    <group>
                         <field name="filedata" filename="filename"/>

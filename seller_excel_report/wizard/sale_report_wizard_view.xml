@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="sales_report_wizard_view" model="ir.ui.view">
-            <field name="name">Sales Excel Report</field>
+            <field name="name">Sales Report</field>
             <field name="model">sales.excel.report</field>
             <field name="arch" type="xml">
                 <form>
@@ -25,7 +25,7 @@
         </record>
 
         <record id="action_sales_xls_report" model="ir.actions.act_window">
-            <field name="name">Sales Excel Report</field>
+            <field name="name">Sales Report</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sales.excel.report</field>
             <field name="view_mode">form</field>
