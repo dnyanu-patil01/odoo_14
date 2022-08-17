@@ -106,6 +106,7 @@ class Dashboard(models.Model):
             'seller_product_to_approve':0,
             'seller_product_approve':0,
             'seller_product_rejected':0,
+            'seller_product_out_of_stock':0,
         }
         product = self.env['product.template']
         seller = self.env['res.partner']
@@ -115,6 +116,7 @@ class Dashboard(models.Model):
         data['seller_product_to_approve'] = product.sudo().search_count([('seller_id', '!=', False),('state','=','to_approve')])
         data['seller_product_approve'] = product.sudo().search_count([('seller_id', '!=', False),('state','=','approve')])
         data['seller_product_rejected'] = product.sudo().search_count([('seller_id', '!=', False),('state','=','reject')])
+        data['seller_product_out_of_stock'] = product.sudo().search_count([('seller_id', '!=', False),('qty_available','<=',0)])
         return data
     def _action_view_seller_product(self, mode=False):
         domain = [('seller_id','!=',False)]
@@ -129,13 +131,15 @@ class Dashboard(models.Model):
 
         if mode == 'seller_product_rejected':
             domain += [('state','=','reject')]
+        
+        if mode == 'seller_product_out_of_stock':
+            domain+=[('qty_available','<=',0)]
 
         if mode == 'seller_product':
             domain = domain
 
         if mode == 'seller':
-            domain = [('seller', '=', True)]
-    
+            domain = [('seller', '=', True)]   
         
             views = [(self.env.ref('seller_management.view_seller_tree').id, 'list'),
                         (self.env.ref('seller_management.view_seller_form').id, 'form')]
@@ -177,6 +181,9 @@ class Dashboard(models.Model):
     @api.model
     def sale_action_dashboard_seller_product_rejected_list(self):
         return self._action_view_seller_product(mode='seller_product_rejected')
+    @api.model
+    def sale_action_dashboard_seller_product_out_of_stock_list(self):
+        return self._action_view_seller_product(mode='seller_product_out_of_stock')
     
     @api.model
     def get_sale_order_details(self):
