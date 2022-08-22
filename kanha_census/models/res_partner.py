@@ -13,11 +13,11 @@ class ResPartner(models.Model):
         ('Other', 'Other')
     ], required=True)
     date_of_birth = fields.Date(string='Date of birth', required=True)
-    town = fields.Char(string='Town/Village Name', required=True)
-    district = fields.Char(string='District', required=True)
-    birth_town = fields.Char(string='Birth Town/Village Name', required=True)
+    town = fields.Char(string='Town/Village Name')
+    district = fields.Char(string='District')
+    birth_town = fields.Char(string='Birth Town', required=True)
     birth_district = fields.Char(string='Birth District', required=True)
-    birth_country_id = fields.Many2one('res.country', string="Birth Country")
+    birth_country_id = fields.Many2one('res.country', string="Birth Country", default=lambda self: self.env['res.country'].search([('code','=','IN')]))
 
     birth_state_id = fields.Many2one("res.country.state", string='Birth State')
     relation_other = fields.Char(string="Other Relative")
@@ -26,21 +26,21 @@ class ResPartner(models.Model):
         ('Mother', 'Mother'),
         ('Husband', 'Husband'),
         ('Wife', 'Wife'),
-        ('Other', 'Other')
-    ])
-    relative_name = fields.Char(string='Relative Name')
-    relative_surname = fields.Char(string='Relative Surname')
+        ('Other', 'Other'),
+    ], string='Relation')
+    relative_name = fields.Char(string='Name of Relative')
+    relative_surname = fields.Char(string='Surname of Relative')
     kanha_location_id = fields.Many2one('kanha.location', string="Kanha Location", required=True)
-    house_number = fields.Char(string='House Number', required=True)
+    house_number = fields.Char(string='House Number')
     kanha_house_number = fields.Char(string='Kanha House Number', required=True)
     resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date', required=True)
     existing_voter_id_number = fields.Char(string="Existing Voter ID Number", required=True)
-    assembly_constituency = fields.Char(string="Assembly Constituency", required=True)
-    locality = fields.Char(string="Locality", required=True)
-    post_office = fields.Char(string="Post Office", required=True)
+    assembly_constituency = fields.Char(string="Assembly Constituency")
+    locality = fields.Char(string="Locality")
+    post_office = fields.Char(string="Post Office")
     indian_visa = fields.Image(string="Photo of Indian Visa",attachment=True)
     indian_visa_filename = fields.Char()
-    passport_photo = fields.Image(string="Passport Size Image", required=True)
+    passport_photo = fields.Image(string="Passport Size Photo", required=True)
     passport_photo_filename = fields.Char()
     passport_id_image = fields.Image(string="Passport ID", attachment=True)
     passport_id_image_filename = fields.Char()
@@ -55,7 +55,7 @@ class ResPartner(models.Model):
     application_type = fields.Selection([
         ('New Application', 'New Application'),
         ('Transfer Application', 'Transfer Application'),
-    ], required=True)
+    ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
     aadhaar_card_number = fields.Encrypted(string="Aadhar Card Number", required=True)
     pan_card_number = fields.Encrypted(string="Pan card number")
@@ -76,21 +76,23 @@ class ResPartner(models.Model):
     change_voter_id_address = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Do you want to change your Voter Id card Address")
+    ], string="Do you want to change your Voter Id card Address to Kanha")
     residence_type = fields.Selection([
         ('Rented Place', 'Rented Place'),
         ('Owner', 'Owner'),
     ], string="Residence Type")
-    family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members')
+    family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members', readonly=True)
     relative_aadhaar_card_number = fields.Encrypted(string="Relative Aadhar Card Number")
     vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
     already_have_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Already Have Voter ID")
-    kanha_voter_id_number = fields.Encrypted(string="Voter ID Number", required=True)
-    kanha_voter_id_image = fields.Binary('Voter ID Image', attachment=True, required=True)
+    ], string="Do you have Voter ID")
+    kanha_voter_id_number = fields.Encrypted(string="Existing Voter ID Number")
+    kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True, required=True)
     kanha_voter_id_image_filename = fields.Char()
+    kanha_voter_id_back_image = fields.Binary('Voter ID Back Image', attachment=True, required=True)
+    kanha_voter_id_back_image_filename = fields.Char()
     
     # voter_id_file = fields.Binary('Voter ID/EPIC File', attachment=True, required=True)
     # voter_id_file_filename = fields.Char()
@@ -102,6 +104,18 @@ class ResPartner(models.Model):
         ('No', 'No'),
     ], string="Need New Voter ID")
 
+    state = fields.Selection([
+        ('saved_not_submitted', 'Saved Not Submitted'),
+        ('submitted', 'Submitted'),
+        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='saved_not_submitted')
+    application_reference_no = fields.Char(string='If already applied for Kanha voter ID, please provide application reference number')
+    passport_front_image = fields.Image(string="Passport Front Image", attachment=True)
+    passport_front_image_filename = fields.Char()
+    passport_back_image = fields.Image(string="Passport Back Image", attachment=True)
+    passport_back_image_filename = fields.Char()
+    residents_documents_downloads_history_id = fields.Many2one('residents.documents.downloads.history','Residents Documents Downloads History') 
+
+    
     # _sql_constraints = [
     #     ('aadhaar_card_number_unique', 'UNIQUE(aadhaar_card_number)', 'An Aadhar Card Number must be unique!'),
     # ]

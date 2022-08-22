@@ -1,3 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_kanha_location_user,kanha.location.user,model_kanha_location,base.group_user,1,1,1,0
 access_vehicle_details_user,vehicle.details.user,model_vehicle_details,base.group_user,1,1,1,0
+base.access_res_partner_group_user,res_partner group_user,base.model_res_partner,base.group_user,1,1,1,1
+access_residents_document_download_user,residents.document.downlad.user,model_residents_document_download,base.group_user,1,1,1,0
+access_residents_documents_downloads_history_user,residents.documents.downloads.history.user,model_residents_documents_downloads_history,base.group_user,1,1,1,0
+access_kanha_location_portal_user,kanha.location.portal.user,model_kanha_location,base.group_portal,1,1,1,0
+access_vehicle_details_portal_user,vehicle.details.portal.user,model_vehicle_details,base.group_portal,1,1,1,0

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    	<!-- Menu makes visible only for Portal users -->
+    	
         <record id="menu_family" model="website.menu" >
             <field name="name">Family</field>
             <field name="url">/family</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">22</field>
-            <field name="group_ids" eval="[(4, ref('base.group_portal'))]"/>
+           	<field name="group_ids" eval="[(4, ref('base.group_portal')), (4, ref('base.group_user'))]"/>
         </record>
+        
     </data>
 </odoo>

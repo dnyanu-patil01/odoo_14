@@ -4,9 +4,9 @@
 {
     'name': 'Kanha Census',
     'version': '1.0',
-    'summary': 'Allows Portal user to add and update the Partner details',
+    'summary': 'Allows Portal user to add and update the Family members details',
     'description': """
-       It Allows Portal user to add and update the Partner details.
+       It Allows Portal user to add and update the Family members details.
     """,
     'depends': ['website', 'website_form','fields_encrypted'],
     'data': [
@@ -17,7 +17,8 @@
         'views/assets.xml',
         'views/kanha_location_view.xml',
         'views/res_partner_view.xml',
-
+        'views/residents_documents_downloads_history.xml',
+        'wizard/residents_document_download.xml',
     ],
     'auto_install': False,
     'installable': True,
