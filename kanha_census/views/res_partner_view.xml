@@ -11,114 +11,125 @@
 		<field name="arch" type="xml">
 			<xpath expr="//form" position="replace">
 				<form string="Kanha Census">
+					<header>
+						<field name="state" widget="statusbar" />
+					</header>
 					<sheet>
 						<group>
 							<group>
-								<field name="id" />
-								<field name="name" />
-								<field name="email" />
-								<field name="gender"/>
-								<field name="pan_card_number" widget="Encrypted"/>
-								<field name="aadhaar_card_number" widget="Encrypted"/>
-								<field name="abhyasi_id" />
-								<field name="residence_type" />
+								<field name="name" required="1" readonly="1"/>
+								<field name="email" required="1" readonly="1"/>
+								<field name="gender" readonly="1"/>
+								<field name="pan_card_number" widget="Encrypted" readonly="1"/>
+								<field name="aadhaar_card_number" widget="Encrypted" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+								<field name="abhyasi_id" readonly="1"/>
+								<field name="residence_type" readonly="1"/>
 							</group>
 							<group>
-								<field name="surname" />
-								<field name="mobile" />
-								<field name="date_of_birth"/>
-								<field name="citizenship" />
-								<field name="passport_number" widget="Encrypted"/>
-								<field name="members_count" />
+								<field name="surname" readonly="1"/>
+								<field name="mobile" required="1" readonly="1"/>
+								<field name="date_of_birth" readonly="1"/>
+								<field name="citizenship" readonly="1"/>
+								<field name="passport_number" widget="Encrypted"  attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
+								<field name="members_count" readonly="1"/>
 							</group>
 						</group>
 						<notebook>
 							<page string="Kanha Address" name="kanha_address" >
                         		<group>
 		                            <group string="Kanha Address" name="kanha_address">
-		                            	<field name="resident_of_kanha_from_date" />
-		                                <field name="work_profile" />
-		                                <field name="kanha_location_id" />
-		                                <field name="kanha_house_number" />
+		                            	<field name="resident_of_kanha_from_date" readonly="1"/>
+		                                <field name="work_profile" readonly="1"/>
+		                                <field name="kanha_location_id" readonly="1"/>
+		                                <field name="kanha_house_number" string="House Number" readonly="1"/>
 		                            </group>
                         		</group>
                     		</page>
-                    		<page string="Kanha Voter ID" name="kanha_voter_id_info" >
+                    		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible':[('citizenship','!=','Indian')]}">
                     			<group>
 		                            <group>
-			                            <field name="birth_country_id" />
-		                                <field name="birth_state_id" />
-		                                <field name="birth_district" />
-		                              	<field name="birth_town" />
-		                              	<field name="change_voter_id_address" />
-		                            	<field name="relation_type" />
-		                                <field name="relative_name" />
-		                                <field name="relative_surname" />
+			                            <field name="birth_country_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+		                                <field name="birth_state_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+		                                <field name="birth_district" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+		                              	<field name="birth_town" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+		                             	<field name="application_reference_no" readonly="1" />
                               		</group>
                               		<group>
-		                              	<field name="already_have_kanha_voter_id" />
-		                              	<field name="kanha_voter_id_number" widget="Encrypted"/>
-		                              	<field name="kanha_voter_id_image" />
-		                              	<field name="need_new_kanha_voter_id" />
-		                              	<field name="application_type" />
-		                              	<field name="declaration_form" />
+		                              	<field name="already_have_kanha_voter_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+		                              	<field name="change_voter_id_address" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')]}" readonly="1"/>
+		                              	<field name="kanha_voter_id_number" widget="Encrypted" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')],'required':[('already_have_kanha_voter_id','=','Yes')]}" readonly="1"/>
+		                              	<field name="kanha_voter_id_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')],'required':[('already_have_kanha_voter_id','=','Yes')]}" readonly="1"/>
+		                              	<field name="kanha_voter_id_back_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')],'required':[('already_have_kanha_voter_id','=','Yes')]}" readonly="1"/>
+		                              	<field name="need_new_kanha_voter_id" attrs="{'invisible':[('already_have_kanha_voter_id','!=','No')],'required':[('already_have_kanha_voter_id','=','No')]}" readonly="1"/>
+		                              	<field name="application_type" attrs="{'invisible':[('need_new_kanha_voter_id','!=','Yes')],'required':[('need_new_kanha_voter_id','=','Yes')]}" readonly="1"/>
+		                              	<field name="declaration_form" attrs="{'invisible':[('application_type','!=','New Application')],'required':[('application_type','=','New Application')]}" readonly="1"/>
 		                              	<!-- <field name="existing_voter_id_number" />
 		                              	<field name="voter_id_file" /> -->
                                 	</group>
                                 </group>
+                                <group>
+		                            <group string="Relative details">
+                                		<field name="relative_name" readonly="1"/>
+		                                <field name="relative_surname" readonly="1"/>
+		                            	<field name="relation_type" readonly="1"/>
+		                            	<field name="relation_other" attrs="{'invisible':[('relation_type','!=','Other')]}" readonly="1"/>
+		                            	<field name="relative_aadhaar_card_number" readonly="1"/>
+		                          	</group>
+		               			</group>
                     		</page>
-							
 							<page string="Documents" name="documents" >
                         		<group>
 		                            <group string="Documents" name="documents">
-		                                <field name="adhar_card" />
-		                                <field name="adhar_card_back_side" />
-		                                <field name="indian_visa"/>
-		                                <field name="passport_photo"/>
-		                                <field name="passport_id_image"/>
-		                                <field name="address_proof" />
-		                              	<field name="age_proof" />
+		                                <field name="adhar_card" readonly="1"/>
+		                                <field name="adhar_card_back_side" readonly="1"/>
+		                                <field name="passport_front_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
+		                                <field name="passport_back_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
+		                               	<field name="indian_visa" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
+		                                <field name="passport_photo" readonly="1"/>
+		                                <field name="address_proof" readonly="1"/>
+		                              	<field name="age_proof" readonly="1"/>
 		                            </group>
                         		</group>
                     		</page>
                     		<page string="Vehicle Details" name="vehicle_details" >
                     			<field name="vehicle_details_ids" colspan="4" nolabel="1">
-	                            	<tree string="Vehicle Details">
-	                               		<field name="vehicle_number" />
-		                                <field name="vehicle_owner" />
-		                                <field name="vehicle_type" />
+	                            	<tree string="Vehicle Details" create="0">
+	                               		<field name="vehicle_number" readonly="1"/>
+		                                <field name="vehicle_owner" readonly="1"/>
+		                                <field name="vehicle_type" readonly="1"/>
 	                            	</tree>
 	                            	<form string="Vehicle Details">
 		                                <group col="4">
-		                                    <field name="vehicle_number" />
-				                                <field name="vehicle_owner" />
-				                                <field name="vehicle_type" />
+		                                    <field name="vehicle_number" readonly="1"/>
+			                                <field name="vehicle_owner" readonly="1"/>
+			                                <field name="vehicle_type" readonly="1"/>
 		                                </group>
 	                            	</form>
                         		</field>
                     		</page>
-                    		<page string="Existing Voter ID Details" name="existing_voter_id_details" >
+                    		<page string="Existing Voter ID Details" name="existing_voter_id_details" attrs="{'invisible':['|', ('change_voter_id_address','!=','Yes'), ('citizenship','!=','Indian')]}">
                         		<group>
 		                            <group string="Existing Voter ID Details" name="existing_voter_id_details">
-		                                <field name="country_id"/>
-		                                <field name="state_id" />
-		                              	<field name="assembly_constituency" />
-		                              	<field name="house_number" />
-		                              	<field name="locality" />
-		                         		<field name="town" />
-		                             	<field name="post_office" />
-		                            	<field name="zip" />
+		                                <field name="country_id" invisible="1" readonly="1"/>
+		                                <field name="state_id" attrs="{'required':[('change_voter_id_address','=','Yes')]}" readonly="1"/>
+		                              	<field name="assembly_constituency" attrs="{'required':[('change_voter_id_address','=','Yes')]}" readonly="1"/>
+		                              	<field name="house_number" attrs="{'required':[('change_voter_id_address','=','Yes')]}" readonly="1"/>
+		                              	<field name="locality" attrs="{'required':[('change_voter_id_address','=','Yes')]}" readonly="1"/>
+		                         		<field name="town" attrs="{'required':[('change_voter_id_address','=','Yes')]}" readonly="1"/>
+		                             	<field name="post_office" attrs="{'required':[('change_voter_id_address','=','Yes')]}" readonly="1"/>
+		                            	<field name="zip" attrs="{'required':[('change_voter_id_address','=','Yes')]}" readonly="1"/>
+		                            	<field name="district" attrs="{'required':[('change_voter_id_address','=','Yes')]}" readonly="1"/>
 		                            </group>
                         		</group>
                     		</page>
                     		<page string="Family Members">
 	                    		<field name="family_members_ids" widget="one2many_list">
-	                    			<tree editable="bottom" string="Family Members">
+	                    			<tree string="Family Members">
 		                                <field name="name" />
 	                                </tree>
 	                                <form>
 	                             		<group>
-			                                <field name="name" />
+			                                <field name="name" readonly="1"/>
 	                                  	</group>
 	                               	 </form>
 	                      		</field>
@@ -167,4 +178,5 @@
           parent="kanha_census.menu_kanha_census_root" 
           action="kanha_partner_action"
           />
+
 </odoo>

@@ -2,10 +2,15 @@
 import base64
 import json
 import re
-from odoo import http, tools, _
+from odoo import http, tools, _, fields
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
 from odoo.addons.website.controllers.main import Website
+import zipfile
+import os
+from io import BytesIO
+import shutil
+import tempfile
 
 
 class Website(Website):
@@ -27,6 +32,8 @@ class CustomerPortal(CustomerPortal):
                              "kanha_voter_id_number",
                              "kanha_voter_id_image",
                              "kanha_voter_id_image_filename",
+                             "kanha_voter_id_back_image",
+                             "kanha_voter_id_back_image_filename",
                              "need_new_kanha_voter_id",
                              "application_type",
                              "declaration_form",
@@ -37,7 +44,9 @@ class CustomerPortal(CustomerPortal):
                              "relation_type",
                              "relative_aadhaar_card_number",
                              "relative_name",
-                             "relative_surname"]
+                             "relative_surname",
+                             "application_reference_no"
+                             ]
     EXISTING_VOTER_ID_FIELDS = ["country_id",
                                 "state_id",
                                 "assembly_constituency",
@@ -52,14 +61,24 @@ class CustomerPortal(CustomerPortal):
     def partner_list(self, page=1, **kw):
         values = {}
         current_partner = request.env.user.partner_id
-        current_user_id = request.env.uid
+        # current_user_id = request.env.uid
         ResPartner = request.env['res.partner']
         # If Fetch logged in partner's family members
         # if current_partner.aadhaar_card_number:
         #     domain = [ '|', ('id', '=', current_partner.id), '|',  ('create_uid', '=', current_user_id), ('relative_aadhaar_card_number', '=', current_partner.aadhaar_card_number)]
         # else:
         #     domain = ['|', ('id', '=', current_partner.id), ('create_uid', '=', current_user_id)]
-        domain = ['|', ('id', '=', current_partner.id), ('create_uid', '=', current_user_id)]
+        
+        # Fetch logged in partner's family members based on Kanha House no.
+        if(current_partner.kanha_house_number):
+            domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number', '=', current_partner.kanha_house_number)]
+        else:
+            domain = [('id', '=', current_partner.id)]
+
+        
+        # For admin user display all partner records
+        if request.env.is_admin():
+            domain = []
 
         # count for pager
         partner_count = ResPartner.sudo().search_count(domain)
@@ -84,15 +103,6 @@ class CustomerPortal(CustomerPortal):
     def kanha_portal_form_validate(self, data, partner_id):
         error = dict()
         error_message = []
-        
-        # Prepares File fields
-        for field_name, field_value in data.items():
-            # If the value of the field if a file
-            if hasattr(field_value, 'filename'):
-                # Undo file upload field name indexing
-                data.pop(field_name)
-                field_name = field_name.split('[', 1)[0]
-                data[field_name] = field_value
 
         # email validation
         if data.get('email') and not tools.single_email_re.match(data.get('email')):
@@ -117,20 +127,19 @@ class CustomerPortal(CustomerPortal):
             ResPartner = request.env['res.partner']
             partner = ResPartner.sudo().search([('id', '=', partner_id)])    
             if(not partner):
-                ResPartner = request.env['res.partner']
-                is_adhar_no_exsist = ResPartner.search([('aadhaar_card_number', '=', data.get('aadhaar_card_number'))])
+                is_adhar_no_exsist = ResPartner.sudo().search([('aadhaar_card_number', '=', data.get('aadhaar_card_number'))])
                 if(is_adhar_no_exsist): 
                     error["aadhaar_card_number"] = 'error'
                     error_message.append(_('Aadhar Number is already exist!'))    
         
         # Relative Aadhar card validation
-        # if data.get('relative_aadhaar_card_number'):
-        #     relative_aadhaar_card_number = data.get('relative_aadhaar_card_number')
-        #     is_valid = self.is_valid_aadhaar_number(relative_aadhaar_card_number)
-        #     if not is_valid:
-        #         error["aadhar_card_number"] = _('Invalid Aadhar Number!')
-        #         error_message.append(_('Invalid Aadhar Number!'))               
-        #
+        if data.get('relative_aadhaar_card_number'):
+            relative_aadhaar_card_number = data.get('relative_aadhaar_card_number')
+            is_valid = self.is_valid_aadhaar_number(relative_aadhaar_card_number)
+            if not is_valid:
+                error["aadhar_card_number"] = _('Invalid Relative Aadhar Number!')
+                error_message.append(_('Invalid Relative Aadhar Number!'))               
+        
         #     # Aadhar card exist
         #     ResPartner = request.env['res.partner']
         #     is_adhar_exsist = ResPartner.search([('aadhaar_card_number', '=', relative_aadhaar_card_number)])
@@ -167,9 +176,9 @@ class CustomerPortal(CustomerPortal):
         #     2.It should not start with 0 and 1.
         #     3.It should not contain any alphabet and special characters.
         #     4.It should have white space after every 4 digits.
-        regex = ("^[2-9]{1}[0-9]{3}[0-9]{4}[0-9]{4}$")
+        regex = ("^[2-9]{1}[0-9]{3}\\" + "s[0-9]{4}\\s[0-9]{4}$")
         p = re.compile(regex)
-        if(re.search(p, emp_aadhaar)) and len(emp_aadhaar) == 12:
+        if(re.search(p, emp_aadhaar)) and len(emp_aadhaar) == 14:
             return True
         else:
             return False
@@ -188,18 +197,33 @@ class CustomerPortal(CustomerPortal):
     @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="user", methods=['POST'], website=True)
     def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         request.params.pop('csrf_token', None)
+        is_submit = post.get("is_submit")
+        post.pop("is_submit")
         ResPartner = request.env['res.partner']
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
         if post and request.httprequest.method == 'POST':
-            error, error_message = self.kanha_portal_form_validate(post, partner_id)
-            if not error:
+            error = dict()
+            post['state'] = 'saved_not_submitted'
+            # Validates the form only when Submit the form. When Saves ignores the form validation
+            if(is_submit == 'true'):
+                post['state'] = 'submitted'
+                error, error_message = self.kanha_portal_form_validate(post, partner_id)
+            if not error or is_submit == 'false':
+                # Prepares File fields
+                for field_name, field_value in post.items():
+                    # If the value of the field if a file
+                    if hasattr(field_value, 'filename'):
+                        # Undo file upload field name indexing
+                        post.pop(field_name)
+                        field_name = field_name.split('[', 1)[0]
+                        post[field_name] = field_value
                 values = {}
                 values.update(post)
                 values.update({'is_published': True})
                 
                 # Removes Invisible fields value
                 if(values.get('change_voter_id_address') != 'Yes'):
-                    #self.remove_existing_voter_id_details(values)
+                    # self.remove_existing_voter_id_details(values)
                     self.remove_invisible_fields_value(values, self.EXISTING_VOTER_ID_FIELDS)
                 if(values.get('citizenship') == 'Overseas'):
                     # self.remove_kanha_voter_id_details(values)
@@ -207,12 +231,34 @@ class CustomerPortal(CustomerPortal):
                 else:
                     self.remove_invisible_fields_value(values)
                 
-                # Removes attachment
+                # Removes attachment when delete it
                 if(not values.get('adhar_card_back_side_filename')):
                     values['adhar_card_back_side'] = ''
                 if(not values.get('adhar_card_filename')):
                     values['adhar_card'] = ''
-                    
+                if(not values.get('kanha_voter_id_image_filename')):
+                    values['kanha_voter_id_image'] = ''
+                if(not values.get('kanha_voter_id_back_image_filename')):
+                    values['kanha_voter_id_back_image'] = ''
+                if(not values.get('age_proof_filename')):
+                    values['age_proof'] = ''
+                if(not values.get('address_proof_filename')):
+                    values['address_proof'] = '' 
+                if(not values.get('passport_photo_filename')):
+                    values['passport_photo'] = ''
+                if(not values.get('passport_front_image_filename')):
+                    values['passport_front_image'] = ''
+                if(not values.get('passport_back_image_filename')):
+                    values['passport_back_image'] = ''
+                if(not values.get('indian_visa_filename')):
+                    values['indian_visa'] = ''
+                
+                # Set False if the value for the date field is not given
+                if(values.get("date_of_birth") == ''):
+                    values['date_of_birth'] = False
+                if(values.get("resident_of_kanha_from_date") == ''):
+                    values['resident_of_kanha_from_date'] = False
+                       
                 # Prepare Many2One values
                 many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id']
                 # if(post.get('change_voter_id_address') == 'Yes'):
@@ -228,11 +274,14 @@ class CustomerPortal(CustomerPortal):
                                   'adhar_card_back_side',
                                   'passport_photo',
                                   'indian_visa',
-                                  'passport_id_image',
+                                #  'passport_id_image',
+                                  'passport_front_image',
+                                  'passport_back_image',
                                   'age_proof',
                                   'address_proof',
                                 #   'voter_id_file',
                                   'declaration_form',
+                                  'kanha_voter_id_back_image',
                                   'kanha_voter_id_image']) & set(values.keys()):
                         file = post.get(field)
                         if(file):
@@ -242,7 +291,6 @@ class CustomerPortal(CustomerPortal):
                                 values[field] = base64.encodebytes(file_content)
                             else:
                                 values.pop(field)
-                
                 # Prepare Vehicle Details 
                 vehicle_details_vals = []
                 # new records
@@ -253,7 +301,13 @@ class CustomerPortal(CustomerPortal):
                 values.pop('vehicle_new_lines')
                 values['vehicle_details_ids'] = vehicle_details_vals
 
-                # If partner updates the records else create a new record
+                # Links family members based on Kanha house no.
+                relative_partner = False
+                kanha_house_number = post.get('kanha_house_number')
+                if(kanha_house_number):
+                    relative_partner = ResPartner.sudo().search([('kanha_house_number', '=', kanha_house_number)])
+
+                # If partner exist, updates the records else create a new partner record
                 if partner:
                     # Updates vehicle info
                     vehicle_details_ids = json.loads(post.get('vehicle_details_ids'))
@@ -275,26 +329,27 @@ class CustomerPortal(CustomerPortal):
                             vehicle_details_vals.append([2, partner_vehicle])
                     
                     values['vehicle_details_ids'] = vehicle_details_vals
-                    # updates values in partner
+                    
+                    # Links family members
+                    if(kanha_house_number != partner.kanha_house_number):
+                        partner.write({'family_members_ids': [(5,)]})
+                        partner_list_to_unlink = ResPartner.sudo().search([('family_members_ids', '=', partner.id)])
+                        for partner_list in partner_list_to_unlink:
+                            partner_list.write({'family_members_ids': [(3, partner.id)]})
+                        # Links family members
+                        if(relative_partner):
+                            partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
+                            relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})
+                    # updates partner
                     partner.sudo().write(values)
                 else:
-                    partner_created = ResPartner.sudo().create(values)
-                    # try:
-                    #     partner_created = ResPartner.sudo().create(values)
-                    # # If we encounter an issue while creating record
-                    # except IntegrityError as e:
-                    #     # I couldn't find a cleaner way to pass data to an exception
-                    #     return json.dumps({'error_fields' : e.args[0]})
-
+                    # creates new partner record
+                    partner = ResPartner.sudo().create(values)
+                    # partner = newly_created_partner
                     # Links family members
-                    if(post.get('relative_aadhaar_card_number')):
-                        relative_aadhaar_card_number = post.get('relative_aadhaar_card_number')
-                        relative_partner = ResPartner.search([('aadhaar_card_number', '=', relative_aadhaar_card_number)])
-                        if(relative_partner):
-                            partner_created.sudo().write({'family_members_ids': [(4, relative_partner.id)]})
-                            relative_partner.sudo().write({'family_members_ids': [(4, partner_created.id)]})
-                    # creates new record
-                    partner = partner_created
+                    if(relative_partner):
+                        partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
+                        relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})    
                     
                 return json.dumps({'id': partner.id})
             
@@ -345,8 +400,8 @@ class CustomerPortal(CustomerPortal):
         country_india = request.env['res.country'].sudo().browse(104)
         states = request.env['res.country.state'].sudo().search([])
         # Fetch the record who doesnt have any child records
-        kanha_location_parent_ids = request.env['kanha.location'].sudo().search([]).parent_id.ids
-        kanha_locations_nth_child = request.env['kanha.location'].sudo().search([('id', 'not in', kanha_location_parent_ids)])
+        kanha_location_parent_ids = request.env['kanha.location'].search([]).parent_id.ids
+        kanha_locations_nth_child = request.env['kanha.location'].search([('id', 'not in', kanha_location_parent_ids)])
         values.update({
             'states': states,
             'page_name': 'family',
@@ -377,6 +432,8 @@ class CustomerPortal(CustomerPortal):
                 values['kanha_voter_id_number'] = ''
                 values['kanha_voter_id_image'] = ''
                 values['kanha_voter_id_image_filename'] = '' 
+                values['kanha_voter_id_back_image'] = ''
+                values['kanha_voter_id_back_image_filename'] = ''
             if((values.get('need_new_kanha_voter_id') != 'Yes') and (values.get('change_voter_id_address') != 'Yes')):
                 values['application_type'] = ''   
                 values['declaration_form'] = ''   
@@ -391,3 +448,79 @@ class CustomerPortal(CustomerPortal):
             if(values.get('application_type') == 'Transfer Application'): 
                 values['declaration_form'] = ''   
                 values['declaration_form_filename'] = '' 
+
+    def zip(self, path, ziph):
+        """Zip the directory"""
+        
+        # ziph is a zipfile handle
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                ziph.write(os.path.join(root, file),
+                           os.path.relpath(os.path.join(root, file),
+                                           os.path.join(path, '..')))    
+
+
+    @http.route("/web/attachment/download_zip", type="http", auth="user")
+    def download_zip(self, partner_ids=None):
+        
+        #create complete filepath of temp directory in the name of Documents
+        root_temp_dir_path = os.path.join(tempfile.gettempdir(), 'Documents')
+        # Delete if this Temp folder already exists
+        if os.path.exists(root_temp_dir_path):
+            shutil.rmtree(root_temp_dir_path)
+        # Creates temp dir
+        os.makedirs(root_temp_dir_path)
+        
+        filestream=BytesIO()
+        
+        partner_ids = map(int, partner_ids.split(","))
+        res_partners = request.env['res.partner'].browse(partner_ids)
+        
+        for res_partner in res_partners:
+            request.env.cr.execute("""
+                    SELECT id
+                      FROM ir_attachment
+                     WHERE res_id IN %s AND res_field IN 
+                     ('adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo')
+                """, [tuple(res_partner.ids)])
+            ir_attachments = request.env.cr.fetchall()
+            attachments = request.env["ir.attachment"].search([('id','in', ir_attachments)])
+            
+            partner_name = res_partner.name+"-"+str(res_partner.id)
+            # Create temp dir in the name of partner inside a root dir
+            partner_temp_dir = os.path.join(root_temp_dir_path, partner_name)
+            
+            # Delete if the Temp folder already exists
+            if os.path.exists(partner_temp_dir):
+                shutil.rmtree(partner_temp_dir)
+            
+            os.makedirs(partner_temp_dir)
+            
+            for attachment in attachments:
+                mimetype = attachment.mimetype.split("/")[-1]
+                extension = "."+mimetype
+                file = open(os.path.join(partner_temp_dir, attachment.name+extension), 'wb')
+                os.stat(attachment._full_path(attachment.store_fname))
+                for line in open(attachment._full_path(attachment.store_fname), 'rb').readlines():    
+                    file.write(line)
+                file.close()    
+           
+        # Create a ZipFile Object        
+        with zipfile.ZipFile(filestream, mode='w', compression=zipfile.ZIP_DEFLATED) as zipf:
+            self.zip(root_temp_dir_path, zipf)
+                    
+        # Creates a Downloads History
+        request.env['residents.documents.downloads.history'].create({
+            'downloaded_by':request.env.user.id,
+            'downloaded_datetime':fields.Datetime.now(),
+            'partner_ids':[(6, 0, res_partners.ids)]
+        })
+
+        return  http.send_file(
+            filepath_or_fp=filestream,
+            mimetype="application/zip",
+            as_attachment=True,
+            cache_timeout=3,
+            filename=_("Documents.zip"),
+        )
+

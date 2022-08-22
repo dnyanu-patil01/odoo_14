@@ -13,8 +13,8 @@ var _t = core._t;
 publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     selector: '.o_portal_partner_details',
     events: {
-		'change select[name="relation_type"]': '_onrelationOtherChange',
-		'change select[name="change_voter_id_address"]': '_onVoterAddressChange',
+		'change select[name="relation_type"]': '_onChangeRelationType',
+		'change select[name="change_voter_id_address"]': '_onChangeVoterAddressToKanha',
 		'change select[name="citizenship"]': '_onCitizenshipChange',
 		'change select[name="application_type"]': '_onChangeVoterApplicationType',
 		'change select[name="already_have_kanha_voter_id"]': '_onChangeAlreadyHaveKanhaVoterID',
@@ -29,7 +29,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'change .adhar_file_back_side_upload': '_onFileUploadChange',
 		'click .adhar_file_back_side_browse': '_onBrowseFile',
 		'click .adhar_file_back_side_clear': '_onClearFile',
-		// Adhar File upload
+		// Age proof File upload
 		'click .age_proof_edit': '_onBrowseFile',
 		'change .age_proof_upload': '_onFileUploadChange',
 		'click .age_proof_browse': '_onBrowseFile',
@@ -49,21 +49,31 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'change .passport_photo_upload': '_onUploadPassportPhoto',
 		'click .passport_photo_browse': '_onBrowseFile',
 		'click .passport_photo_clear': '_onClearFile',
-		// Passport ID photo upload
-		'click .passport_id_image_edit': '_onBrowseFile',
-		'change .passport_id_image_upload': '_onUploadPassportIDImage',
-		'click .passport_id_image_browse': '_onBrowseFile',
-		'click .passport_id_image_clear': '_onClearFile',
+		// Passport Front image upload
+		'click .passport_front_image_edit': '_onBrowseFile',
+		'change .passport_front_image_upload': '_onUploadPassportFrontImage',
+		'click .passport_front_image_browse': '_onBrowseFile',
+		'click .passport_front_image_clear': '_onClearFile',
+		// Passport Back image upload
+		'click .passport_back_image_edit': '_onBrowseFile',
+		'change .passport_back_image_upload': '_onUploadPassportBackImage',
+		'click .passport_back_image_browse': '_onBrowseFile',
+		'click .passport_back_image_clear': '_onClearFile',
 		// Kanha voter ID image upload
 		'click .kanha_voter_id_image_browse': '_onBrowseFile',
 		'change .kanha_voter_id_image_upload': '_onUploadKanhaVoterIdImage',
 		'click .kanha_voter_id_image_edit': '_onBrowseFile',
 		'click .kanha_voter_id_image_clear': '_onClearFile',
+		// Kanha Voter ID Back Image upload
+		'click .kanha_voter_id_back_image_browse': '_onBrowseFile',
+		'change .kanha_voter_id_back_image_upload': '_onUploadKanhaVoterIdBackImage',
+		'click .kanha_voter_id_back_image_edit': '_onBrowseFile',
+		'click .kanha_voter_id_back_image_clear': '_onClearFile',
 		// voter ID File upload
-		'click .voter_id_file_browse': '_onBrowseFile',
-		'change .voter_id_file_upload': '_onFileUploadChange',
-		'click .voter_id_file_edit': '_onBrowseFile',
-		'click .voter_id_file_clear': '_onClearFile',
+		//'click .voter_id_file_browse': '_onBrowseFile',
+		//'change .voter_id_file_upload': '_onFileUploadChange',
+		//'click .voter_id_file_edit': '_onBrowseFile',
+		//'click .voter_id_file_clear': '_onClearFile',
 		// Declaration Form upload
 		'click .declaration_form_edit': '_onBrowseFile',
 		'change .declaration_form_upload': '_onUploadDeclarationForm',
@@ -85,8 +95,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keydown #adhar_card_file_back': '_onRestrictInput',
 		'keypress #passport_photo_file': '_onRestrictInput',
 		'keydown #passport_photo_file': '_onRestrictInput',
-		'keypress #passport_id_image_file': '_onRestrictInput',
-		'keydown #passport_id_image_file': '_onRestrictInput',
+		'keypress #passport_front_image_file': '_onRestrictInput',
+		'keydown #passport_front_image_file': '_onRestrictInput',
+		'keypress #passport_back_image_file': '_onRestrictInput',
+		'keydown #passport_back_image_file': '_onRestrictInput',
 		'keypress #indian_visa_file': '_onRestrictInput',
 		'keydown #indian_visa_file': '_onRestrictInput',
 		'keypress #age_proof_file': '_onRestrictInput',
@@ -95,12 +107,22 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keydown #address_proof_file': '_onRestrictInput',
 		'keypress #kanha_voter_id_image_filename_field': '_onRestrictInput',
 		'keydown #kanha_voter_id_image_filename_field': '_onRestrictInput',
+		'keypress #kanha_voter_id_back_image_filename_field': '_onRestrictInput',
+		'keydown #kanha_voter_id_back_image_filename_field': '_onRestrictInput',
 		// 'keypress #voter_id_file_filename_field': '_onRestrictInput',
 		// 'keydown #voter_id_file_filename_field': '_onRestrictInput',
 		'keypress #declaration_form_filename_field': '_onRestrictInput',
 		'keydown #declaration_form_filename_field': '_onRestrictInput',
 		// Form submit
 		'click .family_website_form_submit': '_onSubmitForm',
+		// Form Save
+		'click .family_website_form_save': '_onClickSave',
+		// Adhaar card input auto space
+		'keypress #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+		'change #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+		'keypress #relative_aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+		'change #relative_aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+		
     },
  
     /**
@@ -128,15 +150,24 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
      * @private
      */
 	_onRestrictInput: function (ev) {
-		 ev.preventDefault();
+		ev.preventDefault();
 	},
 	
-	_onrelationOtherChange: function (ev) {
+	/**
+     * Insert blank space after every 4 digits
+     *
+     * @private
+     */
+	_insertCardNumberBlankSpace: function (e) {
+  		e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+	},
+
+	_onChangeRelationType: function (ev) {
 		// document.getElementById("relation_type_field").value = "";
         // $(ev.currentTarget).closest('form').find('select[name="relation_type"]').trigger('change');
 	
-		var relation_change = this.$('select[name="relation_type"]');
-		if(relation_change.val() == 'Other'){
+		var relation_type = this.$('select[name="relation_type"]');
+		if(relation_type.val() == 'Other'){
 			$('.relation_other_class').removeClass('d-none');
 		}
 		else{
@@ -148,7 +179,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
      *
      * @private
      */
-    _onVoterAddressChange: function (ev) {
+    _onChangeVoterAddressToKanha: function (ev) {
 		document.getElementById("application_type_field").value = "";
         $(ev.currentTarget).closest('form').find('select[name="application_type"]').trigger('change');
 	
@@ -158,7 +189,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('.voter_id_tab').removeClass('d-none');
 			
 			/*Set Required attribute for the fields to 
-			validate Mandatory fields when this tab is active*/
+			validate Mandatory fields only when this tab is active*/
 			$('#existing_voter_id_number_field').attr('required', true);
 			$('#voter_country_id').attr('required', true);
 			$('#voter_state_id').attr('required', true);
@@ -190,9 +221,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			var is_voter_tab_active = $('a.voter_id_tab').hasClass('active');
 			$('.voter_id_tab').addClass('d-none');
 			
-			/*Remove Required attribute for the fields to 
-			validate Mandatory fields when this tab is hide*/
-			
+			/*Remove Required attribute when this tab is hide*/
 			$('#existing_voter_id_number_field').removeAttr('required');
 			$('#voter_country_id').removeAttr('required');
 			$('#voter_state_id').removeAttr('required');
@@ -207,13 +236,16 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('.voter_application_type').addClass('d-none');
 			$('#application_type_field').removeAttr('required');
 			
-			/*Show Kanha Address tab if Existing Voter ID tab hides when Existing Voter ID tab in active*/
+			/*Navigate user to Kanha Address tab if Existing Voter ID tab hides.
+			 when user on the Existing Voter ID tab*/
 			if(is_voter_tab_active)
 			{
 				$('a.active').removeClass("active");
 				$('div.active').removeClass("active");
 				$('#tab-kanha').addClass('active');
 				$('#pane-kanha').addClass('active');
+				$('#pane-kanha').addClass('show');
+
 			}
 		}
     },
@@ -243,6 +275,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('.kanha_voter_id_image').removeClass('d-none');
 			$('#kanha_voter_id_image_field').attr('required', true);
 			
+			$('.kanha_voter_id_back_image').removeClass('d-none');
+			$('#kanha_voter_id_back_image_field').attr('required', true);
+			
 			$('.change_voter_id_address').removeClass('d-none');
 			
 		}
@@ -258,6 +293,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			
 			$('.kanha_voter_id_image').addClass('d-none');
 			$('#kanha_voter_id_image_field').removeAttr('required');
+			
+			$('.kanha_voter_id_back_image').addClass('d-none');
+			$('#kanha_voter_id_back_image_field').removeAttr('required');
+			
 			//document.getElementById("kanha_voter_id_image_field").value = "";
 			//document.getElementById("kanha_voter_id_image_filename_field").value = "";
 			
@@ -270,8 +309,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		}
 		else{
 			
-			
-
 			// Hide Need New Kanha Voter ID field
 			$('.need_new_kanha_voter_id').addClass('d-none');
 			$('#need_new_kanha_voter_id_field').removeAttr('required');
@@ -282,6 +319,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			
 			$('.kanha_voter_id_image').addClass('d-none');
 			$('#kanha_voter_id_image_field').removeAttr('required');
+			
+			$('.kanha_voter_id_back_image').addClass('d-none');
+			$('#kanha_voter_id_back_image_field').removeAttr('required');
 			
 			$('.change_voter_id_address').addClass('d-none');
 		}
@@ -384,15 +424,16 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#change_voter_id_address_field').change();
 			$('#already_have_kanha_voter_id_field').val("")
 			$('#already_have_kanha_voter_id_field').change()
-			// Show Passport Number, Passport ID image and Visa image  and add Required attribute
+			// Show Passport Number, Passport ID image and Indian Visa image and add Required attribute
 			$('.passport_field').removeClass('d-none');
 			$('#passport_number_input').attr('required', true);
-			$('.passport_id_image_div').removeClass('d-none');
-			$('#passport_id_image').attr('required', true);
+			$('.passport_front_image_div').removeClass('d-none');
+			$('.passport_back_image_div').removeClass('d-none');
+			$('#passport_front_image_file').attr('required', true);
+			$('#passport_back_image_file').attr('required', true);
 			$('.indian_visa_div').removeClass('d-none');
-			$('#indian_visa').attr('required', true);
+			$('#indian_visa_file').attr('required', true);
 
-			
 			// Remove Mandatory validation
 			$('#aadhaar_card_number_field').removeAttr('required');
 			$("label[for='Aadhaar Card Number']").next(".s_website_form_mark").addClass('d-none')
@@ -403,7 +444,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#adhar_card_file_back').removeAttr('required');
 			$("#adhar_card_file_back").next(".s_website_form_mark").addClass('d-none')
 			
-			// Show Kanha Address tab if Kanha Voter ID tab hides when Voter ID tab in active
+			/*Navigate user to Kanha Address tab if Existing Voter ID tab hides.
+			 when user on the Existing Voter ID tab*/
 			var is_kanha_voter_tab_active = $('a#tab-kanha_voter_id').hasClass('active');
 			// Hide Kanha Voter ID tab
 			$('#tab-kanha_voter_id').addClass('d-none');
@@ -427,6 +469,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#kanha_voter_id_number_field').removeAttr('required');
 			$('#kanha_voter_id_image_field').removeAttr('required');
 			$('#kanha_voter_id_image_filename_field').removeAttr('required');
+			$('#kanha_voter_id_back_image_field').removeAttr('required');
+			$('#kanha_voter_id_back_image_filename_field').removeAttr('required');
 			$('#need_new_kanha_voter_id_field').removeAttr('required');
 			$('#application_type_field').removeAttr('required');
 			$('#existing_voter_id_number_field').removeAttr('required');
@@ -440,10 +484,12 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			// Hide Passport Number and add Required attribute
 			$('.passport_field').addClass('d-none');
 			$('#passport_number_input').removeAttr('required');
-			$('.passport_id_image_div').addClass('d-none');
-			$('#passport_id_image').removeAttr('required');
+			$('.passport_front_image_div').addClass('d-none');
+			$('.passport_back_image_div').addClass('d-none');
+			$('#passport_front_image_file').removeAttr('required');
+			$('#passport_back_image_file').removeAttr('required');
 			$('.indian_visa_div').addClass('d-none');
-			$('#indian_visa').removeAttr('required');
+			$('#indian_visa_file').removeAttr('required');
 			//$('#passport_number_input').attr('disabled', true);
 			
 			// Add Required attribute
@@ -478,13 +524,13 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}*/
 		}
     },
-	
+
 	/**
      * Limit the size and type of a file upload. Maximum file size is 2 MB.
      *
      * @private
      */
-	 _onUploadPassportIDImage: function (ev) {
+	 _onUploadPassportFrontImage: function (ev) {
 		var files = ev.target.files;
 		if (!files.length) {
             return;
@@ -496,8 +542,40 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 	  		if (fileSize > 2) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
 				// Reset fields
-	        	document.getElementsByName("passport_id_image_filename").value = "";
-				document.getElementsByName("passport_id_iamge").value = "";
+	        	document.getElementsByName("passport_front_image_filename").value = "";
+				document.getElementsByName("passport_front_iamge").value = "";
+			}
+			else{
+				var file_name = ev.target.files[0].name
+				var $form = $(ev.currentTarget).closest('form');
+				var filename_input = $(ev.target).attr('filename_input')
+				$form.find('.'+filename_input).val(file_name);
+			}
+		}
+		else{
+			Dialog.alert(null, "Accepts only JPEG images.");
+		}
+	},
+
+	/**
+     * Limit the size and type of a file upload. Maximum file size is 2 MB.
+     *
+     * @private
+     */
+	 _onUploadPassportBackImage: function (ev) {
+		var files = ev.target.files;
+		if (!files.length) {
+            return;
+        }
+		var file = files[0]
+		var mimeType = file.type
+		if(mimeType == 'image/jpeg'){
+		  	var fileSize = file.size / 1024 / 1024; // in MiB
+	  		if (fileSize > 2) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
+				// Reset fields
+	        	document.getElementsByName("passport_back_image_filename").value = "";
+				document.getElementsByName("passport_back_iamge").value = "";
 			}
 			else{
 				var file_name = ev.target.files[0].name
@@ -542,6 +620,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			Dialog.alert(null, "Accepts only JPEG images.");
 		}
 	},
+	
 	/**
      * Limit the size and type of a file upload. Maximum file size is 2 MB.
      *
@@ -639,6 +718,38 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		}
 	},
 	
+	/**
+     * Limit the size and type of a file upload. Maximum file size is 5 MB.
+     *
+     * @private
+     */
+	_onUploadKanhaVoterIdBackImage: function (ev) {
+		var files = ev.target.files;
+		if (!files.length) {
+            return;
+        }
+		var file = files[0];
+		var mimeType = file.type
+		if(mimeType == 'image/jpeg'){
+		  	var fileSize = file.size / 1024 / 1024; // in MiB
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				// Reset fields
+	        	document.getElementsByName("kanha_voter_id_back_image_filename").value = "";
+				document.getElementsByName("kanha_voter_id_back_image").value = "";
+			}
+			else{
+				var file_name = ev.target.files[0].name
+				var $form = $(ev.currentTarget).closest('form');
+				var filename_input = $(ev.target).attr('filename_input')
+				$form.find('.'+filename_input).val(file_name);
+			}
+		}
+		else{
+			Dialog.alert(null, "Accepts only JPEG images.");
+		}
+	},
+	
  	/**
      * @private
      * @param {Event} ev
@@ -717,7 +828,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var $row = $(ev.currentTarget).closest("tr");
 		$row.remove();
 	},
-    
+	
 	_onShowVehicleModal: function (ev) {
 	    var $row = $(ev.currentTarget).closest("tr");
 		var id = ev.target.id
@@ -772,24 +883,22 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		})
 	},
 
-	_onSubmitForm: function (e) {
+	/* saves a record */
+	_onSaveForm: function (e, is_submit) {
+		
 		var $form = $(e.currentTarget).closest('form');
-        e.preventDefault(); // Prevent the default submit behavior
-        // Prevent users from crazy clicking
-        this.$target.find('.family_website_form_submit')
-            .addClass('disabled')    // !compatibility
-            .attr('disabled', 'disabled');
-
-        var self = this;
-        this.$target.find('.family_website_form_result').html(); // !compatibility
-        //if (!self.check_error_fields({})) {
-		var is_form_valid = Object.keys(self.check_error_fields({}))
-		if (is_form_valid == 'false') {
-			var missing_fields = Object.values(self.check_error_fields({}))
-            self.update_status('error', _t("Please fill in the form correctly."+'\n'.concat(missing_fields.join())));
-			return false;
-        }
-        // Prepare form inputs
+		var self = this;
+		
+		// Clear form submission status if any
+		this.$('#form_result_error').addClass('d-none')
+		
+		// Update field color if invalid or erroneous
+		this.$target.find('.form-field, .s_website_form_field').each(function (k, field) { 
+			var $field = $(field);
+        	$field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
+ 		});
+	
+		// Prepare form inputs
         this.form_fields = $form.serializeArray();
         $.each(this.$target.find('input[type=file]'), function (outer_index, input) {
             $.each($(input).prop('files'), function (index, file) {
@@ -824,7 +933,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 				else if (input.value == '') {
                     form_values[input.name] = '';
                 }
-
             }
         });
 
@@ -862,11 +970,11 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		});
 		form_values['vehicle_details_ids'] = JSON.stringify(vehicle_details)
 		form_values['vehicle_new_lines'] = JSON.stringify(vehicle_new_lines)
+		form_values['is_submit'] = is_submit;
         
 		// Post form and handle result
         ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
         .then(function (result_data) {
-
             // Restore Submit button behavior
             self.$target.find('.family_website_form_submit')
                 .removeAttr('disabled')
@@ -895,7 +1003,24 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
                                 extraOffset: 0,
                             });
                         } else {
-                            $(window.location).attr('href', successPage);
+						    if( is_submit == true) {
+								$(window.location).attr('href', successPage);
+							}   
+						    else {
+						   		//let saveSuccessPage = $form[0].dataset.saveSuccessPage;
+								//$(window.location).attr('href', saveSuccessPage);
+								//location.reload()
+								
+								// Prevent users from crazy clicking
+						        self.$target.find('.family_website_form_save')
+						            .removeClass('disabled')    // !compatibility
+						            .attr('disabled', false);
+								self.$('#form_result_success').removeClass('d-none')
+								setTimeout(function(){
+									$(window.location).attr('href', "/website_form_family/"+result_data.id+"/res.partner");
+            					}, 1000);
+								//self.update_status('success', _t("The form has been saved successfully."));
+							}
                         }
                         break;
                     case 'message':
@@ -911,6 +1036,39 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         .guardedCatch(function () {
             self.update_status('error');
         });
+	},
+	
+	// Saves the form values. If form submit is False then ignore the form validation
+	_onClickSave: function (e, is_submit=false) {
+		// Prevent users from crazy clicking
+        this.$target.find('.family_website_form_save')
+            .addClass('disabled')    // !compatibility
+            .attr('disabled', 'disabled');
+		
+		this._onSaveForm(e,is_submit)
+	},
+	
+	_onSubmitForm: function (e) {
+        e.preventDefault(); // Prevent the default submit behavior
+        // Prevent users from crazy clicking
+        this.$target.find('.family_website_form_submit')
+            .addClass('disabled')    // !compatibility
+            .attr('disabled', 'disabled');
+		
+		// Clear form submission status if any
+		// this.$('#form_result_success').addClass('d-none')
+
+        var self = this;
+        this.$target.find('.family_website_form_result').html(); // !compatibility
+        //if (!self.check_error_fields({})) {
+		var is_form_valid = Object.keys(self.check_error_fields({}))
+		if (is_form_valid == 'false') {
+			var missing_fields = Object.values(self.check_error_fields({}))
+            self.update_status('error', _t("Please fill in the form correctly."+'\n'.concat(missing_fields.join())));
+			return false;
+        }
+		// Saves the form
+		self._onSaveForm(e, true);
     },
 
 	check_error_fields: function (error_fields) {
@@ -1021,11 +1179,12 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if ((status === 'error') || (status !== 'success')) {
 			var $result = this.$('.family_website_form_result');
 			this.$('#form_result_error').removeClass('d-none')
-
         }
 		else{
 			var $result = this.$('.family_website_form_result');
-			this.$('#form_result_success').removeClass('d-none')
+			if(message){
+				this.$('#form_result_success').removeClass('d-none')
+			}
 		}
 		if (status === 'error' && !message) {
             message = _t("An error has occured, the form has not been sent.");

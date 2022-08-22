@@ -16,7 +16,7 @@
 
 /* Style the tab */
 .kanha-portal-tab-wrap{
-    padding: 50px 0px;
+    padding: 30px 0px;
     position: relative;
 }
 .kanha-portal-tab-wrap .nav-tabs {
@@ -79,5 +79,11 @@
     .kanha-portal-tab-wrap .card-body {
 		border: 1px solid #ccc;
     }
+}
 
+.formheading{  
+    background-color: #ccc;
+	color: #212529;
+	padding: 6px;
+	width: 100%;
 }

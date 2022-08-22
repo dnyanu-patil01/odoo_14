@@ -1,7 +1,7 @@
 from odoo import fields, models
 
 
-class Vote(models.Model):
+class VehicleDetails(models.Model):
     _name = 'vehicle.details'
     _description = 'Vehicle Details'
 
