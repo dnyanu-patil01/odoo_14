@@ -70,7 +70,19 @@
         </tree>
     </field>
 </record>
-
+        <record id="view_packaging_filter" model="ir.ui.view">
+            <field name="name">product.packaging.filter</field>
+            <field name="model">product.packaging</field>
+            <field name="arch" type="xml">
+                <search string="Packaging">
+                    <field name="seller_id"/>
+                    <filter string="Seller Package" name="seller_package" domain="[('seller_id','!=',False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Seller" name="groupby_seller" domain="[]" context="{'group_by': 'seller_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
         <record id="seller_product_packaging_action" model="ir.actions.act_window">
             <field name="name">Delivery Packages</field>
             <field name="res_model">product.packaging</field>

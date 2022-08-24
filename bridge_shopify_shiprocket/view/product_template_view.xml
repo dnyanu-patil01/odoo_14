@@ -11,7 +11,7 @@
             <xpath expr="//notebook" position='inside'>
                 <page string="Images">
                     <group string="Images Info" colspan="4">
-                        <field name="ept_image_ids" attrs="{'readonly':[('state','!=','draft')]}"
+                        <field name="ept_image_ids"
                             context="{'default_name': name,'default_template_id':id}"
                             mode="kanban" options="{'create_text':'Add a Media'}" nolabel="1">
                         </field>
@@ -21,20 +21,16 @@
         </field>
     </record>
 
-    <record id="view_product_template_form_inherit" model="ir.ui.view">
+    <!-- <record id="view_product_template_form_inherit" model="ir.ui.view">
         <field name="name">product.template.view.form.inherit</field>
         <field name="model">product.template</field>
-        <field name="inherit_id" ref="seller_management.view_product_template_form_inherit"/>
+        <field name="inherit_id" ref="seller_product_management.view_product_template_form_inherit"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='button_approve']" position="replace">
                 <button name="button_approve" confirm="If multiple products are selected, a maximum of 80 products
-                                        can be processed at a time.This Will Update Product Details In Shopify.Do You Want To Proceed?" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_management.group_product_approval"/>
+                                        can be processed at a time.This Will Update Product Details In Shopify.Do You Want To Proceed?" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_product_management.group_product_approval"/>
             </xpath>
         </field>
-    </record>
-    <!-- <record id="seller_management.action_approve_products" model="ir.actions.server">
-        <field name="code">
-        action = model.button_approve()
-        </field>
     </record> -->
+    
 </odoo>

@@ -341,11 +341,27 @@
                         <field name="seller_id" attrs="{'readonly':[('seller_id','!=',False)],'invisible': [('seller_id','=',False)]}"/>
                     </group>
             </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">
-                    <attribute name="options">{'no_create': true}</attribute>
-                    <attribute name="domain">[('state', '=', 'approve')]</attribute>
-            </xpath>
         </field>
     </record>
+
+    <record id="view_account_invoice_filter" model="ir.ui.view">
+        <field name="name">account.invoice.select.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="before">
+                <field name="seller_id" />
+            </field>
+            <xpath expr="//search/group/filter[@name='status']" position="after">
+                <filter string="Seller" name="group_by_seller_id" domain="[]" context="{'group_by':'seller_id'}"/>
+            </xpath>
+            <filter name="myinvoices" position="after">
+                <filter string="Seller Invoices"
+                            name="seller_invoices"
+                            domain="[('seller_id', '!=', False)]"/>
+            </filter>
+        </field>
+    </record>
+
 
 </odoo>

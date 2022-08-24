@@ -10,6 +10,24 @@ class StockPicking(models.Model):
 
     self_tracking_url = fields.Char("Tracking Link",copy=False)
 
+    def update_delivery_carrier(self):
+        '''popup wizard to update carrier after done state'''
+        picking_ids = False
+        if self.env.context.get('active_model') == 'stock.picking':
+            picking_ids = self.env.context.get('active_ids') or False
+        if not picking_ids:
+            ctx={'picking_ids':self.ids}
+        else:
+            ctx = {"picking_ids": picking_ids}
+        return {
+            "name": ("Update Delivery Carrier"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "update.delivery.carrier",
+            "target": "new",
+            "context":ctx,
+        }
+
 class ProviderShiprocket(models.Model):
     _inherit = "delivery.carrier"
 

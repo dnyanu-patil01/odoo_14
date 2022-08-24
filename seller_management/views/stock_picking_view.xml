@@ -13,7 +13,6 @@
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']/tree//field[@name='product_id']" position="attributes">
                     <attribute name="options">{'no_create': true}</attribute>
-                    <attribute name="domain">[('state', '=', 'approve')]</attribute>
             </xpath>
             <xpath expr="//button[@name='button_validate']" position="attributes">
                 <attribute name="groups">stock.group_stock_user,seller_management.group_sellers_management_user</attribute>               
@@ -37,6 +36,25 @@
                 <attribute name="groups">seller_management.group_show_no_backorder_button</attribute>               
             </xpath>
         </field> 
+    </record>
+    
+    <record id="view_picking_internal_search_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.search.inherit.delivery</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_type_id']" position="after">
+                <field name="seller_id" string="Seller"/>
+            </xpath>
+            <xpath expr="//filter[@name='my_transfers']" position="before">
+                <filter string="Seller Invoices"
+                            name="seller_invoices"
+                            domain="[('seller_id', '!=', False)]"/>            
+            </xpath>
+            <xpath expr="//filter[@name='picking_type']" position="before">
+                <filter string="Seller" name="group_by_seller_id" domain="[]" context="{'group_by':'seller_id'}"/>
+            </xpath>
+        </field>
     </record>
     
 </odoo>

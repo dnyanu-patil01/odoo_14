@@ -168,6 +168,17 @@
                 <button name="get_shiprocket_status" string="Get Status" type="object" attrs="{'invisible':[('is_manifest_generated','=',False)]}" />
                 <button name="shiprocket_print_manifest_request" string="Generate Manifest" type="object" attrs="{'invisible':[('manifest_url','=',False)]}" />
                 <button name="action_get_cancel_reason" Confirm="This will cancel your delivery order from shiprocket.Do you still want to proceed?" type="object" string="Cancel Order In Shiprocket" attrs="{'invisible':[('shiprocket_order_id','=',False)]}" />
+                <button name="update_delivery_carrier" string="Change Delivery Carrier" type="object" attrs="{'invisible':['|','|','|',('delivery_type','in', ['fixed', 'base_on_rule']),('delivery_type','=',False),('state','not in',('done')),('picking_type_code', '=', 'incoming')]}" groups="seller_management.group_sellers_management_manager"/> 
+            </xpath>
+        </field>
+    </record>
+    <record id="view_picking_for_shiprocket" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.delivery.shiprocket</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='send_to_shipper']" position="after">
+                <button name="update_delivery_carrier" string="Change Delivery Carrier" type="object" attrs="{'invisible':['|','|','|',('delivery_type','in', ['fixed', 'base_on_rule']),('delivery_type','=',False),('state','not in',('done')),('picking_type_code', '=', 'incoming')]}" groups="seller_management.group_sellers_management_manager"/> 
             </xpath>
         </field>
     </record>

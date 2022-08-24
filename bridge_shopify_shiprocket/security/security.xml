@@ -5,7 +5,7 @@
         <record id="seller_shiprocket_pickup_location_rule_user" model="ir.rule">
             <field name="name">Seller Shiprocket Pickup Location</field>
             <field ref="delivery_shiprocket.model_shiprocket_pickup_location" name="model_id" />
-            <field name="domain_force">[('seller_id','=',user.partner_id.id)]</field>
+            <field name="domain_force">[('seller_id','=',user.seller_id.id)]</field>
             <field name="groups" eval="[(4,ref('seller_management.group_sellers_management_user'))]" />
         </record>
         <record id="seller_shiprocket_pickup_location_rule_manager" model="ir.rule">

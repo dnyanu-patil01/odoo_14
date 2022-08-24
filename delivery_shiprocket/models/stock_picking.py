@@ -213,7 +213,13 @@ class StockPicking(models.Model):
         if response_data:
             self.write(response_data)
         if 'label_url' in response_data:
-            self.generate_attachment_pdf(response_data['label_url'],'Label')
+            url,attachment = self.generate_attachment_pdf(response_data['label_url'],'Label')
+            if url and attachment:
+                return {
+                "type": "ir.actions.act_url",
+                "url": url,
+                "target": "new",
+            }
         return True
 
     def shiprocket_print_manifest_request(self):
@@ -226,8 +232,14 @@ class StockPicking(models.Model):
         if response_data:
             self.write(response_data)
         if 'manifest_url' in response_data:
-            self.generate_attachment_pdf(response_data['manifest_url'],'Manifest')
-        return
+            url,attachment = self.generate_attachment_pdf(response_data['manifest_url'],'Manifest')
+            if url and attachment:
+                return {
+                "type": "ir.actions.act_url",
+                "url": url,
+                "target": "new",
+            }
+        return True
 
     def shiprocket_cancel_shipment(self):
         """To Cancel Order In Shiprocket"""
@@ -366,14 +378,20 @@ class StockPicking(models.Model):
         )
         if prev_attachment:
             prev_attachment.unlink()
-        attachment_id = Attachment.create({
+        attachment = Attachment.create({
         'name': attachment_name,
         'type': 'binary',
         'datas': base64.b64encode(response.content),
         'res_model': 'stock.picking',
         'res_id': self.id,
         })
-        return True
+        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+        # prepare download url
+        if attachment:
+            download_url = '/web/content/' + str(attachment.id) + '?download=true'
+            url = str(base_url) + str(download_url)
+            return url,attachment
+        return False,False
     
     def bulk_awb_creation_request(self,bulk_process):
         """Call To Bulk AWB Creation Process"""
@@ -553,4 +571,4 @@ class StockPicking(models.Model):
                 picking.message_post(body='No Package Details Found.Please Do Put In Pack Before Validate')
         need_to_remove_ids = list(set(need_to_remove_ids.ids)-set(single_picking_ids))
         need_to_process_picking_ids = list(set(picking_ids)-set(need_to_remove_ids))
-        return self.browse(need_to_process_picking_ids).button_validate()
+        return self.browse(need_to_process_picking_ids).button_validate()            

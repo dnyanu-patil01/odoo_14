@@ -113,3 +113,10 @@ class ResPartner(models.Model):
         ]
         action['context'] = {'default_seller_id':self.id}
         return action
+
+
+class ResUser(models.Model):
+    _inherit = "res.users"
+
+    seller_id = fields.Many2one('res.partner',copy=False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")
+

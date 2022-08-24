@@ -368,6 +368,24 @@
             </field>
         </record>
 
+        <record id="seller_view_sales_order_filter" model="ir.ui.view">
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <filter name="salesperson" position="before">
+                    <filter string="Seller" name="group_by_seller_id" domain="[]" context="{'group_by':'seller_id'}"/>
+                </filter>
+                <field name="partner_id" position="before">
+                    <field name="seller_id" />
+                </field>
+                <filter name="my_sale_orders_filter" position="after">
+                    <filter string="Seller Order"
+                            name="seller_order"
+                            domain="[('seller_id', '!=', False)]"/>
+                </filter>
+            </field>
+        </record>
+
         <record id="view_order_form" model="ir.ui.view">
             <field name="name">sale.order.form.inherit</field>
             <field name="model">sale.order</field>
@@ -381,10 +399,6 @@
                     <xpath expr="//field[@name='user_id']" position="before">
                         <field name="seller_shopify_sequence" string="Seller Shopify Sequence" readonly="1" attrs="{'invisible':[('seller_id','=',False)]}" />
                     </xpath>
-                    <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
-                        <attribute name="options">{'no_create': true}</attribute>
-                        <attribute name="domain">[('state', '=', 'approve')]</attribute>
-                    </xpath>
                 </data>
             </field>
         </record>
@@ -394,6 +408,8 @@
             <field name="res_model">sale.order</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('seller_id','!=',False)]</field>
+            <field name="search_view_id" ref="seller_view_sales_order_filter"/>
+            <field name="context">{'search_default_group_by_seller_id': True}</field>
             <field name="help" type="html">
                 <p>To Create New Seller's Sale Ordes</p>
             </field>
@@ -417,5 +433,7 @@
             parent="seller_root_menu"
             groups="seller_management.group_sellers_management_user"
             sequence="20"/>
+
+        
     </data> 
 </odoo>
