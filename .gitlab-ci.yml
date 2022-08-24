@@ -6,7 +6,7 @@ deploy_qa:
     - sudo mkdir -p /mnt/odoo-custom-14
     - sudo cp -r . /mnt/odoo-custom-14
     - sudo chown 101:101 -R /mnt/odoo-custom-14
-    - cd /opt/config && docker-compose restart web14 && if [[ "$(docker-compose ps | grep Up | wc -l)" < 2 ]] ; then exit 1; fi
+    - cd /opt/config && docker-compose restart odoo14 && if [[ "$(docker-compose ps | grep Up | wc -l)" < 2 ]] ; then exit 1; fi
   only:
     - master
   tags:
