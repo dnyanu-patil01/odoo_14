@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="invoice_report_wizard_view" model="ir.ui.view">
+            <field name="name">Invoice Report</field>
+            <field name="model">invoice.excel.report</field>
+            <field name="arch" type="xml">
+                <form>
+                   <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="seller_ids" widget="many2many_tags" groups="seller_management.group_sellers_management_manager"/>
+                   </group>
+                   <group>
+                        <field name="filedata" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button name="generate_xlsx" string="Generate Report" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_invoice_xls_report" model="ir.actions.act_window">
+            <field name="name">Invoice Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">invoice.excel.report</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="menu_invoice_excel_report_wizard" parent="seller_management.seller_report_root_menu" action="action_invoice_xls_report" sequence="40"/>
+    </data>
+</odoo>
