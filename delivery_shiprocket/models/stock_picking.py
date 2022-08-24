@@ -212,14 +212,20 @@ class StockPicking(models.Model):
         response_data = shiprocket._generate_label_request([shipping_id])
         if response_data:
             self.write(response_data)
-        if 'label_url' in response_data:
+        if 'response_comment' in response_data:
+            raise UserError(response_data['response_comment'])
+        url = False,
+        attachment = False
+        if self.label_url:
+            url,attachment = self.generate_attachment_pdf(self.label_url,'Label')
+        elif 'label_url' in response_data:
             url,attachment = self.generate_attachment_pdf(response_data['label_url'],'Label')
-            if url and attachment:
-                return {
-                "type": "ir.actions.act_url",
-                "url": url,
-                "target": "new",
-            }
+        if url and attachment:
+            return {
+            "type": "ir.actions.act_url",
+            "url": url,
+            "target": "new",
+        }
         return True
 
     def shiprocket_print_manifest_request(self):
@@ -231,14 +237,20 @@ class StockPicking(models.Model):
         self.get_shiprocket_status()
         if response_data:
             self.write(response_data)
-        if 'manifest_url' in response_data:
+        if 'response_comment' in response_data:
+            raise UserError(response_data['response_comment'])
+        url = False
+        attachment = False
+        if self.manifest_url:
+            url,attachment = self.generate_attachment_pdf(self.manifest_url,'Manifest')
+        elif 'manifest_url' in response_data:
             url,attachment = self.generate_attachment_pdf(response_data['manifest_url'],'Manifest')
-            if url and attachment:
-                return {
-                "type": "ir.actions.act_url",
-                "url": url,
-                "target": "new",
-            }
+        if url and attachment:
+            return {
+            "type": "ir.actions.act_url",
+            "url": url,
+            "target": "new",
+        }
         return True
 
     def shiprocket_cancel_shipment(self):
