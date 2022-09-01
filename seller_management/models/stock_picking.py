@@ -6,6 +6,8 @@ class StockPicking(models.Model):
     seller_id = fields.Many2one("res.partner",string="Seller",copy=False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")
     mobile = fields.Char(related="partner_id.mobile",readonly=True) 
     phone = fields.Char(related="partner_id.phone",readonly=True)
+    active = fields.Boolean('Active',default=True, help="If unchecked, it will allow you to hide the delivery order without removing it.")
+
 
     @api.model
     def create(self, vals):

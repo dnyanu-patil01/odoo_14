@@ -339,6 +339,7 @@
             <xpath expr="//div[hasclass('oe_title')]" position="after">
                     <group id="header_left_group">
                         <field name="seller_id" attrs="{'readonly':[('seller_id','!=',False)],'invisible': [('seller_id','=',False)]}"/>
+                        <field name="active" widget="boolean_toggle"/>
                     </group>
             </xpath>
         </field>
@@ -359,6 +360,8 @@
                 <filter string="Seller Invoices"
                             name="seller_invoices"
                             domain="[('seller_id', '!=', False)]"/>
+                <filter name="active" string="Active" domain="[('active','=',True)]" help="Show active invoice"/>
+                <filter name="inactive" string="Inactive" domain="[('active','=',False)]" help="Show inactive invoice"/>
             </filter>
         </field>
     </record>
