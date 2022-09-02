@@ -21,22 +21,22 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'change select[name="need_new_kanha_voter_id"]': '_onChangeNeedNewKanhaVoterID',
 		// Adhar File Front upload
 		'click .adhar_file_edit': '_onBrowseFile',
-		'change .adhar_file_upload': '_onFileUploadChange',
+		'change .adhar_file_upload': '_onUploadAdharFrontImage',
 		'click .adhar_file_browse': '_onBrowseFile',
 		'click .adhar_file_clear': '_onClearFile',
 		// Adhar File Back upload
 		'click .adhar_file_back_side_edit': '_onBrowseFile',
-		'change .adhar_file_back_side_upload': '_onFileUploadChange',
+		'change .adhar_file_back_side_upload': '_onUploadAdharBackImage',
 		'click .adhar_file_back_side_browse': '_onBrowseFile',
 		'click .adhar_file_back_side_clear': '_onClearFile',
 		// Age proof File upload
 		'click .age_proof_edit': '_onBrowseFile',
-		'change .age_proof_upload': '_onFileUploadChange',
+		'change .age_proof_upload': '_onUploadAgeProof',
 		'click .age_proof_browse': '_onBrowseFile',
 		'click .age_proof_clear': '_onClearFile',
 		// Address File upload
 		'click .address_proof_edit': '_onBrowseFile',
-		'change .address_proof_upload': '_onFileUploadChange',
+		'change .address_proof_upload': '_onUploadAddressProof',
 		'click .address_proof_browse': '_onBrowseFile',
 		'click .address_proof_clear': '_onClearFile',
 		// Indian Visa upload
@@ -539,8 +539,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var mimeType = file.type
 		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
-	  		if (fileSize > 2) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_front_image_filename").value = "";
 				document.getElementsByName("passport_front_iamge").value = "";
@@ -553,7 +553,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}
 		}
 		else{
-			Dialog.alert(null, "Accepts only JPEG images.");
+			Dialog.alert(null, "Accepts only image files.");
 		}
 	},
 
@@ -571,8 +571,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var mimeType = file.type
 		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
-	  		if (fileSize > 2) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_back_image_filename").value = "";
 				document.getElementsByName("passport_back_iamge").value = "";
@@ -585,7 +585,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}
 		}
 		else{
-			Dialog.alert(null, "Accepts only JPEG images.");
+			Dialog.alert(null, "Accepts only image files.");
 		}
 	},
 
@@ -603,8 +603,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var mimeType = file.type
 		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
-	  		if (fileSize > 2) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("indian_visa_filename").value = "";
 				document.getElementsByName("indian_visa").value = "";
@@ -617,7 +617,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}
 		}
 		else{
-			Dialog.alert(null, "Accepts only JPEG images.");
+			Dialog.alert(null, "Accepts only image files.");
 		}
 	},
 	
@@ -635,8 +635,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var mimeType = file.type
 		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
-	  		if (fileSize > 2) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_photo_filename").value = "";
 				document.getElementsByName("passport_photo").value = "";
@@ -649,7 +649,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}
 		}
 		else{
-			Dialog.alert(null, "Accepts only JPEG images.");
+			Dialog.alert(null, "Accepts only image files.");
 		}
 	},
 	
@@ -668,8 +668,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		// Accepts only file with extension in jpg and jpeg
 		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
-	  		if (fileSize > 2) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 2MB.");
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset
 	        	document.getElementsByName("declaration_form_filename").value = "";
 				document.getElementsByName("declaration_form").value = "";
@@ -682,7 +682,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}
 		}
 		else{
-			Dialog.alert(null, "Accepts only JPEG images.");
+			Dialog.alert(null, "Accepts only image files.");
 		}
 	},
 	
@@ -714,7 +714,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}
 		}
 		else{
-			Dialog.alert(null, "Accepts only JPEG images.");
+			Dialog.alert(null, "Accepts only image files.");
 		}
 	},
 	
@@ -746,7 +746,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			}
 		}
 		else{
-			Dialog.alert(null, "Accepts only JPEG images.");
+			Dialog.alert(null, "Accepts only image files.");
 		}
 	},
 	
@@ -773,6 +773,114 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var filename_input = $(ev.target).attr('filename_input')
 		$form.find('.'+filename_input).val(file_name);
     },
+
+	_onUploadAgeProof: function (ev) {
+		var files = ev.target.files;
+		if (!files.length) {
+            return;
+        }
+		var file = files[0]
+		var mimeType = file.type
+		if(mimeType.indexOf("image/") == 0){
+		  	var fileSize = file.size / 1024 / 1024; // in MiB
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				// Reset fields
+	        	document.getElementsByName("age_proof_filename").value = "";
+				document.getElementsByName("age_proof").value = "";
+			}
+			else{
+				var file_name = ev.target.files[0].name
+				var $form = $(ev.currentTarget).closest('form');
+				var filename_input = $(ev.target).attr('filename_input')
+				$form.find('.'+filename_input).val(file_name);
+			}
+		}
+		else{
+			Dialog.alert(null, "Accepts only image files.");
+		}
+	},
+
+	_onUploadAddressProof: function (ev) {
+		var files = ev.target.files;
+		if (!files.length) {
+            return;
+        }
+		var file = files[0]
+		var mimeType = file.type
+		if(mimeType.indexOf("image/") == 0){
+		  	var fileSize = file.size / 1024 / 1024; // in MiB
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				// Reset fields
+	        	document.getElementsByName("address_proof_filename").value = "";
+				document.getElementsByName("address_proof").value = "";
+			}
+			else{
+				var file_name = ev.target.files[0].name
+				var $form = $(ev.currentTarget).closest('form');
+				var filename_input = $(ev.target).attr('filename_input')
+				$form.find('.'+filename_input).val(file_name);
+			}
+		}
+		else{
+			Dialog.alert(null, "Accepts only image files.");
+		}
+	},
+
+	_onUploadAdharFrontImage: function (ev) {
+		var files = ev.target.files;
+		if (!files.length) {
+            return;
+        }
+		var file = files[0]
+		var mimeType = file.type
+		if(mimeType.indexOf("image/") == 0){
+		  	var fileSize = file.size / 1024 / 1024; // in MiB
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				// Reset fields
+	        	document.getElementsByName("adhar_card_filename").value = "";
+				document.getElementsByName("adhar_front").value = "";
+			}
+			else{
+				var file_name = ev.target.files[0].name
+				var $form = $(ev.currentTarget).closest('form');
+				var filename_input = $(ev.target).attr('filename_input')
+				$form.find('.'+filename_input).val(file_name);
+			}
+		}
+		else{
+			Dialog.alert(null, "Accepts only image files.");
+		}
+	},
+
+	_onUploadAdharBackImage: function (ev) {
+		var files = ev.target.files;
+		if (!files.length) {
+            return;
+        }
+		var file = files[0]
+		var mimeType = file.type
+		if(mimeType.indexOf("image/") == 0){
+		  	var fileSize = file.size / 1024 / 1024; // in MiB
+	  		if (fileSize > 5) {
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				// Reset fields
+	        	document.getElementsByName("adhar_card_back_side_filename").value = "";
+				document.getElementsByName("adhar_back").value = "";
+			}
+			else{
+				var file_name = ev.target.files[0].name
+				var $form = $(ev.currentTarget).closest('form');
+				var filename_input = $(ev.target).attr('filename_input')
+				$form.find('.'+filename_input).val(file_name);
+			}
+		}
+		else{
+			Dialog.alert(null, "Accepts only image files.");
+		}
+	},
  	
  	/**
      * @private
@@ -885,7 +993,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
 	/* saves a record */
 	_onSaveForm: function (e, is_submit) {
-		
+		//Show loading
+		$("#loading").removeClass('hide');
 		var $form = $(e.currentTarget).closest('form');
 		var self = this;
 		
@@ -975,6 +1084,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		// Post form and handle result
         ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
         .then(function (result_data) {
+			// Hide Loading
+	    	$("#loading").addClass('hide');
             // Restore Submit button behavior
             self.$target.find('.family_website_form_submit')
                 .removeAttr('disabled')
@@ -1007,18 +1118,19 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 								$(window.location).attr('href', successPage);
 							}   
 						    else {
+								$(window.location).attr('href', "/family/");
 						   		//let saveSuccessPage = $form[0].dataset.saveSuccessPage;
 								//$(window.location).attr('href', saveSuccessPage);
 								//location.reload()
 								
 								// Prevent users from crazy clicking
-						        self.$target.find('.family_website_form_save')
+						        /*self.$target.find('.family_website_form_save')
 						            .removeClass('disabled')    // !compatibility
 						            .attr('disabled', false);
 								self.$('#form_result_success').removeClass('d-none')
 								setTimeout(function(){
 									$(window.location).attr('href', "/website_form_family/"+result_data.id+"/res.partner");
-            					}, 1000);
+            					}, 1000);*/
 								//self.update_status('success', _t("The form has been saved successfully."));
 							}
                         }

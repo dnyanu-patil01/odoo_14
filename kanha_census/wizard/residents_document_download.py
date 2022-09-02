@@ -17,7 +17,7 @@ class ResidentsDocumentDownload(models.TransientModel):
                         SELECT id
                           FROM ir_attachment
                          WHERE res_id IN %s AND res_field IN 
-                         ('adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo')
+                         ('adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo', 'passport_front_image', 'passport_back_image', 'indian_visa')
                     """, [tuple(partner_ids)])
             ir_attachments = self.env.cr.fetchall()
         else:

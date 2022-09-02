@@ -377,12 +377,15 @@ class CustomerPortal(CustomerPortal):
             'partner': partner,
             'is_kanha_voter_info_required': is_kanha_voter_info_required
         })
-        response = request.render("kanha_census.kanha_family_portal_form", values)
+        if partner.citizenship == 'Indian':
+            response = request.render("kanha_census.kanha_family_portal_form_indian", values)
+        else:
+            response = request.render("kanha_census.kanha_family_portal_form_overseas", values)
         response.headers['X-Frame-Options'] = 'DENY'
         return response
     
-    @http.route(['/add_family_members'], type='http', auth="public", website=True)
-    def add_family_members(self, redirect=None, **post):
+    @http.route(['/add_family_members_indian'], type='http', auth="public", website=True)
+    def add_family_members_indian(self, redirect=None, **post):
         values = self.get_default_values_for_kanha()
         current_partner = request.env.user.partner_id
         values.update({
@@ -391,7 +394,34 @@ class CustomerPortal(CustomerPortal):
             'relative_surname': current_partner.surname,
             'relative_name': current_partner.name,
         })
-        response = request.render("kanha_census.kanha_family_portal_form", values)
+        response = request.render("kanha_census.kanha_family_portal_form_indian", values)
+        return response
+    
+    @http.route(['/add_family_members_overseas'], type='http', auth="public", website=True)
+    def add_family_members_overseas(self, redirect=None, **post):
+        values = self.get_default_values_for_kanha()
+        current_partner = request.env.user.partner_id
+        values.update({
+            'partner': None,
+            'surname': current_partner.surname,
+            'relative_surname': current_partner.surname,
+            'relative_name': current_partner.name,
+            'is_overseas': True
+        })
+        response = request.render("kanha_census.kanha_family_portal_form_overseas", values)
+        return response
+    
+    @http.route(['/select_citizen'], type='http', auth="public", website=True)
+    def select_citizen(self, redirect=None, **post):
+        values = self.get_default_values_for_kanha()
+        current_partner = request.env.user.partner_id
+        values.update({
+            'partner': None,
+            'surname': current_partner.surname,
+            'relative_surname': current_partner.surname,
+            'relative_name': current_partner.name,
+        })
+        response = request.render("kanha_census.selection_form_view", values)
         return response
     
     def get_default_values_for_kanha(self, partner_id=None):
@@ -481,7 +511,7 @@ class CustomerPortal(CustomerPortal):
                     SELECT id
                       FROM ir_attachment
                      WHERE res_id IN %s AND res_field IN 
-                     ('adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo')
+                     ('adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo', 'passport_front_image', 'passport_back_image','indian_visa')
                 """, [tuple(res_partner.ids)])
             ir_attachments = request.env.cr.fetchall()
             attachments = request.env["ir.attachment"].search([('id','in', ir_attachments)])
