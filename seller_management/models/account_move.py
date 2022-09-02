@@ -4,6 +4,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     seller_id = fields.Many2one("res.partner",'Seller',index=True, copy=False,domain="[('seller','=',True),('active','=',True),('parent_id','=',False)]")
+    active = fields.Boolean('Active',default=True, help="If unchecked, it will allow you to hide the invoice without removing it.")
 
     def get_sale_order_data(self):
         for rec in self:

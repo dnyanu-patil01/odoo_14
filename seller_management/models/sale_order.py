@@ -7,6 +7,8 @@ class SaleOrder(models.Model):
     seller_shopify_sequence = fields.Char(readonly=True)
     mobile = fields.Char(related="partner_shipping_id.mobile",readonly=True) 
     phone = fields.Char(related="partner_shipping_id.phone",readonly=True)
+    active = fields.Boolean('Active',default=True, help="If unchecked, it will allow you to hide the sale order without removing it.")
+
 
     @api.model
     def create(self, vals):
