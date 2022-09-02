@@ -8,7 +8,7 @@
             <form string="Residents Document Download">
             	<group>
                     <group>
-                         <field name="partner_ids" widget="many2many_tags" domain="['|',('need_new_kanha_voter_id','=', 'Yes'),('change_voter_id_address','=','Yes')]" options="{'no_create': True}"/>
+                         <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
                     </group>
                 </group>
                 <footer>
