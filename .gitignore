@@ -1,2 +1,14 @@
-# ignore all .pyc files
+
 *.pyc
+*~
+.project
+.pydevproject
+.settings
+**.sw*
+*.zip
+.*.sw*
+*.DS_Store
+.vscode
+.idea
+
+
