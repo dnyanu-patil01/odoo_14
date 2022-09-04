@@ -537,7 +537,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0]
 		var mimeType = file.type
-		if(mimeType == 'image/jpeg'){
+		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -569,7 +569,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0]
 		var mimeType = file.type
-		if(mimeType == 'image/jpeg'){
+		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -601,7 +601,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0]
 		var mimeType = file.type
-		if(mimeType == 'image/jpeg'){
+		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -633,7 +633,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0]
 		var mimeType = file.type
-		if(mimeType == 'image/jpeg'){
+		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -666,7 +666,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var file = files[0];
 		var mimeType = file.type
 		// Accepts only file with extension in jpg and jpeg
-		if(mimeType == 'image/jpeg'){
+		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -698,7 +698,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0];
 		var mimeType = file.type
-		if(mimeType == 'image/jpeg'){
+		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -730,7 +730,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0];
 		var mimeType = file.type
-		if(mimeType == 'image/jpeg'){
+		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
