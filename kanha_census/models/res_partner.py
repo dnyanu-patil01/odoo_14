@@ -2,6 +2,8 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import fields, models
+from datetime import date, timedelta
+
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -114,8 +116,27 @@ class ResPartner(models.Model):
     passport_back_image = fields.Image(string="Passport Back Image", attachment=True)
     passport_back_image_filename = fields.Char()
     residents_documents_downloads_history_id = fields.Many2one('residents.documents.downloads.history','Residents Documents Downloads History') 
+    visa_start_date = fields.Date(string='Visa Start Date')
+    visa_end_date = fields.Date(string='Visa End Date')
+    visa_type = fields.Selection([
+        ('Employment', 'Employment'),
+        ('Tourist', 'Tourist'),
+        ('Transit', 'Transit'),
+        ('Business', 'Business'),
+        ('Medical', 'Medical'),
+    ])
 
     
-    # _sql_constraints = [
-    #     ('aadhaar_card_number_unique', 'UNIQUE(aadhaar_card_number)', 'An Aadhar Card Number must be unique!'),
-    # ]
+    def mail_reminder(self):
+        """
+        Cron to send email regarding the Visa expiry
+        """
+        template = self.env.ref('kanha_census.mail_template_visa_reminder')
+        today = date.today()
+        weekday = today.weekday()
+        week_start_date = today - timedelta(days=weekday)
+        week_end_date = today + timedelta(days=(6 - weekday))
+        ResPartner = self.env['res.partner']
+        partners = ResPartner.sudo().search([('visa_end_date', '>=', week_start_date), ('visa_end_date', '<=', week_end_date)])
+        for partner in partners:
+            template.send_mail(partner.id, force_send=True)

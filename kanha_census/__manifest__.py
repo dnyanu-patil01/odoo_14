@@ -13,6 +13,7 @@
         'security/ir.model.access.csv',
         'data/website_data.xml',
         'data/kanha_data.xml',
+        'data/mail_data.xml',
         'views/portal_templates.xml',
         'views/assets.xml',
         'views/kanha_location_view.xml',

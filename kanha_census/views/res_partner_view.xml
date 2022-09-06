@@ -24,6 +24,8 @@
 								<field name="aadhaar_card_number" widget="Encrypted" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
 								<field name="abhyasi_id" readonly="1"/>
 								<field name="residence_type" readonly="1"/>
+								<field name="visa_type" readonly="1"/>
+								
 							</group>
 							<group>
 								<field name="surname" readonly="1"/>
@@ -32,6 +34,9 @@
 								<field name="citizenship" readonly="1"/>
 								<field name="passport_number" widget="Encrypted"  attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 								<field name="members_count" readonly="1"/>
+								<field name="visa_start_date" readonly="1"/>
+								<field name="visa_end_date" readonly="1"/>
+								
 							</group>
 						</group>
 						<notebook>

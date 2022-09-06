@@ -11,6 +11,7 @@ import os
 from io import BytesIO
 import shutil
 import tempfile
+from datetime import date, datetime, timedelta
 
 
 class Website(Website):
@@ -153,6 +154,20 @@ class CustomerPortal(CustomerPortal):
             if not is_valid:
                 error["mobile"] = _('Invalid Mobile Number!')
                 error_message.append(_('Invalid Mobile Number!')) 
+                
+        # Date of Birth validation
+        if data.get('date_of_birth'):
+            is_valid = self.is_valid_date(data.get('date_of_birth'))
+            if not is_valid:
+                error["date_of_birth"] = _('You cannot enter a date in the future for Date of Birth !')
+                error_message.append(_('You cannot enter a date in the future for Date of Birth!'))             
+        
+        # Resident of kanha from date validation
+        if data.get("resident_of_kanha_from_date"):
+            is_valid = self.is_valid_date(data.get('resident_of_kanha_from_date'))
+            if not is_valid:
+                error["resident_of_kanha_from_date"] = _('You cannot enter a date in the future for Resident of kanha from date!')
+                error_message.append(_('You cannot enter a date in the future for Resident of kanha from date!'))      
         
         return error, error_message
 
@@ -188,14 +203,26 @@ class CustomerPortal(CustomerPortal):
         #    1.Begins with 0 or 91
         #    2.Then contains 7 or 8 or 9.
         #    3.Then contains 9 digits
-        pattern = re.compile("(0/91)?[6-9][0-9]{9}")
-        if pattern.match(mobile_number):
+        # pattern = re.compile("(0|91)?[6-9][0-9]{9}")
+        pattern = re.compile("(0/91)?[7-9][0-9]{9}")
+        if pattern.match(mobile_number) and len(mobile_number) == 10:
+            return True
+        else:
+            return False
+        
+    def is_valid_date(self, date_val):
+        # Validate date value should not be more than today's date
+                        
+        date_val = datetime.strptime(date_val, "%Y-%m-%d")
+        present = datetime.now()
+        if(date_val.date() <= present.date()):
             return True
         else:
             return False
 
     @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="user", methods=['POST'], website=True)
     def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
+        
         request.params.pop('csrf_token', None)
         is_submit = post.get("is_submit")
         post.pop("is_submit")
@@ -211,6 +238,9 @@ class CustomerPortal(CustomerPortal):
             if not error or is_submit == 'false':
                 # Prepares File fields
                 for field_name, field_value in post.items():
+                    print(field_name)
+                    if field_name == 'address_proof[7][0]':
+                        print("test")
                     # If the value of the field if a file
                     if hasattr(field_value, 'filename'):
                         # Undo file upload field name indexing
@@ -553,4 +583,3 @@ class CustomerPortal(CustomerPortal):
             cache_timeout=3,
             filename=_("Documents.zip"),
         )
-

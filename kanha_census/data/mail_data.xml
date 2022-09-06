@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	 <!-- Visa Reminder Mail Scheduler -->
+    <record model="ir.cron" id="expire_visa_cron">
+        <field name="name">Visa Expiration</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model.mail_reminder()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="True"/>
+    </record>
+	
+    <!-- Visa Reminder Mail Template -->
+	<record id="mail_template_visa_reminder" model="mail.template">
+		<field name="name">Visa Expiration Mail</field>
+		<field name="model_id" ref="kanha_census.model_res_partner" />
+		<field name="email_from">${object.company_id.email}</field>
+		<field name="email_to">${object.email}</field>
+		<field name="subject">Remainder about Visa expiry</field>
+		<field name="body_html"><![CDATA[
+		<p>Hello ${object.name},<br/><br/></p>
+	    <p>
+	       Your Visa is about to expire on ${object.visa_end_date}.
+	    </p>
+		
+      ]]></field>
+	</record>
+</odoo>
