@@ -122,6 +122,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'change #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
 		'keypress #relative_aadhaar_card_number_field': '_insertCardNumberBlankSpace',
 		'change #relative_aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+		'keypress #pan_card_number_id': '_restrictSpecialCharacter',
+		'keydown #pan_card_number_id': '_restrictSpecialCharacter',
+		'keypress #mobile_number_id': '_restrictSpecialCharacter',
+		'keydown #mobile_number_id': '_restrictSpecialCharacter',
 		
     },
  
@@ -153,13 +157,22 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		ev.preventDefault();
 	},
 	
+	_restrictSpecialCharacter(e) {  
+	    var k;  
+	    document.all ? k = e.keyCode : k = e.which;  
+	    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8 || k == 32 || (k >= 48 && k <= 57));  
+	},  
+	
 	/**
      * Insert blank space after every 4 digits
      *
      * @private
      */
 	_insertCardNumberBlankSpace: function (e) {
+		var restrictSpecialChar = this._restrictSpecialCharacter(e)
   		e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+		return restrictSpecialChar;
+
 	},
 
 	_onChangeRelationType: function (ev) {
@@ -537,7 +550,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0]
 		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
+		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -569,7 +582,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0]
 		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
+		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -601,7 +614,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0]
 		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
+		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -633,7 +646,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0]
 		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
+		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -666,7 +679,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var file = files[0];
 		var mimeType = file.type
 		// Accepts only file with extension in jpg and jpeg
-		if(mimeType.indexOf("image/") == 0){
+		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -698,7 +711,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0];
 		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
+		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
@@ -730,7 +743,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		var file = files[0];
 		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
+		if(mimeType == 'image/jpeg'){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
 				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");

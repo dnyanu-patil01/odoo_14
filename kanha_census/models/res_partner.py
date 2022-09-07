@@ -20,7 +20,6 @@ class ResPartner(models.Model):
     birth_town = fields.Char(string='Birth Town', required=True)
     birth_district = fields.Char(string='Birth District', required=True)
     birth_country_id = fields.Many2one('res.country', string="Birth Country", default=lambda self: self.env['res.country'].search([('code','=','IN')]))
-
     birth_state_id = fields.Many2one("res.country.state", string='Birth State')
     relation_other = fields.Char(string="Other Relative")
     relation_type = fields.Selection([
@@ -95,17 +94,12 @@ class ResPartner(models.Model):
     kanha_voter_id_image_filename = fields.Char()
     kanha_voter_id_back_image = fields.Binary('Voter ID Back Image', attachment=True, required=True)
     kanha_voter_id_back_image_filename = fields.Char()
-    
-    # voter_id_file = fields.Binary('Voter ID/EPIC File', attachment=True, required=True)
-    # voter_id_file_filename = fields.Char()
     declaration_form = fields.Binary('Declaration Form File', attachment=True, required=True)
     declaration_form_filename = fields.Char()
-
     need_new_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Need New Voter ID")
-
     state = fields.Selection([
         ('saved_not_submitted', 'Saved Not Submitted'),
         ('submitted', 'Submitted'),
@@ -126,7 +120,6 @@ class ResPartner(models.Model):
         ('Medical', 'Medical'),
     ])
 
-    
     def mail_reminder(self):
         """
         Cron to send email regarding the Visa expiry
@@ -138,5 +131,16 @@ class ResPartner(models.Model):
         week_end_date = today + timedelta(days=(6 - weekday))
         ResPartner = self.env['res.partner']
         partners = ResPartner.sudo().search([('visa_end_date', '>=', week_start_date), ('visa_end_date', '<=', week_end_date)])
+        all_partner_data = []
         for partner in partners:
-            template.send_mail(partner.id, force_send=True)
+            partner_data={}
+            partner_data['name'] =  partner.name
+            partner_data['visa_end_date'] = partner.visa_end_date
+            all_partner_data.append(partner_data)
+        ctx = dict(self.env.context)
+        ctx['data'] = [{"all_partner_data": all_partner_data}]
+        ctx['subject'] = "Remainder about Visa expiry"
+        ctx['email_to'] = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
+        ctx['email_from'] = self.env.user.company_id.email
+        if template:
+            template.with_context(ctx).send_mail(self.id, force_send=True)

@@ -15,17 +15,35 @@
 	
     <!-- Visa Reminder Mail Template -->
 	<record id="mail_template_visa_reminder" model="mail.template">
-		<field name="name">Visa Expiration Mail</field>
-		<field name="model_id" ref="kanha_census.model_res_partner" />
-		<field name="email_from">${object.company_id.email}</field>
-		<field name="email_to">${object.email}</field>
-		<field name="subject">Remainder about Visa expiry</field>
-		<field name="body_html"><![CDATA[
-		<p>Hello ${object.name},<br/><br/></p>
-	    <p>
-	       Your Visa is about to expire on ${object.visa_end_date}.
-	    </p>
-		
-      ]]></field>
+	    <field name="name">Visa Expiration Mail 1</field>
+	    <field name="model_id" ref="kanha_census.model_res_partner"/>
+	    <field name="email_from">${ctx['email_from']}</field>
+	    <field name="email_to">${ctx['email_to']}</field>
+	    <field name="subject">${ctx['subject']}</field>
+	    <field name="body_html" type="html">
+      		<p>Hello,</p>
+		    <p>
+		       The following residents's visa is about to expire this week
+		    </p>
+			<table style="width:100%; border: 1px solid black;border-collapse: collapse;">
+				<tr>
+		    		<th style="border: 1px solid black;border-collapse: collapse;">Resident Name</th>
+		    		<th style="border: 1px solid black;border-collapse: collapse;">Visa End Date</th> 
+		  		</tr>
+				  	% set data = ctx['data']
+				   	% for data in data:
+			       		% set all_partner_data = data['all_partner_data']
+		 		   	%for partner in all_partner_data:
+						<tr>
+							<td style="border: 1px solid black;border-collapse: collapse;">${partner['name']}</td>
+						  	<td style="border: 1px solid black;border-collapse: collapse;">${partner['visa_end_date']}</td>
+						</tr>
+		 				% endfor
+		 		 	% endfor
+			</table>
+     	</field>
 	</record>
+	
+	<function model="ir.config_parameter" name="set_param" eval="('email_recipients', '')" />
+	
 </odoo>

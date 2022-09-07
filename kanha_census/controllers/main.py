@@ -11,7 +11,7 @@ import os
 from io import BytesIO
 import shutil
 import tempfile
-from datetime import date, datetime, timedelta
+from datetime import datetime
 
 
 class Website(Website):
@@ -39,9 +39,6 @@ class CustomerPortal(CustomerPortal):
                              "application_type",
                              "declaration_form",
                              "declaration_form_filename",
-                            #  "existing_voter_id_number",
-                            #  "voter_id_file",
-                            #  "voter_id_file_filename",
                              "relation_type",
                              "relative_aadhaar_card_number",
                              "relative_name",
@@ -57,25 +54,21 @@ class CustomerPortal(CustomerPortal):
                                 "post_office",
                                 "zip"]
 
-    
+
     @http.route(['/family', '/family/page/<int:page>'], type='http', auth="user", website=True)
-    def partner_list(self, page=1, **kw):
+    def partner_list(self, page=1, search='', **kw):
         values = {}
         current_partner = request.env.user.partner_id
-        # current_user_id = request.env.uid
         ResPartner = request.env['res.partner']
-        # If Fetch logged in partner's family members
-        # if current_partner.aadhaar_card_number:
-        #     domain = [ '|', ('id', '=', current_partner.id), '|',  ('create_uid', '=', current_user_id), ('relative_aadhaar_card_number', '=', current_partner.aadhaar_card_number)]
-        # else:
-        #     domain = ['|', ('id', '=', current_partner.id), ('create_uid', '=', current_user_id)]
         
         # Fetch logged in partner's family members based on Kanha House no.
         if(current_partner.kanha_house_number):
             domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number', '=', current_partner.kanha_house_number)]
         else:
             domain = [('id', '=', current_partner.id)]
-
+        if search:
+            subdomains = [('name', 'ilike', search)]
+            domain = domain+subdomains
         
         # For admin user display all partner records
         if request.env.is_admin():
@@ -98,6 +91,7 @@ class CustomerPortal(CustomerPortal):
             'page_name': 'family',
             'pager': pager,
             'default_url': '/family',
+            'search': search
         })
         return request.render("kanha_census.portal_my_family_members", values)
 
@@ -140,14 +134,7 @@ class CustomerPortal(CustomerPortal):
             if not is_valid:
                 error["aadhar_card_number"] = _('Invalid Relative Aadhar Number!')
                 error_message.append(_('Invalid Relative Aadhar Number!'))               
-        
-        #     # Aadhar card exist
-        #     ResPartner = request.env['res.partner']
-        #     is_adhar_exsist = ResPartner.search([('aadhaar_card_number', '=', relative_aadhaar_card_number)])
-        #     if(not is_adhar_exsist): 
-        #         error["relative_aadhaar_card_number"] = _('Given Relative Aadhar Number does not exist!')
-        #         error_message.append(_('Given Relative Aadhar Number does not exist!'))              
-        
+
         # Mobile number validation
         if data.get('mobile'):
             is_valid = self.is_valid_mobile_number(data.get('mobile'))
@@ -237,10 +224,8 @@ class CustomerPortal(CustomerPortal):
                 error, error_message = self.kanha_portal_form_validate(post, partner_id)
             if not error or is_submit == 'false':
                 # Prepares File fields
-                for field_name, field_value in post.items():
-                    print(field_name)
-                    if field_name == 'address_proof[7][0]':
-                        print("test")
+                post_vals = post.copy()
+                for field_name, field_value in post_vals.items():
                     # If the value of the field if a file
                     if hasattr(field_value, 'filename'):
                         # Undo file upload field name indexing
@@ -288,6 +273,10 @@ class CustomerPortal(CustomerPortal):
                     values['date_of_birth'] = False
                 if(values.get("resident_of_kanha_from_date") == ''):
                     values['resident_of_kanha_from_date'] = False
+                if(values.get("visa_start_date") == ''):
+                    values['visa_start_date'] = False
+                if(values.get("visa_end_date") == ''):
+                    values['visa_end_date'] = False
                        
                 # Prepare Many2One values
                 many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id']
@@ -304,12 +293,10 @@ class CustomerPortal(CustomerPortal):
                                   'adhar_card_back_side',
                                   'passport_photo',
                                   'indian_visa',
-                                #  'passport_id_image',
                                   'passport_front_image',
                                   'passport_back_image',
                                   'age_proof',
                                   'address_proof',
-                                #   'voter_id_file',
                                   'declaration_form',
                                   'kanha_voter_id_back_image',
                                   'kanha_voter_id_image']) & set(values.keys()):
@@ -375,7 +362,6 @@ class CustomerPortal(CustomerPortal):
                 else:
                     # creates new partner record
                     partner = ResPartner.sudo().create(values)
-                    # partner = newly_created_partner
                     # Links family members
                     if(relative_partner):
                         partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
@@ -395,10 +381,6 @@ class CustomerPortal(CustomerPortal):
         ResPartner = request.env['res.partner']
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
         values = self.get_default_values_for_kanha(partner_id)
-        #  is_relation_required = False
-        # current_partner = request.env.user.partner_id
-        # if current_partner.id != partner_id:
-        #     is_relation_required = True
         is_kanha_voter_info_required = True
         if partner.citizenship == 'Overseas':
             is_kanha_voter_info_required = False
@@ -498,20 +480,12 @@ class CustomerPortal(CustomerPortal):
                 values['application_type'] = ''   
                 values['declaration_form'] = ''   
                 values['declaration_form_filename'] = ''   
-                # values['existing_voter_id_number'] = ''  
-                # values['voter_id_file'] = ''  
-                # values['voter_id_file_filename'] = ''  
-            # if(values.get('application_type') == 'New Application'):
-            #     # values['existing_voter_id_number'] = ''  
-            #     # values['voter_id_file'] = ''  
-            #     values['voter_id_file_filename'] = '' 
             if(values.get('application_type') == 'Transfer Application'): 
                 values['declaration_form'] = ''   
                 values['declaration_form_filename'] = '' 
 
     def zip(self, path, ziph):
         """Zip the directory"""
-        
         # ziph is a zipfile handle
         for root, dirs, files in os.walk(path):
             for file in files:
@@ -522,7 +496,6 @@ class CustomerPortal(CustomerPortal):
 
     @http.route("/web/attachment/download_zip", type="http", auth="user")
     def download_zip(self, partner_ids=None):
-        
         #create complete filepath of temp directory in the name of Documents
         root_temp_dir_path = os.path.join(tempfile.gettempdir(), 'Documents')
         # Delete if this Temp folder already exists
@@ -530,12 +503,9 @@ class CustomerPortal(CustomerPortal):
             shutil.rmtree(root_temp_dir_path)
         # Creates temp dir
         os.makedirs(root_temp_dir_path)
-        
         filestream=BytesIO()
-        
         partner_ids = map(int, partner_ids.split(","))
         res_partners = request.env['res.partner'].browse(partner_ids)
-        
         for res_partner in res_partners:
             request.env.cr.execute("""
                     SELECT id
@@ -545,17 +515,13 @@ class CustomerPortal(CustomerPortal):
                 """, [tuple(res_partner.ids)])
             ir_attachments = request.env.cr.fetchall()
             attachments = request.env["ir.attachment"].search([('id','in', ir_attachments)])
-            
             partner_name = res_partner.name+"-"+str(res_partner.id)
             # Create temp dir in the name of partner inside a root dir
             partner_temp_dir = os.path.join(root_temp_dir_path, partner_name)
-            
             # Delete if the Temp folder already exists
             if os.path.exists(partner_temp_dir):
                 shutil.rmtree(partner_temp_dir)
-            
             os.makedirs(partner_temp_dir)
-            
             for attachment in attachments:
                 mimetype = attachment.mimetype.split("/")[-1]
                 extension = "."+mimetype
@@ -564,7 +530,6 @@ class CustomerPortal(CustomerPortal):
                 for line in open(attachment._full_path(attachment.store_fname), 'rb').readlines():    
                     file.write(line)
                 file.close()    
-           
         # Create a ZipFile Object        
         with zipfile.ZipFile(filestream, mode='w', compression=zipfile.ZIP_DEFLATED) as zipf:
             self.zip(root_temp_dir_path, zipf)
@@ -575,7 +540,6 @@ class CustomerPortal(CustomerPortal):
             'downloaded_datetime':fields.Datetime.now(),
             'partner_ids':[(6, 0, res_partners.ids)]
         })
-
         return  http.send_file(
             filepath_or_fp=filestream,
             mimetype="application/zip",

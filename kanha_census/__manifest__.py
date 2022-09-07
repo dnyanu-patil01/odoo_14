@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Kanha Census',
+    'name': 'Kanha Census Residents Portal',
     'version': '1.0',
     'summary': 'Allows Portal user to add and update the Family members details',
     'description': """

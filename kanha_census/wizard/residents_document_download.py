@@ -1,7 +1,5 @@
 from odoo import models, _, fields
 from odoo.exceptions import MissingError
-from werkzeug.urls import url_encode
-
 
 
 class ResidentsDocumentDownload(models.TransientModel):
