@@ -29,6 +29,10 @@ class SetPrice(models.TransientModel):
     def change_product_price(self):
         """ Changes the Product Price by creating/editing corresponding pricelist.
         """
+        if self.product_variant_count == 1:
+            self.product_tmpl_id.write({'list_price':self.new_price})
+        else:
+            self.product_id.write({'lst_price':self.new_price})
         shopify_product_tmpl_id = self.env['shopify.product.template.ept'].search([('product_tmpl_id','=',self.product_tmpl_id.id)])
         if shopify_product_tmpl_id:
             import_product_obj = self.env['shopify.process.import.export'].create({
