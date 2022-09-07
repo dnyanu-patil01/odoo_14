@@ -60,32 +60,27 @@
                                     <field name="l10n_in_hsn_description" />
                                 </group>
                                 <group name="group_standard_price">
-                                    <label for="list_price" string="Prices"/>
-                                    <div name="pricing">
-                                      <field name="list_price" invisible="1" class="oe_inline" widget='monetary'
-                                        options="{'currency_field': 'currency_id', 'field_digits': True}"/>
-                                      <button name="open_seller_pricelist_rules" icon="fa-arrow-right" type="object" class="oe_inline">
-                                        <field name="pricelist_item_count" attrs="{'invisible': [('pricelist_item_count', '=', 0)]}"/>
-                                        <span attrs="{'invisible': [('pricelist_item_count', '=', 1)]}">
-                                          View Prices
-                                        </span>
-                                        <span attrs="{'invisible': [('pricelist_item_count', '!=', 1)]}">
-                                          View Price
-                                        </span>
-                                      </button>
-                                    </div>
-                                    <label for="standard_price" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}"/>
-                                    <div name="standard_price_uom" groups="base.group_user" attrs="{'invisible': [('product_variant_count', '&gt;', 1), ('is_product_variant', '=', False)]}" class="o_row">
-                                        <field name="standard_price" widget="monetary" options="{'currency_field': 'cost_currency_id', 'field_digits': True}" />
-                                        <span groups="uom.group_uom" class="oe_read_only">per
-                                            <field name="uom_name" options="{'no_open':True}" />
-                                        </span>
-                                    </div>
                                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" />
                                     <field name="taxes_id" widget="many2many_tags" options="{'no_create': True,'no_open':True}" />
                                     <field name="currency_id" invisible="1"/>
                                     <field name="cost_currency_id" invisible="1"/>
                                     <field name="product_variant_id" invisible="1"/>
+                                </group>
+                            </group>
+                            <group name="pricing" string="Prices">
+                                <group>
+                                    <field nolabel="1" name="product_price_line" widget="one2many" readonly="1">
+                                        <tree>
+                                            <field name="product_id" string="Product"/>
+                                            <field name="fixed_price" string="Price"/>
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <field name="product_id" string="Product"  options="{'no_create': True,'no_open':True}" readonly="1"/>
+                                                <field name="fixed_price" string="Price" readonly="1"/>
+                                            </group>
+                                        </form>
+                                    </field>
                                 </group>
                             </group>
                             <group name='internal_notes' string="Internal Notes">

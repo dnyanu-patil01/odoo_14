@@ -60,6 +60,10 @@ class ProductChangeQuantity(models.TransientModel):
         warehouse = self.env['stock.warehouse'].search(
             [('company_id', '=', self.env.company.id)], limit=1
         )
+        shopify_product_tmpl_id = self.env['shopify.product.template.ept'].search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)])
+        if shopify_product_tmpl_id:
+            import_product_obj = self.env['shopify.process.import.export'].create({})
+            import_product_obj.with_context({'active_ids':shopify_product_tmpl_id.ids}).sudo().shopify_selective_product_stock_export()
         self.env['stock.quant'].with_context(inventory_mode=True).create({
             'product_id': self.product_id.id,
             'location_id': warehouse.lot_stock_id.id,

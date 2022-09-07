@@ -11,6 +11,7 @@ class ProductTemplate(models.Model):
     rejection_reason = fields.Text('Reason For Rejection')
     #added to make storable type as default
     type = fields.Selection(selection_add=[],default="product")
+    product_price_line = fields.One2many("product.pricelist.item","product_tmpl_id","Prices")
 
     # def button_approve(self):
     #     return self.write({'state': 'approve'})
