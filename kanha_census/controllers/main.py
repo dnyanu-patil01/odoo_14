@@ -63,7 +63,7 @@ class CustomerPortal(CustomerPortal):
         
         # Fetch logged in partner's family members based on Kanha House no.
         if(current_partner.kanha_house_number):
-            domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number', '=', current_partner.kanha_house_number)]
+            domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number', '=', current_partner.kanha_house_number),('kanha_location_id','=',current_partner.kanha_location_id.id)]
         else:
             domain = [('id', '=', current_partner.id)]
         if search:
@@ -156,6 +156,21 @@ class CustomerPortal(CustomerPortal):
                 error["resident_of_kanha_from_date"] = _('You cannot enter a date in the future for Resident of kanha from date!')
                 error_message.append(_('You cannot enter a date in the future for Resident of kanha from date!'))      
         
+        # Resident of kanha from date validation
+        if data.get("visa_start_date"):
+            is_valid = self.is_valid_date(data.get('visa_start_date'))
+            if not is_valid:
+                error["visa_start_date"] = _('You cannot enter a date in the future for Visa Start date!')
+                error_message.append(_('You cannot enter a date in the future for Visa Start date!'))      
+
+        # Resident of kanha from date validation
+        if data.get("visa_end_date"):
+            is_valid = self.is_valid_future_date(data.get('visa_end_date'))
+            if not is_valid:
+                error["visa_end_date"] = _('You cannot enter a date in the future for Resident of kanha from date!')
+                error_message.append(_('You cannot enter a date in the future for Resident of kanha from date!'))      
+
+
         return error, error_message
 
     def is_valid_pan_number(self, pan_number):
@@ -207,6 +222,16 @@ class CustomerPortal(CustomerPortal):
         else:
             return False
 
+    def is_valid_future_date(self, date_val):
+        # Validate date value should not be more than today's date
+                        
+        date_val = datetime.strptime(date_val, "%Y-%m-%d")
+        present = datetime.now()
+        if(date_val.date() >= present.date()):
+            return True
+        else:
+            return False
+
     @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="user", methods=['POST'], website=True)
     def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         
@@ -219,10 +244,10 @@ class CustomerPortal(CustomerPortal):
             error = dict()
             post['state'] = 'saved_not_submitted'
             # Validates the form only when Submit the form. When Saves ignores the form validation
+            error, error_message = self.kanha_portal_form_validate(post, partner_id)
             if(is_submit == 'true'):
                 post['state'] = 'submitted'
-                error, error_message = self.kanha_portal_form_validate(post, partner_id)
-            if not error or is_submit == 'false':
+            if not error and is_submit == 'false':
                 # Prepares File fields
                 post_vals = post.copy()
                 for field_name, field_value in post_vals.items():
@@ -321,8 +346,9 @@ class CustomerPortal(CustomerPortal):
                 # Links family members based on Kanha house no.
                 relative_partner = False
                 kanha_house_number = post.get('kanha_house_number')
+                kanha_location_id = post.get('kanha_location_id')
                 if(kanha_house_number):
-                    relative_partner = ResPartner.sudo().search([('kanha_house_number', '=', kanha_house_number)])
+                    relative_partner = ResPartner.sudo().search([('kanha_house_number', '=', kanha_house_number),('kanha_location_id','=',kanha_location_id)])
 
                 # If partner exist, updates the records else create a new partner record
                 if partner:
@@ -366,7 +392,7 @@ class CustomerPortal(CustomerPortal):
                     if(relative_partner):
                         partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
                         relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})    
-                    
+                print("I am hereeeeeeeeeeeeeeeeeeeeeeeeeeeeee")    
                 return json.dumps({'id': partner.id})
             
         return json.dumps({

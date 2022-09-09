@@ -1110,6 +1110,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
                 if (result_data.error_fields) {
                     // If the server return a list of bad fields, show these fields for users
                     self.check_error_fields(result_data.error_fields);
+					self.$target.find('.family_website_form_save').removeClass('disabled').attr('enabled', 'enabled');
+					
                 }
             } else {
                 // Success, redirect or update status
@@ -1238,6 +1240,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
             // Update field color if invalid or erroneous
             $field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
+			console.log($field)
             
 			if (invalid_inputs.length || error_fields[field_name]) {
 				// Stores Field's' Lable name for required fields used to display in the warning message
@@ -1245,6 +1248,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 					missing_fields.push(field_name)
 				}
                 $field.addClass('o_has_error').find('.form-control, .custom-select').addClass('is-invalid');
+				
+				$("html, body").animate({ scrollTop: 0 }, "slow");
                 if (_.isString(error_fields[field_name])) {
                     $field.popover({content: error_fields[field_name], trigger: 'hover', container: 'body', placement: 'top'});
                     // update error message and show it.
