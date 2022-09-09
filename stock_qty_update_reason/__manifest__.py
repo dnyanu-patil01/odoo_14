@@ -10,7 +10,7 @@
     'category': 'Product',
     'summary': "Added Reason Text Field To Capture The Reason For Stock Update",
     'depends': [
-                'product','stock'
+                'product','stock','common_connector_library'
                 ],
     'data': ['views/view.xml'
     ],

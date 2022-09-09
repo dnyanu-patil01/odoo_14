@@ -26,32 +26,21 @@ class StockQuant(models.Model):
         if self.inventory_quantity:
             self.note = False
         return super(StockQuant,self)._onchange_inventory_quantity()
-    
-    @api.model
-    def create(self, vals):
-        if 'note' in vals:
-            product_id = vals['product_id'] if 'product_id' in vals else self.product_id.id
-            product = self.env['product.product'].browse(product_id)
-            body='%s'%(vals['note'])
-            product.message_post(body=body)
-        return super(StockQuant,self).create(vals)
-    
-    def write(self, vals):
-        body = None
-        if 'inventory_quantity' in vals:
-            product_id = vals['product_id'] if 'product_id' in vals else self.product_id.id
-            product = self.env['product.product'].browse(product_id)
-            body = 'On Hand Quantity Updated From %s to %s'%(str(self.inventory_quantity),str(vals['inventory_quantity']))
-        if 'note' in vals:
-            body+='<br/> %s'%(vals['note'])
-        if body:
-            product.message_post(body=body)
-        return super(StockQuant,self).write(vals)
 
 class ProductChangeQuantity(models.TransientModel):
     _inherit = "stock.change.product.qty"
 
     note = fields.Text(string='Note')
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.env.user.has_group('seller_management.group_sellers_management_manager'):
+            self.new_quantity = self.product_id.qty_available
+        else:
+            shopify_tmpl_id = self.env['shopify.product.template.ept'].sudo().search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)])
+            shopify_stock_location = shopify_tmpl_id.shopify_instance_id.shopify_warehouse_id.lot_stock_id
+            location_qty = self.env['stock.quant'].search([('location_id','=',shopify_stock_location.id),('product_id','=',self.product_id.id)]).quantity
+            self.new_quantity = location_qty
 
     def change_product_qty(self):
         """ Changes the Product Quantity by creating/editing corresponding quant.
@@ -60,13 +49,11 @@ class ProductChangeQuantity(models.TransientModel):
         warehouse = self.env['stock.warehouse'].search(
             [('company_id', '=', self.env.company.id)], limit=1
         )
-        shopify_product_tmpl_id = self.env['shopify.product.template.ept'].search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)])
-        if shopify_product_tmpl_id:
-            import_product_obj = self.env['shopify.process.import.export'].create({})
-            import_product_obj.with_context({'active_ids':shopify_product_tmpl_id.ids}).sudo().shopify_selective_product_stock_export()
+        shopify_tmpl_id = self.env['shopify.product.template.ept'].sudo().search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)])
+        shopify_warehouse = shopify_tmpl_id.shopify_instance_id.shopify_warehouse_id
         self.env['stock.quant'].with_context(inventory_mode=True).create({
             'product_id': self.product_id.id,
-            'location_id': warehouse.lot_stock_id.id,
+            'location_id': shopify_warehouse.lot_stock_id.id if shopify_tmpl_id else warehouse.lot_stock_id.id,
             'inventory_quantity': self.new_quantity,
             'note':self.note,
         })
@@ -75,3 +62,20 @@ class ProductChangeQuantity(models.TransientModel):
 class Product(models.Model):
     _name='product.product'
     _inherit = ['product.product','mail.thread']
+
+
+    def prepare_free_qty_query(self, location_ids, simple_product_list_ids):
+        """
+        This method prepares query for fetching the free qty.
+        @param location_ids:Ids of Locations.
+        @param simple_product_list_ids: Ids of products which are not BoM.
+        @return: Prepared query in string.
+        @author: Maulik Barad on Date 21-Oct-2020.
+        @inherited: To Get On Hand Qunatity
+        """
+        query = """select pp.id as product_id,
+                COALESCE(sum(sq.quantity),0) as stock
+                from product_product pp
+                left join stock_quant sq on pp.id = sq.product_id and sq.location_id in (%s)
+                where pp.id in (%s) group by pp.id;""" % (location_ids, simple_product_list_ids)
+        return query
