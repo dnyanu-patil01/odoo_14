@@ -429,8 +429,8 @@ class CustomerPortal(CustomerPortal):
         values.update({
             'partner': None,
             'surname': current_partner.surname,
-            'relative_surname': current_partner.surname,
-            'relative_name': current_partner.name,
+            'kanha_location_id': current_partner.kanha_location_id.id if current_partner.kanha_location_id else None,
+            'kanha_house_number':  current_partner.kanha_house_number if current_partner.kanha_house_number else None,
         })
         response = request.render("kanha_census.kanha_family_portal_form_indian", values)
         return response
@@ -442,9 +442,9 @@ class CustomerPortal(CustomerPortal):
         values.update({
             'partner': None,
             'surname': current_partner.surname,
-            'relative_surname': current_partner.surname,
-            'relative_name': current_partner.name,
-            'is_overseas': True
+            'is_overseas': True,
+            'kanha_location_id': current_partner.kanha_location_id.id if current_partner.kanha_location_id else None,
+            'kanha_house_number':  current_partner.kanha_house_number if current_partner.kanha_house_number else None,
         })
         response = request.render("kanha_census.kanha_family_portal_form_overseas", values)
         return response
