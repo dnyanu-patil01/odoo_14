@@ -245,6 +245,18 @@ class CustomerPortal(CustomerPortal):
             post['state'] = 'saved_not_submitted'
             # Validates the form only when Submit the form. When Saves ignores the form validation
             error, error_message = self.kanha_portal_form_validate(post, partner_id)
+            aadhaar_card_number = post.get('aadhaar_card_number')
+            citizenship = post.get('citizenship')
+            passport_number = post.get('passport_number')
+            if citizenship == "Indian" and not aadhaar_card_number:
+                error = "aadhaar_card_number"
+                error_message = 'Aadhaar Card Number is Mandatory to Save/Submit Record'
+            if citizenship == "Overseas" and not passport_number:
+                error = "passport_number"
+                error_message = 'Passport Number is Mandatory to Save/Submit Record'
+            # if not post.get('aadhaar_card_number'):
+            #     error = "aadhaar_card_number"
+            #     error_message = 'Aadhaar Card Number is Mandatory to Save/Submit Record'
             if(is_submit == 'true'):
                 post['state'] = 'submitted'
             if not error and is_submit == 'false':

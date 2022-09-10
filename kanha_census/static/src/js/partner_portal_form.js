@@ -1111,6 +1111,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
                     // If the server return a list of bad fields, show these fields for users
                     self.check_error_fields(result_data.error_fields);
 					self.$target.find('.family_website_form_save').removeClass('disabled').attr('enabled', 'enabled');
+					window.scrollTo(0,0);
 					
                 }
             } else {

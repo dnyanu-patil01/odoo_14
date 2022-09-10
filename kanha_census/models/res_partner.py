@@ -58,7 +58,7 @@ class ResPartner(models.Model):
         ('Transfer Application', 'Transfer Application'),
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
-    aadhaar_card_number = fields.Encrypted(string="Aadhar Card Number", required=True)
+    aadhaar_card_number = fields.Encrypted(string="Aadhar Card Number", required=True, index=True)
     pan_card_number = fields.Encrypted(string="Pan card number")
     members_count = fields.Char(string="How many members staying with you?")
     citizenship = fields.Selection([
@@ -110,8 +110,8 @@ class ResPartner(models.Model):
     passport_back_image = fields.Image(string="Passport Back Image", attachment=True)
     passport_back_image_filename = fields.Char()
     residents_documents_downloads_history_id = fields.Many2one('residents.documents.downloads.history','Residents Documents Downloads History') 
-    visa_start_date = fields.Date(string='Visa Start Date')
-    visa_end_date = fields.Date(string='Visa End Date')
+    visa_start_date = fields.Date(string='Visa Start Date', required=True)
+    visa_end_date = fields.Date(string='Visa End Date', required=True)
     visa_type = fields.Selection([
         ('Employment', 'Employment'),
         ('Tourist', 'Tourist'),
@@ -119,6 +119,7 @@ class ResPartner(models.Model):
         ('Business', 'Business'),
         ('Medical', 'Medical'),
     ])
+
 
     def mail_reminder(self):
         """
