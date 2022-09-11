@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models
+from odoo import fields, models, api
 from datetime import date, timedelta
 
 
@@ -33,7 +33,7 @@ class ResPartner(models.Model):
     relative_surname = fields.Char(string='Surname of Relative')
     kanha_location_id = fields.Many2one('kanha.location', string="Kanha Location", required=True)
     house_number = fields.Char(string='House Number')
-    kanha_house_number = fields.Char(string='Kanha House Number', required=True)
+    kanha_house_number_id = fields.Many2one('kanha.house.number', string='Kanha House Number', required=True)
     resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date', required=True)
     existing_voter_id_number = fields.Char(string="Existing Voter ID Number", required=True)
     assembly_constituency = fields.Char(string="Assembly Constituency")
@@ -145,3 +145,14 @@ class ResPartner(models.Model):
         ctx['email_from'] = self.env.user.company_id.email
         if template:
             template.with_context(ctx).send_mail(self.id, force_send=True)
+
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        partners = super(ResPartner, self).create(vals_list)
+        portal = self.env['portal.wizard'].with_context({'active_ids':partners.ids}).create({})
+        portal.user_ids.write({'in_portal':True})
+        error = portal.user_ids.get_error_messages()
+        if not error:
+            portal.sudo().action_apply()
+        return partners

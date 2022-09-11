@@ -82,6 +82,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		// Country selection
 		'change select[name="birth_country_id"]': '_onBirthCountryChange',
 		'change select[name="country_id"]': '_onCountryChange',
+		// Kanha Location Selection
+		'change select[name="kanha_location_id"]': '_onKanhaLocationChange',
 		// Vehicle actions
 		'click .vehicle_add_new': '_onShowVehicleModal',
 		'click .vehicle_edit_new': '_onShowVehicleModal',
@@ -140,7 +142,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		this.$state = this.$('select[name="state_id"]');
         this.$stateOptions = this.$state.filter(':enabled').find('option:not(:first)');
         this._adaptAddressForm();
-
+		this.$kanhaHouseNumber = this.$('select[name="kanha_house_number_id"]');
+        this.$kanhaHouseNumberOptions = this.$kanhaHouseNumber.filter(':enabled').find('option:not(:first)');
+		this._adaptKanhaHouseNumberStateAddressForm();
         return def;
     },
 
@@ -916,6 +920,25 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         this.$birthStateOptions.detach();
         var $displayedBirthState = this.$birthStateOptions.filter('[data-country_id=' + birthCountryID + ']');
         var nb = $displayedBirthState.appendTo(this.$birthState).show().length;
+        //this.$state.parent().toggle(nb >= 1);
+    },
+
+	/**
+     * @private
+     */
+    _onKanhaLocationChange: function () {
+        this._adaptKanhaHouseNumberStateAddressForm();
+    },
+
+	/**
+     * @private
+     */
+	 _adaptKanhaHouseNumberStateAddressForm: function () {
+		var $kanha_location = this.$('select[name="kanha_location_id"]');
+        var KanhaLocationID = ($kanha_location.val() || 0);
+        this.$kanhaHouseNumberOptions.detach();
+        var $displayedKanhaHouseNumber = this.$kanhaHouseNumberOptions.filter('[data-kanha_location_id=' + KanhaLocationID + ']');
+        var nb = $displayedKanhaHouseNumber.appendTo(this.$kanhaHouseNumber).show().length;
         //this.$state.parent().toggle(nb >= 1);
     },
 

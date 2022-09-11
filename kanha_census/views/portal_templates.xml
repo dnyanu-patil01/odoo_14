@@ -2376,7 +2376,7 @@
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('work_profile') and 'o_has_error' or ''}">
-                        <select name="kanha_location_id" t-attf-class="form-control s_website_form_input #{error.get('kanha_location_id') and 'is-invalid' or ''}" required="">
+                        <select id="kanha_location_id_field" name="kanha_location_id" t-attf-class="form-control s_website_form_input #{error.get('kanha_location_id') and 'is-invalid' or ''}" required="">
                             <option value="">Select...</option>
                             <t t-foreach="kanha_locations or []" t-as="kanha_location">
                                 <option t-att-value="kanha_location.id" t-att-selected="kanha_location.id == int(kanha_location_id) if kanha_location_id else kanha_location.id == partner.kanha_location_id.id if partner else null">
@@ -2391,8 +2391,15 @@
                         <label class="col-form-label" for="Kanha House Number">House Number</label>
                         <span class="s_website_form_mark">*</span>
                     </div>
-                    <div t-attf-class=" col-xl-6 #{error.get('work_profile') and 'o_has_error' or ''}">
-                        <input id="kanha_house_number_id" type="text" class="form-control s_website_form_input" name="kanha_house_number" t-att-value="kanha_house_number or partner and partner.kanha_house_number" required="" />
+                    <div t-attf-class="col-xl-6 #{error.get('work_profile') and 'o_has_error' or ''}">
+                        <select id="kanha_house_number_id_field" name="kanha_house_number_id" t-attf-class="form-control s_website_form_input #{error.get('kanha_house_number_id') and 'is-invalid' or ''}" required="">
+                            <option value="">Select...</option>
+                            <t t-foreach="kanha_house_numbers" t-as="kanha_house_number">
+                                <option t-att-value="kanha_house_number.id" t-att-data-kanha_location_id="kanha_house_number.kanha_location_id.id" t-att-kanha_location="kanha_house_number.kanha_location_id.id" t-att-selected="kanha_house_number.id == int(kanha_house_number_id) if kanha_house_number_id else kanha_house_number.id == partner.kanha_house_number_id.id if partner else null">
+                                    <t t-esc="kanha_house_number.name" />
+                                </option>
+                            </t>
+                        </select>
                     </div>
                     <div>Please enter the same for all of your family members staying with you.</div>
                 </div>

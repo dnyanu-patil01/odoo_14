@@ -8,7 +8,7 @@
     'description': """
        It Allows Portal user to add and update the Family members details.
     """,
-    'depends': ['website', 'website_form','fields_encrypted'],
+    'depends': ['website', 'website_form','fields_encrypted','oauth_login_existing_users'],
     'data': [
         'security/ir.model.access.csv',
         'data/website_data.xml',

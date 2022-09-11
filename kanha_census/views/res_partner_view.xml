@@ -44,7 +44,7 @@
 		                            	<field name="resident_of_kanha_from_date" readonly="1"/>
 		                                <field name="work_profile" readonly="1"/>
 		                                <field name="kanha_location_id" readonly="1"/>
-		                                <field name="kanha_house_number" string="House Number" readonly="1"/>
+		                                <field name="kanha_house_number_id" string="House Number" readonly="1"/>
 		                            </group>
                         		</group>
                     		</page>
@@ -178,6 +178,7 @@
 	<menuitem id="menu_kanha_partner"
           parent="kanha_census.menu_kanha_census_root" 
           action="kanha_partner_action"
+		  sequence="30"
           />
 
 </odoo>

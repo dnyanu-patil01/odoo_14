@@ -58,6 +58,7 @@
 		    name="Documents Downloads History"
 		    parent="kanha_census.menu_kanha_census_root"
 		    action="residents_documents_downloads_history_action"
+			sequence="40"
 		    />
 
 	</data>

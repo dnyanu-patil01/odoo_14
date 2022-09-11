@@ -62,8 +62,8 @@ class CustomerPortal(CustomerPortal):
         ResPartner = request.env['res.partner']
         
         # Fetch logged in partner's family members based on Kanha House no.
-        if(current_partner.kanha_house_number):
-            domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number', '=', current_partner.kanha_house_number),('kanha_location_id','=',current_partner.kanha_location_id.id)]
+        if(current_partner.kanha_house_number_id):
+            domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number_id', '=', current_partner.kanha_house_number_id.id),('kanha_location_id','=',current_partner.kanha_location_id.id)]
         else:
             domain = [('id', '=', current_partner.id)]
         if search:
@@ -357,10 +357,10 @@ class CustomerPortal(CustomerPortal):
 
                 # Links family members based on Kanha house no.
                 relative_partner = False
-                kanha_house_number = post.get('kanha_house_number')
+                kanha_house_number_id = post.get('kanha_house_number_id')
                 kanha_location_id = post.get('kanha_location_id')
-                if(kanha_house_number):
-                    relative_partner = ResPartner.sudo().search([('kanha_house_number', '=', kanha_house_number),('kanha_location_id','=',kanha_location_id)])
+                if(kanha_house_number_id):
+                    relative_partner = ResPartner.sudo().search([('kanha_house_number_id', '=', kanha_house_number_id),('kanha_location_id','=',kanha_location_id)])
 
                 # If partner exist, updates the records else create a new partner record
                 if partner:
@@ -386,7 +386,7 @@ class CustomerPortal(CustomerPortal):
                     values['vehicle_details_ids'] = vehicle_details_vals
                     
                     # Links family members
-                    if(kanha_house_number != partner.kanha_house_number):
+                    if(kanha_house_number_id != partner.kanha_house_number_id):
                         partner.write({'family_members_ids': [(5,)]})
                         partner_list_to_unlink = ResPartner.sudo().search([('family_members_ids', '=', partner.id)])
                         for partner_list in partner_list_to_unlink:
@@ -442,7 +442,7 @@ class CustomerPortal(CustomerPortal):
             'partner': None,
             'surname': current_partner.surname,
             'kanha_location_id': current_partner.kanha_location_id.id if current_partner.kanha_location_id else None,
-            'kanha_house_number':  current_partner.kanha_house_number if current_partner.kanha_house_number else None,
+            'kanha_house_number_id':  current_partner.kanha_house_number_id.id if current_partner.kanha_house_number_id else None,
         })
         response = request.render("kanha_census.kanha_family_portal_form_indian", values)
         return response
@@ -456,7 +456,7 @@ class CustomerPortal(CustomerPortal):
             'surname': current_partner.surname,
             'is_overseas': True,
             'kanha_location_id': current_partner.kanha_location_id.id if current_partner.kanha_location_id else None,
-            'kanha_house_number':  current_partner.kanha_house_number if current_partner.kanha_house_number else None,
+            'kanha_house_number_id':  current_partner.kanha_house_number_id.id if current_partner.kanha_house_number_id else None,
         })
         response = request.render("kanha_census.kanha_family_portal_form_overseas", values)
         return response
@@ -482,10 +482,13 @@ class CustomerPortal(CustomerPortal):
         # Fetch the record who doesnt have any child records
         kanha_location_parent_ids = request.env['kanha.location'].search([]).parent_id.ids
         kanha_locations_nth_child = request.env['kanha.location'].search([('id', 'not in', kanha_location_parent_ids)])
+        #Fetch the record of kanha house number
+        kanha_house_numbers = request.env['kanha.house.number'].search([])
         values.update({
             'states': states,
             'page_name': 'family',
             'kanha_locations': kanha_locations_nth_child,
+            'kanha_house_numbers':kanha_house_numbers,
             'birth_countries': country,
             'countries': country_india,
             'error': {},
