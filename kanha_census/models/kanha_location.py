@@ -42,3 +42,12 @@ class KanhaLocation(models.Model):
         if main_category in self:
             raise UserError(_("You cannot delete this product category, it is the default generic category."))
         return super().unlink()
+
+
+class KanhaHouseNumber(models.Model):
+    _name = "kanha.house.number"
+    _description = "Kanha House Number"
+
+    name = fields.Char('Kanha House Number',required=True)
+    kanha_location_id = fields.Many2one('kanha.location',required=True)
+    active = fields.Boolean('Active', default=True)

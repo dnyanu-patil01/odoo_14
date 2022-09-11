@@ -28,6 +28,6 @@
          <field name="target">new</field>
     </record>
 
-    <menuitem id="menu_residents_document_download" name="Residents Document Download" action="action_residents_document_download" parent="kanha_census.menu_kanha_census_root"/>
+    <menuitem id="menu_residents_document_download" name="Residents Document Download" action="action_residents_document_download" parent="kanha_census.menu_kanha_census_root" sequence="50"/>
   
 </odoo>
