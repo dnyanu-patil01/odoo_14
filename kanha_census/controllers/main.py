@@ -62,10 +62,11 @@ class CustomerPortal(CustomerPortal):
         ResPartner = request.env['res.partner']
         
         # Fetch logged in partner's family members based on Kanha House no.
-        if(current_partner.kanha_house_number_id):
-            domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number_id', '=', current_partner.kanha_house_number_id.id),('kanha_location_id','=',current_partner.kanha_location_id.id)]
-        else:
-            domain = [('id', '=', current_partner.id)]
+        # if(current_partner.kanha_house_number_id):
+        #     domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number_id', '=', current_partner.kanha_house_number_id.id),('kanha_location_id','=',current_partner.kanha_location_id.id)]
+        # else:
+        #     domain = [('id', '=', current_partner.id)]
+        domain = [('create_uid','=',request.env.user.id)]
         if search:
             subdomains = [('name', 'ilike', search)]
             domain = domain+subdomains
