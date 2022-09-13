@@ -60,7 +60,6 @@ class CustomerPortal(CustomerPortal):
         values = {}
         current_partner = request.env.user.partner_id
         ResPartner = request.env['res.partner']
-        
         # Fetch logged in partner's family members based on Kanha House no.
         # if(current_partner.kanha_house_number_id):
         #     domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number_id', '=', current_partner.kanha_house_number_id.id),('kanha_location_id','=',current_partner.kanha_location_id.id)]
@@ -171,7 +170,6 @@ class CustomerPortal(CustomerPortal):
                 error["visa_end_date"] = _('You cannot enter a date in the future for Resident of kanha from date!')
                 error_message.append(_('You cannot enter a date in the future for Resident of kanha from date!'))      
 
-
         return error, error_message
 
     def is_valid_pan_number(self, pan_number):
@@ -235,7 +233,6 @@ class CustomerPortal(CustomerPortal):
 
     @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="user", methods=['POST'], website=True)
     def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
-        
         request.params.pop('csrf_token', None)
         is_submit = post.get("is_submit")
         post.pop("is_submit")
@@ -260,6 +257,7 @@ class CustomerPortal(CustomerPortal):
             #     error_message = 'Aadhaar Card Number is Mandatory to Save/Submit Record'
             if(is_submit == 'true'):
                 post['state'] = 'submitted'
+                post['application_status'] = 'to_approve'
             if not error and is_submit == 'false':
                 # Prepares File fields
                 post_vals = post.copy()
@@ -273,7 +271,7 @@ class CustomerPortal(CustomerPortal):
                 values = {}
                 values.update(post)
                 values.update({'is_published': True})
-                
+                values.update({'application_status': 'draft'})
                 # Removes Invisible fields value
                 if(values.get('change_voter_id_address') != 'Yes'):
                     # self.remove_existing_voter_id_details(values)
@@ -317,7 +315,7 @@ class CustomerPortal(CustomerPortal):
                     values['visa_end_date'] = False
                        
                 # Prepare Many2One values
-                many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id']
+                many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id','kanha_house_number_id']
                 # if(post.get('change_voter_id_address') == 'Yes'):
                 #     many_2_one_fields.append('state_id')
                 for field in set(many_2_one_fields) & set(values.keys()):
@@ -325,7 +323,6 @@ class CustomerPortal(CustomerPortal):
                         values[field] = int(values[field])
                     except:
                         values[field] = False
-                
                 # Insert File input value
                 for field in set(['adhar_card',
                                   'adhar_card_back_side',
@@ -385,9 +382,8 @@ class CustomerPortal(CustomerPortal):
                             vehicle_details_vals.append([2, partner_vehicle])
                     
                     values['vehicle_details_ids'] = vehicle_details_vals
-                    
                     # Links family members
-                    if(kanha_house_number_id != partner.kanha_house_number_id):
+                    if(kanha_house_number_id != partner.kanha_house_number_id.id):
                         partner.write({'family_members_ids': [(5,)]})
                         partner_list_to_unlink = ResPartner.sudo().search([('family_members_ids', '=', partner.id)])
                         for partner_list in partner_list_to_unlink:
@@ -405,9 +401,11 @@ class CustomerPortal(CustomerPortal):
                     if(relative_partner):
                         partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
                         relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})    
-                print("I am hereeeeeeeeeeeeeeeeeeeeeeeeeeeeee")    
                 return json.dumps({'id': partner.id})
-            
+            if is_submit == 'true':
+                if partner:
+                    partner.sudo().write({'application_status':'to_approve','state':'submitted'})
+                    return json.dumps({'id': partner.id})
         return json.dumps({
             'id': False,
             'error': error,

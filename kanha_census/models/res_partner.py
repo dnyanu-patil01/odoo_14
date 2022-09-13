@@ -45,9 +45,9 @@ class ResPartner(models.Model):
     passport_photo_filename = fields.Char()
     passport_id_image = fields.Image(string="Passport ID", attachment=True)
     passport_id_image_filename = fields.Char()
-    adhar_card = fields.Binary('Aadhar Card Front', attachment=True, required=True)
+    adhar_card = fields.Binary('Aadhar Card Front', attachment=True)
     adhar_card_filename = fields.Char()
-    adhar_card_back_side = fields.Binary('Aadhar Card Back', attachment=True, required=True)
+    adhar_card_back_side = fields.Binary('Aadhar Card Back', attachment=True)
     adhar_card_back_side_filename = fields.Char()
     age_proof = fields.Binary(string='Age Proof', required=True)
     age_proof_filename = fields.Char()
@@ -58,7 +58,7 @@ class ResPartner(models.Model):
         ('Transfer Application', 'Transfer Application'),
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
-    aadhaar_card_number = fields.Encrypted(string="Aadhar Card Number", required=True, index=True)
+    aadhaar_card_number = fields.Encrypted(string="Aadhar Card Number", index=True)
     pan_card_number = fields.Encrypted(string="Pan card number")
     members_count = fields.Char(string="How many members staying with you?")
     citizenship = fields.Selection([
@@ -110,8 +110,8 @@ class ResPartner(models.Model):
     passport_back_image = fields.Image(string="Passport Back Image", attachment=True)
     passport_back_image_filename = fields.Char()
     residents_documents_downloads_history_id = fields.Many2one('residents.documents.downloads.history','Residents Documents Downloads History') 
-    visa_start_date = fields.Date(string='Visa Start Date', required=True)
-    visa_end_date = fields.Date(string='Visa End Date', required=True)
+    visa_start_date = fields.Date(string='Visa Start Date')
+    visa_end_date = fields.Date(string='Visa End Date')
     visa_type = fields.Selection([
         ('Employment', 'Employment'),
         ('Tourist', 'Tourist'),
@@ -119,6 +119,13 @@ class ResPartner(models.Model):
         ('Business', 'Business'),
         ('Medical', 'Medical'),
     ])
+    application_status = fields.Selection([
+        ('draft', 'Draft'),
+        ('to_approve', 'Waiting For Approval'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ],default="draft")
+    rejection_reason = fields.Text("Reason For Rejection")
 
 
     def mail_reminder(self):
@@ -156,3 +163,31 @@ class ResPartner(models.Model):
         if not error:
             portal.sudo().action_apply()
         return partners
+
+
+    def button_reject(self):
+        ctx = {"application_ids": self.ids}
+        return {
+            "name": ("Reject Product Details Updates"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "application.reject.reason",
+            "target": "new",
+            "context": ctx,
+        }
+    
+    def button_approve(self):
+        return self.write({'application_status':'approved'})
+    
+    def send_rejection_reason_in_mail(self):
+        """
+         to send email regarding the application rejection
+        """
+        template = self.env.ref('kanha_census.mail_template_application_rejection')
+        ctx = dict(self.env.context)
+        ctx['reason'] = self.rejection_reason
+        ctx['subject'] = self.name +" Application Rejected - Regards"
+        ctx['email_to'] = self.email
+        ctx['email_from'] = self.env.user.company_id.email
+        if template:
+            template.with_context(ctx).send_mail(self.id, force_send=True)

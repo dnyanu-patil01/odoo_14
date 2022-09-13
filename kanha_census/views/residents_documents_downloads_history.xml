@@ -56,9 +56,10 @@
 		<menuitem
 		    id="residents_documents_downloads_history_menu"
 		    name="Documents Downloads History"
-		    parent="kanha_census.menu_kanha_census_root"
+		    parent="kanha_census.menu_kanha_census_configuration_root"
 		    action="residents_documents_downloads_history_action"
-			sequence="40"
+			sequence="20"
+			groups="base.group_no_one"
 		    />
 
 	</data>

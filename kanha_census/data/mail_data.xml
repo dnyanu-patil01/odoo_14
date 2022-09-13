@@ -46,4 +46,19 @@
 	
 	<function model="ir.config_parameter" name="set_param" eval="('email_recipients', '')" />
 	
+	<record id="mail_template_application_rejection" model="mail.template">
+	    <field name="name">Application Rejection</field>
+	    <field name="model_id" ref="kanha_census.model_res_partner"/>
+	    <field name="email_from">${ctx['email_from']}</field>
+	    <field name="email_to">${ctx['email_to']}</field>
+	    <field name="subject">${ctx['subject']}</field>
+	    <field name="body_html" type="html">
+      		<p>Hello,</p>
+		    <p>
+		       We are sorry to inform you that your application have been rejected due to the following reason.
+			   <b>${ctx['reason']}</b>.Kindly do the changes and submit your application once again.
+		    </p>
+			<p>Thank You</p>
+			</field>
+	</record>
 </odoo>

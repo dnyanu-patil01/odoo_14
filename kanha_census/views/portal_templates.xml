@@ -51,6 +51,7 @@
                         <th>Email</th>
                         <th>Mobile</th>
                         <th>Date of Birth</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,6 +69,20 @@
                         </td>
                         <td>
                             <t t-esc="partner.date_of_birth" />
+                        </td>
+                        <td>
+                        <t t-if="partner.application_status == 'draft'">
+                            <span class="badge badge-pill badge-warning"><span class="d-none d-md-inline"> Not Yet Submitted</span></span>
+                        </t>
+                        <t t-if="partner.application_status == 'to_approve'">
+                            <span class="badge badge-pill badge-info"><span class="d-none d-md-inline"> Waiting For Approval</span></span>
+                        </t>
+                        <t t-if="partner.application_status == 'approved'">
+                            <span class="badge badge-pill badge-success"><span class="d-none d-md-inline"> Approved</span></span>
+                        </t>
+                        <t t-if="partner.application_status == 'rejected'">
+                            <span class="badge badge-pill badge-danger"><span class="d-none d-md-inline"> Rejected</span></span>
+                        </t>
                         </td>
                     </tr>
                 </tbody>
