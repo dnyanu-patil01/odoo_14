@@ -268,10 +268,14 @@ class ShipRocket:
             "order_id": str(picking.name).replace("/", ""),
             "order_date": picking.scheduled_date.strftime("%Y-%m-%d %H:%M"),
             "channel_id": int(picking.channel_id.channel_id),
-            "order_items": self.prepare_order_items(picking),
-            "sub_total": picking.sale_id.amount_total,
             "payment_method": picking.payment_method,
         }
+        order_items,sub_total = self.prepare_order_items(picking)
+        data.update({
+            "order_items": order_items,
+            "sub_total": sub_total,
+        })
+        print(data)
         dimension_values = self._prepare_parcel(picking)
         data.update(dimension_values)
         if mode == "forward":
@@ -396,18 +400,20 @@ class ShipRocket:
         :return: order items dict
         """
         order_items = []
+        order_value = 0
         for line in picking.move_lines:
             order_line_vals = {
                 "name": line.product_id.name,
                 "sku": line.product_id.default_code,
                 "units": line.quantity_done,
-                "selling_price": line.product_id.list_price,
+                "selling_price": line.sale_line_id.price_unit,
                 "discount": "",
                 "hsn": line.product_id.l10n_in_hsn_code or "",
                 "tax": "",
             }
+            order_value += (line.quantity_done * line.sale_line_id.price_unit)
             order_items.append(order_line_vals)
-        return order_items
+        return order_items,order_value
 
     def _prepare_parcel(self, picking):
         """Prepare data related to package dimensions
