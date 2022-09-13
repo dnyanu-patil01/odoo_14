@@ -33,16 +33,7 @@ class SetPrice(models.TransientModel):
             self.product_tmpl_id.write({'list_price':self.new_price})
         else:
             self.product_id.write({'lst_price':self.new_price})
-        shopify_product_tmpl_id = self.env['shopify.product.template.ept'].search([('product_tmpl_id','=',self.product_tmpl_id.id)])
-        if shopify_product_tmpl_id:
-            import_product_obj = self.env['shopify.process.import.export'].create({
-            'shopify_is_update_basic_detail':False,
-            'shopify_is_set_price':True,
-            'shopify_is_set_image':False,
-            'shopify_is_publish':'publish_product_web',
-            })
-            import_product_obj.with_context({'active_ids':shopify_product_tmpl_id.id}).sudo().manual_update_product_to_shopify()
-
+        
         pricelist = self.env["product.pricelist.item"].search(
                         [
                             ("product_tmpl_id", "=", self.product_tmpl_id.id),
@@ -50,11 +41,11 @@ class SetPrice(models.TransientModel):
                         ]
                     )
         if pricelist:
-            pricelist.write({"fixed_price": self.new_price})
+            pricelist.with_context({'update_shopify_price':True}).write({"fixed_price": self.new_price})
         else:
             pricelist = self.env["product.pricelist"].search([], limit=1)
             if pricelist:
-                self.env["product.pricelist.item"].create(
+                self.env["product.pricelist.item"].with_context({'update_shopify_price':True}).create(
                     {
                         "pricelist_id": pricelist.id,
                         "product_id": self.product_id.id,
@@ -62,5 +53,5 @@ class SetPrice(models.TransientModel):
                         "fixed_price": self.new_price,
                         "compute_price": "fixed",
                     }
-                )
-        return {'type': 'ir.actions.act_window_close'}
+                    )
+        return True
