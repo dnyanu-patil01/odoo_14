@@ -81,9 +81,13 @@
                             </tr>
                             <tr>
                             <td class="o_text"></td>
-                            <td class="o_main o_dashboard_action table-danger" title="Out Of Stock Products"
+                                <td class="o_main o_dashboard_action table-danger" title="Out Of Stock Products"
                                     name="sale_action_dashboard_seller_product_out_of_stock">
                                     <a href="#"><t t-esc="widget.seller_product_out_of_stock"/><br/>Out Of Stock</a>
+                                </td>
+                                <td class="o_main o_dashboard_action table-danger" title="Products Change Request"
+                                    name="sale_action_dashboard_seller_change_request">
+                                    <a href="#"><t t-esc="widget.seller_change_request"/><br/>Change Request</a>
                                 </td>
                             </tr>
                             <tr>

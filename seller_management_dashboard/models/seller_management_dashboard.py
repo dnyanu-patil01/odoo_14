@@ -107,6 +107,7 @@ class Dashboard(models.Model):
             'seller_product_approve':0,
             'seller_product_rejected':0,
             'seller_product_out_of_stock':0,
+            'seller_change_request':0,
         }
         product = self.env['product.template']
         seller = self.env['res.partner']
@@ -117,6 +118,7 @@ class Dashboard(models.Model):
         data['seller_product_approve'] = product.sudo().search_count([('seller_id', '!=', False),('state','=','approve')])
         data['seller_product_rejected'] = product.sudo().search_count([('seller_id', '!=', False),('state','=','reject')])
         data['seller_product_out_of_stock'] = product.sudo().search_count([('seller_id', '!=', False),('qty_available','<=',0)])
+        data['seller_change_request'] = self.env['product.change.request'].sudo().search_count([])
         return data
     def _action_view_seller_product(self, mode=False):
         domain = [('seller_id','!=',False)]
@@ -152,6 +154,18 @@ class Dashboard(models.Model):
                     'domain': domain,
                     'target': 'current'
                 }
+        if mode == 'seller_change_request':
+            views = [(self.env.ref('seller_product_management.view_product_change_request_tree').id, 'list'),
+                        (self.env.ref('seller_product_management.view_seller_product_change_request_form').id, 'form')]
+
+            return {'name': ('Product Change Request'),
+                    'type': 'ir.actions.act_window',
+                    'res_model': 'product.change.request',
+                    'view_mode': 'tree,form',
+                    'views': views,
+                    'target': 'current'
+                }
+
         views = [(self.env.ref('product.product_template_tree_view').id, 'list'),
                             (self.env.ref('product.product_template_only_form_view').id, 'form')]
     
@@ -184,6 +198,9 @@ class Dashboard(models.Model):
     @api.model
     def sale_action_dashboard_seller_product_out_of_stock_list(self):
         return self._action_view_seller_product(mode='seller_product_out_of_stock')
+    @api.model
+    def sale_action_dashboard_seller_change_request_list(self):
+        return self._action_view_seller_product(mode='seller_change_request')
     
     @api.model
     def get_sale_order_details(self):

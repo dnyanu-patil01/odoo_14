@@ -54,6 +54,7 @@ var SellerManagementDashboard = AbstractAction.extend({
         this.seller_product_approve = [];
         this.seller_product_rejected  = [];
         this.seller_product_out_of_stock = [];
+        this.seller_change_request = [];
         this.total_ndr = [];
         this.total_ndr_attempts = [];
         this.first_ndr_attempts = [];
@@ -121,6 +122,7 @@ var SellerManagementDashboard = AbstractAction.extend({
               self.seller_product_approve = res['seller_product_approve'];
               self.seller_product_rejected = res['seller_product_rejected'];
               self.seller_product_out_of_stock = res['seller_product_out_of_stock'];
+              self.seller_change_request = res['seller_change_request'];
             });
             var dashboard_ndr_def = self._rpc({
                 model: "stock.picking",
@@ -205,6 +207,7 @@ var SellerManagementDashboard = AbstractAction.extend({
           self.seller_product_approve = res['seller_product_approve'];
           self.seller_product_rejected = res['seller_product_rejected'];
           self.seller_product_out_of_stock = res['seller_product_out_of_stock'];
+          self.seller_change_request = res['seller_change_request'];
         });
         var dashboard_ndr_def = self._rpc({
             model: "stock.picking",
@@ -268,6 +271,7 @@ var SellerManagementDashboard = AbstractAction.extend({
                         'sale_action_dashboard_seller_product_approve_list',
                         'sale_action_dashboard_seller_product_rejected_list',
                         'sale_action_dashboard_seller_product_out_of_stock_list',
+                        'sale_action_dashboard_seller_change_request_list',
                         'ndr_action_dashboard_total_ndr_list',
                         'ndr_action_dashboard_first_ndr_attempts_list',
                         'ndr_action_dashboard_second_ndr_attempts_list',
