@@ -12,9 +12,17 @@
 			<xpath expr="//form" position="replace">
 				<form string="Kanha Census">
 					<header>
-						<field name="state" widget="statusbar" />
+						<button name="button_approve" string="Approve" type="object" attrs="{'invisible':[('application_status','!=','to_approve')]}" class="btn-success"/>
+						<button name="button_reject" string="Reject" type="object" attrs="{'invisible':[('application_status','!=','to_approve')]}" class="btn-danger"/>
+						<field name="application_status" widget="statusbar" />
 					</header>
 					<sheet>
+						<widget name="web_ribbon" title="Saved Not Submitted"
+							bg_color="bg-info"
+							attrs="{'invisible': [('state', '=', 'submitted')]}"/>
+						<widget name="web_ribbon" title="Submitted"
+							bg_color="bg-info"
+							attrs="{'invisible': [('state', '=', 'saved_not_submitted')]}"/>
 						<group>
 							<group>
 								<field name="name" required="1" readonly="1"/>
@@ -25,6 +33,7 @@
 								<field name="abhyasi_id" readonly="1"/>
 								<field name="residence_type" readonly="1"/>
 								<field name="visa_type" readonly="1"/>
+								<field name="state" invisible="1"/>
 							</group>
 							<group>
 								<field name="surname" readonly="1"/>
@@ -33,8 +42,8 @@
 								<field name="citizenship" readonly="1"/>
 								<field name="passport_number" widget="Encrypted"  attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 								<field name="members_count" readonly="1"/>
-								<field name="visa_start_date" readonly="1"/>
-								<field name="visa_end_date" readonly="1"/>
+								<field name="visa_start_date" readonly="1" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}"/>
+								<field name="visa_end_date" readonly="1" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}"/>
 							</group>
 						</group>
 						<notebook>
@@ -47,6 +56,9 @@
 		                                <field name="kanha_house_number_id" string="House Number" readonly="1"/>
 		                            </group>
                         		</group>
+								<group string="Rejection Reason">
+									<field name="rejection_reason" nolabel="1" readonly="1"/>
+								</group>
                     		</page>
                     		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible':[('citizenship','!=','Indian')]}">
                     			<group>
@@ -81,8 +93,8 @@
 							<page string="Documents" name="documents" >
                         		<group>
 		                            <group string="Documents" name="documents">
-		                                <field name="adhar_card" readonly="1"/>
-		                                <field name="adhar_card_back_side" readonly="1"/>
+		                                <field name="adhar_card" attrs="{'required':[('citizenship','=','Indian')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
+		                                <field name="adhar_card_back_side" attrs="{'required':[('citizenship','=','Indian')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 		                                <field name="passport_front_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 		                                <field name="passport_back_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 		                               	<field name="indian_visa" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
@@ -162,9 +174,11 @@
 		</field>
 	</record>
 
-	<!-- Kanha Patner Action  -->
+	<menuitem id="menu_applications_root" name="Applications" parent="kanha_census.menu_kanha_census_root" sequence="1"/>
+
+	<!-- All Application Action  -->
 	<record id="kanha_partner_action" model="ir.actions.act_window">
-		<field name="name">Family</field>
+		<field name="name">All Applications</field>
 		<field name="res_model">res.partner</field>
 		<field name="view_mode">tree,form</field>
 		<field name="view_ids"
@@ -176,9 +190,47 @@
 	
 	<!-- Menu item  -->
 	<menuitem id="menu_kanha_partner"
-          parent="kanha_census.menu_kanha_census_root" 
+          parent="menu_applications_root"
           action="kanha_partner_action"
 		  sequence="30"
+          />
+
+	<record id="kanha_submitted_application_action" model="ir.actions.act_window">
+		<field name="name">Submitted Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('application_status','=','to_approve')]</field>
+		<field name="view_ids"
+			eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]" />
+	</record>
+
+	<!-- Menu item  -->
+	<menuitem id="menu_kanha_submitted_application"
+          parent="menu_applications_root"
+          action="kanha_submitted_application_action"
+		  sequence="10"
+          />
+	
+	<record id="kanha_approved_application_action" model="ir.actions.act_window">
+		<field name="name">Approved Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('application_status','=','approved')]</field>
+		<field name="view_ids"
+			eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]" />
+	</record>
+
+	<!-- Menu item  -->
+	<menuitem id="menu_kanha_approved_application"
+          parent="menu_applications_root"
+          action="kanha_approved_application_action"
+		  sequence="20"
           />
 
 </odoo>

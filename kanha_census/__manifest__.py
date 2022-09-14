@@ -14,6 +14,7 @@
         'data/website_data.xml',
         'data/kanha_data.xml',
         'data/mail_data.xml',
+        'wizard/get_application_reject_reason_view.xml',
         'views/portal_templates.xml',
         'views/assets.xml',
         'views/kanha_location_view.xml',

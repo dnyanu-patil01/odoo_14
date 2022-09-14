@@ -48,14 +48,26 @@
 		<menuitem name="Kanha Census"
 	        id="menu_kanha_census_root" 
 	        sequence="4"/>
+
+		<!-- Kanha census configuration menu -->       
+		<menuitem name="Configuration"
+	        id="menu_kanha_census_configuration_root" 
+			parent="menu_kanha_census_root"
+	        sequence="4"/>
+		
+		<!-- Kanha census Master List menu -->       
+		<menuitem name="Master List"
+	        id="menu_kanha_census_master_list_root" 
+			parent="menu_kanha_census_configuration_root"
+	        sequence="70"/>
 	
 		<!-- Kanha Location menu -->
 		<menuitem
 		    id="kanha_location_menu"
 		    name="Kanha Location"
-		    parent="menu_kanha_census_root"
+		    parent="menu_kanha_census_master_list_root"
 		    action="kanha_location_action"
-			sequence="10"
+			sequence="30"
 		    />
 
 
@@ -106,9 +118,9 @@
 		<menuitem
 		    id="kanha_house_number_menu"
 		    name="Kanha House Number"
-		    parent="menu_kanha_census_root"
+		    parent="menu_kanha_census_master_list_root"
 		    action="kanha_house_number_action"
-			sequence="20"
+			sequence="40"
 		    />
 
 	</data>
