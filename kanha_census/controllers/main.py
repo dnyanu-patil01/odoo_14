@@ -65,7 +65,7 @@ class CustomerPortal(CustomerPortal):
         #     domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number_id', '=', current_partner.kanha_house_number_id.id),('kanha_location_id','=',current_partner.kanha_location_id.id)]
         # else:
         #     domain = [('id', '=', current_partner.id)]
-        domain = [('create_uid','=',request.env.user.id)]
+        domain = [('create_uid','=',request.env.user.id),('email','=',request.env.user.email)]
         if search:
             subdomains = [('name', 'ilike', search)]
             domain = domain+subdomains
