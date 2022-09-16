@@ -233,4 +233,24 @@
 		  sequence="20"
           />
 
+
+	<record id="kanha_rejected_application_action" model="ir.actions.act_window">
+		<field name="name">Rejected Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('application_status','=','rejected')]</field>
+		<field name="view_ids"
+			eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]" />
+	</record>
+
+	<!-- Menu item  -->
+	<menuitem id="menu_kanha_rejected_application"
+          parent="menu_applications_root"
+          action="kanha_rejected_application_action"
+		  sequence="20"
+          />
+
 </odoo>
