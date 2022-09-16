@@ -417,7 +417,7 @@ class CustomerPortal(CustomerPortal):
     def family_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         ResPartner = request.env['res.partner']
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
-        if partner.email == request.env.user.email or partner.create_uid == request.env.user:
+        if partner.email == request.env.user.email or partner.create_uid == request.env.user or request.env.is_admin():
             values = self.get_default_values_for_kanha(partner_id)
             is_kanha_voter_info_required = True
             if partner.citizenship == 'Overseas':
