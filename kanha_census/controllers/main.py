@@ -65,7 +65,7 @@ class CustomerPortal(CustomerPortal):
         #     domain = ['|', ('id', '=', current_partner.id), ('kanha_house_number_id', '=', current_partner.kanha_house_number_id.id),('kanha_location_id','=',current_partner.kanha_location_id.id)]
         # else:
         #     domain = [('id', '=', current_partner.id)]
-        domain = [('create_uid','=',request.env.user.id),('email','=',request.env.user.email)]
+        domain = ['|',('create_uid','=',request.env.user.id),('email','=',request.env.user.email)]
         if search:
             subdomains = [('name', 'ilike', search)]
             domain = domain+subdomains
@@ -417,21 +417,24 @@ class CustomerPortal(CustomerPortal):
     def family_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         ResPartner = request.env['res.partner']
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
-        values = self.get_default_values_for_kanha(partner_id)
-        is_kanha_voter_info_required = True
-        if partner.citizenship == 'Overseas':
-            is_kanha_voter_info_required = False
-        values.update({
-            'zipcode': post.get('zip'),
-            'partner': partner,
-            'is_kanha_voter_info_required': is_kanha_voter_info_required
-        })
-        if partner.citizenship == 'Indian':
-            response = request.render("kanha_census.kanha_family_portal_form_indian", values)
+        if partner == request.env.user.partner_id or partner.create_uid == request.env.user.id:
+            values = self.get_default_values_for_kanha(partner_id)
+            is_kanha_voter_info_required = True
+            if partner.citizenship == 'Overseas':
+                is_kanha_voter_info_required = False
+            values.update({
+                'zipcode': post.get('zip'),
+                'partner': partner,
+                'is_kanha_voter_info_required': is_kanha_voter_info_required
+            })
+            if partner.citizenship == 'Indian':
+                response = request.render("kanha_census.kanha_family_portal_form_indian", values)
+            else:
+                response = request.render("kanha_census.kanha_family_portal_form_overseas", values)
+            response.headers['X-Frame-Options'] = 'DENY'
+            return response
         else:
-            response = request.render("kanha_census.kanha_family_portal_form_overseas", values)
-        response.headers['X-Frame-Options'] = 'DENY'
-        return response
+            print("You cannot access this record !")
     
     @http.route(['/add_family_members_indian'], type='http', auth="public", website=True)
     def add_family_members_indian(self, redirect=None, **post):
