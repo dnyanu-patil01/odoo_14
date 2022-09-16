@@ -106,6 +106,8 @@ class Encrypted(fields.Field):
 
     def _decrypt(self, enc):
         try:
+            if not enc:
+                return
             if enc.startswith("AES"):
                 enc = enc[3:]
             elif enc.endswith("=="):
