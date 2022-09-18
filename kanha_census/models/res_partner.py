@@ -153,18 +153,6 @@ class ResPartner(models.Model):
         if template:
             template.with_context(ctx).send_mail(self.id, force_send=True)
 
-    
-    @api.model_create_multi
-    def create(self, vals_list):
-        partners = super(ResPartner, self).create(vals_list)
-        portal = self.env['portal.wizard'].with_context({'active_ids':partners.ids}).create({})
-        portal.user_ids.write({'in_portal':True})
-        error = portal.user_ids.get_error_messages()
-        if not error:
-            portal.sudo().action_apply()
-        return partners
-
-
     def button_reject(self):
         ctx = {"application_ids": self.ids}
         return {
