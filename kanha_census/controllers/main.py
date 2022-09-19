@@ -71,7 +71,8 @@ class CustomerPortal(CustomerPortal):
             domain = domain+subdomains
         
         # For admin user display all partner records
-        if request.env.is_admin():
+        print(request.env.user.has_group('base.group_user'))
+        if request.env.user.has_group('base.group_user'):
             domain = []
 
         # count for pager
@@ -417,7 +418,7 @@ class CustomerPortal(CustomerPortal):
     def family_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         ResPartner = request.env['res.partner']
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
-        if partner.email == request.env.user.email or partner.create_uid == request.env.user or request.env.is_admin():
+        if partner.email == request.env.user.email or partner.create_uid == request.env.user or request.env.user.has_group('base.group_user'):
             values = self.get_default_values_for_kanha(partner_id)
             is_kanha_voter_info_required = True
             if partner.citizenship == 'Overseas':
@@ -549,6 +550,7 @@ class CustomerPortal(CustomerPortal):
         filestream=BytesIO()
         partner_ids = map(int, partner_ids.split(","))
         res_partners = request.env['res.partner'].browse(partner_ids)
+        import pdb;pdb.set_trace()
         for res_partner in res_partners:
             request.env.cr.execute("""
                     SELECT id
@@ -566,6 +568,7 @@ class CustomerPortal(CustomerPortal):
                 shutil.rmtree(partner_temp_dir)
             os.makedirs(partner_temp_dir)
             for attachment in attachments:
+                attachment = attachment.sudo()
                 mimetype = attachment.mimetype.split("/")[-1]
                 extension = "."+mimetype
                 file = open(os.path.join(partner_temp_dir, attachment.name+extension), 'wb')
