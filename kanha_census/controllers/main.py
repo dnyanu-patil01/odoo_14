@@ -66,14 +66,16 @@ class CustomerPortal(CustomerPortal):
         # else:
         #     domain = [('id', '=', current_partner.id)]
         domain = ['|',('create_uid','=',request.env.user.id),('email','=',request.env.user.email)]
-        if search:
-            subdomains = [('name', 'ilike', search)]
-            domain = domain+subdomains
+        
         
         # For admin user display all partner records
         print(request.env.user.has_group('base.group_user'))
         if request.env.user.has_group('base.group_user'):
             domain = []
+        
+        if search:
+            subdomains = [('name', 'ilike', search)]
+            domain = domain+subdomains
 
         # count for pager
         partner_count = ResPartner.sudo().search_count(domain)
@@ -241,25 +243,26 @@ class CustomerPortal(CustomerPortal):
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
         if post and request.httprequest.method == 'POST':
             error = dict()
-            post['state'] = 'saved_not_submitted'
-            # Validates the form only when Submit the form. When Saves ignores the form validation
+            # Validates the form when save/submit
             error, error_message = self.kanha_portal_form_validate(post, partner_id)
-            aadhaar_card_number = post.get('aadhaar_card_number')
-            citizenship = post.get('citizenship')
-            passport_number = post.get('passport_number')
-            if citizenship == "Indian" and not aadhaar_card_number:
-                error = "aadhaar_card_number"
-                error_message = 'Aadhaar Card Number is Mandatory to Save/Submit Record'
-            if citizenship == "Overseas" and not passport_number:
-                error = "passport_number"
-                error_message = 'Passport Number is Mandatory to Save/Submit Record'
+            # aadhaar_card_number = post.get('aadhaar_card_number')
+            # citizenship = post.get('citizenship')
+            # passport_number = post.get('passport_number')
+            # if citizenship == "Indian" and not aadhaar_card_number:
+            #     error = "aadhaar_card_number"
+            #     error_message = 'Aadhaar Card Number is Mandatory to Save/Submit Record'
+            # if citizenship == "Overseas" and not passport_number:
+            #     error = "passport_number"
+            #     error_message = 'Passport Number is Mandatory to Save/Submit Record'
             # if not post.get('aadhaar_card_number'):
             #     error = "aadhaar_card_number"
             #     error_message = 'Aadhaar Card Number is Mandatory to Save/Submit Record'
+            post['state'] = 'saved_not_submitted'
+            post['application_status'] = 'draft'
             if(is_submit == 'true'):
                 post['state'] = 'submitted'
                 post['application_status'] = 'to_approve'
-            if not error and is_submit == 'false':
+            if not error:
                 # Prepares File fields
                 post_vals = post.copy()
                 for field_name, field_value in post_vals.items():
@@ -272,7 +275,7 @@ class CustomerPortal(CustomerPortal):
                 values = {}
                 values.update(post)
                 values.update({'is_published': True})
-                values.update({'application_status': 'draft'})
+                # values.update({'application_status': 'draft'})
                 # Removes Invisible fields value
                 if(values.get('change_voter_id_address') != 'Yes'):
                     # self.remove_existing_voter_id_details(values)
@@ -403,10 +406,10 @@ class CustomerPortal(CustomerPortal):
                         partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
                         relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})    
                 return json.dumps({'id': partner.id})
-            if is_submit == 'true':
-                if partner:
-                    partner.sudo().write({'application_status':'to_approve','state':'submitted'})
-                    return json.dumps({'id': partner.id})
+            # if is_submit == 'true':
+            #     if partner:
+            #         partner.sudo().write({'application_status':'to_approve','state':'submitted'})
+            #         return json.dumps({'id': partner.id})
         return json.dumps({
             'id': False,
             'error': error,
@@ -420,29 +423,33 @@ class CustomerPortal(CustomerPortal):
         partner = ResPartner.sudo().search([('id', '=', partner_id)])
         if partner.email == request.env.user.email or partner.create_uid == request.env.user or request.env.user.has_group('base.group_user'):
             values = self.get_default_values_for_kanha(partner_id)
-            is_kanha_voter_info_required = True
-            if partner.citizenship == 'Overseas':
-                is_kanha_voter_info_required = False
+            # is_kanha_voter_info_required = True
+            # if partner.citizenship == 'Overseas':
+            #     is_kanha_voter_info_required = False
             values.update({
                 'zipcode': post.get('zip'),
                 'partner': partner,
-                'is_kanha_voter_info_required': is_kanha_voter_info_required
+                # 'is_kanha_voter_info_required': is_kanha_voter_info_required
             })
             if partner.citizenship == 'Indian':
                 response = request.render("kanha_census.kanha_family_portal_form_indian", values)
-            else:
+            elif partner.citizenship == 'Overseas':
                 response = request.render("kanha_census.kanha_family_portal_form_overseas", values)
+            else:
+                response = request.render("kanha_census.selection_form_view", values)
             response.headers['X-Frame-Options'] = 'DENY'
             return response
         else:
             print("You cannot access this record !")
     
-    @http.route(['/add_family_members_indian'], type='http', auth="public", website=True)
-    def add_family_members_indian(self, redirect=None, **post):
+    @http.route(['/add_family_members_indian/<int:partner_id>'], type='http', auth="public", website=True)
+    def add_family_members_indian(self, redirect=None, partner_id=None, model_name=None, **post):
         values = self.get_default_values_for_kanha()
         current_partner = request.env.user.partner_id
+        ResPartner = request.env['res.partner']
+        partner = ResPartner.sudo().search([('id', '=', partner_id)])
         values.update({
-            'partner': None,
+            'partner': partner,
             'surname': current_partner.surname,
             'kanha_location_id': current_partner.kanha_location_id.id if current_partner.kanha_location_id else None,
             'kanha_house_number_id':  current_partner.kanha_house_number_id.id if current_partner.kanha_house_number_id else None,
@@ -450,12 +457,14 @@ class CustomerPortal(CustomerPortal):
         response = request.render("kanha_census.kanha_family_portal_form_indian", values)
         return response
     
-    @http.route(['/add_family_members_overseas'], type='http', auth="public", website=True)
-    def add_family_members_overseas(self, redirect=None, **post):
+    @http.route(['/add_family_members_overseas/<int:partner_id>'], type='http', auth="public", website=True)
+    def add_family_members_overseas(self, redirect=None, partner_id=None, model_name=None,**post):
         values = self.get_default_values_for_kanha()
         current_partner = request.env.user.partner_id
+        ResPartner = request.env['res.partner']
+        partner = ResPartner.sudo().search([('id', '=', partner_id)])
         values.update({
-            'partner': None,
+            'partner': partner,
             'surname': current_partner.surname,
             'is_overseas': True,
             'kanha_location_id': current_partner.kanha_location_id.id if current_partner.kanha_location_id else None,
@@ -550,7 +559,7 @@ class CustomerPortal(CustomerPortal):
         filestream=BytesIO()
         partner_ids = map(int, partner_ids.split(","))
         res_partners = request.env['res.partner'].browse(partner_ids)
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         for res_partner in res_partners:
             request.env.cr.execute("""
                     SELECT id

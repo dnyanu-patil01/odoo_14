@@ -100,12 +100,22 @@
 								<div >
 									<br/>
 								</div>
-								<a  role="button" class="btn btn-primary btn-lg btn-block" t-attf-href="/add_family_members_indian" title="Indian" aria-label="Indian">
-									Indian Citizen
-								</a>
-								<a  role="button" class="btn btn-success btn-lg btn-block" t-attf-href="/add_family_members_overseas" title="Overseas" aria-label="Overseas">
-									Overseas Citizen
-								</a>
+								<t t-if="partner">
+									<a  role="button" class="btn btn-primary btn-lg btn-block" t-attf-href="/add_family_members_indian/#{partner.id}" title="Indian" aria-label="Indian">
+										Indian Citizen
+									</a>
+									<a  role="button" class="btn btn-success btn-lg btn-block" t-attf-href="/add_family_members_overseas/#{partner.id}" title="Overseas" aria-label="Overseas">
+										Overseas Citizen
+									</a>
+								</t>
+								<t t-else="">
+									<a  role="button" class="btn btn-primary btn-lg btn-block" t-attf-href="/add_family_members_indian/0" title="Indian" aria-label="Indian">
+										Indian Citizen
+									</a>
+									<a  role="button" class="btn btn-success btn-lg btn-block" t-attf-href="/add_family_members_overseas/0" title="Overseas" aria-label="Overseas">
+										Overseas Citizen
+									</a>
+								</t>
 							</div>
 						</div>
 					</div>
@@ -1704,7 +1714,7 @@
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('birth_country_id') and 'o_has_error' or ''}">
-                        <select id="birth_country_id_field" name="birth_country_id" t-attf-class="form-control s_website_form_input #{error.get('birth_country_id') and 'is-invalid' or ''}" t-att-required="'true' if is_kanha_voter_info_required == True else None">
+                        <select id="birth_country_id_field" name="birth_country_id" t-attf-class="form-control s_website_form_input #{error.get('birth_country_id') and 'is-invalid' or ''}" required="">
                             <t t-foreach="birth_countries" t-as="birth_country">
                                 <option t-att-value="birth_country.id" t-att-selected="birth_country.id == int(birth_country_id) if birth_country_id else birth_country.id == partner.birth_country_id.id if partner else birth_country.code == 'IN' if birth_country.code else null">
                                     <t t-esc="birth_country.name" />
@@ -1719,7 +1729,7 @@
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('birth_state_id') and 'o_has_error' or ''}">
-                        <select id="birth_state_id_field" name="birth_state_id" t-attf-class="form-control s_website_form_input #{error.get('birth_state_id') and 'is-invalid' or ''}" t-att-required="'true' if is_kanha_voter_info_required == True else None">
+                        <select id="birth_state_id_field" name="birth_state_id" t-attf-class="form-control s_website_form_input #{error.get('birth_state_id') and 'is-invalid' or ''}" required="">
                             <option value="">Select...</option>
                             <t t-foreach="states" t-as="birth_state">
                                 <option t-att-value="birth_state.id" t-att-data-country_id="birth_state.country_id.id" t-att-country="birth_state.country_id.id" t-att-selected="birth_state.id == int(birth_state_id) if birth_state_id else birth_state.id == partner.birth_state_id.id if partner else null">
@@ -1735,7 +1745,7 @@
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('birth_state_id') and 'o_has_error' or ''}">
-                        <input id="birth_district_field" type="text" class="form-control s_website_form_input" name="birth_district" t-att-required="'true' if is_kanha_voter_info_required == True else None" t-att-value="birth_district or partner and partner.birth_district" />
+                        <input id="birth_district_field" type="text" class="form-control s_website_form_input" name="birth_district" required="" t-att-value="birth_district or partner and partner.birth_district" />
                     </div>
                 </div>
                 <div class="col-lg-12 row form-group s_website_form_field">
@@ -1744,7 +1754,7 @@
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('birth_town') and 'o_has_error' or ''}">
-                        <input id="birth_town_field" type="text" class="form-control s_website_form_input" name="birth_town" t-att-required="'true' if is_kanha_voter_info_required == True else None" t-att-value="birth_town or partner and partner.birth_town" />
+                        <input id="birth_town_field" type="text" class="form-control s_website_form_input" name="birth_town" required="" t-att-value="birth_town or partner and partner.birth_town" />
                     </div>
                 </div>
              	<div class="col-lg-12 row form-group s_website_form_field">
@@ -1761,7 +1771,7 @@
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('already_have_kanha_voter_id') and 'o_has_error' or ''}">
-                        <select id="already_have_kanha_voter_id_field" t-att-required="'true' if is_kanha_voter_info_required == True else None" name="already_have_kanha_voter_id" t-attf-class="form-control s_website_form_input #{error.get('already_have_kanha_voter_id') and 'is-invalid' or ''}">
+                        <select id="already_have_kanha_voter_id_field" required="" name="already_have_kanha_voter_id" t-attf-class="form-control s_website_form_input #{error.get('already_have_kanha_voter_id') and 'is-invalid' or ''}">
                             <option value="">Select...</option>
                             <t t-foreach="['Yes', 'No']" t-as="have_kanha_voter_id">
                                 <option t-att-value="have_kanha_voter_id" t-att-selected="have_kanha_voter_id == already_have_kanha_voter_id if already_have_kanha_voter_id else have_kanha_voter_id == partner.already_have_kanha_voter_id if partner else null">
