@@ -119,6 +119,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'click .family_website_form_submit': '_onSubmitForm',
 		// Form Save
 		'click .family_website_form_save': '_onClickSave',
+		//'click .family_website_form_save': '_onSubmitForm',
 		// Adhaar card input auto space
 		'keypress #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
 		'change #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
@@ -1189,18 +1190,51 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         });
 	},
 	
+	
+	_validateForm: function (e) {
+        e.preventDefault(); // Prevent the default submit behavior
+        // Prevent users from crazy clicking
+        /*this.$target.find('.family_website_form_submit')
+            .addClass('disabled')    // !compatibility
+            .attr('disabled', 'disabled');*/
+		
+		// Clear form submission status if any
+		// this.$('#form_result_success').addClass('d-none')
+
+        var self = this;
+        this.$target.find('.family_website_form_result').html(); // !compatibility
+        //if (!self.check_error_fields({})) {
+		var is_form_valid = Object.keys(self.check_error_fields({}))
+		if (is_form_valid == 'false') {
+			var missing_fields = Object.values(self.check_error_fields({}))
+            self.update_status('error', _t("Please fill in the form correctly."+'\n'.concat(missing_fields.join())));
+			return false;
+        }
+		return true;
+    },
+	
+	
 	// Saves the form values. If form submit is False then ignore the form validation
 	_onClickSave: function (e, is_submit=false) {
 		// Prevent users from crazy clicking
-        this.$target.find('.family_website_form_save')
+       /* this.$target.find('.family_website_form_save')
             .addClass('disabled')    // !compatibility
-            .attr('disabled', 'disabled');
+            .attr('disabled', 'disabled');*/
 		
-		this._onSaveForm(e,is_submit)
+		var res = this._validateForm(e)
+		if(res){
+			// Saves the form
+			this._onSaveForm(e, is_submit);
+		}
+		else{
+			return false;
+		}
+
 	},
 	
 	_onSubmitForm: function (e) {
-        e.preventDefault(); // Prevent the default submit behavior
+       
+		/* e.preventDefault(); // Prevent the default submit behavior
         // Prevent users from crazy clicking
         this.$target.find('.family_website_form_submit')
             .addClass('disabled')    // !compatibility
@@ -1217,9 +1251,15 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			var missing_fields = Object.values(self.check_error_fields({}))
             self.update_status('error', _t("Please fill in the form correctly."+'\n'.concat(missing_fields.join())));
 			return false;
-        }
-		// Saves the form
-		self._onSaveForm(e, true);
+        }*/
+		var res = this._validateForm(e)
+		if(res){
+			// Saves the form
+			this._onSaveForm(e, true);
+		}
+		else{
+			return false;
+		}
     },
 
 	check_error_fields: function (error_fields) {
