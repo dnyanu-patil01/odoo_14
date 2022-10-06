@@ -173,6 +173,20 @@ class CustomerPortal(CustomerPortal):
                 error["visa_end_date"] = _('You cannot enter a date in the future for Resident of kanha from date!')
                 error_message.append(_('You cannot enter a date in the future for Resident of kanha from date!'))      
 
+        
+        # Aadhaar Card Number and Passport Number Mandatory validation
+        # aadhaar_card_number = data.get('aadhaar_card_number')
+        # citizenship = data.get('citizenship')
+        # passport_number = data.get('passport_number')
+        # if citizenship == "Indian" and not aadhaar_card_number:
+        #     error["aadhaar_card_number"] = _('Aadhaar Card Number is Mandatory to Save/Submit Record')
+        #     error_message.append(_('Aadhaar Card Number is Mandatory to Save/Submit Record!'))      
+        #
+        # if citizenship == "Overseas" and not passport_number:
+        #     error["passport_number"] = _('Aadhaar Card Number is Mandatory to Save/Submit Record')
+        #     error_message.append(_('Passport Number is Mandatory to Save/Submit Record!'))      
+        
+        
         return error, error_message
 
     def is_valid_pan_number(self, pan_number):
@@ -207,8 +221,7 @@ class CustomerPortal(CustomerPortal):
         #    1.Begins with 0 or 91
         #    2.Then contains 7 or 8 or 9.
         #    3.Then contains 9 digits
-        # pattern = re.compile("(0|91)?[6-9][0-9]{9}")
-        pattern = re.compile("(0/91)?[7-9][0-9]{9}")
+        pattern = re.compile("(0|91)?[6-9][0-9]{9}")
         if pattern.match(mobile_number) and len(mobile_number) == 10:
             return True
         else:
@@ -254,9 +267,7 @@ class CustomerPortal(CustomerPortal):
             # if citizenship == "Overseas" and not passport_number:
             #     error = "passport_number"
             #     error_message = 'Passport Number is Mandatory to Save/Submit Record'
-            # if not post.get('aadhaar_card_number'):
-            #     error = "aadhaar_card_number"
-            #     error_message = 'Aadhaar Card Number is Mandatory to Save/Submit Record'
+
             post['state'] = 'saved_not_submitted'
             post['application_status'] = 'draft'
             if(is_submit == 'true'):
