@@ -1035,14 +1035,15 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var $form = $(e.currentTarget).closest('form');
 		var self = this;
 		
-		// Clear form submission status if any
+		/*// Clear form submission status if any
 		this.$('#form_result_error').addClass('d-none')
 		
 		// Update field color if invalid or erroneous
 		this.$target.find('.form-field, .s_website_form_field').each(function (k, field) { 
 			var $field = $(field);
         	$field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
- 		});
+ 		});*/
+	
 	
 		// Prepare form inputs
         this.form_fields = $form.serializeArray();
@@ -1133,9 +1134,12 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
                 self.update_status('error', result_data.error_message ? result_data.error_message : false);
                 if (result_data.error_fields) {
                     // If the server return a list of bad fields, show these fields for users
-                    self.check_error_fields(result_data.error_fields);
+                    //self.check_error_fields(result_data.error_fields);
+					self.check_error_fields_save(Object.keys(result_data.error_fields))
 					self.$target.find('.family_website_form_save').removeClass('disabled').attr('enabled', 'enabled');
-					window.scrollTo(0,0);
+					//window.scrollTo(0,0);
+					$("html, body").animate({ scrollTop: 0 }, "slow");
+
 					
                 }
             } else {
@@ -1212,55 +1216,58 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         }
 		return true;
     },
-	
+
+	_clearFormStatus: function (e) {
+		// Clear form submission status if any
+		this.$('#form_result_error').addClass('d-none');
+		
+		// Update field color if invalid or erroneous
+		this.$target.find('.form-field, .s_website_form_field').each(function (k, field) { 
+			var $field = $(field);
+        	$field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
+ 		});
+	},
 	
 	// Saves the form values. If form submit is False then ignore the form validation
 	_onClickSave: function (e, is_submit=false) {
-		// Prevent users from crazy clicking
-       /* this.$target.find('.family_website_form_save')
-            .addClass('disabled')    // !compatibility
-            .attr('disabled', 'disabled');*/
-		
-		var res = this._validateForm(e)
-		if(res){
-			// Saves the form
-			this._onSaveForm(e, is_submit);
-		}
-		else{
+
+		this._clearFormStatus(e);
+		var citizenship = $('.citizenship').val();
+		var aadhaar_card_number = $('#aadhaar_card_number_field').val();
+		var passport_number = $('#passport_number_input').val();
+		if(citizenship == 'Indian' && !aadhaar_card_number){
+			$('#aadhaar_card_number_field').addClass('is-invalid');
+			this.update_status('error', _t("Aadhaar Card Number is Mandatory to Save/Submit Record!"));
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+			alert("err")
 			return false;
 		}
-
+		if(citizenship == 'Overseas' && !passport_number){
+			$('#passport_number_input').addClass('is-invalid');
+			this.update_status('error', _t("Passport Number is Mandatory to Save/Submit Record!"));
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+			return false;
+		}
+		this._onSaveForm(e, is_submit);
 	},
 	
 	_onSubmitForm: function (e) {
-       
-		/* e.preventDefault(); // Prevent the default submit behavior
-        // Prevent users from crazy clicking
-        this.$target.find('.family_website_form_submit')
-            .addClass('disabled')    // !compatibility
-            .attr('disabled', 'disabled');
-		
-		// Clear form submission status if any
-		// this.$('#form_result_success').addClass('d-none')
-
-        var self = this;
-        this.$target.find('.family_website_form_result').html(); // !compatibility
-        //if (!self.check_error_fields({})) {
-		var is_form_valid = Object.keys(self.check_error_fields({}))
-		if (is_form_valid == 'false') {
-			var missing_fields = Object.values(self.check_error_fields({}))
-            self.update_status('error', _t("Please fill in the form correctly."+'\n'.concat(missing_fields.join())));
-			return false;
-        }*/
+		//this._clearFormStatus(e)
 		var res = this._validateForm(e)
 		if(res){
-			// Saves the form
 			this._onSaveForm(e, true);
 		}
 		else{
+			$("html, body").animate({ scrollTop: 0 }, "slow");
 			return false;
 		}
     },
+
+	check_error_fields_save: function (error_fields_keys) {
+		for (let i = 0; i < error_fields_keys.length; i++) {
+			$("input[name='"+error_fields_keys[i]+"']").addClass('is-invalid');
+		} 
+	},
 
 	check_error_fields: function (error_fields) {
         var self = this;
@@ -1304,7 +1311,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
             // Update field color if invalid or erroneous
             $field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
-			console.log($field)
             
 			if (invalid_inputs.length || error_fields[field_name]) {
 				// Stores Field's' Lable name for required fields used to display in the warning message
@@ -1313,7 +1319,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 				}
                 $field.addClass('o_has_error').find('.form-control, .custom-select').addClass('is-invalid');
 				
-				$("html, body").animate({ scrollTop: 0 }, "slow");
+				//$("html, body").animate({ scrollTop: 0 }, "slow");
                 if (_.isString(error_fields[field_name])) {
                     $field.popover({content: error_fields[field_name], trigger: 'hover', container: 'body', placement: 'top'});
                     // update error message and show it.
