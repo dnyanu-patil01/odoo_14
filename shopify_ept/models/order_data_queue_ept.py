@@ -144,10 +144,9 @@ class ShopifyOrderDataQueueEpt(models.Model):
         instance.connect_in_shopify()
 
         api_from_date, api_to_date = self.convert_dates_by_timezone(instance, from_date, to_date)
-
         try:
             order_ids = shopify.Order().find(status="any",
-                                             fulfillment_status=order_type,
+                                             fulfillment_status='unfulfilled' or 'partial',
                                              updated_at_min=api_from_date,
                                              updated_at_max=api_to_date, limit=250)
         except Exception as error:
