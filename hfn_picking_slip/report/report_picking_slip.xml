@@ -1,36 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="report_picking_slip">
-        <t t-call="web.html_container">
-            <t t-call="web.external_layout">
-                <t t-foreach="docs" t-as="o">
-                    <div style="padding-top:0px;margin-top:-30px;" class="page">
-                        <h2 align="center">Picking List</h2>
-                        <table class="table table-sm table-bordered" style="table-layout: fixed">
-                            <thead style="display: table-row-group">
-                                <tr>
-                                    <th style="width:10%">SNo</th>
-                                    <th align="center" style="width:50%">Product Name</th>
-                                    <th style="width:20%">Delivery Qty</th>
-                                    <th style="width:20%">On Hand Qty</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-set="counter" t-value="1" />
-                                <tr t-foreach="products" t-as="prod">
-                                    <td>
-                                        <span t-esc="counter" />
-                                        <t t-set="counter" t-value="counter+1" />
-                                    </td>
-                                    <td><span t-esc="prod['product_name']"/></td>
-                                    <td><span t-esc="prod['qty_to_be_delivered']"/></td>
-                                    <td><span t-esc="prod['qty_available']"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </t>
-            </t>
-        </t>
-    </template>
+	<template id="report_picking_slip">
+		<t t-call="web.html_container">
+			<t t-call="web.external_layout">
+				<t t-foreach="docs" t-as="o">
+					<div  class="page">
+						<h2 align="center">Picking List</h2>
+						<p>
+							<b>From : </b>
+							<t t-esc="start_date"/>
+							<b>To : </b>
+							<t t-esc="end_date"/>
+						</p>
+						<table class="table table-sm table-bordered" style="table-layout: fixed">
+							<thead style="display: table-row-group">
+								<tr>
+									<th style="width:10%">SNo</th>
+									<th align="center" style="width:50%">Product Name</th>
+									<th style="width:20%">Delivery Qty</th>
+									<th style="width:20%">On Hand Qty</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="counter" t-value="1" />
+								<tr t-foreach="products" t-as="prod">
+									<td>
+										<span t-esc="counter" />
+										<t t-set="counter" t-value="counter+1" />
+									</td>
+									<td>
+										<span t-esc="prod['product_name']"/>
+									</td>
+									<td>
+										<span t-esc="prod['qty_to_be_delivered']"/>
+									</td>
+									<td>
+										<span t-esc="prod['qty_available']"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</t>
+			</t>
+		</t>
+	</template>
 </odoo>
