@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_delivery_document_inherit" inherit_id="stock.report_delivery_document">
+        <xpath expr="//h2" position="before">
+            <!-- <img t-att-src="'/report/barcode/Code128/'+o.name" style="width:400px;height:50px;padding:0px;margin:0px;" alt="Barcode"/> -->
+            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;quiet=%s' % ('Code128', o.name, 500, 100, 0)" style="width:300px;height:50px" alt="Barcode"/>
+
+        </xpath>
+    </template>
+</odoo>
