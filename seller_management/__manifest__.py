@@ -29,6 +29,7 @@
         'report/invoice_report_template.xml',
         'report/reports.xml',
         'views/hide_report_view.xml',
+        'report/report_deliveryslip.xml',
     ],
     'demo': [
         ''
