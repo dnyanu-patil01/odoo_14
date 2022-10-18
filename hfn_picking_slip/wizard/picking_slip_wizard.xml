@@ -1,38 +1,51 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <data>
-        <record id="picking_slip_wizard_view" model="ir.ui.view">
-            <field name="name">picking.slip.wizard</field>
-            <field name="model">picking.slip.wizard</field>
-            <field name="arch" type="xml">
-               <form>
-                   <group>
-                        <div>
-                            <p>Picking Slip For Shiprocket</p>
-                        </div>
-                        <footer>
-                            <button string="Print" name="print_pickup_slip" type="object" class="btn-primary"/>
-                            <button string="Discard" class="btn-default" special="cancel"/>
-                        </footer>
-                    </group>
-               </form>
-            </field>
-        </record>
-
-        <record id="action_picking_slip_wizard" model="ir.actions.act_window">
-            <field name="name">picking.slip.wizard</field>
-            <field name="res_model">picking.slip.wizard</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="picking_slip_wizard_view"/>
-            <field name="target">new</field>
-        </record>
-        <menuitem name="Pickup Slip" id="print_pickup_slip" 
+	<data>
+		<record id="picking_slip_wizard_view" model="ir.ui.view">
+			<field name="name">picking.slip.wizard</field>
+			<field name="model">picking.slip.wizard</field>
+			<field name="arch" type="xml">
+				<form>
+					<group>
+						<div>
+							<p class="alert alert-warning" role="alert">
+								<b>Picking Slip Will Be Generated Based On The Following Conditions</b>
+								<ul>
+									<li>Transfer records should not be in the state done or cancelled</li>
+									<li>Delivery carrier must be Shiprocket</li>
+								</ul>
+							</p>
+						</div>
+					</group>
+					<group>
+						<group>
+							<field name="start_date"/>
+							<field name="end_date"/>
+						</group>
+					</group>
+					<footer>
+						<button string="Generate Pickup Slip" name="print_pickup_slip" type="object" class="btn-primary"/>
+                            or
+                            
+						<button string="Cancel" class="btn-default" special="cancel"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_picking_slip_wizard" model="ir.actions.act_window">
+			<field name="name">Pickup Slip</field>
+			<field name="res_model">picking.slip.wizard</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="picking_slip_wizard_view"/>
+			<field name="target">new</field>
+		</record>
+		<menuitem name="Pickup Slip" id="print_pickup_slip" 
             action="action_picking_slip_wizard" 
             parent="stock.menu_stock_root"
             sequence="90"
             groups="stock.group_stock_user"/>
-    </data>
+	</data>
 </odoo>
 
 
