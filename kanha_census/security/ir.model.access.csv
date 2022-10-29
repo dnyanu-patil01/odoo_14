@@ -6,6 +6,6 @@ access_residents_document_download_user,residents.document.downlad.user,model_re
 access_residents_documents_downloads_history_user,residents.documents.downloads.history.user,model_residents_documents_downloads_history,base.group_user,1,1,1,0
 access_kanha_location_portal_user,kanha.location.portal.user,model_kanha_location,base.group_portal,1,1,1,0
 access_vehicle_details_portal_user,vehicle.details.portal.user,model_vehicle_details,base.group_portal,1,1,1,0
-access_kanha_house_number_user,kanha.house.number.user,model_kanha_house_number,base.group_user,1,1,1,0
+access_kanha_house_number_user,kanha.house.number.user,model_kanha_house_number,base.group_user,1,1,1,1
 access_kanha_house_number_portal_user,kanha.house.number.portal.user,model_kanha_house_number,base.group_portal,1,1,1,0
 access_application_reject_reason_user,application.reject.reason.user,model_application_reject_reason,,1,1,1,1

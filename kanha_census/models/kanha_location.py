@@ -1,4 +1,4 @@
-from odoo import fields, models, api
+from odoo import fields, models, api,_
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -47,7 +47,27 @@ class KanhaLocation(models.Model):
 class KanhaHouseNumber(models.Model):
     _name = "kanha.house.number"
     _description = "Kanha House Number"
+    _order = "name"
 
     name = fields.Char('Kanha House Number',required=True)
     kanha_location_id = fields.Many2one('kanha.location',required=True)
     active = fields.Boolean('Active', default=True)
+    application_count = fields.Integer(compute='_compute_application_count', string='Related Application Count')
+
+
+    def unlink(self):
+        related_records = self.env['res.partner'].search([('kanha_house_number_id','in',self.ids)])
+        if related_records:
+            raise UserError(_("You cannot delete this house number.It is used in applications."))
+        return super().unlink()
+
+    def _compute_application_count(self):
+        self.application_count = len(self.env['res.partner'].search([('kanha_house_number_id','=',self.id)]))
+
+    def action_view_application(self):
+        self.ensure_one()
+        action = self.env["ir.actions.actions"]._for_xml_id("kanha_census.kanha_partner_action")
+        action['domain'] = [
+            ('kanha_house_number_id', '=', self.id),
+        ]
+        return action
