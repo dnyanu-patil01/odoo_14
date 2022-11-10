@@ -38,9 +38,9 @@ class KanhaLocation(models.Model):
         return self.create({'name': name}).name_get()[0]
     
     def unlink(self):
-        main_category = self.env.ref('product.product_category_all')
-        if main_category in self:
-            raise UserError(_("You cannot delete this product category, it is the default generic category."))
+        related_records = self.env['res.partner'].search([('kanha_location_id','in',self.ids)])
+        if related_records:
+            raise UserError(_("You cannot delete this location.It is used in applications."))
         return super().unlink()
 
 

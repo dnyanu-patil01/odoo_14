@@ -1239,7 +1239,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#aadhaar_card_number_field').addClass('is-invalid');
 			this.update_status('error', _t("Aadhaar Card Number is Mandatory to Save/Submit Record!"));
 			$("html, body").animate({ scrollTop: 0 }, "slow");
-			alert("err")
 			return false;
 		}
 		if(citizenship == 'Overseas' && !passport_number){
