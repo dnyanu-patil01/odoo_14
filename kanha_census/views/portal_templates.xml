@@ -2010,17 +2010,17 @@
                         <input id="relation_other_field" type="text" t-att-required="'true' if partner and partner.relation_type == 'Other' else None" class="form-control s_website_form_input" name="relation_other" t-att-value="relation_other or partner and partner.relation_other" />
                     </div>
                 </div>
-                <div class="col-lg-12 row form-group s_website_form_field">
+                <!-- <div class="col-lg-12 row form-group s_website_form_field">
                     <div class="col-lg-6">
                         <label class="col-form-label">Relative Aadhaar Card
 							No.</label>
-                        <!-- <span class="s_website_form_mark"> *</span> -->
+                        
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('relative_aadhaar_card_number') and 'o_has_error' or ''}">
                         <input id="relative_aadhaar_card_number_field" type="text" class="form-control s_website_form_input" name="relative_aadhaar_card_number" placeholder="ex: 2345 6789 1100" t-att-value="relative_aadhaar_card_number or partner and partner.relative_aadhaar_card_number" />
                     </div>
-                </div>
-                <div t-attf-class="col-lg-12 row form-group s_website_form_field declaration_form #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'New Application') and 'd-none' or ''}">
+                </div> -->
+                <!-- <div t-attf-class="col-lg-12 row form-group s_website_form_field declaration_form #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'New Application') and 'd-none' or ''}">
                     <div t-attf-class="col-lg-6">
                         <label class="col-form-label" for="Declaration Form">Declaration Form</label>
                         <span class="s_website_form_mark">*</span>
@@ -2045,8 +2045,8 @@
                         </t>
                         <button type="button" t-att-fileupload_input="'declaration_form_upload'" t-att-filename_input="'declaration_form_filename'" class="btn btn-secondary fa fa-trash-o declaration_form_clear" title="Clear" aria-label="Clear" />
                     </div>
-                </div>
-                <div t-attf-class="col-lg-12 row form-group s_website_form_field declaration_form #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'New Application') and 'd-none' or ''}">
+                </div> -->
+                <!-- <div t-attf-class="col-lg-12 row form-group s_website_form_field declaration_form #{not partner and 'd-none' or ''} #{(partner and partner.application_type != 'New Application') and 'd-none' or ''}">
                     <div t-attf-class="col-lg-6 " />
                     <div t-attf-class="col-lg-6">
                         <t t-if="partner">
@@ -2062,7 +2062,7 @@
                             <t>and upload the filled and signed document.</t>
                         </t>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </template>

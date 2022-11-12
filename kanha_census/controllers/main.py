@@ -159,19 +159,19 @@ class CustomerPortal(CustomerPortal):
                 error["resident_of_kanha_from_date"] = _('You cannot enter a date in the future for Resident of kanha from date!')
                 error_message.append(_('You cannot enter a date in the future for Resident of kanha from date!'))      
         
-        # Resident of kanha from date validation
+        # Visa start date validation
         if data.get("visa_start_date"):
             is_valid = self.is_valid_date(data.get('visa_start_date'))
             if not is_valid:
                 error["visa_start_date"] = _('You cannot enter a date in the future for Visa Start date!')
                 error_message.append(_('You cannot enter a date in the future for Visa Start date!'))      
 
-        # Resident of kanha from date validation
+        # Visa end date validation
         if data.get("visa_end_date"):
             is_valid = self.is_valid_future_date(data.get('visa_end_date'))
             if not is_valid:
-                error["visa_end_date"] = _('You cannot enter a date in the future for Resident of kanha from date!')
-                error_message.append(_('You cannot enter a date in the future for Resident of kanha from date!'))      
+                error["visa_end_date"] = _('You cannot enter a date in the past for Visa End date!')
+                error_message.append(_('You cannot enter a date in the past for Visa End date!'))      
 
         
         # Aadhaar Card Number and Passport Number Mandatory validation
