@@ -75,10 +75,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		//'click .voter_id_file_edit': '_onBrowseFile',
 		//'click .voter_id_file_clear': '_onClearFile',
 		// Declaration Form upload
-		'click .declaration_form_edit': '_onBrowseFile',
-		'change .declaration_form_upload': '_onUploadDeclarationForm',
-		'click .declaration_form_browse': '_onBrowseFile',
-		'click .declaration_form_clear': '_onClearFile',
+		//'click .declaration_form_edit': '_onBrowseFile',
+		//'change .declaration_form_upload': '_onUploadDeclarationForm',
+		//'click .declaration_form_browse': '_onBrowseFile',
+		//'click .declaration_form_clear': '_onClearFile',
 		// Country selection
 		'change select[name="birth_country_id"]': '_onBirthCountryChange',
 		'change select[name="country_id"]': '_onCountryChange',
@@ -113,8 +113,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keydown #kanha_voter_id_back_image_filename_field': '_onRestrictInput',
 		// 'keypress #voter_id_file_filename_field': '_onRestrictInput',
 		// 'keydown #voter_id_file_filename_field': '_onRestrictInput',
-		'keypress #declaration_form_filename_field': '_onRestrictInput',
-		'keydown #declaration_form_filename_field': '_onRestrictInput',
+		//'keypress #declaration_form_filename_field': '_onRestrictInput',
+		//'keydown #declaration_form_filename_field': '_onRestrictInput',
 		// Form submit
 		'click .family_website_form_submit': '_onSubmitForm',
 		// Form Save
@@ -123,8 +123,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		// Adhaar card input auto space
 		'keypress #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
 		'change #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
-		'keypress #relative_aadhaar_card_number_field': '_insertCardNumberBlankSpace',
-		'change #relative_aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+		// 'keypress #relative_aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+		// 'change #relative_aadhaar_card_number_field': '_insertCardNumberBlankSpace',
 		'keypress #pan_card_number_id': '_restrictSpecialCharacter',
 		'keydown #pan_card_number_id': '_restrictSpecialCharacter',
 		'keypress #mobile_number_id': '_restrictSpecialCharacter',
@@ -381,8 +381,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(application_type.val() == 'New Application'){
 			
 			// Show Declaration Form field
-			$('.declaration_form').removeClass('d-none');
-			$('#declaration_form_field').attr('required', true);
+			//$('.declaration_form').removeClass('d-none');
+			//$('#declaration_form_field').attr('required', true);
 			
 			// Hide Existing Voter ID number and Voter ID file
 			// $('.existing_voter_id_number').addClass('d-none');
@@ -397,8 +397,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		}
 		else if(application_type.val() == 'Transfer Application'){
 			// Hide Declaration Form field
-			$('.declaration_form').addClass('d-none');
-			$('#declaration_form_field').removeAttr('required');
+			//$('.declaration_form').addClass('d-none');
+			//$('#declaration_form_field').removeAttr('required');
 			//document.getElementById("declaration_form_field").value = "";
 			//document.getElementById("declaration_form_filename_field").value = "";
 			
@@ -423,8 +423,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			//document.getElementById("voter_id_file_filename_field").value = "";
 			
 			// Hide Declaration Form field
-			$('.declaration_form').addClass('d-none');
-			$('#declaration_form_field').removeAttr('required');
+			//$('.declaration_form').addClass('d-none');
+			//$('#declaration_form_field').removeAttr('required');
 			//document.getElementById("declaration_form_field").value = "";
 			//document.getElementById("declaration_form_filename_field").value = "";
 		}
@@ -494,8 +494,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#existing_voter_id_number_field').removeAttr('required');
 			$('#voter_id_file_field').removeAttr('required');
 			$('#voter_id_file_filename_field').removeAttr('required');
-			$('#declaration_form_field').removeAttr('required');
-			$('#declaration_form_filename_field').removeAttr('required');
+			//$('#declaration_form_field').removeAttr('required');
+			//$('#declaration_form_filename_field').removeAttr('required');
 		}
 		else{
 			
@@ -676,33 +676,33 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
      *
      * @private
      */
-	_onUploadDeclarationForm: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
-            return;
-        }
-		var file = files[0];
-		var mimeType = file.type
-		// Accepts only file with extension in jpg and jpeg
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024; // in MiB
-	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
-				// Reset
-	        	document.getElementsByName("declaration_form_filename").value = "";
-				document.getElementsByName("declaration_form").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
+	// _onUploadDeclarationForm: function (ev) {
+	// 	var files = ev.target.files;
+	// 	if (!files.length) {
+    //         return;
+    //     }
+	// 	var file = files[0];
+	// 	var mimeType = file.type
+	// 	// Accepts only file with extension in jpg and jpeg
+	// 	if(mimeType.indexOf("image/") == 0){
+	// 	  	var fileSize = file.size / 1024 / 1024; // in MiB
+	//   		if (fileSize > 5) {
+	// 			Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+	// 			// Reset
+	//         	document.getElementsByName("declaration_form_filename").value = "";
+	// 			document.getElementsByName("declaration_form").value = "";
+	// 		}
+	// 		else{
+	// 			var file_name = ev.target.files[0].name
+	// 			var $form = $(ev.currentTarget).closest('form');
+	// 			var filename_input = $(ev.target).attr('filename_input')
+	// 			$form.find('.'+filename_input).val(file_name);
+	// 		}
+	// 	}
+	// 	else{
+	// 		Dialog.alert(null, "Accepts only image files.");
+	// 	}
+	// },
 	
 	/**
      * Limit the size and type of a file upload. Maximum file size is 5 MB.
