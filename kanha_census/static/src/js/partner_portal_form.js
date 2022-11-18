@@ -16,7 +16,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'change select[name="relation_type"]': '_onChangeRelationType',
 		'change select[name="change_voter_id_address"]': '_onChangeVoterAddressToKanha',
 		'change select[name="citizenship"]': '_onCitizenshipChange',
-		'change select[name="application_type"]': '_onChangeVoterApplicationType',
+		//'change select[name="application_type"]': '_onChangeVoterApplicationType',
 		'change select[name="already_have_kanha_voter_id"]': '_onChangeAlreadyHaveKanhaVoterID',
 		'change select[name="need_new_kanha_voter_id"]': '_onChangeNeedNewKanhaVoterID',
 		// Adhar File Front upload
@@ -376,9 +376,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
      *
      * @private
      */
-    _onChangeVoterApplicationType: function () {
-		var application_type = this.$('select[name="application_type"]');
-		if(application_type.val() == 'New Application'){
+    //_onChangeVoterApplicationType: function () {
+	//	var application_type = this.$('select[name="application_type"]');
+	//	if(application_type.val() == 'New Application'){
 			
 			// Show Declaration Form field
 			//$('.declaration_form').removeClass('d-none');
@@ -394,8 +394,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			//document.getElementById("voter_id_file_field").value = "";
 			//document.getElementById("voter_id_file_filename_field").value = "";
 			
-		}
-		else if(application_type.val() == 'Transfer Application'){
+	//	}
+	//	else if(application_type.val() == 'Transfer Application'){
 			// Hide Declaration Form field
 			//$('.declaration_form').addClass('d-none');
 			//$('#declaration_form_field').removeAttr('required');
@@ -409,8 +409,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			// $('.voter_id_file').removeClass('d-none');
 			// $('#voter_id_file_field').attr('required', true);
 			
-		}
-		else{
+	//	}
+	//	else{
 			
 			// // Hide Existing Voter ID number and Voter ID file
 			// $('.existing_voter_id_number').addClass('d-none');
@@ -427,8 +427,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			//$('#declaration_form_field').removeAttr('required');
 			//document.getElementById("declaration_form_field").value = "";
 			//document.getElementById("declaration_form_filename_field").value = "";
-		}
-    },
+	//	}
+    //},
 
 	/**
      * Show Passport Number and Hide Kanha Voter ID tab if selected Citizenship is Overseas
