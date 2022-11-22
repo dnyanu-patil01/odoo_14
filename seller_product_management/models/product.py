@@ -63,13 +63,7 @@ class ProductChangeRequest(models.Model):
 
     def button_approve(self):
         if self.product_tmpl_id:
-            changes_dict = json.loads(self.changes_text)
-            for field in fields_name:
-                if (
-                    field in changes_dict.keys()
-                    and field != "variant_change_request_line"
-                ):
-                    self.product_tmpl_id.write({field: changes_dict.get(field)})
+            self.write_change_product_template()
             self.approve_variant_change()
             self.product_tmpl_id.button_approve()
             self.product_tmpl_id.write({"state": "approve"})
@@ -86,6 +80,18 @@ class ProductChangeRequest(models.Model):
                 "target": "main",
             }
             return action
+    
+    def write_change_product_template(self):
+        if self.product_tmpl_id:
+            changes_dict = json.loads(self.changes_text)
+            for field in fields_name:
+                if (
+                    field in changes_dict.keys()
+                    and field != "variant_change_request_line"
+                ):
+                    self.product_tmpl_id.write({field: changes_dict.get(field)})
+        return True
+
 
     def approve_variant_change(self):
         if self.variant_change_request_line.mapped('new_value_ids'):
@@ -106,8 +112,8 @@ class ProductChangeRequest(models.Model):
         }
 
     def write(self, vals):
-        approve_vals = {"state", "active"}
-        if len(vals) == len(approve_vals) and all(key in vals for key in approve_vals):
+        approve_vals = {"state", "active","is_variants"}
+        if all(key in approve_vals for key in vals):
             return super(ProductChangeRequest, self).write(vals)
         changes_str = ""
         if not self.changes_text:
@@ -124,6 +130,8 @@ class ProductChangeRequest(models.Model):
                 "change_request_note": html_note,
             }
         )
+        if changes_str:
+            self.product_tmpl_id.write({'state':'to_approve'})
         return super(ProductChangeRequest, self).write(vals)
 
     def get_html_note(self, change_str):
@@ -243,7 +251,6 @@ class ProductTemplate(models.Model):
                 change_request_obj.write({"is_variants": True})
             else:
                 change_request_obj.write({"is_variants": False})
-            self.write({"state": "to_approve"})
             return {
                 "name": "Product Change Request Form",
                 "type": "ir.actions.act_window",

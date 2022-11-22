@@ -76,6 +76,23 @@
 			</tree>
 		</field>
 	</record>
+	<record id="action_approve_change_request" model="ir.actions.server">
+		<field name="name">Approve</field>
+		<field name="model_id" ref="seller_product_management.model_product_change_request"/>
+		<field name="binding_model_id" ref="seller_product_management.model_product_change_request"/>
+		<field name="binding_view_types">list</field>
+		<field name="state">code</field>
+		<field name="code">
+		if records:
+			for rec in records:
+				if rec.product_tmpl_id:
+					rec.write_change_product_template()
+					rec.approve_variant_change()
+					rec.product_tmpl_id.with_context({'active_ids':rec.product_tmpl_id.ids}).button_approve()
+					rec.product_tmpl_id.write({"state": "approve"})
+					rec.write({"state": "approve", "active": False})
+		</field>
+	</record>
 	<record id="view_product_template_form_inherit" model="ir.ui.view">
 		<field name="name">product.template.view.form.inherit</field>
 		<field name="model">product.template</field>
