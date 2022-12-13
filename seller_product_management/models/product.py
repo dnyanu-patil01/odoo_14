@@ -82,7 +82,7 @@ class ProductChangeRequest(models.Model):
             return action
     
     def write_change_product_template(self):
-        if self.product_tmpl_id:
+        if self.product_tmpl_id and self.changes_text:
             changes_dict = json.loads(self.changes_text)
             for field in fields_name:
                 if (
