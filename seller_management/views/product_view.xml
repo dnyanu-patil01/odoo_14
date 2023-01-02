@@ -67,8 +67,8 @@
                                     <field name="product_variant_id" invisible="1"/>
                                 </group>
                             </group>
-                            <group name="pricing" string="Prices">
-                                <group>
+                            <group>
+                                <group name="pricing" string="Prices">
                                     <field nolabel="1" name="product_price_line" widget="one2many" readonly="1">
                                         <tree>
                                             <field name="product_id" string="Product"/>
@@ -78,6 +78,20 @@
                                             <group>
                                                 <field name="product_id" string="Product"  options="{'no_create': True,'no_open':True}" readonly="1"/>
                                                 <field name="fixed_price" string="Price" readonly="1"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </group>
+                                <group name="qty" string="Quantity On Hand">
+                                    <field nolabel="1" name="product_variant_ids" widget="one2many" readonly="1">
+                                        <tree>
+                                            <field name="display_name" string="Product"/>
+                                            <field name="qty_available" string="On Hand Quantity"/>
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <field name="display_name" string="Product" readonly="1"/>
+                                                <field name="qty_available" string="On Hand Quantity" readonly="1"/>
                                             </group>
                                         </form>
                                     </field>
