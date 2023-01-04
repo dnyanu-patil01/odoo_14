@@ -288,7 +288,12 @@ class ProductTemplate(models.Model):
         if prev_request:
             return prev_request
         else:
-            vals = {
+            vals = self.prepare_change_request_vals()
+            new_change_request = change_request.create(vals)
+            return new_change_request
+
+    def prepare_change_request_vals(self):
+        vals = {
                 "product_tmpl_id": self.id,
                 "name": self.name,
                 "description": self.description,
@@ -298,10 +303,9 @@ class ProductTemplate(models.Model):
                 "l10n_in_hsn_description": self.l10n_in_hsn_description,
                 "active": True,
             }
-            if self.taxes_id:
-                vals.update({"taxes_id": [(6, 0, self.taxes_id.ids)]})
-            new_change_request = change_request.create(vals)
-            return new_change_request
+        if self.taxes_id:
+            vals.update({"taxes_id": [(6, 0, self.taxes_id.ids)]})
+        return vals
 
     def button_submit(self):
         return self.write({"state": "to_approve"})
