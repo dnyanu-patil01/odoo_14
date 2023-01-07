@@ -73,6 +73,13 @@ class SaleExcelReport(models.TransientModel):
         for order in orders:  
             lines=[]
             for line in order.order_line:
+                props = []
+                for prop in line.shopify_custom_field_ids:
+                    props.append({
+                        'property_name':prop.property_name,
+                        'property_value':prop.property_value,
+                    })
+
                 lines.append({
                     'product':line.product_id.name,
                     'quantity':line.product_uom_qty,
@@ -82,7 +89,8 @@ class SaleExcelReport(models.TransientModel):
                     'price_unit':line.price_unit,
                     'price_total':line.price_total,
                     'price_tax':line.price_tax,
-                    'taxes':line.tax_id.mapped('name')
+                    'taxes':line.tax_id.mapped('name'),
+                    'props': props,
                 })
             order_data.append({
                 'order_reference':order.name,
@@ -122,6 +130,9 @@ class SaleExcelReport(models.TransientModel):
                 worksheet.write(row_index , index + 7, line.get('price_unit'),style)
                 worksheet.write(row_index , index + 8, line.get('taxes'),style)
                 worksheet.write(row_index , index + 9, line.get('price_total'),style)
+                for ind , prop in enumerate(rec.get('props')):
+                    worksheet.write(row_index,index + ind + 9,prop.get('property_name'),style)
+                    worksheet.write(row_index,index + ind + 9,prop.get('property_value'),style)
                 row_index = row_index + 1
             worksheet.write(row_index,index + 6,'Order Total',header_style)
             worksheet.write(row_index,index + 7,rec.get('amount_untaxed'),style)

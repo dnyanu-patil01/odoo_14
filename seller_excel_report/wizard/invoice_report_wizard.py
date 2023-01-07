@@ -126,7 +126,7 @@ class InvoiceExcelReport(models.TransientModel):
             rec=self.get_invoice_details(date_start=self.start_date, date_stop=self.end_date)
             workbook = xlwt.Workbook()
             worksheet = workbook.add_sheet('invoice-report')
-            sheet_headers=['Date','Invoice Ref','Customer']
+            sheet_headers=['Date','Invoice Ref','Customer','Custom Values']
             line_headers = ['Product','Quantity','UoM','Price','Taxes','Total']
             self.generate_worksheet(worksheet, sheet_headers, line_headers,rec)
             fp = BytesIO()
