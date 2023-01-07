@@ -639,10 +639,24 @@ class SaleOrder(models.Model):
             "is_delivery": is_shipping,
             "is_fulfilled":line.get('is_fulfilled'),
         })
+        order_line_vals.update({
+            "shopify_line_id": line.get("id"),
+        })
+
         order_line = sale_order_line_obj.create(order_line_vals)
 
         ## Added by ronak, to set the tax id on the order line as per odoo taxes
         order_line._compute_tax_id()
+        
+        ## Added by ronak, to add custom field value at order line level
+        props = []
+        for prop in line.get('properties'):
+            print(prop)
+            props.append(self.env["shopify.custom.field"].create({
+                'property_name':prop.get('name'),
+                'property_value':prop.get('value'),
+                'order_line_id':order_line.id,
+            }))
 
         return order_line
 

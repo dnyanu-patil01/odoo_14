@@ -1,5 +1,13 @@
 from odoo import _, api, fields, models
 
+class ShopifyCustomField(models.Model):
+    _name = "shopify.custom.field"
+
+    property_name = fields.Char()
+    property_value = fields.Char()
+    order_line_id = fields.Many2one('sale.order.line', string="Sale Order Line")
+
+
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
@@ -95,6 +103,7 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     seller_id = fields.Many2one('res.partner','Seller', index=True, copy=False)
+    shopify_custom_field_ids = fields.One2many('shopify.custom.field','order_line_id',string='Extra Fields', help="Tracks the custom fields from Shopify if any set on product.")
 
     @api.onchange('product_id')
     def product_id_change(self):
