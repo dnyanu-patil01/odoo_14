@@ -21,6 +21,8 @@
         'views/res_partner_view.xml',
         'views/residents_documents_downloads_history.xml',
         'wizard/residents_document_download.xml',
+        'views/work_profile_views.xml',
+
     ],
     'auto_install': False,
     'installable': True,

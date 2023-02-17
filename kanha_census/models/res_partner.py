@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models, api
+from odoo import fields, models, api, _
 from datetime import date, timedelta
+from odoo.exceptions import AccessError
+
 
 
 class ResPartner(models.Model):
@@ -74,6 +76,14 @@ class ResPartner(models.Model):
         ('Contractor', 'Contractor'),
         ('Other','Other')
     ])
+    
+    work_profile_id = fields.Many2one('work.profile', string="Work Profile", required=True)
+    employee_id = fields.Char(string='Employee ID')
+    department = fields.Char(string='Department')
+
+
+
+
     change_voter_id_address = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
@@ -179,3 +189,16 @@ class ResPartner(models.Model):
         ctx['email_from'] = self.env.user.company_id.email
         if template:
             template.with_context(ctx).send_mail(self.id, force_send=True)
+
+    def unlink(self):
+        """Inherited to allow admin to delete the user"""
+        for partner in self:
+            user = self.env['res.users'].sudo().search([('partner_id', '=', partner.id)])
+            if user:                
+                if user.id == self.env.user.id:
+                    raise AccessError(_("Please contact Administrator to delete this record."))
+                else:
+                    user.unlink()
+                    partner.sudo().unlink()
+        return super(ResPartner, self).unlink()
+

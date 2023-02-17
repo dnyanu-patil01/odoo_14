@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		
+		<!-- Work Profile Tree -->
+	    <record id="work_profile_tree" model="ir.ui.view">
+	        <field name="name">work.profile.view.tree</field>
+	        <field name="model">work.profile</field>
+	        <field name="arch" type="xml">
+	            <tree string="Work profile">
+	          		<field name="name" string="Work Profile"/>
+	            </tree>
+	        </field>
+	    </record>
+	
+		<!-- Work Profile Form -->
+	    <record id="work_profile_view_form" model="ir.ui.view">
+	        <field name="name">work.profile.view.form</field>
+	        <field name="model">work.profile</field>
+	        <field name="arch" type="xml">
+	            <form string="Work Profile">
+	                <sheet>
+						<group>
+							<field name="name"/>
+							<field name="active" invisible="1"/>
+                        </group>
+                    </sheet>
+	            </form>
+	        </field>
+	    </record>
+	
+		<!-- Work Profile Action -->
+	    <record id="work_profile_action" model="ir.actions.act_window">
+	        <field name="name">Work Profile</field>
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">work.profile</field>
+	        <field name="view_mode">tree,form</field>
+	        <field name="help" type="html">
+	            <p class="o_view_nocontent_smiling_face">Create a Work Profile</p>
+	        </field>
+	    </record>
+	           
+		<!-- Work Profile menu -->
+		<menuitem
+		    id="work_profile_menu"
+		    name="Work Profile"
+		    parent="menu_kanha_census_master_list_root"
+		    action="work_profile_action"
+			sequence="41"
+		    />
+
+	</data>
+</odoo>
