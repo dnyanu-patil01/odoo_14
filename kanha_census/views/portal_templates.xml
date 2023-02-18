@@ -44,49 +44,58 @@
             <t t-if="not partners">
                 <div class="alert alert-warning mt8" role="alert">There are no records.</div>
             </t>
-            <t t-if="partners" t-call="portal.portal_table">
-                <thead>
-                    <tr class="active">
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Mobile</th>
-                        <th>Date of Birth</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr t-foreach="partners" t-as="partner">
-                        <td>
-                            <a t-attf-href="/website_form_family/#{partner.id}/res.partner?{{ keep_query() }}">
-                                <span t-field="partner.name" />
-                            </a>
-                        </td>
-                        <td>
-                            <t t-esc="partner.email" />
-                        </td>
-                        <td>
-                            <t t-esc="partner.mobile" />
-                        </td>
-                        <td>
-                            <t t-esc="partner.date_of_birth" />
-                        </td>
-                        <td>
-                        <t t-if="partner.application_status == 'draft'">
-                            <span class="badge badge-pill badge-warning"><span class="d-none d-md-inline"> Not Yet Submitted</span></span>
-                        </t>
-                        <t t-if="partner.application_status == 'to_approve'">
-                            <span class="badge badge-pill badge-info"><span class="d-none d-md-inline"> Waiting For Approval</span></span>
-                        </t>
-                        <t t-if="partner.application_status == 'approved'">
-                            <span class="badge badge-pill badge-success"><span class="d-none d-md-inline"> Approved</span></span>
-                        </t>
-                        <t t-if="partner.application_status == 'rejected'">
-                            <span class="badge badge-pill badge-danger"><span class="d-none d-md-inline"> Rejected</span></span>
-                        </t>
-                        </td>
-                    </tr>
-                </tbody>
-            </t>
+            <div class="o_portal_partner_details">
+                <div id="delete_result" class="d-none alert alert-success" role="alert">
+                    <span class="family_delete_result word-wrap" />
+                </div>
+                <t t-if="partners" t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Date of Birth</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="partners" t-as="partner">
+                            <td>
+                                <a t-attf-href="/website_form_family/#{partner.id}/res.partner?{{ keep_query() }}">
+                                    <span t-field="partner.name" />
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="partner.email" />
+                            </td>
+                            <td>
+                                <t t-esc="partner.mobile" />
+                            </td>
+                            <td>
+                                <t t-esc="partner.date_of_birth" />
+                            </td>
+                            <td>
+                            <t t-if="partner.application_status == 'draft'">
+                                <span class="badge badge-pill badge-warning"><span class="d-none d-md-inline"> Not Yet Submitted</span></span>
+                            </t>
+                            <t t-if="partner.application_status == 'to_approve'">
+                                <span class="badge badge-pill badge-info"><span class="d-none d-md-inline"> Waiting For Approval</span></span>
+                            </t>
+                            <t t-if="partner.application_status == 'approved'">
+                                <span class="badge badge-pill badge-success"><span class="d-none d-md-inline"> Approved</span></span>
+                            </t>
+                            <t t-if="partner.application_status == 'rejected'">
+                                <span class="badge badge-pill badge-danger"><span class="d-none d-md-inline"> Rejected</span></span>
+                            </t>
+                            </td>
+                            <td>
+                                <button t-att-id="partner.id" type="button" class="btn btn-secondary fa fa-trash-o partner_clear" title="Clear" aria-label="Clear" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </t>               
+            </div>
         </t>
     </template>
 
@@ -205,29 +214,6 @@
                                                 <input id="aadhaar_card_number_field" tabindex="6" type="text" t-attf-class="adhar_number_field form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}" name="aadhaar_card_number" placeholder="ex: 2345 6789 1100" t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
                                             </div>
                                         </div>
-                                         <div class="col-lg-12 row form-group s_website_form_field">
-                                            <div class="col-lg-6">
-                                                <label class="col-form-label" for="Residence Type">Residence Type</label>
-                                            </div>
-                                            <div t-attf-class="col-xl-6 #{error.get('residence_type') and 'o_has_error' or ''}">
-                                                <select name="residence_type" tabindex="7" t-attf-class="form-control #{error.get('residence_type') and 'is-invalid' or ''}">
-                                                    <option value="">Select...</option>
-                                                    <t t-foreach="['Rented Place', 'Owner']" t-as="room">
-                                                        <option t-att-value="room" t-att-selected="room == residence_type if residence_type else room == partner.residence_type if partner else null">
-                                                            <t t-esc="room" />
-                                                        </option>
-                                                    </t>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12 row form-group s_website_form_field">
-                                            <div class="col-lg-6">
-                                                <label class="col-form-label" for="Abhyasi ID">Abhyasi ID</label>
-                                            </div>
-                                            <div t-attf-class="col-xl-6 #{error.get('abhyasi_id') and 'o_has_error' or ''}">
-                                                <input id="abhyasi_id_id" tabindex="8" type="text" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -262,7 +248,7 @@
                                                 <input required="" id="passport_number_input" tabindex="11" type="text" class="form-control s_website_form_input" name="passport_number" t-att-value="passport_number or partner and partner.passport_number" />
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                        <!-- <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Visa Type">Visa Type</label>
                                                 <span class="s_website_form_mark">*</span>
@@ -294,6 +280,29 @@
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('visa_end_date') and 'o_has_error' or ''}" data-type="char" data-name="Field">
                                                 <input id="visa_end_date_field" tabindex="14" type="date" required="" t-attf-class="form-control s_website_form_input #{error.get('visa_end_date') and 'is-invalid' or ''}" name="visa_end_date" t-att-value="visa_end_date or partner and partner.visa_end_date" />
+                                            </div>
+                                        </div> -->
+                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="Residence Type">Residence Type</label>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('residence_type') and 'o_has_error' or ''}">
+                                                <select name="residence_type" tabindex="7" t-attf-class="form-control #{error.get('residence_type') and 'is-invalid' or ''}">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['Rented Place', 'Owner']" t-as="room">
+                                                        <option t-att-value="room" t-att-selected="room == residence_type if residence_type else room == partner.residence_type if partner else null">
+                                                            <t t-esc="room" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="Abhyasi ID">Abhyasi ID</label>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('abhyasi_id') and 'o_has_error' or ''}">
+                                                <input id="abhyasi_id_id" tabindex="8" type="text" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
                                             </div>
                                         </div>
                                         <div class="col-lg-12 row form-group s_website_form_field">
@@ -1731,7 +1740,7 @@
                         <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('birth_state_id') and 'o_has_error' or ''}">
-                        <select id="birth_state_id_field" name="birth_state_id" t-attf-class="form-control s_website_form_input #{error.get('birth_state_id') and 'is-invalid' or ''}" required="">
+                        <select id="birth_state_id_field" name="birth_state_id" t-attf-class="form-control s_website_form_input #{error.get('birth_state_id') and 'is-invalid' or ''}" t-att-required="'true' if len(states) >= 1 else None">
                             <option value="">Select...</option>
                             <t t-foreach="states" t-as="birth_state">
                                 <option t-att-value="birth_state.id" t-att-data-country_id="birth_state.country_id.id" t-att-country="birth_state.country_id.id" t-att-selected="birth_state.id == int(birth_state_id) if birth_state_id else birth_state.id == partner.birth_state_id.id if partner else null">
@@ -1750,7 +1759,7 @@
                         <input id="birth_district_field" type="text" class="form-control s_website_form_input" name="birth_district" required="" t-att-value="birth_district or partner and partner.birth_district" />
                     </div>
                 </div>
-                <div class="col-lg-12 row form-group s_website_form_field">
+                <!-- <div class="col-lg-12 row form-group s_website_form_field">
                     <div class="col-lg-6">
                         <label class="col-form-label" for="Birth Town">Birth Town</label>
                         <span class="s_website_form_mark">*</span>
@@ -1758,7 +1767,7 @@
                     <div t-attf-class="col-xl-6 #{error.get('birth_town') and 'o_has_error' or ''}">
                         <input id="birth_town_field" type="text" class="form-control s_website_form_input" name="birth_town" required="" t-att-value="birth_town or partner and partner.birth_town" />
                     </div>
-                </div>
+                </div> -->
              	<div class="col-lg-12 row form-group s_website_form_field">
                     <div class="col-lg-6">
                         <label class="col-form-label" for="application_reference_no">If already applied for Kanha voter ID, please provide application reference number</label>
@@ -2391,16 +2400,48 @@
                         <label class="col-form-label" for="work_profile">Work Profile</label>
                     </div>
                     <div t-attf-class="col-xl-6 #{error.get('work_profile') and 'o_has_error' or ''}">
-                        <select name="work_profile" t-attf-class="form-control #{error.get('work_profile') and 'is-invalid' or ''}">
+                        <!-- <select name="work_profile" t-attf-class="form-control #{error.get('work_profile') and 'is-invalid' or ''}">
                             <option value="">Select...</option>
                             <t t-foreach="['Resident', 'Volunteer', 'Employee', 'NMR', 'Contractor']" t-as="profile">
                                 <option t-att-value="profile" t-att-selected="profile == work_profile if work_profile else profile == partner.work_profile if partner else null">
                                     <t t-esc="profile" />
                                 </option>
                             </t>
+                        </select> -->
+
+                        <select name="work_profile_id" t-attf-class="form-control #{error.get('work_profile_id') and 'is-invalid' or ''}">
+                            <option value="">Select...</option>
+                             <t t-foreach="work_profiles or []" t-as="profile">
+                                <option t-att-value="profile.id" t-att-name="profile.name" t-att-selected="profile.id == int(work_profile_id) if work_profile_id else profile.id == partner.work_profile_id.id if partner else null">
+                                    <t t-esc="profile.name" />
+                                </option>
+                            </t>
                         </select>
                     </div>
                 </div>
+
+                <div t-attf-class="col-lg-12 row form-group s_website_form_field employee_id #{not partner and 'd-none' or ''} #{(partner and partner.work_profile_id.name != 'Employee') and 'd-none' or ''}">
+                    <div class="col-lg-6">
+                        <label class="col-form-label" for="Employee ID">Employee ID</label>
+                        <span class="s_website_form_mark">*</span>
+                    </div>
+                    <div t-attf-class="col-xl-6 #{error.get('employee_id') and 'o_has_error' or ''}">
+                        <input id="employee_id_id" type="text" class="form-control s_website_form_input" name="employee_id" t-att-value="employee_id or partner and partner.employee_id"/>
+                    </div>
+                </div>
+
+
+                <div t-attf-class="col-lg-12 row form-group s_website_form_field department #{not partner and 'd-none' or ''} #{(partner and partner.work_profile_id.name != 'Employee') and 'd-none' or ''}">
+                    <div class="col-lg-6">
+                        <label class="col-form-label" for="Department">Department</label>
+                        <span class="s_website_form_mark">*</span>
+                    </div>
+                    <div t-attf-class="col-xl-6 #{error.get('department') and 'o_has_error' or ''}">
+                        <input id="department_id" type="text" class="form-control s_website_form_input" name="department" t-att-value="department or partner and partner.department"/>
+                    </div>
+                </div>
+
+
                 <div class="col-lg-12 row form-group s_website_form_field">
                     <div class="col-lg-6">
                         <label class="col-form-label" for="Kanha Location">Kanha Location</label>
@@ -2437,5 +2478,30 @@
             </div>
         </div>
     </template>
+
+
+<template id="popup_model_form" name="Popup Model Form">
+        <div class="modal fade" t-attf-id="PopupModel" tabindex="-1" role="dialog" aria-labelledby="PopupModel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content col-lg-12">
+                    <div class="modal-header d-flex align-items-center pb-0">
+                        <button type="button" class="close align-self-start" data-dismiss="modal">
+                            <span aria-label="Close">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body bg-100 row">
+                        <div class="col-lg-6">
+                            <label class="col-form-label" for="vehicle_number">delete?</label>
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer justify-content-start">
+                        <button type="button" class="btn btn-primary confirm_delete">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    
 
 </odoo>

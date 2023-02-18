@@ -12,6 +12,8 @@ from io import BytesIO
 import shutil
 import tempfile
 from datetime import datetime
+from odoo.exceptions import MissingError
+
 
 
 class Website(Website):
@@ -330,7 +332,7 @@ class CustomerPortal(CustomerPortal):
                     values['visa_end_date'] = False
                        
                 # Prepare Many2One values
-                many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id','kanha_house_number_id']
+                many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id','kanha_house_number_id', 'work_profile_id']
                 # if(post.get('change_voter_id_address') == 'Yes'):
                 #     many_2_one_fields.append('state_id')
                 for field in set(many_2_one_fields) & set(values.keys()):
@@ -507,11 +509,14 @@ class CustomerPortal(CustomerPortal):
         kanha_locations_nth_child = request.env['kanha.location'].search([('id', 'not in', kanha_location_parent_ids)])
         #Fetch the record of kanha house number
         kanha_house_numbers = request.env['kanha.house.number'].search([])
+        work_profiles = request.env['work.profile'].sudo().search([])
+
         values.update({
             'states': states,
             'page_name': 'family',
             'kanha_locations': kanha_locations_nth_child,
             'kanha_house_numbers':kanha_house_numbers,
+            'work_profiles': work_profiles,
             'birth_countries': country,
             'countries': country_india,
             'error': {},
@@ -525,7 +530,7 @@ class CustomerPortal(CustomerPortal):
 
     def remove_invisible_fields_value(self, values, fields=None):
         if(fields):
-            many2one_fields = ['country_id', 'birth_country_id', 'state_id', 'birth_state_id']
+            many2one_fields = ['country_id', 'birth_country_id', 'state_id', 'birth_state_id', 'work_profile_id']
             for field in fields:
                 if (field in many2one_fields):
                     values[field] = None
@@ -613,3 +618,21 @@ class CustomerPortal(CustomerPortal):
             cache_timeout=3,
             filename=_("Documents.zip"),
         )
+
+
+    @http.route('/delete_family_members', type='http', auth="user", methods=['POST'], website=True)
+    def delete_family_members(self, access_token=None, **post):
+        request.params.pop('csrf_token', None)
+        deleted_partner_ids = post.get('deleted_partner_ids')
+        if(deleted_partner_ids):
+            partner_id = int(deleted_partner_ids)
+            ResPartner = request.env['res.partner']
+            partner = ResPartner.sudo().search([('id', '=', partner_id)])  
+            user = request.env['res.users'].sudo().search([('partner_id', '=', partner.id)])
+            if user.id == request.env.user.id:
+                return "current_user"
+            else:
+                partner.sudo().unlink()
+                return "deleted"
+        else:
+            raise MissingError(_("Record does not exist."))

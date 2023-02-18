@@ -84,6 +84,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'change select[name="country_id"]': '_onCountryChange',
 		// Kanha Location Selection
 		'change select[name="kanha_location_id"]': '_onKanhaLocationChange',
+		'change select[name="work_profile_id"]': '_onWorkProfileChange',
+
 		// Vehicle actions
 		'click .vehicle_add_new': '_onShowVehicleModal',
 		'click .vehicle_edit_new': '_onShowVehicleModal',
@@ -129,6 +131,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keydown #pan_card_number_id': '_restrictSpecialCharacter',
 		'keypress #mobile_number_id': '_restrictSpecialCharacter',
 		'keydown #mobile_number_id': '_restrictSpecialCharacter',
+		'click .partner_clear': '_onClickDeletePartner',
+
 		
     },
  
@@ -180,6 +184,50 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
 	},
 
+
+	/* deletes a record */
+	_onClickDeletePartner: function (e) {
+		var def = new Promise(function (resolve, reject) {
+            var message = _t("Are you sure you want to delete this record?");
+            var dialog = Dialog.confirm(self, message, {
+                title: _t("Confirmation"),
+                confirm_callback: function() {
+					var self = this;
+					var deleted_partner_ids = []
+					var partner_id = $(e.target).attr('id')
+					deleted_partner_ids.push(partner_id)
+					var form_values = {};
+					form_values['deleted_partner_ids'] = deleted_partner_ids
+					
+					// Post form and handle result
+					ajax.post('/delete_family_members', form_values)
+					.then(function (result) {
+						var result_span = self.$('.family_delete_result');   
+						self.$('#delete_result').removeClass('d-none')
+						if(result == "deleted") {
+							//result_span.html("Record has been deleted successfully");
+							Dialog.alert(self, _t("Record has been deleted successfully."), {
+								confirm_callback: function() {
+									$(window.location).attr('href', "/family/");
+								},
+							});	
+						}   
+						else if(result == "current_user") {		        
+							// result_span.html("Please contact Administrator to delete the record");
+							Dialog.alert(null, "Please contact Administrator to delete the record.");
+						}
+						// $("html, body").animate({ scrollTop: 0 }, "slow");
+					})
+					.guardedCatch(function () {
+						self.update_status('error');
+					});
+				},
+                cancel_callback: reject,
+            });
+            dialog.on('closed', self, reject);
+        });
+	},
+
 	_onChangeRelationType: function (ev) {
 		// document.getElementById("relation_type_field").value = "";
         // $(ev.currentTarget).closest('form').find('select[name="relation_type"]').trigger('change');
@@ -192,6 +240,27 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('.relation_other_class').addClass('d-none');
 		}
 	},
+
+
+
+	_onWorkProfileChange: function (ev) {
+	
+		var work_profile = this.$('select[name="work_profile_id"]');
+		var selected_work_profile = ev.target.selectedOptions[0].getAttribute('name')
+		if(selected_work_profile == 'Employee'){
+			$('.department').removeClass('d-none');
+			$('.employee_id').removeClass('d-none');
+		}
+		else{
+			document.getElementById("department_id").value = "";
+			document.getElementById("employee_id_id").value = "";
+
+			$('.department').addClass('d-none');
+			$('.employee_id').addClass('d-none');
+		}
+	},
+
+
 	/**
      * Show/Hide Voter ID details based on selected value of Change Voter ID address
      *
@@ -922,6 +991,20 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         var $displayedBirthState = this.$birthStateOptions.filter('[data-country_id=' + birthCountryID + ']');
         var nb = $displayedBirthState.appendTo(this.$birthState).show().length;
         //this.$state.parent().toggle(nb >= 1);
+		// If country doesnt have state remove required for state
+		var brith_state = document.getElementById("birth_state_id_field");
+		if(typeof brith_state !== 'undefined' && brith_state !== null) {
+			var birth_state_options = brith_state.options;
+			if(birth_state_options.length > 1){
+				$('#birth_state_id_field').attr('required', true);
+				$('#birth_district_field').attr('required', true);
+				
+			}
+			else{
+				$('#birth_state_id_field').attr('required', false);
+				$('#birth_district_field').attr('required', false);
+			}
+		}
     },
 
 	/**

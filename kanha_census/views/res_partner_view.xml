@@ -32,7 +32,7 @@
 								<field name="aadhaar_card_number" widget="Encrypted" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
 								<field name="abhyasi_id" readonly="1"/>
 								<field name="residence_type" readonly="1"/>
-								<field name="visa_type" readonly="1"/>
+								<!-- <field name="visa_type" readonly="1"/> -->
 								<field name="state" invisible="1"/>
 							</group>
 							<group>
@@ -42,8 +42,8 @@
 								<field name="citizenship" readonly="1"/>
 								<field name="passport_number" widget="Encrypted"  attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 								<field name="members_count" readonly="1"/>
-								<field name="visa_start_date" readonly="1" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}"/>
-								<field name="visa_end_date" readonly="1" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}"/>
+								<!-- <field name="visa_start_date" readonly="1" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}"/>
+								<field name="visa_end_date" readonly="1" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}"/> -->
 							</group>
 						</group>
 						<notebook>
@@ -51,7 +51,10 @@
                         		<group>
 		                            <group string="Kanha Address" name="kanha_address">
 		                            	<field name="resident_of_kanha_from_date" readonly="1"/>
-		                                <field name="work_profile" readonly="1"/>
+		                                <!-- <field name="work_profile" readonly="1"/> -->
+										<field name="work_profile_id" readonly="1"/>
+										<field name="employee_id" readonly="1"/>
+										<field name="department" readonly="1"/>
 		                                <field name="kanha_location_id" readonly="1"/>
 		                                <field name="kanha_house_number_id" string="House Number" readonly="1"/>
 		                            </group>
@@ -63,10 +66,10 @@
                     		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible':[('citizenship','!=','Indian')]}">
                     			<group>
 		                            <group>
-			                            <field name="birth_country_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
-		                                <field name="birth_state_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+			                            <field name="birth_country_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="0"/>
+		                                <field name="birth_state_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="0"/>
 		                                <field name="birth_district" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
-		                              	<field name="birth_town" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+		                              	<!-- <field name="birth_town" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/> -->
 		                             	<field name="application_reference_no" readonly="1" />
                               		</group>
                               		<group>
