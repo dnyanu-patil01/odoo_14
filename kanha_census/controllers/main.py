@@ -629,10 +629,21 @@ class CustomerPortal(CustomerPortal):
             ResPartner = request.env['res.partner']
             partner = ResPartner.sudo().search([('id', '=', partner_id)])  
             user = request.env['res.users'].sudo().search([('partner_id', '=', partner.id)])
-            if user.id == request.env.user.id:
-                return "current_user"
+
+            if request.env.user.has_group('base.group_user'):
+                if user.id == request.env.user.id:
+                    return "current_user"
+                else:
+                    partner.sudo().unlink()
+                    return "deleted"
             else:
-                partner.sudo().unlink()
-                return "deleted"
+                if(partner.application_status in ["draft", "rejected"]):
+                    if user.id == request.env.user.id:
+                        return "current_user"
+                    else:
+                        partner.sudo().unlink()
+                        return "deleted"
+                else:
+                    return "cannot_delete"
         else:
             raise MissingError(_("Record does not exist."))

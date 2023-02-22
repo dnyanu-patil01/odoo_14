@@ -77,7 +77,7 @@ class ResPartner(models.Model):
         ('Other','Other')
     ])
     
-    work_profile_id = fields.Many2one('work.profile', string="Work Profile", required=True)
+    work_profile_id = fields.Many2one('work.profile', string="Work Profile")
     employee_id = fields.Char(string='Employee ID')
     department = fields.Char(string='Department')
 
@@ -91,6 +91,7 @@ class ResPartner(models.Model):
     residence_type = fields.Selection([
         ('Rented Place', 'Rented Place'),
         ('Owner', 'Owner'),
+        ('General Accommodation', 'General Accommodation'),        
     ], string="Residence Type")
     family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members', readonly=True)
     relative_aadhaar_card_number = fields.Encrypted(string="Relative Aadhar Card Number")
@@ -136,6 +137,9 @@ class ResPartner(models.Model):
         ('rejected', 'Rejected'),
     ],default="draft")
     rejection_reason = fields.Text("Reason For Rejection")
+    birth_state_textfield = fields.Char(string="Birth State")
+    birth_country_name = fields.Char(related="birth_country_id.name", string="Birth Country Name")
+
 
 
     def mail_reminder(self):
@@ -193,12 +197,12 @@ class ResPartner(models.Model):
     def unlink(self):
         """Inherited to allow admin to delete the user"""
         for partner in self:
-            user = self.env['res.users'].sudo().search([('partner_id', '=', partner.id)])
+            user = self.env['res.users'].search([('partner_id', '=', partner.id)])
             if user:                
                 if user.id == self.env.user.id:
                     raise AccessError(_("Please contact Administrator to delete this record."))
                 else:
                     user.unlink()
-                    partner.sudo().unlink()
+                    # partner.unlink()
         return super(ResPartner, self).unlink()
 

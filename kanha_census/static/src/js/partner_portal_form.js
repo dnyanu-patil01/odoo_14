@@ -216,6 +216,11 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 							// result_span.html("Please contact Administrator to delete the record");
 							Dialog.alert(null, "Please contact Administrator to delete the record.");
 						}
+						else if(result == "cannot_delete") {		        
+							// result_span.html("Please contact Administrator to delete the record");
+							Dialog.alert(null, "You can delete only Rejected and Not Yet Submitted records.");
+						}
+						
 						// $("html, body").animate({ scrollTop: 0 }, "slow");
 					})
 					.guardedCatch(function () {
@@ -992,17 +997,36 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         var nb = $displayedBirthState.appendTo(this.$birthState).show().length;
         //this.$state.parent().toggle(nb >= 1);
 		// If country doesnt have state remove required for state
-		var brith_state = document.getElementById("birth_state_id_field");
-		if(typeof brith_state !== 'undefined' && brith_state !== null) {
-			var birth_state_options = brith_state.options;
-			if(birth_state_options.length > 1){
-				$('#birth_state_id_field').attr('required', true);
-				$('#birth_district_field').attr('required', true);
+		// var brith_state = document.getElementById("birth_state_id_field");
+		// if(typeof brith_state !== 'undefined' && brith_state !== null) {
+		// 	var birth_state_options = brith_state.options;
+		// 	if(birth_state_options.length > 1){
+		// 		$('#birth_state_id_field').attr('required', true);
+		// 		$('#birth_district_field').attr('required', true);
 				
+		// 	}
+		// 	else{
+		// 		$('#birth_state_id_field').attr('required', false);
+		// 		$('#birth_district_field').attr('required', false);
+		// 	}
+		// }
+
+		var birth_country = document.getElementById("birth_country_id_field");
+		if(typeof birth_country !== 'undefined' && birth_country !== null) {
+			var selected_country = birth_country.options[birth_country.selectedIndex].text;
+			if(selected_country.trim() == 'India'){
+				$('#birth_state_id_field').attr('required', true);
+				$('#birth_state_textfield_id').attr('required', false);
+
+				$('.birth_state_dropdown_field_div').removeClass('d-none');
+				$('.birth_state_textfield_div').addClass('d-none');
 			}
 			else{
 				$('#birth_state_id_field').attr('required', false);
-				$('#birth_district_field').attr('required', false);
+				$('#birth_state_textfield_id').attr('required', true);
+
+				$('.birth_state_dropdown_field_div').addClass('d-none');
+				$('.birth_state_textfield_div').removeClass('d-none');
 			}
 		}
     },
@@ -1201,6 +1225,15 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		form_values['vehicle_details_ids'] = JSON.stringify(vehicle_details)
 		form_values['vehicle_new_lines'] = JSON.stringify(vehicle_new_lines)
 		form_values['is_submit'] = is_submit;
+
+
+		var birth_country = document.getElementById("birth_country_id_field");
+		if(typeof birth_country !== 'undefined' && birth_country !== null) {
+			var selected_country = birth_country.options[birth_country.selectedIndex].text;
+			if(selected_country.trim() == 'India'){
+				form_values['birth_state_textfield'] = '';
+			}
+		}
         
 		// Post form and handle result
         ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
@@ -1318,6 +1351,13 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var citizenship = $('.citizenship').val();
 		var aadhaar_card_number = $('#aadhaar_card_number_field').val();
 		var passport_number = $('#passport_number_input').val();
+		var name_input = $('#name_input').val();
+		if(!name_input){
+			$('#name_input').addClass('is-invalid');
+			this.update_status('error', _t("Name is Mandatory to Save Record!"));
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+			return false;
+		}
 		if(citizenship == 'Indian' && !aadhaar_card_number){
 			$('#aadhaar_card_number_field').addClass('is-invalid');
 			this.update_status('error', _t("Aadhaar Card Number is Mandatory to Save/Submit Record!"));
