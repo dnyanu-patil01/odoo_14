@@ -66,8 +66,10 @@
                     		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible':[('citizenship','!=','Indian')]}">
                     			<group>
 		                            <group>
-			                            <field name="birth_country_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="0"/>
-		                                <field name="birth_state_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="0"/>
+			                            <field name="birth_country_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+										<field name="birth_country_name" invisible="1" />
+										<field name="birth_state_id" attrs="{'invisible':[('birth_country_name','!=','India')]}" readonly="1"/>
+										<field name="birth_state_textfield" attrs="{'invisible':[('birth_country_name','==','India')]}" readonly="1"/>
 		                                <field name="birth_district" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
 		                              	<!-- <field name="birth_town" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/> -->
 		                             	<field name="application_reference_no" readonly="1" />
@@ -96,8 +98,8 @@
 							<page string="Documents" name="documents" >
                         		<group>
 		                            <group string="Documents" name="documents">
-		                                <field name="adhar_card" attrs="{'required':[('citizenship','=','Indian')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
-		                                <field name="adhar_card_back_side" attrs="{'required':[('citizenship','=','Indian')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
+		                                <field name="adhar_card" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+		                                <field name="adhar_card_back_side" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
 		                                <field name="passport_front_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 		                                <field name="passport_back_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 		                               	<field name="indian_visa" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>

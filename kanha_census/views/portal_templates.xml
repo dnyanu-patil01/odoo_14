@@ -289,7 +289,7 @@
                                             <div t-attf-class="col-xl-6 #{error.get('residence_type') and 'o_has_error' or ''}">
                                                 <select name="residence_type" tabindex="7" t-attf-class="form-control #{error.get('residence_type') and 'is-invalid' or ''}">
                                                     <option value="">Select...</option>
-                                                    <t t-foreach="['Rented Place', 'Owner']" t-as="room">
+                                                    <t t-foreach="['Rented Place', 'Owner', 'General Accommodation']" t-as="room">
                                                         <option t-att-value="room" t-att-selected="room == residence_type if residence_type else room == partner.residence_type if partner else null">
                                                             <t t-esc="room" />
                                                         </option>
@@ -548,7 +548,7 @@
                                             <div t-attf-class="col-xl-6 #{error.get('residence_type') and 'o_has_error' or ''}">
                                                 <select name="residence_type" t-attf-class="form-control #{error.get('residence_type') and 'is-invalid' or ''}">
                                                     <option value="">Select...</option>
-                                                    <t t-foreach="['Rented Place', 'Owner']" t-as="room">
+                                                    <t t-foreach="['Rented Place', 'Owner', 'General Accommodation']" t-as="room">
                                                         <option t-att-value="room" t-att-selected="room == residence_type if residence_type else room == partner.residence_type if partner else null">
                                                             <t t-esc="room" />
                                                         </option>
@@ -1734,7 +1734,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-12 row form-group s_website_form_field">
+                <div class="col-lg-12 row form-group s_website_form_field birth_state_dropdown_field_div">
                     <div class="col-lg-6">
                         <label class="col-form-label" for="Birth State">Birth State</label>
                         <span class="s_website_form_mark">*</span>
@@ -1750,12 +1750,21 @@
                         </select>
                     </div>
                 </div>
+                <div t-attf-class="col-lg-12 row form-group s_website_form_field birth_state_textfield_div #{not partner and 'd-none' or ''} #{(partner and partner.birth_country_id.name != 'India') and 'd-none' or ''}">
+                    <div class="col-lg-6">
+                        <label class="col-form-label" for="Birth State">Birth State</label>
+                        <span class="s_website_form_mark">*</span>
+                    </div>
+                    <div t-attf-class="col-xl-6 #{error.get('birth_state_textfield') and 'o_has_error' or ''}">
+                        <input id="birth_state_textfield_id" type="text" class="form-control s_website_form_input" name="birth_state_textfield" required="" t-att-value="birth_state_textfield or partner and partner.birth_state_textfield" />
+                    </div>
+                </div>
                 <div class="col-lg-12 row form-group s_website_form_field">
                     <div class="col-lg-6">
                         <label class="col-form-label" for="Birth District">Birth District</label>
                         <span class="s_website_form_mark">*</span>
                     </div>
-                    <div t-attf-class="col-xl-6 #{error.get('birth_state_id') and 'o_has_error' or ''}">
+                    <div t-attf-class="col-xl-6 #{error.get('birth_district') and 'o_has_error' or ''}">
                         <input id="birth_district_field" type="text" class="form-control s_website_form_input" name="birth_district" required="" t-att-value="birth_district or partner and partner.birth_district" />
                     </div>
                 </div>
