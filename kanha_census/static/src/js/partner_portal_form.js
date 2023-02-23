@@ -247,22 +247,26 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 	},
 
 
+	_adaptWorkDepartmentAddressForm: function () {
+		var work_profile = document.getElementById("work_profile_id_field");
+		if(typeof work_profile !== 'undefined' && work_profile !== null) {
+			var selected_work_profile = work_profile.options[work_profile.selectedIndex].text;
+			if(selected_work_profile.trim() != 'Resident'){
+				$('.department').removeClass('d-none');
+				$('.employee_id').removeClass('d-none');
+			}
+			else{
+				document.getElementById("department_id").value = "";
+			    document.getElementById("employee_id_id").value = "";
 
-	_onWorkProfileChange: function (ev) {
-	
-		var work_profile = this.$('select[name="work_profile_id"]');
-		var selected_work_profile = ev.target.selectedOptions[0].getAttribute('name')
-		if(selected_work_profile == 'Employee'){
-			$('.department').removeClass('d-none');
-			$('.employee_id').removeClass('d-none');
+				$('.department').addClass('d-none');
+				$('.employee_id').addClass('d-none');
+			}
 		}
-		else{
-			document.getElementById("department_id").value = "";
-			document.getElementById("employee_id_id").value = "";
-
-			$('.department').addClass('d-none');
-			$('.employee_id').addClass('d-none');
-		}
+    },
+	_onWorkProfileChange: function () {
+		
+		this._adaptWorkDepartmentAddressForm();
 	},
 
 
