@@ -332,7 +332,7 @@ class CustomerPortal(CustomerPortal):
                     values['visa_end_date'] = False
                        
                 # Prepare Many2One values
-                many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id','kanha_house_number_id', 'work_profile_id']
+                many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id','kanha_house_number_id', 'work_profile_id','department_id']
                 # if(post.get('change_voter_id_address') == 'Yes'):
                 #     many_2_one_fields.append('state_id')
                 for field in set(many_2_one_fields) & set(values.keys()):
@@ -509,7 +509,8 @@ class CustomerPortal(CustomerPortal):
         kanha_locations_nth_child = request.env['kanha.location'].search([('id', 'not in', kanha_location_parent_ids)])
         #Fetch the record of kanha house number
         kanha_house_numbers = request.env['kanha.house.number'].search([])
-        work_profiles = request.env['work.profile'].sudo().search([])
+        work_profiles = request.env['work.profile'].search([])
+        work_department = request.env['work.department'].search([])
 
         values.update({
             'states': states,
@@ -517,6 +518,7 @@ class CustomerPortal(CustomerPortal):
             'kanha_locations': kanha_locations_nth_child,
             'kanha_house_numbers':kanha_house_numbers,
             'work_profiles': work_profiles,
+            'work_department':work_department,
             'birth_countries': country,
             'countries': country_india,
             'error': {},
@@ -530,7 +532,7 @@ class CustomerPortal(CustomerPortal):
 
     def remove_invisible_fields_value(self, values, fields=None):
         if(fields):
-            many2one_fields = ['country_id', 'birth_country_id', 'state_id', 'birth_state_id', 'work_profile_id']
+            many2one_fields = ['country_id', 'birth_country_id', 'state_id', 'birth_state_id', 'work_profile_id','department_id']
             for field in fields:
                 if (field in many2one_fields):
                     values[field] = None

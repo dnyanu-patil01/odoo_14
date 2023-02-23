@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		
+		<!-- Work Department Tree -->
+	    <record id="work_department_tree" model="ir.ui.view">
+	        <field name="name">work.department.view.tree</field>
+	        <field name="model">work.department</field>
+	        <field name="arch" type="xml">
+	            <tree string="Work Department">
+	          		<field name="name" string="Work Department"/>
+	            </tree>
+	        </field>
+	    </record>
+	
+		<!-- Work Department Form -->
+	    <record id="work_department_view_form" model="ir.ui.view">
+	        <field name="name">work.department.view.form</field>
+	        <field name="model">work.department</field>
+	        <field name="arch" type="xml">
+	            <form string="Work Department">
+	                <sheet>
+						<group>
+							<field name="name"/>
+							<field name="active" invisible="1"/>
+                        </group>
+                    </sheet>
+	            </form>
+	        </field>
+	    </record>
+	
+		<!-- Work Department Action -->
+	    <record id="work_department_action" model="ir.actions.act_window">
+	        <field name="name">Work Department</field>
+	        <field name="type">ir.actions.act_window</field>
+	        <field name="res_model">work.department</field>
+	        <field name="view_mode">tree,form</field>
+	        <field name="help" type="html">
+	            <p class="o_view_nocontent_smiling_face">Create a Work Department</p>
+	        </field>
+	    </record>
+	           
+		<!-- Work Department menu -->
+		<menuitem
+		    id="work_department_menu"
+		    name="Department"
+		    parent="menu_kanha_census_master_list_root"
+		    action="work_department_action"
+			sequence="45"
+		    />
+
+	</data>
+</odoo>

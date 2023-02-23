@@ -9,3 +9,10 @@ class WorkProfile(models.Model):
     name = fields.Char('Name', index=True, required=True)
     active = fields.Boolean('Active', default=True)
     
+
+class WorkDepartment(models.Model):
+    _name = "work.department"
+    _description = "Work Department"
+
+    name = fields.Char('Name', index=True, required=True)
+    active = fields.Boolean('Active', default=True)
