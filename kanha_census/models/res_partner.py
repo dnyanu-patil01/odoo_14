@@ -78,7 +78,7 @@ class ResPartner(models.Model):
     ])
     
     work_profile_id = fields.Many2one('work.profile', string="Work Profile")
-    employee_id = fields.Char(string='Employee ID')
+    employee_id = fields.Char(string='ID Card Number')
     department_id = fields.Many2one('work.department',string='Department')
 
 
@@ -105,7 +105,7 @@ class ResPartner(models.Model):
     kanha_voter_id_image_filename = fields.Char()
     kanha_voter_id_back_image = fields.Binary('Voter ID Back Image', attachment=True, required=True)
     kanha_voter_id_back_image_filename = fields.Char()
-    declaration_form = fields.Binary('Declaration Form File', attachment=True, required=True)
+    declaration_form = fields.Binary('Declaration Form File', attachment=True, required=False)
     declaration_form_filename = fields.Char()
     need_new_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),

@@ -82,7 +82,8 @@
 		                              	<field name="kanha_voter_id_back_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')],'required':[('already_have_kanha_voter_id','=','Yes')]}" readonly="1"/>
 		                              	<field name="need_new_kanha_voter_id" attrs="{'invisible':[('already_have_kanha_voter_id','!=','No')],'required':[('already_have_kanha_voter_id','=','No')]}" readonly="1"/>
 		                              	<field name="application_type" attrs="{'invisible':[('need_new_kanha_voter_id','!=','Yes')],'required':[('need_new_kanha_voter_id','=','Yes')]}" readonly="1"/>
-		                              	<field name="declaration_form" attrs="{'invisible':[('application_type','!=','New Application')],'required':[('application_type','=','New Application')]}" readonly="1"/>
+		                              	<field name="declaration_form" required="1" invisible="1"/>
+										<!-- attrs="{'invisible':[('application_type','!=','New Application')],'required':[('application_type','=','New Application')]}" readonly="1" -->
                                 	</group>
                                 </group>
                                 <group>
