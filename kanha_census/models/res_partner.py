@@ -78,7 +78,7 @@ class ResPartner(models.Model):
     ])
     
     work_profile_id = fields.Many2one('work.profile', string="Work Profile")
-    employee_id = fields.Char(string='ID Card Number')
+    employee_id = fields.Char(string='ID Number')
     department_id = fields.Many2one('work.department',string='Department')
 
 
