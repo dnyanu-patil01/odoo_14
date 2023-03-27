@@ -17,3 +17,12 @@ class StockPicking(models.Model):
             if orgin.seller_id:
                 vals.update({'seller_id':orgin.seller_id.id})
         return super(StockPicking ,self).create(vals)
+
+    def action_cancel(self):
+        """To Trigger Mail To Fulfillment Team On The Cancellation Of SO"""
+        template = self.env.ref('seller_management.mail_template_seller_do_cancellation')
+        if template:
+            mail_id = template.send_mail(self.id)
+            Mail = self.env['mail.mail'].sudo().browse(mail_id)
+        Mail.send()
+        return super().action_cancel()
