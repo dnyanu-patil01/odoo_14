@@ -99,6 +99,15 @@ class SaleOrder(models.Model):
                 line.product_id_change()
         return res
 
+    def _action_cancel(self):
+        """To Trigger Mail To Fulfillment Team On The Cancellation Of SO"""
+        template = self.env.ref('seller_management.mail_template_seller_so_cancellation')
+        if template:
+            mail_id = template.send_mail(self.id)
+            Mail = self.env['mail.mail'].sudo().browse(mail_id)
+        Mail.send()
+        return super()._action_cancel()
+
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 

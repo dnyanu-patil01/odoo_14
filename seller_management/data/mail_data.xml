@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_seller_so_cancellation" model="mail.template">
+            <field name="name">Sellers Order - Cancellation Mail</field>
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="email_from">"${object.seller_id.name | safe}" &lt;${(object.seller_id.email or user.email) | safe}&gt;</field>
+            <field name="email_to">"${object.company_id.name | safe}" &lt;${(object.company_id.email or user.email) | safe}&gt;</field>
+            <field name="subject">Cancellation Of Sale Order ${object.name}</field>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width:590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td valign="middle">
+                                                            % set company = object.company_id or object.user_id.company_id or user.company_id
+                                                            <span style="font-size:15px;">Dear Fulfillment Team,</span>
+                                                            <br />
+                                                        </td>
+                                                        <td valign="middle" align="right">
+                                                            <img src="/logo.png?company=${company.id}" style="padding:0px;margin: 0px; height: auto; width: 80px;" alt="${company.name}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" style="text-align:center;">
+                                                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;" />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="top" style="font-size: 13px;">
+                                                        <div style="text-align: center;">
+                                                            <strong>Sale Order ${object.name} has been canceled by the seller.Please proceed with the necessary follow-up action.</strong>
+                                                        </div>
+                                                        <div style="text-align: center; margin: 16px 0px 16px 0px; font-size: 14px;">
+                                                            <a href="${object.get_base_url()}/web#id=${object.id}&amp;action=302&amp;model=sale.order&amp;view_type=form&amp;cids=&amp;menu_id=189" target="_blank" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">Sale Order - ${object.name}</a>
+                                                        </div>
+                                                        <div style="text-align: center;font-size: 13px;">
+                                                            <table border="0" cellpadding="0" cellspacing="0" style="background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                                <!-- <caption>Canceled Order Detail</caption> -->
+                                                                <tr>
+                                                                    <td style="text-align:left;padding:5px;">Sale Order</td>
+                                                                    <td style="text-align:left;padding:5px;">${object.name}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="text-align:left;padding:5px;">Shopify Order Reference</td>
+                                                                    <td style="text-align:left;padding:5px;">${object.shopify_order_id}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="text-align:left;padding:5px;">Shopify Order Number</td>
+                                                                    <td style="text-align:left;padding:5px;">${object.shopify_order_number}</td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                        <div style="text-align: left;font-size: 14px;">
+                                                            <strong>Note:If delivery order and invoice already generated means please do proper return of stocks and invoice amount.</strong>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+        <record id="mail_template_seller_do_cancellation" model="mail.template">
+            <field name="name">Delivery Order - Cancellation Mail</field>
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="email_from">"${object.seller_id.name | safe}" &lt;${(object.seller_id.email or user.email) | safe}&gt;</field>
+            <field name="email_to">"${object.company_id.name | safe}" &lt;${(object.company_id.email or user.email) | safe}&gt;</field>
+            <field name="subject">Cancellation Of Delivery Order ${object.name}</field>
+            <field name="body_html" type="xml">
+                <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width:590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width:590px;background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td valign="middle">
+                                                            % set company = object.company_id or object.user_id.company_id or user.company_id
+                                                            <span style="font-size:15px;">Dear Fulfillment Team,</span>
+                                                            <br />
+                                                        </td>
+                                                        <td valign="middle" align="right">
+                                                            <img src="/logo.png?company=${company.id}" style="padding:0px;margin: 0px; height: auto; width: 80px;" alt="${company.name}" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" style="text-align:center;">
+                                                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;" />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="top" style="font-size: 13px;">
+                                                        <div style="text-align: center;">
+                                                            <strong>Delivery Order ${object.name} has been canceled by the seller.Please proceed with the necessary follow-up action.</strong>
+                                                        </div>
+                                                        <div style="text-align: center; margin: 16px 0px 16px 0px; font-size: 14px;">
+                                                            <a href="${object.get_base_url()}/web#id=${object.id}&amp;action=376&amp;model=stock.picking&amp;view_type=form&amp;cids=&amp;menu_id=236" target="_blank" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">Delivery Order - ${object.name}</a>
+                                                        </div>
+                                                        <div style="text-align: center;font-size: 13px;">
+                                                            <table border="0" cellpadding="0" cellspacing="0" style="background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                                <!-- <caption>Canceled Order Detail</caption> -->
+                                                                <tr>
+                                                                    <td style="text-align:left;padding:5px;">Delivery Order</td>
+                                                                    <td style="text-align:left;padding:5px;">${object.name}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="text-align:left;padding:5px;">Delivery Carrier</td>
+                                                                    <td style="text-align:left;padding:5px;">${object.carrier_id.name}</td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:center;">
+                                                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </field>
+            <field name="auto_delete" eval="False" />
+        </record>
+    </data>
+</odoo>
