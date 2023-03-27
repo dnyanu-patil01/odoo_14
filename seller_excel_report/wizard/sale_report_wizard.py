@@ -130,9 +130,13 @@ class SaleExcelReport(models.TransientModel):
                 worksheet.write(row_index , index + 7, line.get('price_unit'),style)
                 worksheet.write(row_index , index + 8, line.get('taxes'),style)
                 worksheet.write(row_index , index + 9, line.get('price_total'),style)
-                for ind , prop in enumerate(rec.get('props')):
-                    worksheet.write(row_index,index + ind + 9,prop.get('property_name'),style)
-                    worksheet.write(row_index,index + ind + 9,prop.get('property_value'),style)
+                if line.get('props'):
+                    props_row = row_index
+                    for ind , prop in enumerate(line.get('props')):
+                        props_row = props_row + 1
+                        worksheet.write(props_row,index,prop.get('property_name'),style)
+                        worksheet.write(props_row,index + 1,prop.get('property_value'),style) 
+                    row_index = props_row
                 row_index = row_index + 1
             worksheet.write(row_index,index + 6,'Order Total',header_style)
             worksheet.write(row_index,index + 7,rec.get('amount_untaxed'),style)
