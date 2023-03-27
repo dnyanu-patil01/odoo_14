@@ -25,7 +25,7 @@ odoo.define('binary_file_preview.binary_preview', function(require) {
         },
 
         onAttachmentView: function(ev) {
-            var self = this;
+            var self = this;            
             try {
                 ev.preventDefault();
                 ev.stopPropagation();

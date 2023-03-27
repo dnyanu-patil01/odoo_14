@@ -28,7 +28,7 @@ class FilePreview(http.Controller):
             attachment_ids = request.env.cr.fetchall()
             if attachment_ids:
                 attachment_ids = [t[0] for t in attachment_ids]
-                datas = request.env['ir.attachment'].sudo().browse(attachment_ids)
+                datas = request.env['ir.attachment'].browse(attachment_ids)
                 if datas and len(datas) == 1:
                     return {
                         'name': datas.name or datas.dispay_name,

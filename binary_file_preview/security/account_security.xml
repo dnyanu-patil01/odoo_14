@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Group to Allow Access to Preview Document-->
+        <record model="res.groups" id="group_data_manager">
+        <field name="name">Access to Preview Document</field>
+        </record>
+    </data>
+</odoo>

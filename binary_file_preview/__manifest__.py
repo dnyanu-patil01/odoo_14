@@ -9,7 +9,9 @@
     'depends': ['base', 'web', 'mail'],
     'data': [
         'views/preview_templates.xml',
+        'security/account_security.xml',
     ],
-    'qweb': ['static/src/xml/binary_preview.xml',
+    'qweb': [
+        'static/src/xml/binary_preview.xml',
     ],
 }
