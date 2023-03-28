@@ -13,3 +13,4 @@ access_work_profile_user,work.profile.user,model_work_profile,base.group_user,1,
 access_work_profile_portal_user,work.profile.portal.user,model_work_profile,base.group_portal,1,1,1,0
 access_work_dept_user,work.dept.user,model_work_department,base.group_user,1,1,1,1
 access_work_dept_portal_user,work.dept.portal.user,model_work_department,base.group_portal,1,1,1,0
+access_res_users_group_delete_access,res.users.group.delete.access,base.model_res_users,kanha_census.group_delete_access,1,1,1,1
