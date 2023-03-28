@@ -10,8 +10,8 @@
     """,
     'depends': ['website', 'website_form','fields_encrypted','oauth_login_existing_users'],
     'data': [
-        'security/ir.model.access.csv',
         'security/kanha_census_security.xml',
+        'security/ir.model.access.csv',
         'data/website_data.xml',
         'data/kanha_data.xml',
         'data/mail_data.xml',
