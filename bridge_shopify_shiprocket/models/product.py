@@ -55,12 +55,19 @@ class ProductTemplate(models.Model):
         
         active_template_ids = self._context.get("active_ids", []) or [self.id]
         shopify_export.with_context({'active_ids':active_template_ids}).prepare_product_for_export()
-        shopify_product_template_ids = self.env['shopify.product.template.ept'].search([('product_tmpl_id','in',active_template_ids)]).ids
+        shopify_product_template_ids = self.env['shopify.product.template.ept'].search([('product_tmpl_id','in',active_template_ids)])
         import_product_obj = self.env['shopify.process.import.export'].create({
             'shopify_is_update_basic_detail':True,
             'shopify_is_set_price':True,
             'shopify_is_set_image':True,
             'shopify_is_publish':'publish_product_web',
         })
-        import_product_obj.with_context({'active_ids':shopify_product_template_ids}).manual_update_product_to_shopify()
+        for product in shopify_product_template_ids:
+            """To check product is already created in shopify 
+            if yes,then we are updating the details alone 
+            else we are pushing product to shopify"""
+            if product.exported_in_shopify:
+                import_product_obj.with_context({'active_ids':product.ids}).manual_update_product_to_shopify()
+            else:
+                import_product_obj.with_context({'active_ids':product.ids}).manual_export_product_to_shopify()
         return super(ProductTemplate,self).button_approve()
