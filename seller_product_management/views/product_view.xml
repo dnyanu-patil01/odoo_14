@@ -176,8 +176,8 @@
             </xpath>
 			<xpath expr="//button[@name='seller_update_stock_quantity']" position="before">
 				<button name="change_request" string="Change Request" states="draft,to_approve,approve,reject" type="object"  groups="seller_management.group_sellers_management_user"/>
-				<!-- <button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
-				<button name="button_approve" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_product_management.group_product_approval"/>
+				<button name="button_submit" string="Submit For Approval"  confirm="Changes Will Be Update In Portal After Fulfilment Team Approval" states="draft" type="object"  groups="seller_management.group_sellers_management_user"/>
+				<!--<button name="button_approve" string="Approve" states="to_approve" type="object" class="btn-success" groups="seller_product_management.group_product_approval"/>
 				<button name="button_reject" string="Reject" states="to_approve" type="object" class="btn-danger" groups="seller_product_management.group_product_approval"/> -->
 				<field name="state" widget="statusbar" statusbar_visible="draft,to_approve,approve,reject"/>
 			</xpath>
