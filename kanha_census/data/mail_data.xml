@@ -1,64 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+	<data noupdate="1">
 
-	 <!-- Visa Reminder Mail Scheduler -->
-    <record model="ir.cron" id="expire_visa_cron">
-        <field name="name">Visa Expiration</field>
-        <field name="model_id" ref="model_res_partner"/>
-        <field name="state">code</field>
-        <field name="code">model.mail_reminder()</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">weeks</field>
-        <field name="numbercall">-1</field>
-        <field name="doall" eval="True"/>
-    </record>
-	
-    <!-- Visa Reminder Mail Template -->
-	<record id="mail_template_visa_reminder" model="mail.template">
-	    <field name="name">Visa Expiration Mail 1</field>
-	    <field name="model_id" ref="kanha_census.model_res_partner"/>
-	    <field name="email_from">${ctx['email_from']}</field>
-	    <field name="email_to">${ctx['email_to']}</field>
-	    <field name="subject">${ctx['subject']}</field>
-	    <field name="body_html" type="html">
-      		<p>Hello,</p>
-		    <p>
-		       The following residents's visa is about to expire this week
-		    </p>
-			<table style="width:100%; border: 1px solid black;border-collapse: collapse;">
-				<tr>
-		    		<th style="border: 1px solid black;border-collapse: collapse;">Resident Name</th>
-		    		<th style="border: 1px solid black;border-collapse: collapse;">Visa End Date</th> 
-		  		</tr>
-				  	% set data = ctx['data']
-				   	% for data in data:
-			       		% set all_partner_data = data['all_partner_data']
-		 		   	%for partner in all_partner_data:
-						<tr>
-							<td style="border: 1px solid black;border-collapse: collapse;">${partner['name']}</td>
-						  	<td style="border: 1px solid black;border-collapse: collapse;">${partner['visa_end_date']}</td>
-						</tr>
-		 				% endfor
-		 		 	% endfor
-			</table>
-     	</field>
-	</record>
-	
-	<function model="ir.config_parameter" name="set_param" eval="('email_recipients', '')" />
-	
-	<record id="mail_template_application_rejection" model="mail.template">
-	    <field name="name">Application Rejection</field>
-	    <field name="model_id" ref="kanha_census.model_res_partner"/>
-	    <field name="email_from">${ctx['email_from']}</field>
-	    <field name="email_to">${ctx['email_to']}</field>
-	    <field name="subject">${ctx['subject']}</field>
-	    <field name="body_html" type="html">
-      		<p>Hello,</p>
-		    <p>
-		       We are sorry to inform you that your application have been rejected due to the following reason.
-			   <b>${ctx['reason']}</b>.Kindly do the changes and submit your application once again.
-		    </p>
-			<p>Thank You</p>
+		<!-- Visa Reminder Mail Scheduler -->
+		<record model="ir.cron" id="expire_visa_cron">
+			<field name="name">Visa Expiration</field>
+			<field name="model_id" ref="model_res_partner"/>
+			<field name="state">code</field>
+			<field name="code">model.mail_reminder()</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">weeks</field>
+			<field name="numbercall">-1</field>
+			<field name="doall" eval="True"/>
+		</record>
+		
+		<!-- Visa Reminder Mail Template -->
+		<record id="mail_template_visa_reminder" model="mail.template">
+			<field name="name">Visa Expiration Mail</field>
+			<field name="model_id" ref="kanha_census.model_res_partner"/>
+			<field name="email_from">${ctx['email_from']}</field>
+			<field name="email_to">${ctx['email_to']}</field>
+			<field name="subject">${ctx['subject']}</field>
+			<field name="body_html" type="html">
+				<p>Hello,</p>
+				<p>
+				The following residents's visa is about to expire this week
+				</p>
+				<table style="width:100%; border: 1px solid black;border-collapse: collapse;">
+					<tr>
+						<th style="border: 1px solid black;border-collapse: collapse;">Resident Name</th>
+						<th style="border: 1px solid black;border-collapse: collapse;">Visa End Date</th> 
+					</tr>
+						% set data = ctx['data']
+						% for data in data:
+							% set all_partner_data = data['all_partner_data']
+						%for partner in all_partner_data:
+							<tr>
+								<td style="border: 1px solid black;border-collapse: collapse;">${partner['name']}</td>
+								<td style="border: 1px solid black;border-collapse: collapse;">${partner['visa_end_date']}</td>
+							</tr>
+							% endfor
+						% endfor
+				</table>
 			</field>
-	</record>
+		</record>
+		
+		<function model="ir.config_parameter" name="set_param" eval="('email_recipients', '')" />
+		
+		<record id="mail_template_application_rejection" model="mail.template">
+			<field name="name">Application Rejection</field>
+			<field name="model_id" ref="kanha_census.model_res_partner"/>
+			<field name="email_from">${ctx['email_from']}</field>
+			<field name="email_to">${ctx['email_to']}</field>
+			<field name="subject">${ctx['subject']}</field>
+			<field name="body_html" type="html">
+				<p>Hello,</p>
+				<p>
+				We are sorry to inform you that your application have been rejected due to the following reason.
+				<b>${ctx['reason']}</b>.Kindly do the changes and submit your application once again.
+				</p>
+				<p>Thank You</p>
+				</field>
+		</record>
+
+		<!-- <record id="mail_template_application_approved" model="mail.template">
+			<field name="name">Application Approved</field>
+			<field name="model_id" ref="kanha_census.model_res_partner"/>
+			<field name="email_from">${ctx['email_from']}</field>
+			<field name="email_to">${ctx['email_to']}</field>
+			<field name="subject">${object.name} - Application Approved - Regards</field>
+			<field name="body_html" type="html">
+				<p>Hello,</p>
+				<p>
+				Your application has been approved.
+				</p>
+				<p>Thank You</p>
+				</field>
+		</record>
+
+		<record id="mail_template_application_submitted" model="mail.template">
+			<field name="name">Application Submitted</field>
+			<field name="model_id" ref="kanha_census.model_res_partner"/>
+			<field name="email_from">${ctx['email_from']}</field>
+			<field name="email_to">${ctx['email_to']}</field>
+			<field name="subject">${object.name} - Application Submitted - Regards</field>
+			<field name="body_html" type="html">
+				<p>Hello,</p>
+				<p>
+				You have submitted your application. We will approve soon.
+				</p>
+				<p>Thank You</p>
+				</field>
+		</record>
+
+		<record id="mail_template_application_saved" model="mail.template">
+			<field name="name">Application Saved not Submitted</field>
+			<field name="model_id" ref="kanha_census.model_res_partner"/>
+			<field name="email_from">${ctx['email_from']}</field>
+			<field name="email_to">${ctx['email_to']}</field>
+			<field name="subject">${object.name} - Application Saved - Regards</field>
+			<field name="body_html" type="html">
+				<p>Hello,</p>
+				<p>
+				You have Saved your application but not yet Submitted.
+				</p>
+				<p>Thank You</p>
+				</field>
+		</record> -->
+
+		<record id="mail_template_application_delete" model="mail.template">
+			<field name="name">Application Deletion</field>
+			<field name="model_id" ref="kanha_census.model_res_partner"/>
+			<field name="email_from">${ctx['email_from']}</field>
+			<field name="email_to">${ctx['email_to']}</field>
+			<field name="subject">${object.name} - Application Deleted - Regards</field>
+			<field name="body_html" type="html">
+				<p>Hello,</p>
+				<p>
+				The following resident's application has been deleted.
+				</p>
+				<table style="width:100%; border: 1px solid black;border-collapse: collapse;">
+					<tr>
+						<th style="border: 1px solid black;border-collapse: collapse;">Name</th>
+						<th style="border: 1px solid black;border-collapse: collapse;">Email</th>
+						% if object.aadhaar_card_number and object.aadhaar_card_number !="false":
+							<th style="border: 1px solid black;border-collapse: collapse;">Aadhaar No.</th> 
+						% endif
+						% if object.pan_card_number and object.pan_card_number !="false":
+							<th style="border: 1px solid black;border-collapse: collapse;">Pan No.</th> 
+						% endif
+					</tr>
+					<tr>
+						<td style="border: 1px solid black;border-collapse: collapse;">${object.name}</td>
+						<td style="border: 1px solid black;border-collapse: collapse;">${object.email}</td>
+						% if object.aadhaar_card_number and object.aadhaar_card_number !="false":
+							<td style="border: 1px solid black;border-collapse: collapse;">${object.aadhaar_card_number}</td>
+						% endif
+						% if object.pan_card_number and object.pan_card_number !="false":
+							<td style="border: 1px solid black;border-collapse: collapse;">${object.pan_card_number}</td>
+						% endif
+					</tr>
+				</table>
+			</field>
+		</record>
+	</data>
+	
 </odoo>

@@ -220,11 +220,14 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 							// result_span.html("Please contact Administrator to delete the record");
 							Dialog.alert(null, "You can delete only Rejected and Not Yet Submitted records.");
 						}
+						else if(result == "no_records") {		        
+							Dialog.alert(null, "Record does not exist.");
+						}
 						
 						// $("html, body").animate({ scrollTop: 0 }, "slow");
 					})
 					.guardedCatch(function () {
-						self.update_status('error');
+						this.update_status('error');
 					});
 				},
                 cancel_callback: reject,
@@ -1310,7 +1313,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
             }
         })
         .guardedCatch(function () {
-            self.update_status('error');
+            this.update_status('error');
         });
 	},
 	
