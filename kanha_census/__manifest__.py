@@ -24,7 +24,6 @@
         'wizard/residents_document_download.xml',
         'views/work_profile_views.xml',
         'views/work_department_view.xml',
-
     ],
     'auto_install': False,
     'installable': True,

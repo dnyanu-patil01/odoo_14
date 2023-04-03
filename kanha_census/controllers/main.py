@@ -376,7 +376,6 @@ class CustomerPortal(CustomerPortal):
                 kanha_location_id = post.get('kanha_location_id')
                 if(kanha_house_number_id):
                     relative_partner = ResPartner.sudo().search([('kanha_house_number_id', '=', kanha_house_number_id),('kanha_location_id','=',kanha_location_id)])
-
                 # If partner exist, updates the records else create a new partner record
                 if partner:
                     # Updates vehicle info
@@ -409,11 +408,19 @@ class CustomerPortal(CustomerPortal):
                         if(relative_partner):
                             partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
                             relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})
+                    # To Send Email regarding application status
+                    application_status = ''
+                    if(values.get('application_status')):
+                        application_status = values.get('application_status').strip()
+                    # To send email only if status changed
+                    # if(partner.application_status != application_status):
+                    #     partner.send_application_status_mail(application_status)
                     # updates partner
-                    partner.sudo().write(values)
+                    partner.sudo().write(values)                  
                 else:
                     # creates new partner record
                     partner = ResPartner.sudo().create(values)
+                    # partner.send_application_status_mail(partner.application_status)
                     # Links family members
                     if(relative_partner):
                         partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
@@ -631,21 +638,14 @@ class CustomerPortal(CustomerPortal):
             ResPartner = request.env['res.partner']
             partner = ResPartner.sudo().search([('id', '=', partner_id)])  
             user = request.env['res.users'].sudo().search([('partner_id', '=', partner.id)])
-
-            if request.env.user.has_group('base.group_user'):
+            if(partner.application_status in ["draft", "rejected"]):
                 if user.id == request.env.user.id:
                     return "current_user"
                 else:
                     partner.sudo().unlink()
                     return "deleted"
             else:
-                if(partner.application_status in ["draft", "rejected"]):
-                    if user.id == request.env.user.id:
-                        return "current_user"
-                    else:
-                        partner.sudo().unlink()
-                        return "deleted"
-                else:
-                    return "cannot_delete"
+                return "cannot_delete"
         else:
-            raise MissingError(_("Record does not exist."))
+            # raise MissingError(_("Record does not exist."))
+            return "no_records"

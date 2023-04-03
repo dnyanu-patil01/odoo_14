@@ -179,6 +179,7 @@ class ResPartner(models.Model):
         }
     
     def button_approve(self):
+        # self.send_application_status_mail("approved")
         return self.write({'application_status':'approved'})
     
     def send_rejection_reason_in_mail(self):
@@ -197,12 +198,50 @@ class ResPartner(models.Model):
     def unlink(self):
         """Inherited to allow admin to delete the user"""
         for partner in self:
-            user = self.env['res.users'].search([('partner_id', '=', partner.id)])
-            if user:                
-                if user.id == self.env.user.id:
-                    raise AccessError(_("Please contact Administrator to delete this record."))
-                else:
-                    user.unlink()
-                    # partner.unlink()
+            if(partner.application_status in ["draft","rejected"]):
+                user = self.env['res.users'].search([('partner_id', '=', partner.id)])
+                if user:                
+                    if user.id == self.env.user.id:
+                        raise AccessError(_("Please contact Administrator to delete this record."))
+                    else:
+                        user.unlink()                      
+                        # partner.unlink()
+            else:
+                raise AccessError(_("You can delete only records in draft state."))            
+        for partner in self:
+            partner.send_deleted_application_mail()
         return super(ResPartner, self).unlink()
+
+    # def send_application_status_mail(self, application_status):
+    #     """
+    #      To send email regarding the application status
+    #     """
+    #     email_to = self.email
+    #     if(application_status =="approved"):
+    #         template = self.env.ref('kanha_census.mail_template_application_approved')
+    #     elif(application_status =="to_approve"):
+    #         template = self.env.ref('kanha_census.mail_template_application_submitted')
+    #     elif(application_status =="draft"):
+    #         template = self.env.ref('kanha_census.mail_template_application_saved')
+    #     elif(application_status =="delete"):
+    #         template = self.env.ref('kanha_census.mail_template_application_delete')
+    #         email_to = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
+    #     ctx = dict(self.env.context)
+    #     ctx['email_to'] = email_to
+    #     ctx['email_from'] = self.env.user.company_id.email
+    #     if template:
+    #         template.with_context(ctx).send_mail(self.id, force_send=True)    
+
+    def send_deleted_application_mail(self):
+        """
+        To send email regarding deleted application
+        """
+        template = self.env.ref('kanha_census.mail_template_application_delete')
+        ctx = dict(self.env.context)
+        ctx['email_to'] = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
+        ctx['email_from'] = self.env.user.company_id.email
+        if template:
+            template.with_context(ctx).send_mail(self.id, force_send=True) 
+
+
 
