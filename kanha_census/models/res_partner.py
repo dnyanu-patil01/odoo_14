@@ -179,7 +179,7 @@ class ResPartner(models.Model):
         }
     
     def button_approve(self):
-        # self.send_application_status_mail("approved")
+        self.send_application_status_mail("approved")
         return self.write({'application_status':'approved'})
     
     def send_rejection_reason_in_mail(self):
@@ -207,30 +207,34 @@ class ResPartner(models.Model):
                         user.unlink()                      
                         # partner.unlink()
             else:
-                raise AccessError(_("You can delete only records in draft state."))            
+                raise AccessError(_("You can delete only records in draft and rejected state."))            
         for partner in self:
-            partner.send_deleted_application_mail()
+            # partner.send_deleted_application_mail()
+            partner.send_application_status_mail("deleted")
         return super(ResPartner, self).unlink()
 
-    # def send_application_status_mail(self, application_status):
-    #     """
-    #      To send email regarding the application status
-    #     """
-    #     email_to = self.email
-    #     if(application_status =="approved"):
-    #         template = self.env.ref('kanha_census.mail_template_application_approved')
-    #     elif(application_status =="to_approve"):
-    #         template = self.env.ref('kanha_census.mail_template_application_submitted')
-    #     elif(application_status =="draft"):
-    #         template = self.env.ref('kanha_census.mail_template_application_saved')
-    #     elif(application_status =="delete"):
-    #         template = self.env.ref('kanha_census.mail_template_application_delete')
-    #         email_to = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
-    #     ctx = dict(self.env.context)
-    #     ctx['email_to'] = email_to
-    #     ctx['email_from'] = self.env.user.company_id.email
-    #     if template:
-    #         template.with_context(ctx).send_mail(self.id, force_send=True)    
+    def send_application_status_mail(self, application_status):
+        """
+         To send email regarding the application status
+        """
+        email_to = self.email
+        emails = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
+        if(application_status =="approved"):
+            template = self.env.ref('kanha_census.mail_template_application_approved')
+        elif(application_status =="to_approve"):
+            template = self.env.ref('kanha_census.mail_template_application_submitted')
+            # Send email to resident and team (added in system parameter) on application submit
+            # email_to = emails+","+self.email
+            email_to = ','.join([emails,email_to])
+        elif(application_status =="deleted"):
+            template = self.env.ref('kanha_census.mail_template_application_delete')
+            # Send email to resident and team (added in system parameter) on application delete
+            email_to = ','.join([emails,email_to])
+        ctx = dict(self.env.context)
+        ctx['email_to'] = email_to
+        ctx['email_from'] = self.env.user.company_id.email
+        if template:
+            template.with_context(ctx).send_mail(self.id, force_send=True)  
 
     def send_deleted_application_mail(self):
         """
@@ -238,7 +242,12 @@ class ResPartner(models.Model):
         """
         template = self.env.ref('kanha_census.mail_template_application_delete')
         ctx = dict(self.env.context)
-        ctx['email_to'] = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
+        # ctx['email_to'] = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
+        emails = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
+        resident_email = self.email
+        # email_to = emails+","+self.email
+        email_to = ','.join([emails,resident_email])
+        ctx['email_to'] = email_to
         ctx['email_from'] = self.env.user.company_id.email
         if template:
             template.with_context(ctx).send_mail(self.id, force_send=True) 
