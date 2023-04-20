@@ -113,9 +113,9 @@ class SaleExcelReport(models.TransientModel):
         worksheet.write_merge(0,1,0,9,title,title_style)
         row_index = 3
         index=0
-        for rec in rows:
-            for cell_index, head in enumerate(sheet_headers+line_headers): 
+        for cell_index, head in enumerate(sheet_headers+line_headers): 
                 worksheet.write(row_index, cell_index, head, header_style)
+        for rec in rows:
             row_index = row_index + 1
             worksheet.write(row_index , index , rec.get('date_ordered').strftime("%d-%m-%Y %H:%M:%S") if rec.get('date_ordered') else None,date_format)
             worksheet.write(row_index , index + 1, rec.get('order_reference'),style)
@@ -138,11 +138,11 @@ class SaleExcelReport(models.TransientModel):
                         worksheet.write(props_row,index + 1,prop.get('property_value'),style) 
                     row_index = props_row
                 row_index = row_index + 1
-            worksheet.write(row_index,index + 6,'Order Total',header_style)
-            worksheet.write(row_index,index + 7,rec.get('amount_untaxed'),style)
-            worksheet.write(row_index,index + 8,rec.get('amount_tax'),style)
-            worksheet.write(row_index,index + 9,rec.get('amount_total'),style)
-            row_index = row_index + 1
+            # worksheet.write(row_index,index + 6,'Order Total',header_style)
+            # worksheet.write(row_index,index + 7,rec.get('amount_untaxed'),style)
+            # worksheet.write(row_index,index + 8,rec.get('amount_tax'),style)
+            # worksheet.write(row_index,index + 9,rec.get('amount_total'),style)
+            # row_index = row_index + 1
         return
     
     def generate_xlsx(self):
