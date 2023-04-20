@@ -408,19 +408,18 @@ class CustomerPortal(CustomerPortal):
                         if(relative_partner):
                             partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
                             relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})
-                    # To Send Email regarding application status
-                    application_status = ''
-                    if(values.get('application_status')):
-                        application_status = values.get('application_status').strip()
-                    # To send email only if status changed
-                    # if(partner.application_status != application_status):
-                    #     partner.send_application_status_mail(application_status)
+                    
                     # updates partner
-                    partner.sudo().write(values)                  
+                    partner.sudo().write(values)  
+                    # Send email to resident as well as team (added in system parameter) on application Submission when update record  
+                    if(partner.application_status == 'to_approve'):
+                        partner.send_application_status_mail(partner.application_status)                               
                 else:
                     # creates new partner record
                     partner = ResPartner.sudo().create(values)
-                    # partner.send_application_status_mail(partner.application_status)
+                    # Send email to resident as well as team (added in system parameter) on application Submission when Create record
+                    if(partner.application_status == 'to_approve'):
+                        partner.send_application_status_mail(partner.application_status)
                     # Links family members
                     if(relative_partner):
                         partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
