@@ -56,8 +56,11 @@
 			<field name="body_html" type="html">
 				<p>Hello,</p>
 				<p>
-				We are sorry to inform you that your application have been rejected due to the following reason.
-				<b>${ctx['reason']}</b>.Kindly do the changes and submit your application once again.
+				We are sorry to inform you that your application have been rejected due to the below reason.
+				<br></br>
+				<b>${ctx['reason']}</b>
+				<br></br>
+				Kindly do the changes, then save the document and submit the same.
 				</p>
 				<p>Thank You</p>
 				</field>
@@ -72,7 +75,7 @@
 			<field name="body_html" type="html">
 				<p>Hello,</p>
 				<p>
-				Your application has been approved.
+				Your application has been approved in Kanha Residents Portal.
 				</p>
 				<p>Thank You</p>
 				</field>
@@ -87,7 +90,7 @@
 			<field name="body_html" type="html">
 				<p>Hello,</p>
 				<p>
-				You have submitted your application. We will approve soon.
+				You have submitted your application in the Kanha Residents Portal. We will approve soon.
 				</p>
 				<p>Thank You</p>
 				</field>
