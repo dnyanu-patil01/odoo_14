@@ -225,11 +225,13 @@ class ResPartner(models.Model):
             template = self.env.ref('kanha_census.mail_template_application_submitted')
             # Send email to resident and team (added in system parameter) on application submit
             # email_to = emails+","+self.email
-            email_to = ','.join([emails,email_to])
+            if emails:
+                email_to = ','.join([emails,email_to])
         elif(application_status =="deleted"):
             template = self.env.ref('kanha_census.mail_template_application_delete')
             # Send email to resident and team (added in system parameter) on application delete
-            email_to = ','.join([emails,email_to])
+            if emails:
+                email_to = ','.join([emails,email_to])
         ctx = dict(self.env.context)
         ctx['email_to'] = email_to
         ctx['email_from'] = self.env.user.company_id.email
