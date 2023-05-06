@@ -166,5 +166,87 @@
             </field>
             <field name="auto_delete" eval="False" />
         </record>
+
+        <record id="escalation_email_alert_to_seller" model="mail.template">
+            <field name="name">Escalation Reminder To Seller</field>
+            <field name="email_from">care@hfnlife.com</field>
+            <field name="subject">Attn: You have ${ctx.get('numbers')} orders pending for delivery Today</field>
+            <field name="email_to">${ctx['email_to']}</field>
+            <field name="reply_to">care@hfnlife.com</field>
+            <field name="model_id" ref="seller_management.model_stock_picking"/>
+            <field name="body_html" type="html">
+                <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+                    <p>Dear ${ctx.get('seller_name')},</p><br/>
+                    <p>It is to inform you that following delivery orders are pending for fulfillment for more than 72 hours, please take action against it in next 24 hours or the order will process to cancellation and will raise refund to customer.</p><br/>
+                    % set order_lines = ctx.get('orders')
+                    <table style="width:70%; border-collapse: collapse">
+                      <tr>
+                         <th style="border: 1px solid black; padding: 7px">Sale Orders</th>
+                         <th style="border: 1px solid black; padding: 7px">Delivery Orders</th>
+                         <th style="border: 1px solid black; padding: 7px">Hours since Ordered</th>
+                      </tr>
+                      % for line in order_lines:
+                          <tr>
+                              <td style="border: 1px solid black; padding: 5px"><center>${line['sale_order']}</center></td>
+                              <td style="border: 1px solid black; padding: 5px">
+                                  <center>
+                                      <a href="${object.get_base_url()}/web#id=${line['id']}&amp;action=538&amp;model=stock.picking&amp;view_type=form&amp;cids=&amp;menu_id=359" target="_blank">
+                                      ${line['name']}
+                                      </a>
+                                  </center>
+                              </td>
+                              <td style="border: 1px solid black; padding: 5px"><center>${line['hours']} hours</center></td>
+                          </tr>
+                      % endfor
+                     </table><br/>
+
+                     <p>Heartfully Yours,</p>
+                     <p>HFNLife Fullfillment Team</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="escalation_email_alert_to_fulfillment_team" model="mail.template">
+            <field name="name">Escalation Reminder To Fulfillment Team</field>
+            <field name="email_from">care@hfnlife.com</field>
+            <field name="subject">Attn: ${ctx.get('numbers')} seller orders are not fulfilled from last 4 days </field>
+            <field name="email_to">${ctx.get('email_to', False)}</field>
+            <field name="reply_to">care@hfnlife.com</field>
+            <field name="model_id" ref="seller_management.model_stock_picking"/>
+            <field name="body_html" type="html">
+                <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+                    <p>Dear Team,</p><br/>
+                    <p>Please find list of orders not fulfilled.</p><br/>
+                    % set order_lines = ctx.get('orders')
+                    <table style="width:70%; border-collapse: collapse">
+                      <tr>
+                         <th style="border: 1px solid black; padding: 7px">Seller Name</th>
+                         <th style="border: 1px solid black; padding: 7px">Sale Orders</th>
+                         <th style="border: 1px solid black; padding: 7px">Delivery Orders</th>
+                         <th style="border: 1px solid black; padding: 7px">Hours since Ordered</th>
+                      </tr>
+                      % for line in order_lines:
+                          <tr>
+                              <td style="border: 1px solid black; padding: 5px"><center>${line['seller_name']}</center></td>
+                              <td style="border: 1px solid black; padding: 5px"><center>${line['sale_order']}</center></td>
+                              <td style="border: 1px solid black; padding: 5px">
+                                  <center>
+                                      <a href="${object.get_base_url()}/web#id=${line['id']}&amp;action=538&amp;model=stock.picking&amp;view_type=form&amp;cids=&amp;menu_id=359" target="_blank">
+                                      ${line['name']}
+                                      </a>
+                                  </center>
+                              </td>
+                              <td style="border: 1px solid black; padding: 5px"><center>${line['hours']} hours</center></td>
+                          </tr>
+                      % endfor
+                     </table><br/>
+
+                     <p>Heartfully Yours,</p>
+                     <p>HFNLife Fullfillment Team</p>
+                </div>
+            </field>
+        </record>
     </data>
 </odoo>

@@ -73,6 +73,7 @@
                             <field name="reference" readonly="1" attrs="{'invisible': [('reference', '=', False)]}"/>
                             <field name="client_order_ref" string="Shopify Order Reference"/>
                             <field name="pricelist_id" options="{'no_open':True,'no_create': True}" invisible="1"/>
+                            <field name="seller_payments_id"/>
                         </group>
                     </group>
                     <notebook>

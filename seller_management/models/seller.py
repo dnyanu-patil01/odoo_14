@@ -22,6 +22,13 @@ class ResPartner(models.Model):
     seller_invoice_count = fields.Integer(compute='_compute_seller_invoice_count', string='Seller Invoice Count')
     seller_product_count = fields.Integer(compute='_compute_seller_product_count', string='Seller Product Count')
     seller_signature_image = fields.Binary(string='Seller Signature')
+    bank_name = fields.Char("Bank Name")
+    acct_holder_name = fields.Char("Account Holder Name")
+    acct_no = fields.Char("Account Number")
+    ifsc_code = fields.Char("IFSC Code")
+    upi_id = fields.Char("UPI ID")
+    seller_payment_count = fields.Integer(compute='_compute_seller_payments_count', string='Seller Payments Count')
+    escalation_mail = fields.Boolean(default=False, string='Send Escalation Mail')
     
     _sql_constraints = [
         ("seller_code_uniq", "unique(seller_code)", "Seller Code Must Be Unique")
@@ -48,6 +55,32 @@ class ResPartner(models.Model):
 
     def action_view_seller_orders(self):
         action = self.env["ir.actions.actions"]._for_xml_id("seller_management.seller_sale_order_action")
+        action['context'] = {
+            'default_seller_id':self.id,
+        }
+        action['domain'] = [('seller_id', 'child_of', self.id)]
+        return action
+
+    def _compute_seller_payments_count(self):
+        # retrieve all children all_sellers and prefetch 'parent_id' on them
+        all_sellers = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+        all_sellers.read(['parent_id'])
+
+        seller_payments_groups = self.env['seller.payments'].read_group(
+            domain=[('seller_id', 'in', all_sellers.ids)],
+            fields=['seller_id'], groupby=['seller_id']
+        )
+        sellers = self.browse()
+        for group in seller_payments_groups:
+            seller = self.browse(group['seller_id'][0])
+            while seller:
+                if seller in self:
+                    seller.seller_payment_count += group['seller_id_count']
+                    sellers |= seller
+                seller = seller.parent_id
+        (self - sellers).seller_payment_count = 0
+    def action_view_seller_payments(self):
+        action = self.env["ir.actions.actions"]._for_xml_id("seller_payments.seller_payment_view_action")
         action['context'] = {
             'default_seller_id':self.id,
         }

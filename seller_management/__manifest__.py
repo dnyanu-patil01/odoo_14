@@ -13,6 +13,8 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/mail_data.xml',
+        'data/ir_cron_data.xml',
+        'data/ir_config_parameter_data.xml',
         'views/seller_view.xml',
         'views/product_view.xml',
         'views/sale_order_view.xml',
