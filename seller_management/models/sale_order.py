@@ -16,7 +16,7 @@ class SaleOrder(models.Model):
     mobile = fields.Char(related="partner_shipping_id.mobile",readonly=True) 
     phone = fields.Char(related="partner_shipping_id.phone",readonly=True)
     active = fields.Boolean('Active',default=True, help="If unchecked, it will allow you to hide the sale order without removing it.")
-
+    seller_payments_id = fields.Many2one('seller.payments', string="Seller Payments")
 
     @api.model
     def create(self, vals):

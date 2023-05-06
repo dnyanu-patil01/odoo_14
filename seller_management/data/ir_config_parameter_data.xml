@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="config_add_fulfillment_teams" model="ir.config_parameter">
+        <field name="key">fulfillment_team_recipients</field>
+        <field name="value"></field>
+    </record>
+</odoo>

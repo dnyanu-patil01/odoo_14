@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_seller_payments" model="ir.ui.view">
+        <field name="name">seller.payments.view.tree</field>
+        <field name="model">seller.payments</field>
+        <field name="arch" type="xml">
+            <tree string="Sellers Payments">
+                <field name="name"/>
+                <field name="seller_id"/>
+                <field name="from_date" />
+                <field name="to_date" />
+                <field name="total_sales_amount"/>
+                <field name="total_untaxed_sales_amount"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_seller_payments_form" model="ir.ui.view">
+        <field name="name">seller.payments.view.form</field>
+        <field name="model">seller.payments</field>
+        <field name="arch" type="xml">
+            <form string="Sellers Payment" duplicate="0">
+                <sheet>
+                    <div>
+                        <h1>
+                            <field name="name" attrs="{'invisible': [('name','=','/')]}"/>
+                        </h1>
+                    </div>
+                    <div>
+                        <group>
+                            <field name="seller_id" readonly="1"/>
+                        </group>
+                    </div>
+                    <group col="4">
+                        <field name="from_date" readonly="1"/>
+                        <field name="to_date" readonly="1"/>
+                        <field name="total_sales_amount" readonly="1"/>
+                        <field name="total_untaxed_sales_amount" readonly="1"/>
+                        <field name="commission"/>
+                        <field name="commissions_gst"/>
+                        <field name="tds"/>
+                        <field name="tcs"/>
+                        <field name="net_payable_amount"/>
+                        <field name="utr_number"/>
+                        <field name="payment_date"/>
+                    </group>
+                    <notebook>
+                        <page string="Sales Order" name="sales_order">
+                            <field name="sales_order_ids" readonly="1">
+                                <tree string="Sales">
+                                    <field name="name" string="Number" readonly="1" decoration-bf="1"/>
+                                    <field name="date_order" string="Order Date" widget="date" optional="show"/>
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="seller_id" readonly="1"/>
+                                    <field name="warehouse_id" options="{'no_create': True}" optional="hide"/>
+                                    <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
+                                    <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="hide"/>
+                                    <field name="amount_tax" sum="Tax Total" widget="monetary" optional="hide"/>
+                                    <field name="amount_total" sum="Total Tax Included" widget="monetary" decoration-bf="1" optional="show"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="invoice_status" decoration-success="invoice_status == 'invoiced'" decoration-info="invoice_status == 'to invoice'" decoration-warning="invoice_status == 'upselling'" widget="badge" optional="show"/>
+                                    <field name="tag_ids" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    <field name="state" invisible="1"/>
+                                </tree>
+                                <form string="Sales Order">
+                                    <group col="4">
+                                        <field name="name" string="Number" readonly="1" decoration-bf="1"/>
+                                        <field name="date_order" string="Order Date" widget="date" optional="show"/>
+                                        <field name="partner_id" readonly="1"/>
+                                        <field name="seller_id" readonly="1"/>
+                                        <field name="warehouse_id" options="{'no_create': True}" optional="hide"/>
+                                        <field name="company_id" groups="base.group_multi_company" optional="show" readonly="1"/>
+                                        <field name="amount_untaxed" sum="Total Tax Excluded" widget="monetary" optional="hide"/>
+                                        <field name="amount_tax" sum="Tax Total" widget="monetary" optional="hide"/>
+                                        <field name="amount_total" sum="Total Tax Included" widget="monetary" decoration-bf="1" optional="show"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="invoice_status" decoration-success="invoice_status == 'invoiced'" decoration-info="invoice_status == 'to invoice'" decoration-warning="invoice_status == 'upselling'" widget="badge" optional="show"/>
+                                        <field name="tag_ids" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                        <field name="state" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="seller_payment_view_action" model="ir.actions.act_window">
+        <field name="name">Sellers Payments</field>
+        <field name="res_model">seller.payments</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Seller's Monthly Payments</p>
+        </field>
+    </record>
+
+    <menuitem
+         id="menu_seller_payments"
+         name="Payments"
+         action="seller_payment_view_action"
+         parent="seller_management.seller_report_root_menu"
+         sequence="55"
+         groups="seller_management.group_sellers_management_manager"/>
+</odoo>
