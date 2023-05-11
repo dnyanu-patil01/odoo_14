@@ -24,16 +24,15 @@ class SellerPayments(models.Model):
 
     def seller_payments_creation(self):
         sellers = self.env['res.partner'].search([('seller', '=', True)])
-        today = datetime.now().date() - relativedelta(months=9)
+        today = datetime.now().date() - relativedelta(months=+1)
         first_day = today.replace(day=1)
         prev_month_end_date = first_day - timedelta(days=1)
         prev_month_st_date = prev_month_end_date.replace(day=1)
         for rec in sellers:
-            sale_orders = self.env['sale.order'].search([('seller_id', '=', rec.id)])
-            sales_total_amount = sum(sale_orders.filtered(lambda x: x.date_order.date() >= prev_month_st_date and
-                                                    x.date_order.date() <= prev_month_end_date).mapped("amount_total"))
-            untaxed_total_amount = sum(sale_orders.filtered(lambda x: x.date_order.date() >= prev_month_st_date and
-                                                              x.date_order.date() <= prev_month_end_date).mapped("amount_untaxed"))
+            sale_orders = self.env['sale.order'].search([('seller_id', '=', rec.id),('date_order','>=',prev_month_st_date),('date_order','<=',prev_month_end_date)])
+            print(sale_orders,prev_month_st_date,prev_month_end_date)
+            sales_total_amount = sum(sale_orders.mapped("amount_total"))
+            untaxed_total_amount = sum(sale_orders.mapped("amount_untaxed"))
             if sales_total_amount > 0.0:
                 payment = self.create({'from_date': prev_month_st_date,
                                        'to_date': prev_month_end_date,
@@ -42,8 +41,7 @@ class SellerPayments(models.Model):
                                        'total_untaxed_sales_amount': untaxed_total_amount,
                                        })
 
-                sale_orders.filtered(lambda x: x.date_order.date() >= prev_month_st_date and
-                                               x.date_order.date() <= prev_month_end_date).write({'seller_payments_id': payment.id})
+                sale_orders.write({'seller_payments_id': payment.id})
 
     @api.model
     def create(self, vals):
