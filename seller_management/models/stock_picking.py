@@ -36,9 +36,8 @@ class StockPicking(models.Model):
         for rec in sellers:
             delivery_orders = self.env['stock.picking'].search([('scheduled_date', '<=', esc_date),
                                                                 ('state', 'not in', ['done','cancel']),
-                                                                ('seller_id', '=', rec.id),
-                                                                order='create_date DESC'
-                                                                ])
+                                                                ('seller_id', '=', rec.id)
+                                                                ], order='create_date DESC')
             if delivery_orders:
                 ctx = dict(self.env.context)
                 ctx['numbers'] = len(delivery_orders)
@@ -62,8 +61,7 @@ class StockPicking(models.Model):
         esc_date = datetime.now().date() - timedelta(days=4)
         delivery_orders = self.env['stock.picking'].search([('scheduled_date', '<=', esc_date),
                                                             ('state', 'not in', ['done','cancel']),
-                                                            order='create_date DESC'
-                                                            ])
+                                                            ], order='create_date DESC')
         if delivery_orders:
             ctx = dict(self.env.context)
             ctx['numbers'] = len(delivery_orders)
