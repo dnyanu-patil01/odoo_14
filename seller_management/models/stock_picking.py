@@ -36,7 +36,8 @@ class StockPicking(models.Model):
         for rec in sellers:
             delivery_orders = self.env['stock.picking'].search([('scheduled_date', '<=', esc_date),
                                                                 ('state', 'not in', ['done','cancel']),
-                                                                ('seller_id', '=', rec.id)
+                                                                ('seller_id', '=', rec.id),
+                                                                order='create_date DESC'
                                                                 ])
             if delivery_orders:
                 ctx = dict(self.env.context)
@@ -60,7 +61,8 @@ class StockPicking(models.Model):
         """To Trigger Mail To Fulfillment team if the delivery is not processed for 96 hrs"""
         esc_date = datetime.now().date() - timedelta(days=4)
         delivery_orders = self.env['stock.picking'].search([('scheduled_date', '<=', esc_date),
-                                                            ('state', 'not in', ['done','cancel'])
+                                                            ('state', 'not in', ['done','cancel']),
+                                                            order='create_date DESC'
                                                             ])
         if delivery_orders:
             ctx = dict(self.env.context)
