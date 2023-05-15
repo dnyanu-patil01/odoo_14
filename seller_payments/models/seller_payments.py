@@ -24,10 +24,6 @@ class SellerPayments(models.Model):
 
     def seller_payments_creation(self):
         sellers = self.env['res.partner'].search([('seller', '=', True)])
-today = datetime.now().date()
-first_day = today.replace(day=1) - relativedelta(months=1)
-prev_month_end_date = first_day - timedelta(days=1)
-print(first_day,prev_month_end_date)        
         today = datetime.now().date()
         first_day = today.replace(day=1)
         prev_month_end_date = first_day - timedelta(days=1)
