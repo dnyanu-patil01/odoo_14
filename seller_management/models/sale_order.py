@@ -17,6 +17,8 @@ class SaleOrder(models.Model):
     phone = fields.Char(related="partner_shipping_id.phone",readonly=True)
     active = fields.Boolean('Active',default=True, help="If unchecked, it will allow you to hide the sale order without removing it.")
     seller_payments_id = fields.Many2one('seller.payments', string="Seller Payments")
+    cancellation_reason = fields.Text("Reason For Cancellation")
+    cancel_reason_check = fields.Boolean(string='Cancel Reason Check')
 
     @api.model
     def create(self, vals):
@@ -107,6 +109,23 @@ class SaleOrder(models.Model):
             Mail = self.env['mail.mail'].sudo().browse(mail_id)
         Mail.send()
         return super()._action_cancel()
+
+    def cancel_order(self):
+        order_ids = False
+        if self.env.context.get('active_model') == 'sale.order':
+            order_ids = self.env.context.get('active_ids') or False
+        if not order_ids:
+            ctx = {'order_ids': self.ids}
+        else:
+            ctx = {"order_ids": order_ids}
+        return {
+            "name": ("Cancel Sale & Delivery Order"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "sale.delivery.order.cancel.reason",
+            "target": "new",
+            "context": ctx,
+        }
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"

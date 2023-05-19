@@ -9,6 +9,7 @@ class StockPicking(models.Model):
     mobile = fields.Char(related="partner_id.mobile",readonly=True) 
     phone = fields.Char(related="partner_id.phone",readonly=True)
     active = fields.Boolean('Active',default=True, help="If unchecked, it will allow you to hide the delivery order without removing it.")
+    cancel_reason_check = fields.Boolean(string='Cancel Reason Check')
 
 
     @api.model
@@ -28,6 +29,23 @@ class StockPicking(models.Model):
             Mail = self.env['mail.mail'].sudo().browse(mail_id)
         Mail.send()
         return super().action_cancel()
+
+    def cancel_order(self):
+        order_ids = False
+        if self.env.context.get('active_model') == 'stock.picking':
+            order_ids = self.env.context.get('active_ids') or False
+        if not order_ids:
+            ctx = {'order_ids': self.ids}
+        else:
+            ctx = {"order_ids": order_ids}
+        return {
+            "name": ("Cancel Sale & Delivery Order"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "sale.delivery.order.cancel.reason",
+            "target": "new",
+            "context": ctx,
+        }
 
     def delivery_escalation_for_hfn_seller(self):
         """To Trigger Mail To HFN Seller if the delivery is not processed for 72 hrs"""
