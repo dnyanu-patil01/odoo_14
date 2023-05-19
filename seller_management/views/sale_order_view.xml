@@ -30,7 +30,8 @@
             <field name="arch" type="xml">
                 <form string="Sales Order" class="o_sale_order" js_class="sale_discount_form"  create="0" edit="0" delete="0">
                     <header>
-                        <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','sale']), ('id', '=', False)]}"/> 
+                        <button name="cancel_order" type="object" string="Cancel order" attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','sale']), ('id', '=', False)]}"/>
+                        <button name="action_cancel" type="object" string="Cancel" invisible="1"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
                     </header>
                     <sheet>
@@ -373,6 +374,10 @@
                             </group>
                         </page>
                     </notebook>
+                        <group>
+                            <field name="cancellation_reason" string="Cancellation Reason" attrs="{'invisible': [('cancel_reason_check', '=', False)]}"/>
+                            <field name="cancel_reason_check" invisible="1"/>
+                        </group>
                     </sheet>
                 </form>
             </field>

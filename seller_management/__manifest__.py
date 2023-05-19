@@ -33,6 +33,7 @@
         'report/reports.xml',
         'views/hide_report_view.xml',
         'report/report_deliveryslip.xml',
+        'wizard/cancel_order_reason_view.xml',
     ],
     'demo': [
         ''

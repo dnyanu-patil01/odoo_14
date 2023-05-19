@@ -1,9 +1,10 @@
 from odoo import api, fields, models, _
+from odoo.exceptions import AccessError, ValidationError
 
 
 class ApplicationRejectionReason(models.TransientModel):
-    _name = "order.cancel.reason"
-    _description = "Order Cancellation Reason"
+    _name = "sale.delivery.order.cancel.reason"
+    _description = "SO / DO Cancellation Reason"
 
     reason = fields.Text("Reason For Cancellation", required=True)
 
@@ -20,7 +21,12 @@ class ApplicationRejectionReason(models.TransientModel):
                     mail_id = template.send_mail(order.id)
                     Mail = self.env['mail.mail'].sudo().browse(mail_id)
                     Mail.send()
-                order.action_cancel()
+                if len(order.picking_ids) > 1:
+                    raise ValidationError('You cannot cancel this Sale Order.\n This Order has multiple Delivery Orders.')
+                else:
+                    order.picking_ids.write({"note": self.reason, "cancel_reason_check": True})
+                    order.action_cancel()
+
         if order_ids and model_name == 'stock.picking':
             for order in order_ids:
                 order = self.env["stock.picking"].browse(order)
@@ -31,4 +37,7 @@ class ApplicationRejectionReason(models.TransientModel):
                     Mail = self.env['mail.mail'].sudo().browse(mail_id)
                     Mail.send()
                 order.action_cancel()
+                sale_order = self.env["sale.order"].search([('name','=', order.origin)])
+                sale_order.write({"cancellation_reason": self.reason, "cancel_reason_check": True})
+                sale_order.action_cancel()
         return True
