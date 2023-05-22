@@ -10,7 +10,7 @@ class ProductProduct(models.Model):
     def cron_send_minimum_stock_alert(self):
         sellers = self.env['res.partner'].search([('seller','=',True)])
         for seller in sellers:
-            products = self.env['product.product'].search([('seller_id','=',seller.id)])
+            products = self.env['product.product'].search([('seller_id','=',seller.id),('active','=',True)])
             low_stock_products = products.filtered(lambda p: p.type != 'service' and p.virtual_available <= 5)
             dynamic_row = ""
             mail_dict = {}
