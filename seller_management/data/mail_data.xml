@@ -225,16 +225,30 @@
                          <th style="border: 1px solid black; padding: 7px">Seller Name</th>
                          <th style="border: 1px solid black; padding: 7px">Sale Orders</th>
                          <th style="border: 1px solid black; padding: 7px">Delivery Orders</th>
+                         <th style="border: 1px solid black; padding: 7px">Shopify Orders</th>
                          <th style="border: 1px solid black; padding: 7px">Hours since Ordered</th>
                       </tr>
                       % for line in order_lines:
                           <tr>
                               <td style="border: 1px solid black; padding: 5px"><center>${line['seller_name']}</center></td>
-                              <td style="border: 1px solid black; padding: 5px"><center>${line['sale_order']}</center></td>
+                              <td style="border: 1px solid black; padding: 5px">
+                                  <center>
+                                      <a href="${object.get_base_url()}/web#id=${line['so_id']}&amp;action=302&amp;model=sale.order&amp;view_type=form&amp;cids=&amp;menu_id=189" target="_blank">
+                                      ${line['sale_order']}
+                                      </a>
+                                  </center>
+                              </td>
                               <td style="border: 1px solid black; padding: 5px">
                                   <center>
                                       <a href="${object.get_base_url()}/web#id=${line['id']}&amp;action=538&amp;model=stock.picking&amp;view_type=form&amp;cids=&amp;menu_id=359" target="_blank">
                                       ${line['name']}
+                                      </a>
+                                  </center>
+                              </td>
+                              <td style="border: 1px solid black; padding: 5px">
+                                  <center>
+                                      <a href="https://hfn-life.myshopify.com/admin/orders/${line['shopify_order_link']}" target="_blank">
+                                      #${line['shopify_order']}
                                       </a>
                                   </center>
                               </td>

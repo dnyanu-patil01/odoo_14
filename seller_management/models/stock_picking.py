@@ -76,9 +76,11 @@ class StockPicking(models.Model):
 
     def delivery_escalation_to_fulfillment_team(self):
         """To Trigger Mail To Fulfillment team if the delivery is not processed for 96 hrs"""
+        sellers = self.env['res.partner'].search([('seller', '=', True),('escalation_mail', '=', True)])
         esc_date = datetime.now().date() - timedelta(days=4)
         delivery_orders = self.env['stock.picking'].search([('scheduled_date', '<=', esc_date),
                                                             ('state', 'not in', ['done','cancel']),
+                                                            ('seller_id', 'in', sellers.ids),
                                                             ], order='create_date asc')
         if delivery_orders:
             ctx = dict(self.env.context)
@@ -87,11 +89,15 @@ class StockPicking(models.Model):
             orders = []
             for line in delivery_orders:
                 hrs = datetime.now() - line.scheduled_date
+                so = self.env['sale.order'].search([('name','=',line.origin)])
                 total_hrs = (hrs.total_seconds())/3600
                 orders.append({'name': line.name,
-                               'sale_order': line.origin,
+                               'sale_order': so.name,
                                'id': line.id,
                                'seller_name': line.seller_id.name,
+                               'so_id': so.id,
+                               'shopify_order': so.shopify_order_number,
+                               'shopify_order_link': so.shopify_order_id,
                                'hours': int(total_hrs)})
             ctx['orders'] = orders
             ############################
