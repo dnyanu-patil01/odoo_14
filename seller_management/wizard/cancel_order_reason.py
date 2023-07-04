@@ -25,7 +25,7 @@ class ApplicationRejectionReason(models.TransientModel):
                     raise ValidationError('You cannot cancel this Sale Order.\n This Order has multiple Delivery Orders.')
                 else:
                     order.picking_ids.write({"note": self.reason, "cancel_reason_check": True})
-                    order.action_cancel()
+                    return order.action_cancel()
 
         if order_ids and model_name == 'stock.picking':
             for order in order_ids:
@@ -39,5 +39,5 @@ class ApplicationRejectionReason(models.TransientModel):
                 order.action_cancel()
                 sale_order = self.env["sale.order"].search([('name','=', order.origin)])
                 sale_order.write({"cancellation_reason": self.reason, "cancel_reason_check": True})
-                sale_order.action_cancel()
+                return sale_order.action_cancel()
         return True
