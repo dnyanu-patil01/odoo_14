@@ -8,8 +8,11 @@ jobs:
   deploy:
     runs-on: heartyculture-prod-aws
     steps:
-      - run: |
-          "[ -d /mnt/odoo-custom-14 ] || sudo mkdir -p /mnt/odoo-custom-14"
+      - uses: actions/checkout@v2
+        name: Checkout Code
+
+      - name: restart odoo
+        run: |
           sudo rm -fr /mnt/odoo-custom-14
           sudo mkdir -p /mnt/odoo-custom-14
           sudo cp -r . /mnt/odoo-custom-14
