@@ -3,7 +3,9 @@ name: deploy-heartyculture-prod-aws
 on:
   release:
     types: [created, edited]
-
+  push:
+    tags:
+      - 'Release_Prod_Heartycluture*'
 jobs:
   deploy:
     runs-on: heartyculture-prod-aws
