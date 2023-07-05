@@ -3,7 +3,9 @@ name: deploy-hfnlife-prod-aws
 on:
   release:
     types: [created, edited]
-
+  push:
+    tags:
+      - 'Release_Prod_Hfnlife*'
 jobs:
   deploy:
     runs-on: saleshfnlife-prod-aws
