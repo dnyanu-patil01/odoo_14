@@ -13,6 +13,7 @@ import shutil
 import tempfile
 from datetime import datetime
 from odoo.exceptions import MissingError
+import ast
 
 
 
@@ -175,6 +176,15 @@ class CustomerPortal(CustomerPortal):
                 error["visa_end_date"] = _('You cannot enter a date in the past for Visa End date!')
                 error_message.append(_('You cannot enter a date in the past for Visa End date!'))      
 
+        # Vehicle FastTag Validation validation
+        if data.get("vehicle_new_lines"):
+            vehicles = ast.literal_eval(data.get("vehicle_new_lines"))
+            for vehicle in vehicles:
+                fasttag_number = vehicle.get('fasttag_rfid_no')
+                is_valid = self.is_valid_fasttag_rfid(fasttag_number)
+                if not is_valid:
+                    error["fasttag_rfid_no"] = _('Please Enter 16 Digit FastTag RFID. !')
+                    error_message.append(_('Please Enter 16 Digit FastTag RFID. !'))      
         
         # Aadhaar Card Number and Passport Number Mandatory validation
         # aadhaar_card_number = data.get('aadhaar_card_number')
@@ -225,6 +235,16 @@ class CustomerPortal(CustomerPortal):
         #    3.Then contains 9 digits
         pattern = re.compile("(0|91)?[6-9][0-9]{9}")
         if pattern.match(mobile_number) and len(mobile_number) == 10:
+            return True
+        else:
+            return False
+
+    def is_valid_fasttag_rfid(self, fastag_rfid):
+        # Valid Mobile Number
+        #    1.Begins with 6
+        #    2.Then contains 16 digits
+        pattern = r'^6\d{16}$'
+        if re.match(pattern, fastag_rfid):
             return True
         else:
             return False
@@ -583,7 +603,6 @@ class CustomerPortal(CustomerPortal):
         filestream=BytesIO()
         partner_ids = map(int, partner_ids.split(","))
         res_partners = request.env['res.partner'].browse(partner_ids)
-        # import pdb;pdb.set_trace()
         for res_partner in res_partners:
             request.env.cr.execute("""
                     SELECT id
@@ -635,9 +654,9 @@ class CustomerPortal(CustomerPortal):
         if(deleted_partner_ids):
             partner_id = int(deleted_partner_ids)
             ResPartner = request.env['res.partner']
-            partner = ResPartner.sudo().search([('id', '=', partner_id)])  
+            partner = ResPartner.sudo().search([('id', '=', partner_id)])
             user = request.env['res.users'].sudo().search([('partner_id', '=', partner.id)])
-            if(partner.application_status in ["draft", "rejected"]):
+            if(partner.application_status in ["draft", "rejected"]) and partner.rfid_card_no <= 0:
                 if user.id == request.env.user.id:
                     return "current_user"
                 else:

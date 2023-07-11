@@ -12,3 +12,5 @@ class VehicleDetails(models.Model):
         ('Two Wheeler', 'Two Wheeler'),
         ('Four Wheeler', 'Four Wheeler'),
     ])
+    fasttag_rfid_no = fields.Integer("FastTag RFID Number")
+

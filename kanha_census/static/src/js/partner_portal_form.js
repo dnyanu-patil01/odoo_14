@@ -218,7 +218,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 						}
 						else if(result == "cannot_delete") {		        
 							// result_span.html("Please contact Administrator to delete the record");
-							Dialog.alert(null, "You can delete only Rejected and Not Yet Submitted records.");
+							Dialog.alert(null, "You can delete only Rejected and Not Yet Submitted records. or You have assigned RFID card from Ashram Office, if so please contact Ashram office for deleting this record.");
 						}
 						else if(result == "no_records") {		        
 							Dialog.alert(null, "Record does not exist.");
@@ -1115,16 +1115,18 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 				var vehicle_number = $modal.find('input[name="vehicle_number"]').val();
 				var vehicle_owner = $modal.find('input[name="vehicle_owner"]').val();
 				var vehicle_type = $modal.find('select[name="vehicle_type"]').val();
+				var fasttag_rfid_no = $modal.find('select[name="fasttag_rfid_no"]').val();
 				// Updates the value for existing records
 				if(id){
 					$('#vehicle_table tr#'+id).find('.vehicle_number').text(vehicle_number)
 					$('#vehicle_table tr#'+id).find('.vehicle_owner').text(vehicle_owner)
 					$('#vehicle_table tr#'+id).find('.vehicle_type').text(vehicle_type)
+					$('#vehicle_table tr#'+id).find('.fasttag_rfid_no').text(fasttag_rfid_no)
 				}
 				else{
 					// Add new line
 					// Avoids adding empty line
-					if(vehicle_number || vehicle_owner || vehicle_type)
+					if(vehicle_number || vehicle_owner || vehicle_type || fasttag_rfid_no)
 					{
 						// Insert New line before the last row
 						var vehicle_table = document.getElementById('vehicle_table');
@@ -1134,7 +1136,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 						if(!$row.hasClass('empty-row')){
 							$row.remove();
 						}
-						newRow.innerHTML = '<td class="d-none"></td><td name="vehicle_number" class="vehicle_number">'+vehicle_number+'</td><td name="vehicle_owner">'+vehicle_owner+'</td><td name="vehicle_type">'+vehicle_type+'</td><td class="text-right"><button type="button" class="btn btn-secondary fa fa-pencil mr-1 vehicle_edit_new" title="Edit" aria-label="Edit"/><button type="button" class="btn btn-secondary fa fa-trash-o vehicle_clear" title="Clear" aria-label="Clear"/></td>';
+						newRow.innerHTML = '<td class="d-none"></td><td name="vehicle_number" class="vehicle_number">'+vehicle_number+'</td><td name="vehicle_owner">'+vehicle_owner+'</td><td name="vehicle_type">'+vehicle_type+'</td><td name="fasttag_rfid_no">'+fasttag_rfid_no+'</td><td class="text-right"><button type="button" class="btn btn-secondary fa fa-pencil mr-1 vehicle_edit_new" title="Edit" aria-label="Edit"/><button type="button" class="btn btn-secondary fa fa-trash-o vehicle_clear" title="Clear" aria-label="Clear"/></td>';
 					}
 				}
 			 	$modal.modal('hide');	

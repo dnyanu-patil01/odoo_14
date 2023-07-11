@@ -1485,6 +1485,12 @@
                                 </t>
                             </select>
                         </div>
+                        <div class="col-lg-6">
+                            <label class="col-form-label" for="fasttag_rfid_no">FastTag RFID number</label>
+                        </div>
+                        <div t-attf-class="form-group col-xl-6">
+                            <input type="text" name="fasttag_rfid_no" t-attf-class="form-control" t-att-value="fasttag_rfid_no" />
+                        </div>
                     </div>
                     <div class="modal-footer justify-content-start">
                         <button type="button" class="btn btn-primary save_vehicle_line">Save</button>
@@ -1572,6 +1578,7 @@
                         <th>Vehicle Number</th>
                         <th>Vehicle Owner</th>
                         <th>Vehicle Type</th>
+                        <th>FastTag RFID Number</th>
                         <th />
                     </tr>
                 </thead>
@@ -1589,6 +1596,9 @@
                             </td>
                             <td name="vehicle_type" class="vehicle_type">
                                 <t t-esc="vehicle.vehicle_type" />
+                            </td>
+                            <td name="fasttag_rfid_no" class="fasttag_rfid_no">
+                                <t t-esc="vehicle.fasttag_rfid_no" />
                             </td>
                             <td class="text-right">
                                 <button t-att-id="vehicle.id" type="button" class="btn btn-secondary fa fa-pencil vehicle_edit_exist" title="Edit" aria-label="Edit" />
