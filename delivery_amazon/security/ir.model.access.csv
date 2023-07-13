@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_amazon_shipment_service_list,access.amazon.shipment.service.list,delivery_amazon.model_amazon_shipment_service_list,seller_management.group_sellers_management_user,1,1,1,1
+access_amazon_service,access.amazon.service,delivery_amazon.model_amazon_service,seller_management.group_sellers_management_user,1,1,1,0

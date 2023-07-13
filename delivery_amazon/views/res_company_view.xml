@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="view_res_company_amzn_inherit" model="ir.ui.view">
+      <field name="name">view.res.company.amzn.inherit</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form" />
+      <field name="arch" type="xml">
+         <xpath expr="//notebook/page[last()]" position="after">
+            <page string="Amazon Shipment Config">
+               <group>
+                  <group>
+                     <field name="use_amazon" />
+                     <field name="amzn_access_token" invisible="1" />
+                     <div class="alert alert-info" role="alert" attrs="{'invisible': ['|',('use_amazon','=',False),('amzn_access_token', '!=', False)]}">
+                        <span>
+                              Unable To Generate Access Token.Please Verify The Amazon Shipment Credentials in Config.
+                        </span>
+                     </div>
+
+                  </group>
+               </group>
+               <button type="object" name="get_amzn_access_token_api" string="Generate Access Token" />
+            </page>
+         </xpath>
+      </field>
+   </record>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="view_seller_profile_form_inherit" model="ir.ui.view">
+      <field name="name">view.seller.form.inherit</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="seller_management.view_seller_form" />
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='fulfilment_type']" position="after">
+               <field name="use_amzn_shipment"/>
+          </xpath>
+      </field>
+   </record>
+</odoo>
