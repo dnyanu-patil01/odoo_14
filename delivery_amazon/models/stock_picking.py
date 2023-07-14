@@ -17,7 +17,7 @@ class StockPicking(models.Model):
     charge_type = fields.Selection([('Tax', 'Tax'), ('Discount', 'Discount')])
     channel_types = fields.Selection([('AMAZON', 'AMAZON'), ('EXTERNAL', 'EXTERNAL')], default='EXTERNAL')
     product_pack = fields.Many2one('product.packaging', string="Package")
-    pack_shipping_weight = fields.Float('Package Shipping Weight')
+    pack_shipping_weight = fields.Float('Package Shipping Weight', compute='compute_package_weight')
     service_matrix_ids = fields.One2many('amazon.shipment.service.list', 'picking_id', string="Amazon Service Matrix")
     service_id = fields.Many2one('amazon.shipment.service.list', domain="[('picking_id', '=', id)]")
     request_token = fields.Char('Request Token')
@@ -230,39 +230,6 @@ class StockPicking(models.Model):
             raise UserError(response_data)
         return True
 
-    def amzn_purchase_shipments(self):
-        amznshipment = AmznShipment(self.env.company)
-        # API Call To Get Purchase Shipment
-        data = {
-            "requestToken": self.request_token,
-            "rateId": self.service_id.rate_id,
-            "requestedDocumentSpecification": {
-                "format": "PDF",
-                "size": {
-                    "width": 4,
-                    "length": 6,
-                    "unit": "INCH"
-                },
-                "dpi": 300,
-                "pageLayout": "DEFAULT",
-                # "needFileJoining": false,
-                "requestedDocumentTypes": [
-                    "LABEL"
-                ]
-            }
-        }
-        response_data = amznshipment._get_purchase_shipment(data)
-        if "payload" in response_data:
-            payload = response_data["payload"]['packageDocumentDetails']
-            for rec in payload:
-                self.tracking_id = rec['trackingId']
-            self.shipment_id = response_data["payload"]['shipmentId']
-            self.is_shipment_purchased = True
-        elif "errors" in response_data:
-            raise UserError(response_data['errors'][0]['details'])
-        else:
-            raise UserError(response_data)
-        return True
 
     def amzn_get_shipment_document(self):
         amznshipment = AmznShipment(self.env.company)
