@@ -1115,7 +1115,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 				var vehicle_number = $modal.find('input[name="vehicle_number"]').val();
 				var vehicle_owner = $modal.find('input[name="vehicle_owner"]').val();
 				var vehicle_type = $modal.find('select[name="vehicle_type"]').val();
-				var fasttag_rfid_no = $modal.find('select[name="fasttag_rfid_no"]').val();
+				var fasttag_rfid_no = $modal.find('input[name="fasttag_rfid_no"]').val();
+
 				// Updates the value for existing records
 				if(id){
 					$('#vehicle_table tr#'+id).find('.vehicle_number').text(vehicle_number)

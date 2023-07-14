@@ -55,7 +55,7 @@
 		                                <!-- <field name="work_profile" readonly="1"/> -->
 										<field name="work_profile_id" readonly="1"/>
 										<field name="employee_id" readonly="1"/>
-										<field name="rfid_card_no" readonly="1"/>
+										<field name="rfid_card_no"/>
 										<field name="department_id" readonly="1"/>
 		                                <field name="kanha_location_id" readonly="1"/>
 		                                <field name="kanha_house_number_id" string="House Number" readonly="1"/>

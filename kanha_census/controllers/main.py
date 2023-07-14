@@ -178,14 +178,30 @@ class CustomerPortal(CustomerPortal):
 
         # Vehicle FastTag Validation validation
         if data.get("vehicle_new_lines"):
-            vehicles = ast.literal_eval(data.get("vehicle_new_lines"))
-            for vehicle in vehicles:
+            old_vehicles = [v for k, v in ast.literal_eval(data.get("vehicle_details_ids")).items()]
+            new_vehicles = ast.literal_eval(data.get("vehicle_new_lines"))
+            error_encountered = False
+            for vehicle in new_vehicles:
                 fasttag_number = vehicle.get('fasttag_rfid_no')
                 is_valid = self.is_valid_fasttag_rfid(fasttag_number)
+                print(fasttag_number)
                 if not is_valid:
-                    error["fasttag_rfid_no"] = _('Please Enter 16 Digit FastTag RFID. !')
-                    error_message.append(_('Please Enter 16 Digit FastTag RFID. !'))      
-        
+                    # error["fasttag_rfid_no"] = _('Please enter a valid 16-digit FastTag RFID starting with 6.')
+                    # error_message.append(_('Please enter a valid 16-digit FastTag RFID starting with 6.'))  
+                    error_encountered = True  
+            for vehicle in old_vehicles:
+                fasttag_number = vehicle.get('fasttag_rfid_no')
+                is_valid = self.is_valid_fasttag_rfid(fasttag_number)
+                print(fasttag_number)
+                if not is_valid:
+                    # error["fasttag_rfid_no"] = _('Please enter a valid 16-digit FastTag RFID starting with 6.')
+                    # error_message.append(_('Please enter a valid 16-digit FastTag RFID starting with 6.'))   
+                    error_encountered = True
+            if error_encountered:
+                error["fasttag_rfid_no"] = _('Please enter a valid 16-digit FastTag RFID starting with 6.')
+                error_message.append(_('Please enter a valid 16-digit FastTag RFID starting with 6.'))   
+
+
         # Aadhaar Card Number and Passport Number Mandatory validation
         # aadhaar_card_number = data.get('aadhaar_card_number')
         # citizenship = data.get('citizenship')
@@ -240,18 +256,23 @@ class CustomerPortal(CustomerPortal):
             return False
 
     def is_valid_fasttag_rfid(self, fastag_rfid):
-        # Valid Mobile Number
-        #    1.Begins with 6
-        #    2.Then contains 16 digits
-        pattern = r'^6\d{16}$'
-        if re.match(pattern, fastag_rfid):
+        # Valid FastTag RFID Number
+        #    1. Begins with 6
+        #    2. Contains exactly 16 digits
+        
+        try:
+            val = str(fastag_rfid)
+        except ValueError:
+            return False
+
+        pattern = r'^6\d{15}$'
+        if re.match(pattern, val):
             return True
         else:
-            return False
+            return False  
         
     def is_valid_date(self, date_val):
         # Validate date value should not be more than today's date
-                        
         date_val = datetime.strptime(date_val, "%Y-%m-%d")
         present = datetime.now()
         if(date_val.date() <= present.date()):
@@ -289,7 +310,6 @@ class CustomerPortal(CustomerPortal):
             # if citizenship == "Overseas" and not passport_number:
             #     error = "passport_number"
             #     error_message = 'Passport Number is Mandatory to Save/Submit Record'
-
             post['state'] = 'saved_not_submitted'
             post['application_status'] = 'draft'
             if(is_submit == 'true'):
@@ -428,7 +448,13 @@ class CustomerPortal(CustomerPortal):
                         if(relative_partner):
                             partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
                             relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})
-                    
+
+                    # on change of rfid_card_no field should not change the status of resident record
+                    rfid_card_no = int(values.get("rfid_card_no")) if values.get("rfid_card_no") else 0
+                    if(rfid_card_no != partner.rfid_card_no):
+                        values['state'] = partner.state
+                        values['application_status'] = partner.application_status
+
                     # updates partner
                     partner.sudo().write(values)  
                     # Send email to resident as well as team (added in system parameter) on application Submission when update record  
