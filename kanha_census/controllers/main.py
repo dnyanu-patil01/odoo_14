@@ -183,20 +183,16 @@ class CustomerPortal(CustomerPortal):
             error_encountered = False
             for vehicle in new_vehicles:
                 fasttag_number = vehicle.get('fasttag_rfid_no')
-                is_valid = self.is_valid_fasttag_rfid(fasttag_number)
-                print(fasttag_number)
-                if not is_valid:
-                    # error["fasttag_rfid_no"] = _('Please enter a valid 16-digit FastTag RFID starting with 6.')
-                    # error_message.append(_('Please enter a valid 16-digit FastTag RFID starting with 6.'))  
-                    error_encountered = True  
+                if(fasttag_number):
+                    is_valid = self.is_valid_fasttag_rfid(fasttag_number)
+                    if not is_valid:
+                        error_encountered = True  
             for vehicle in old_vehicles:
                 fasttag_number = vehicle.get('fasttag_rfid_no')
-                is_valid = self.is_valid_fasttag_rfid(fasttag_number)
-                print(fasttag_number)
-                if not is_valid:
-                    # error["fasttag_rfid_no"] = _('Please enter a valid 16-digit FastTag RFID starting with 6.')
-                    # error_message.append(_('Please enter a valid 16-digit FastTag RFID starting with 6.'))   
-                    error_encountered = True
+                if(fasttag_number):
+                    is_valid = self.is_valid_fasttag_rfid(fasttag_number)
+                    if not is_valid:
+                        error_encountered = True
             if error_encountered:
                 error["fasttag_rfid_no"] = _('Please enter a valid 16-digit FastTag RFID starting with 6.')
                 error_message.append(_('Please enter a valid 16-digit FastTag RFID starting with 6.'))   
