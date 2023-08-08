@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="view_bulk_process_form_inherit" model="ir.ui.view">
+      <field name="name">view.bulk.process.form.inherit</field>
+      <field name="model">shiprocket.bulk.process</field>
+      <field name="inherit_id" ref="delivery_shiprocket.view_shiprocket_bulk_process_form" />
+      <field name="arch" type="xml">
+          <xpath expr="/form/header/button[last()]" position="after">
+              <field name="amzn_state" attrs="{'invisible': [('delivery_type', '!=', 'amazon_shipment')]}"
+                     widget="statusbar" statusbar_visible="draft"/>
+          </xpath>
+          <xpath expr="//field[@name='pickup_location_id']" position="after">
+              <field name="carrier_id" attrs="{'readonly':[('state','not in',('draft'))]}"
+                     options="{'no_create': True, 'no_create_edit':True}"/>
+              <field name="delivery_type" invisible="1"/>
+          </xpath>
+          <xpath expr="//button[@name='cancel_bulk_process']" position="before">
+              <button name="generate_amzn_shipment_document" string="Generate Document" class="oe_highlight" type="object"
+                      attrs="{'invisible': ['|', '|', ('delivery_type', '!=', 'amazon_shipment'),
+                                                    ('is_document_generated', '=', True),
+                                                    ('state', '!=', 'draft')]}"/>
+              <button name="track_shipment" string="Track Shipments" type="object" class="oe_highlight"
+                      attrs="{'invisible': ['|', '|', ('delivery_type', '!=', 'amazon_shipment'),
+                                                    ('is_document_generated', '=', False),
+                                                    ('state', '!=', 'Document Generated')]}"/>
+              <field name="is_document_generated" invisible="1"/>
+          </xpath>
+          <field name="channel_id" position="attributes">
+              <attribute name="attrs">{'invisible': [('delivery_type', '=', 'amazon_shipment')], 'readonly':[('state','not in',('draft','awb_created_partially'))]}</attribute>
+          </field>
+          <field name="shiprocket_courier_priority" position="attributes">
+              <attribute name="attrs">{'invisible': [('delivery_type', '=', 'amazon_shipment')], 'readonly':[('state','not in',('draft','awb_created_partially'))]}</attribute>
+          </field>
+          <field name="generate_labels_group_by_courier" position="attributes">
+              <attribute name="attrs">{'invisible': [('delivery_type', '=', 'amazon_shipment')]}</attribute>
+          </field>
+          <xpath expr="//field[@name='state']" position="attributes">
+              <attribute name="attrs">{'invisible': [('delivery_type', '=', 'amazon_shipment')]}</attribute>
+          </xpath>
+          <xpath expr="//button[@name='shiprocket_create_awb']" position="attributes">
+              <attribute name="attrs">{'invisible': ['|', ('delivery_type', '=', 'amazon_shipment')]}</attribute>
+          </xpath>
+          <xpath expr="//page[@name='all_stock_picking_ids']" position="attributes">
+              <attribute name="attrs">{'invisible': [('delivery_type', '=', 'amazon_shipment')]}</attribute>
+          </xpath>
+          <xpath expr="//page[@name='process_log']" position="attributes">
+              <attribute name="attrs">{'invisible': [('delivery_type', '=', 'amazon_shipment')]}</attribute>
+          </xpath>
+          <xpath expr="//page[@name='all_stock_picking_ids']" position="after">
+               <page name="amzn_stock_picking_ids" string="Delivery Orders" attrs="{'invisible': [('delivery_type', '!=', 'amazon_shipment')]}">
+                     <field name="amzn_stock_picking_ids" attrs="{'readonly':[('state','not in',('draft'))]}">
+                        <tree>
+                           <field name="partner_id" />
+                           <field name="name"/>
+                           <field name="scheduled_date" optional="show" />
+                           <field name="tracking_id" optional="show" />
+                           <field name="shipment_id" optional="show"/>
+                           <field name="service_id"/>
+                           <field name="carrier_name" string="Courier"/>
+                           <field name="billed_weight" string="Weight"/>
+                           <field name="rate" string="Rate"/>
+                           <field name="event_code"/>
+                           <field name="tracking_status"/>
+                           <field name="barcode"/>
+                           <field name="state" optional="show"/>
+                        </tree>
+                        <form>
+                           <group>
+                              <group>
+                                  <field name="partner_id" />
+                                  <field name="name"/>
+                                  <field name="scheduled_date"/>
+                                  <field name="tracking_id"/>
+                                  <field name="shipment_id"/>
+                                  <field name="event_code"/>
+                                  <field name="barcode"/>
+                              </group>
+                              <group>
+                                   <field name="service_id"/>
+                                   <field name="carrier_name" string="Courier"/>
+                                   <field name="billed_weight" string="Weight"/>
+                                   <field name="rate" string="Rate"/>
+                                   <field name="state"/>
+                                   <field name="tracking_status"/>
+                                   <field name="company_id" readonly="1" />
+                              </group>
+                           </group>
+                        </form>
+                     </field>
+               </page>
+          </xpath>
+      </field>
+   </record>
+</odoo>

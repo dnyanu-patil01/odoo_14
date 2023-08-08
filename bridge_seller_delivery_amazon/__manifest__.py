@@ -14,7 +14,8 @@
 
     # Views
     'data': [
-        # 'views/delivery_order_seller_view.xml',
+        'views/delivery_order_seller_view.xml',
         'views/seller_view_inherit.xml',
+        'views/bulk_process_view.xml',
     ],
 }

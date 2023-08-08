@@ -44,8 +44,6 @@ class ResCompany(models.Model):
                 self.write(
                     {"amzn_access_token": False}
                 )
-            print('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj', data)
-            print('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj', response_dict)
         return True
 
     @api.model

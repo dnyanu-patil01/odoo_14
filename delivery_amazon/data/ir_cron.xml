@@ -9,4 +9,16 @@
         <field name="numbercall">-1</field>
         <field name="user_id" ref="base.user_root"/>
     </record>
+
+    <record id="ir_cron_update_amzn_tracking_shipment" model="ir.cron">
+        <field name="name">Amazon Tracking Shipment</field>
+        <field name="model_id" ref="model_stock_picking"/>
+        <field name="state">code</field>
+        <field name="code">model.action_update_tracking_shipment()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
 </odoo>

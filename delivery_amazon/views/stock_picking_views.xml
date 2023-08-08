@@ -10,9 +10,9 @@
                 <field name="is_shipment_purchased" invisible="1"/>
                 <field name="is_get_rates" invisible="1"/>
                 <field name="is_documents_generated" invisible="1"/>
-                <button name="amzn_get_rates" string="Get Rates" type="object" class="btn-primary" attrs="{'invisible':['|','|', ('delivery_type','!=','amazon_shipment'), ('is_shipment_purchased', '=', True), ('state', 'not in', ['assigned', 'confirmed'])]}"/>
+<!--                <button name="amzn_get_rates" string="Get Rates" type="object" class="btn-primary" attrs="{'invisible':['|','|', ('delivery_type','!=','amazon_shipment'), ('is_shipment_purchased', '=', True), ('state', 'not in', ['assigned', 'confirmed'])]}"/>-->
                 <button name="amzn_get_shipment_document" string="Get Documents" type="object" class="btn-primary" attrs="{'invisible':['|', '|', '|', ('is_shipment_purchased', '=', False), ('is_documents_generated', '=', True),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
-                <button name="amzn_tracking_shipment" string="Track Shipment" type="object" class="btn-primary" attrs="{'invisible':['|', '|', ('is_documents_generated', '=', False),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
+<!--                <button name="amzn_tracking_shipment" string="Track Shipment" type="object" class="btn-primary" attrs="{'invisible':['|', '|', ('is_documents_generated', '=', False),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>-->
                 <button name="amzn_cancel_shipment" string="Cancel Shipment" type="object" class="btn-primary" attrs="{'invisible':['|', '|', ('is_shipment_purchased', '=', False),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
             </xpath>
             <xpath expr="//field[@name='origin']" position="after">
@@ -27,9 +27,9 @@
                         <group>
 <!--                            <field name="pickup_location" readonly="1"/>-->
                             <field name="package_unit" readonly="1"/>
-                            <label for="pack_shipping_weight"/>
+                            <label for="shipping_weight"/>
                             <div class="o_row" name="Package Shipping Weight">
-                                <field name="pack_shipping_weight"/>
+                                <field name="shipping_weight"/>
                                 <span><field name="weight_uom_name"/></span>
                             </div>
                             <field name="amz_payment_method" attrs="{'readonly': [('state', '!=', 'done')]}" readonly="1"/>
@@ -60,7 +60,7 @@
                             <field name="picking_id" invisible="1"/>
                         </tree>
                     </field>
-                    <group string="Recommended Services" attrs="{'invisible': [('state', 'not in', ['assigned', 'confirmed'])]}">
+                    <group string="Recommended Services" attrs="{'invisible': [('state', 'not in', ['assigned', 'confirmed', 'done'])]}">
                         <group>
                             <field name="service_id" attrs="{'readonly':['|',('is_get_rates', '=', False), ('is_shipment_purchased', '=', True)]}"/>
 <!--                            <button name="amzn_purchase_shipments" string="Purchase Shipment" type="object" class="btn-primary" attrs="{'invisible':['|',('is_get_rates', '=', False), ('is_shipment_purchased', '=', True)]}"/>-->

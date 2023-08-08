@@ -17,7 +17,7 @@ class StockPicking(models.Model):
     charge_type = fields.Selection([('Tax', 'Tax'), ('Discount', 'Discount')])
     channel_types = fields.Selection([('AMAZON', 'AMAZON'), ('EXTERNAL', 'EXTERNAL')], default='EXTERNAL')
     product_pack = fields.Many2one('product.packaging', string="Package")
-    pack_shipping_weight = fields.Float('Package Shipping Weight', compute='compute_package_weight')
+    # pack_shipping_weight = fields.Float('Package Shipping Weight', compute='compute_package_weight')
     service_matrix_ids = fields.One2many('amazon.shipment.service.list', 'picking_id', string="Amazon Service Matrix")
     service_id = fields.Many2one('amazon.shipment.service.list', domain="[('picking_id', '=', id)]")
     request_token = fields.Char('Request Token')
@@ -32,8 +32,11 @@ class StockPicking(models.Model):
                                         ('Rejected', 'Rejected'), ('Undeliverable', 'Undeliverable'),
                                         ('DeliveryAttempted', 'DeliveryAttempted'), ('PickupCancelled', 'PickupCancelled')
                                         ], 'Tracking Status')
-    barcode = fields.Binary()
+    barcode = fields.Binary(string='Label')
     barcode_file_name = fields.Char('File Name', default="Shipment Document")
+    carrier_name = fields.Char(related="service_id.carrier_name", string="Carrier", store=True)
+    billed_weight = fields.Float(related="service_id.billed_weight", string="Billed Weight")
+    rate = fields.Float(related='service_id.rate', string="Rate")
 
     def _convert_phone_number(self, number, country_code):
         """Used to remove country code and format it as 10 digits int as per shiprocket standard
@@ -121,7 +124,7 @@ class StockPicking(models.Model):
                 'unit': self.package_unit,
             }
             pack_weight = {
-                'value': self.pack_shipping_weight,
+                'value': self.shipping_weight,
                 'unit': 'KILOGRAM',
             }
             company = self.env.company
@@ -201,6 +204,7 @@ class StockPicking(models.Model):
         if "payload" in response_data and response_data['payload']['rates']:
             self.request_token = response_data["payload"]['requestToken']
             payload = response_data["payload"]["rates"]
+            low_cost = 0.0
             for rec in payload:
                 service = self.env['amazon.service'].create({'name': rec['serviceName'],
                                                              'service_code': rec['serviceId']})
@@ -221,6 +225,13 @@ class StockPicking(models.Model):
                        }
                 self.env['amazon.shipment.service.list'].create(vals)
                 self.is_get_rates = True
+            # Finding Low-cost service
+            if self.service_matrix_ids:
+                low_cost = self.service_matrix_ids[0]['rate']
+                for serv_cost in self.service_matrix_ids:
+                    if serv_cost.rate <= low_cost:
+                        low_cost = serv_cost.rate
+                        self.service_id = serv_cost.service_id.id
         elif "payload" in response_data and response_data['payload']['ineligibleRates']:
             no_rates = response_data['payload']['ineligibleRates'][0]['ineligibilityReasons']
             raise UserError(no_rates[0]['message'])
@@ -289,4 +300,17 @@ class StockPicking(models.Model):
             raise UserError(response_data['errors'][0]['message'])
         else:
             raise UserError(response_data)
+        return True
+
+    def action_update_tracking_shipment(self):
+        ''''Cron To Auto Update Shipment Tracking Status'''
+        pickings = self.search(
+            [
+                ("state", "=", "done"),
+                ("carrier_id.delivery_type", "=", "amazon_shipment"),
+                ("is_documents_generated", "=", True)
+            ]
+        )
+        for picking in pickings:
+            picking.amzn_tracking_shipment()
         return True
