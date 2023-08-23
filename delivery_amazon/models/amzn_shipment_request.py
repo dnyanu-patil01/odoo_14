@@ -35,7 +35,7 @@ class AmznShipment:
         self.headers = {
             'Content-Type': 'application/json',
             'X-amzn-shipping-business-id': 'AmazonShipping_IN',
-            'x-amz-access-token': company.amzn_access_token,
+            'x-amz-access-token': company.amzn_access_token if company.amzn_access_token else None,
             'authorization': "Bearer "+ company.amzn_access_token if company.amzn_access_token else None
         }
         self.currency = company.currency_id.name
