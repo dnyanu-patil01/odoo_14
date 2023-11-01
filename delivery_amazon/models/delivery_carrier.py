@@ -13,6 +13,7 @@ class ShipmentMethodInherit(models.Model):
     def amazon_shipment_send_shipping(self, pickings):
         res = []
         for picking in pickings:
+            picking.amzn_get_rates()
             amznshipment = AmznShipment(self.env.company)
             # API Call To Get Purchase Shipment
             data = {
