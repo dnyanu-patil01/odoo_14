@@ -11,7 +11,7 @@
                 <field name="is_get_rates" invisible="1"/>
                 <field name="is_documents_generated" invisible="1"/>
 <!--                <button name="amzn_get_rates" string="Get Rates" type="object" class="btn-primary" attrs="{'invisible':['|','|', ('delivery_type','!=','amazon_shipment'), ('is_shipment_purchased', '=', True), ('state', 'not in', ['assigned', 'confirmed'])]}"/>-->
-                <button name="amzn_get_shipment_document" string="Get Documents" type="object" class="btn-primary" attrs="{'invisible':['|', '|', '|', ('is_shipment_purchased', '=', False), ('is_documents_generated', '=', True),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
+                <button name="amzn_get_shipment_document" string="Get Label" type="object" class="btn-primary" attrs="{'invisible':['|', '|', '|', ('is_shipment_purchased', '=', False), ('is_documents_generated', '=', True),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
 <!--                <button name="amzn_tracking_shipment" string="Track Shipment" type="object" class="btn-primary" attrs="{'invisible':['|', '|', ('is_documents_generated', '=', False),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>-->
                 <button name="amzn_cancel_shipment" string="Cancel Shipment" type="object" class="btn-primary" attrs="{'invisible':['|', '|', ('is_shipment_purchased', '=', False),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
             </xpath>
@@ -70,4 +70,19 @@
             </xpath>
         </field>
     </record>
+
+
+    <record model="ir.ui.view" id="stock_picking_form_view_inherit_amazon">
+        <field name="name">stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='send_to_shipper']" position="attributes">
+                <!-- <attribute name="groups">stock.group_stock_user,seller_management.group_sellers_management_user</attribute> -->
+                <attribute name="attrs">{'invisible':['|','|','|','|','|',('carrier_tracking_ref','!=',False),('carrier_tracking_ref','!=',False),('delivery_type','in', ['fixed', 'base_on_rule','amazon_shipment']),('delivery_type','=',False),('state','not in',('done')),('picking_type_code', '=', 'incoming')]}</attribute>
+            </xpath>
+        </field>
+    </record>
 </odoo>
+
+
