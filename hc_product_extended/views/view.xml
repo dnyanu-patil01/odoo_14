@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- To Make Customer Tax Required -->
+    <record id="view_product_account_inherit" model="ir.ui.view">
+        <field name="name">product.template.account.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name='taxes_id' position="attributes">
+                <attribute name="required">True</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- to Make HSN Code Required -->
+    <record id="view_product_template_hsn_code_required" model="ir.ui.view">
+        <field name="name">product.template.hsn_code.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="l10n_in.product_template_hsn_code"/>
+        <field name="arch" type="xml">
+            <field name='l10n_in_hsn_code' position="attributes">
+                <attribute name="required">True</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- To Make POS Category Required -->
+    <record id="view_product_template_pos_categ_required" model="ir.ui.view">
+        <field name="name">product.template.pos_categ.required.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="point_of_sale.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name='pos_categ_id' position="attributes">
+                <attribute name="required">True</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- To Make Operating Units Required -->
+    <record id="view_product_template_operating_unit_required" model="ir.ui.view">
+        <field name="name">product.template.operating_unit.required.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product_operating_unit.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <field name='operating_unit_ids' position="attributes">
+                <attribute name="required">True</attribute>
+            </field>
+        </field>
+    </record>
+
+</odoo>
