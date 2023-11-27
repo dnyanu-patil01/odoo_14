@@ -11,7 +11,7 @@
                 <field name="is_get_rates" invisible="1"/>
                 <field name="is_documents_generated" invisible="1"/>
 <!--                <button name="amzn_get_rates" string="Get Rates" type="object" class="btn-primary" attrs="{'invisible':['|','|', ('delivery_type','!=','amazon_shipment'), ('is_shipment_purchased', '=', True), ('state', '!=', 'done')]}"/>-->
-                <button name="amzn_get_shipment_document" string="Get Documents" type="object" class="btn-primary" attrs="{'invisible':['|', '|', '|', ('is_shipment_purchased', '=', False), ('is_documents_generated', '=', True),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
+                <button name="amzn_get_shipment_document" string="Get Label" type="object" class="btn-primary" attrs="{'invisible':['|', '|', '|', ('is_shipment_purchased', '=', False), ('is_documents_generated', '=', True),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
 <!--                <button name="amzn_tracking_shipment" string="Track Shipment" type="object" class="btn-primary" attrs="{'invisible':['|', '|', ('is_documents_generated', '=', False),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>-->
                 <button name="amzn_cancel_shipment" string="Cancel Shipment" type="object" class="btn-primary" attrs="{'invisible':['|', '|', ('is_shipment_purchased', '=', False),('delivery_type','!=','amazon_shipment'),('state', '!=', 'done')]}"/>
             </xpath>
@@ -64,7 +64,7 @@
                         <group>
                             <field name="service_id" attrs="{'readonly':['|',('is_get_rates', '=', False), ('is_shipment_purchased', '=', True)]}"/>
                         </group>
-                    </group>
+                    </group>    
                 </page>
             </xpath>
             <xpath expr="//button[@name='send_to_shipper']" position="attributes">
