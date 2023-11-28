@@ -5,7 +5,7 @@
     'author': 'leelapriskila',
     'version': '14.0',
     'description': """
-Add a selection of center to your eCommerce store.
+Add a to check selection of center to your eCommerce store.
     """,
     'depends': ['website_sale', 'hfn_center_management','website_sale_checkout_skip_payment'],
     'data': [
