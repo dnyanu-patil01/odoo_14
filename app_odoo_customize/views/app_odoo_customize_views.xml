@@ -21,14 +21,14 @@
             </xpath>
         </template>
 
-        <template
+        <!-- <template
             id="layout_footer_copyright"
             inherit_id="website.brand_promotion"
             name="Remove Odoo Promotional Link"
             priority="20"
-        >
+        >   
             <xpath expr="//div[hasclass('o_brand_promotion')]" position="replace">
                 <div class="o_brand_promotion" />
             </xpath>
-        </template>
+        </template> -->
 </odoo>
