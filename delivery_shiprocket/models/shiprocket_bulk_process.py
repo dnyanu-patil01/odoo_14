@@ -102,6 +102,7 @@ class ShiprocketBulkProcess(models.Model):
                 }
                 lines = self.env['shiprocket.bulk.process.log'].create(values)
                 self.write({'stock_picking_ids': [(3, transfer.id)]})
+                continue
             if transfer.state == 'confirmed':
                 transfer.action_assign()
                 for line in transfer.move_ids_without_package:
