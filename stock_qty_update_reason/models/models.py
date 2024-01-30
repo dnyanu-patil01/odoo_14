@@ -51,12 +51,12 @@ class ProductChangeQuantity(models.TransientModel):
         )
         shopify_tmpl_id = self.env['shopify.product.template.ept'].sudo().search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)])
         shopify_warehouse = shopify_tmpl_id.shopify_instance_id.shopify_warehouse_id
-        self.env['stock.quant'].with_context(inventory_mode=True).create({
+        rec = self.env['stock.quant'].with_context(inventory_mode=True).create({
             'product_id': self.product_id.id,
             'location_id': shopify_warehouse.lot_stock_id.id if shopify_tmpl_id else warehouse.lot_stock_id.id,
-            'inventory_quantity': self.new_quantity,
-            'note':self.note,
+            'inventory_quantity': self.new_quantity
         })
+        rec.write({"note": self.note})
         return {'type': 'ir.actions.act_window_close'}
 
 class Product(models.Model):
