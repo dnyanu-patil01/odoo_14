@@ -12,6 +12,7 @@
     'data': [
         'security/kanha_census_security.xml',
         'security/ir.model.access.csv',
+        'reports/reports_id_card.xml',
         'data/website_data.xml',
         'data/kanha_data.xml',
         'data/mail_data.xml',
