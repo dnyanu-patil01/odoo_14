@@ -189,7 +189,7 @@
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('gender') and 'o_has_error' or ''}">
                                                 <select name="gender" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('gender') and 'is-invalid' or ''}" required="">
-+                                                    <option value="">Select...</option>
+                                                    <option value="">Select...</option>
                                                     <t t-foreach="['Male', 'Female', 'Other']" t-as="gen">
                                                         <option t-att-value="gen" t-att-selected="gen == gender if gender else gen == partner.gender if partner else null">
                                                             <t t-esc="gen" />
@@ -214,6 +214,17 @@
                                                 <input id="aadhaar_card_number_field" tabindex="6" type="text" t-attf-class="adhar_number_field form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}" name="aadhaar_card_number" placeholder="ex: 2345 6789 1100" t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
                                             </div>
                                         </div>
+                                        <!-- == add == -->
+                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="Emergency Contact No.">Emergency Contact No.</label>
+                                                <span class="s_website_form_mark">*</span>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('emergency_contact') and 'o_has_error' or ''}">
+                                                <input id="emergency_contact_id" tabindex="9" type="tel" class="form-control s_website_form_input" name="emergency_contact" required="" placeholder="994848483934 - 10 digit Indian Number" t-att-value="emergency_contact or partner and partner.emergency_contact" />
+                                            </div>
+                                        </div>
+                                        <!-- == add== -->
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -305,6 +316,7 @@
                                                 <input id="abhyasi_id_id" tabindex="8" type="text" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
                                             </div>
                                         </div>
+                                      
                                         <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="How many members staying with you">How many members
@@ -314,7 +326,26 @@
                                                 <input id="members_count_id" type="text" tabindex="15" class="form-control s_website_form_input" name="members_count" t-att-value="members_count or partner and partner.members_count" />
                                             </div>
                                         </div>
-                                       
+                                        <!-- add -->
+                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="Blood Group">Blood Group</label>
+                                                <span class="s_website_form_mark">*</span>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('blood_group') and 'o_has_error' or ''}">
+                                                <select name="blood_group" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('blood_group') and 'is-invalid' or ''}" required="">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['A+', 'A-', 'B+', 'B-', 'O+' ,'O-', 'AB-', 'AB+']" t-as="blood">
+                                                        <option t-att-value="blood" t-att-selected="blood == blood_group if blood_group else blood == partner.blood_group if partner else null">
+                                                            <t t-esc="blood" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <!-- == add == -->
                                     </div>
                                 </div>
                             </div>
@@ -507,6 +538,17 @@
                                                 <input id="aadhaar_card_number_field" type="text" t-attf-class="adhar_number_field form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}" name="aadhaar_card_number" placeholder="ex: 2345 6789 1100" t-att-required="None if partner and partner.citizenship == 'Overseas' else 'true'" t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
                                             </div>
                                         </div>
+                                        <!-- == add == -->
+                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="Emergency Contact No.">Emergency Contact No.</label>
+                                                <span class="s_website_form_mark">*</span>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('emergency_contact') and 'o_has_error' or ''}">
+                                                <input id="emergency_contact_id" tabindex="9" type="tel" class="form-control s_website_form_input" name="emergency_contact" required="" placeholder="9984532456 - 10 digit Indian Number" t-att-value="emergency_contact or partner and partner.emergency_contact" />
+                                            </div>
+                                        </div>
+                                        <!-- == add== -->
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -565,7 +607,26 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- == add == -->
+                                <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="Blood Group">Blood Group</label>
+                                                <span class="s_website_form_mark">*</span>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('blood_group') and 'o_has_error' or ''}">
+                                                <select name="blood_group" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('blood_group') and 'is-invalid' or ''}" required="">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['A+', 'A-', 'B+', 'B-', 'O+' ,'O-', 'AB-', 'AB+']" t-as="blood">
+                                                        <option t-att-value="blood" t-att-selected="blood == blood_group if blood_group else blood == partner.blood_group if partner else null">
+                                                            <t t-esc="blood" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                <!-- == add == -->
                                 </div>
+                                
                             </div>
                             <section class="kanha-portal-tab-wrap">
                                 <div class="container">

@@ -138,8 +138,16 @@ class ResPartner(models.Model):
     rejection_reason = fields.Text("Reason For Rejection")
     birth_state_textfield = fields.Char(string="Birth State")
     birth_country_name = fields.Char(related="birth_country_id.name", string="Birth Country Name")
-
-
+    blood_group = fields.Selection([
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+        ('AB-', 'AB-'),
+        ('AB+', 'AB+')
+    ], string='Blood Group')
+    emergency_contact = fields.Char(string='Emergency Contact No.')
 
     def mail_reminder(self):
         """

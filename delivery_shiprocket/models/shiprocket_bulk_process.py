@@ -24,7 +24,7 @@ class ShiprocketBulkProcess(models.Model):
     pickup_location_id = fields.Many2one(
         "shiprocket.pickup.location", "Shiprocket Pickup Location", tracking=True,required=True
     )
-    stock_picking_ids = fields.Many2many("stock.picking", string="Delivery Orders",domain="[('pickup_location','=',pickup_location_id),('picking_type_code', '=', 'outgoing'),('delivery_type','=','shiprocket'),('state','=','done'),('shiprocket_order_status_id','=',1),('shiprocket_awb_code','=',False)]")
+    stock_picking_ids = fields.Many2many("stock.picking", string="Delivery Orders",domain="[('pickup_location','=',pickup_location_id),('picking_type_code', '=', 'outgoing'),('delivery_type','=','shiprocket'),('shiprocket_awb_code','=',False)]")
     channel_id = fields.Many2one("shiprocket.channel", "Channel", tracking=True,default=_get_default_channel_id)
     shiprocket_courier_priority = fields.Selection(
         [
@@ -91,12 +91,34 @@ class ShiprocketBulkProcess(models.Model):
         for record in self:
             if not record.stock_picking_ids:
                 raise UserError(('Please Select Atleast One Picking Line To Proceed'))
+            
+    def validate_and_create_backorder(self):
+        for transfer in self.stock_picking_ids:
+            if transfer.has_packages == False and transfer.state == 'confirmed':
+                values = {
+                    'bulk_process_id': self.id,
+                    'picking_id': transfer.id,
+                    'response_comment' : 'Requirement not satisfied',
+                }
+                lines = self.env['shiprocket.bulk.process.log'].create(values)
+                self.write({'stock_picking_ids': [(3, transfer.id)]})
+                continue
+            if transfer.state == 'confirmed':
+                transfer.action_assign()
+                for line in transfer.move_ids_without_package:
+                    line.quantity_done = line.forecast_availability
+                transfer.button_validate()
+            elif transfer.state == 'assigned':
+                for line in transfer.move_ids_without_package:
+                    line.quantity_done = line.forecast_availability
+                transfer.button_validate()
 
     def shiprocket_create_awb(self):
         '''
         Draft ---> Waiting To Generate AWB
         It will schedule queue job to generate AWB and Labels.
         '''
+        self.validate_and_create_backorder()
         self._check_stock_picking_ids()
         self.write({"state": "waiting_awb"})
         self.with_delay().generate_awb_bulk()

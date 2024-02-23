@@ -171,7 +171,8 @@ class RoomReservationSummary(models.Model):
                         room_list_stats.append(
                             {
                                 "state": "Free",
-                                "date": chk_date,
+                                "checkin": chk_date,
+                                "checkout": chk_date,
                                 "room_id": room.id,
                             }
                         )
@@ -198,7 +199,8 @@ class RoomReservationSummary(models.Model):
                                 room_list_stats.append(
                                 {
                                     "state": "Reserved",
-                                    "date": chk_date,
+                                    "checkin": chk_date,
+                                    "checkout": chk_date,
                                     "room_id": room.id,
                                     "is_draft": "Yes",
                                     "data_model": "",
@@ -296,7 +298,8 @@ class RoomReservationSummary(models.Model):
                             room_list_stats.append(
                                 {
                                     "state": "Reserved",
-                                    "date": chk_date,
+                                    "checkin": chk_date,
+                                    "checkout": chk_date,
                                     "room_id": room.id,
                                     "is_draft": "No",
                                     "data_model": "",
@@ -319,7 +322,8 @@ class RoomReservationSummary(models.Model):
                                     room_list_stats.append(
                                         {
                                             "state": "Reserved",
-                                            "date": chk_date,
+                                            "checkin": chk_date,
+                                            "checkout": chk_date,
                                             "room_id": room.id,
                                             "is_draft": "Yes",
                                             "data_model": "",
@@ -329,7 +333,8 @@ class RoomReservationSummary(models.Model):
                             room_list_stats.append(
                                 {
                                     "state": "Free",
-                                    "date": chk_date,
+                                    "checkin": chk_date,
+                                    "checkout": chk_date,
                                     "room_id": room.id,
                                 }
                             )

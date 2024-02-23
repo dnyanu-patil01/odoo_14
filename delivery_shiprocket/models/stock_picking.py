@@ -11,6 +11,25 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
     _order = "id desc"
 
+    def action_put_in_pack(self):
+        self.action_assign()
+        return super(StockPicking, self).action_put_in_pack()
+
+    def _pre_action_done_hook(self):
+        vals = super(StockPicking, self)._pre_action_done_hook()
+        if isinstance(vals, dict):
+            if (
+                vals.get('type') == 'ir.actions.act_window' and
+                vals.get('res_model') == 'stock.backorder.confirmation'
+            ):
+                pickings_to_validate = self.env.context.get(
+                    'button_validate_picking_ids')
+                if pickings_to_validate:
+                    pickings_to_validate = self.env['stock.picking'].browse(
+                        pickings_to_validate).with_context(skip_backorder=True)
+                    return pickings_to_validate.button_validate()
+        return vals
+
     def _get_default_channel_id(self):
         custom_channel =  self.env['shiprocket.channel'].search(
             [('base_channel_code', '=', 'CS')],limit=1)
