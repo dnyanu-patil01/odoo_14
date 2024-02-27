@@ -806,6 +806,17 @@
 	<template id="documents_info_indian" name="Documents Info">
         <div class="col-lg-10">
             <div class="row">
+            <style>
+    .adhar_card_filename,
+    .adhar_card_back_side_filename,
+    .passport_photo_filename,
+    .age_proof_filename,
+    .address_proof_filename
+     {
+        cursor: none;
+        pointer-events: none;
+    }
+</style>
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field">
                     <div t-attf-class="col-lg-3 ">
                         <label class="col-form-label" for="Aadhar Card Front">Aadhar Card Front</label>
@@ -949,6 +960,20 @@
 	<template id="documents_info_overseas" name="Documents Info">
         <div class="col-lg-10">
             <div class="row">
+            <style>
+    .adhar_card_filename,
+    .adhar_card_back_side_filename,
+    .passport_front_image_filename,
+    .passport_back_image_filename,
+    .indian_visa_filename,
+    .passport_photo_filename,
+    .age_proof_filename,
+    .address_proof_filename
+     {
+        cursor: none;
+        pointer-events: none;
+    }
+    </style>
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field">
                     <div t-attf-class="col-lg-3 ">
                         <label class="col-form-label" for="Aadhar Card Front">Aadhar Card Front</label>
