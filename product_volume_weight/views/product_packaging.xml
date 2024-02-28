@@ -41,6 +41,9 @@
               <field name="weight_uom_name"/>
           </div>
         </xpath>
+        <xpath expr="//field[@name='delivery_packaging_id']" position="attributes">
+            <attribute name="options">{'no_quick_create': True}</attribute>
+        </xpath>
       </field>
     </record>
 </odoo>
