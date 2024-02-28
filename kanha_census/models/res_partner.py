@@ -92,8 +92,15 @@ class ResPartner(models.Model):
         ('Owner', 'Owner'),
         ('General Accommodation', 'General Accommodation'),        
     ], string="Residence Type")
-    family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id', string='Family Members', readonly=True)
+    family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id',  string='Family Members', readonly=True ,compute='_compute_family_members')
     relative_aadhaar_card_number = fields.Encrypted(string="Relative Aadhar Card Number")
+    
+    @api.depends('kanha_house_number_id')
+    def _compute_family_members(self):
+        for record in self:
+            family_members = self.search([('kanha_house_number_id', '=', record.kanha_house_number_id.id)]).filtered(lambda member: member.id != record.id)
+            record.family_members_ids = [(6, 0, family_members.ids)]
+
     vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
     already_have_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
