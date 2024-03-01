@@ -345,14 +345,14 @@ class HotelFolioLine(models.Model):
                     """less than the Check Out Date!"""
                 )
             )
-        if self.folio_id.date_order and self.checkin_date:
-            if self.checkin_date.date() < self.folio_id.date_order.date():
-                raise ValidationError(
-                    _(
-                        """Room line check in date should be """
-                        """greater than the current date."""
-                    )
-                )
+        # if self.folio_id.date_order and self.checkin_date:
+        #     if self.checkin_date.date() < self.folio_id.date_order.date():
+        #         raise ValidationError(
+        #             _(
+        #                 """Room line check in date should be """
+        #                 """greater than the current date."""
+        #             )
+        #         )
 
     def unlink(self):
         """

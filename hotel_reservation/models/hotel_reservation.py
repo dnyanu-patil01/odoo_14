@@ -182,18 +182,18 @@ class HotelReservation(models.Model):
         When date_order is less then check-in date or
         Checkout date should be greater than the check-in date.
         """
-        if self.checkout and self.checkin:
-            if self.checkin < self.date_order:
-                raise ValidationError(
-                    _(
-                        """Check-in date should be greater than """
-                        """the current date."""
-                    )
-                )
-            if self.checkout < self.checkin:
-                raise ValidationError(
-                    _("""Check-out date should be greater """ """than Check-in date.""")
-                )
+        # if self.checkout and self.checkin:
+        #     if self.checkin < self.date_order:
+        #         raise ValidationError(
+        #             _(
+        #                 """Check-in date should be greater than """
+        #                 """the current date."""
+        #             )
+        #         )
+        if self.checkout < self.checkin:
+            raise ValidationError(
+                _("""Check-out date should be greater """ """than Check-in date.""")
+            )
 
     @api.onchange("partner_id")
     def _onchange_partner_id(self):
