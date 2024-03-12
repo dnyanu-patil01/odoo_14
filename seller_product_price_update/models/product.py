@@ -43,3 +43,11 @@ class ProductPricelist(models.Model):
             })
             import_product_obj.with_context({'active_ids':shopify_product_tmpl_id.id}).sudo().manual_update_product_to_shopify() 
         return True   
+    
+class ProductTemplateAttributeValue(models.Model):
+    _inherit = "product.template.attribute.value"
+
+    def write(self,values):
+        res = super(ProductTemplateAttributeValue ,self).write(values)
+        ProductPricelist.push_price_change_to_shopify(self)
+        return res
