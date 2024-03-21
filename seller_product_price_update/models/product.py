@@ -50,4 +50,29 @@ class ProductTemplateAttributeValue(models.Model):
     def write(self,values):
         res = super(ProductTemplateAttributeValue ,self).write(values)
         ProductPricelist.push_price_change_to_shopify(self)
+
+        variants = self.product_tmpl_id.product_variant_ids
+        
+        for variant in variants:
+            
+            pricelist = self.env["product.pricelist.item"].search(
+                [
+                    ("product_id", "=", variant.id),
+                ]
+            )
+            if pricelist:
+                pricelist.with_context({'update_shopify_price': True}).write({"fixed_price": variant.lst_price})
+            else:
+                pricelist = self.env["product.pricelist"].search([], limit=1)
+                if pricelist:
+                    self.env["product.pricelist.item"].with_context({'update_shopify_price': True}).create(
+                        {
+                            "pricelist_id": pricelist.id,
+                            "product_id": variant.id,
+                            "product_tmpl_id": self.product_tmpl_id.id,
+                            "fixed_price": variant.lst_price,
+                            "compute_price": "fixed",
+                        }
+                    )
+        return True
         return res
