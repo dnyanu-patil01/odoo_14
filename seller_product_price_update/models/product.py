@@ -49,12 +49,8 @@ class ProductTemplateAttributeValue(models.Model):
 
     def write(self,values):
         res = super(ProductTemplateAttributeValue ,self).write(values)
-        ProductPricelist.push_price_change_to_shopify(self)
-
         variants = self.product_tmpl_id.product_variant_ids
-        
-        for variant in variants:
-            
+        for variant in variants:    
             pricelist = self.env["product.pricelist.item"].search(
                 [
                     ("product_id", "=", variant.id),
