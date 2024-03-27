@@ -14,9 +14,13 @@ class CancelReason(models.TransientModel):
             product_records = self.env["product.template"].browse(product_ids)
             product_records.write({"rejection_reason": self.reason, "state": "reject"})
         request_id = self.env.context.get("request_obj") or False
+        print("---------------------")
+        print(request_id)
         if request_id:
             req_obj = self.env["product.change.request"].browse(request_id)
+            print(req_obj)
             req_obj.write({"state": "reject", "rejection_reason": self.reason})
+            req_obj.product_tmpl_id.state = 'reject'
             action = {
                 "name": req_obj.product_tmpl_id.name,
                 "view_mode": "form",
