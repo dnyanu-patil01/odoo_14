@@ -11,7 +11,7 @@
                <button name="shiprocket_open_wizard" type="object" string="Generate Manifest" states="ready_to_manifest,manifest_generated_partially" />
                <button name="generate_pickup_request_bulk" confirm="This action will be done by backgroud.We will notify you soon." string="Create Pickup Request" type="object" states="awb_created,pickup_created_partially" />
                <button name="shiprocket_get_ready_to_manifest" string="Get Ready To Generate Manifest" type="object" states="pickup_created" />
-               <button name="print_label_group_by" string="Get Label Attachment" type="object" states="awb_created,waiting_to_manifest,pickup_created,pickup_created_partially,manifest_generated,done" />
+               <button name="print_label_group_by" string="Get Label Attachment" type="object" states="awb_created,waiting_to_manifest,pickup_created,awb_created_partially,pickup_created_partially,manifest_generated,done" />
                <button name="print_manifest_bulk" string="Get Manifest Attachment" type="object" states="manifest_generated,done" />
                <button name="cancel_bulk_process" string="Close" type="object" states="draft" />
                <button name="completed_bulk_process" class="oe_highlight" string="Mark As Done" type="object" states="manifest_generated" />
@@ -50,10 +50,18 @@
                            <field name="courier_id" string="Courier" optional="show"/>
                            <field name="courier_rate" string="Rate" optional="show" />
                            <field name="shiprocket_order_status_id"/>
-                           <field name="response_comment" optional="show" />
+                           <field name="response_comment" optional="hide" />
                            <field name="is_manifest_generated" string="Manifest" optional="show" />
                            <field name="is_awb_generated" string="AWB" optional="show" />
                            <field name="state" optional="show" />
+                           <field name="tracking_id" optional="hide" />
+                           <field name="shipment_id" optional="hide"/>
+                           <field name="service_id" optional="hide"/>
+                           <field name="carrier_name" string="Courier" optional="hide"/>
+                           <field name="billed_weight" string="Weight" optional="hide"/>
+                           <field name="event_code" optional="hide"/>
+                           <field name="tracking_status" optional="hide"/>
+                           <field name="barcode" optional="hide"/>
                            <button class="oe_highlight" name="action_put_in_pack" type="object" string="Put in Pack" attrs="{'invisible':[('has_packages','=',True)]}"/>
                         </tree>
                         <form>
