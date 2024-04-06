@@ -27,6 +27,9 @@
                            attrs="{'invisible':[('is_shopify_delivery_order','!=',True)]}"/>
                     <field name="shopify_instance_id" invisible="1"/>
                 </field>
+                <xpath expr="//field[@name='location_id']" position="after">
+                    <field name="shopify_order_number"/>
+                </xpath>
             </field>
         </record>
 
