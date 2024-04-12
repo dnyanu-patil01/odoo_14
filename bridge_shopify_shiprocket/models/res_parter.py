@@ -26,7 +26,6 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     automate_shiprocket_process = fields.Boolean(related="seller_id.automate_shiprocket_process",string="Automate Shiprocket Process",store=True)
-
-
+    shopify_order_number = fields.Char(related="sale_id.shopify_order_number", string="Shopify Order Number", store=True)
 
 
