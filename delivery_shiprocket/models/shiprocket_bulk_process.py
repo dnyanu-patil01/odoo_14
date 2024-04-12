@@ -24,7 +24,7 @@ class ShiprocketBulkProcess(models.Model):
     pickup_location_id = fields.Many2one(
         "shiprocket.pickup.location", "Shiprocket Pickup Location", tracking=True,required=True
     )
-    stock_picking_ids = fields.Many2many("stock.picking", string="Delivery Orders",domain="[('pickup_location','=',pickup_location_id),('picking_type_code', '=', 'outgoing'),('delivery_type','=','shiprocket'),('shiprocket_awb_code','=',False)]")
+    stock_picking_ids = fields.Many2many("stock.picking", string="Delivery Orders",domain="[('pickup_location','=',pickup_location_id),('picking_type_code', '=', 'outgoing'),('shiprocket_awb_code','=',False)]")
     channel_id = fields.Many2one("shiprocket.channel", "Channel", tracking=True,default=_get_default_channel_id)
     shiprocket_courier_priority = fields.Selection(
         [
@@ -129,7 +129,7 @@ class ShiprocketBulkProcess(models.Model):
         '''
         Job Queue Function Executed Asyn
         '''
-        for picking in self.stock_picking_ids.filtered(lambda r: r.is_awb_generated == False):
+        for picking in self.stock_picking_ids.filtered(lambda r: not r.is_awb_generated and r.carrier_id.name == 'Shiprocket Delivery'):
             picking.with_delay(priority=1,channel='create_awb').bulk_awb_creation_request(self)
         self.with_delay(priority=30,channel='create_awb').send_mail_on_queue_completion()
         self.with_delay(priority=50,channel='create_awb').create_log_lines()

@@ -15,10 +15,8 @@
               <field name="delivery_type" invisible="1"/>
           </xpath>
           <xpath expr="//button[@name='cancel_bulk_process']" position="before">
-              <button name="generate_amzn_shipment_document" string="Generate Document" class="oe_highlight" type="object"
-                      attrs="{'invisible': ['|', '|', ('delivery_type', '!=', 'amazon_shipment'),
-                                                    ('is_document_generated', '=', True),
-                                                    ('state', '!=', 'draft')]}"/>
+              <button name="generate_amzn_shipment_document" string="Generate Amazon Document" class="oe_highlight" type="object"
+                      states="awb_created,waiting_to_manifest,pickup_created,awb_created_partially,pickup_created_partially,manifest_generated,done"/>
               <button name="track_shipment" string="Track Shipments" type="object" class="oe_highlight"
                       attrs="{'invisible': ['|', '|', ('delivery_type', '!=', 'amazon_shipment'),
                                                     ('is_document_generated', '=', False),

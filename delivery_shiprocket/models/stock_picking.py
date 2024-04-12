@@ -231,8 +231,6 @@ class StockPicking(models.Model):
         response_data = shiprocket._generate_label_request([shipping_id])
         if response_data:
             self.write(response_data)
-        if 'response_comment' in response_data:
-            raise UserError(response_data['response_comment'])
         url = False,
         attachment = False
         if self.label_url:
@@ -256,8 +254,6 @@ class StockPicking(models.Model):
         self.get_shiprocket_status()
         if response_data:
             self.write(response_data)
-        if 'response_comment' in response_data:
-            raise UserError(response_data['response_comment'])
         url = False
         attachment = False
         if self.manifest_url:
