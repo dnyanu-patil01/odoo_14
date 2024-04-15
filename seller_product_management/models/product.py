@@ -317,6 +317,7 @@ class ProductProduct(models.Model):
     state = fields.Selection(
         related="product_tmpl_id.state", store=True, readonly=False, copy=False
     )
+    compare_at_price = fields.Float('Compare at Price',default=0)
 
 
 class VariantChangeRequest(models.Model):

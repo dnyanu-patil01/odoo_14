@@ -115,6 +115,9 @@
 			<xpath expr="//field[@name='type']" position="before">
 				<field name="state" readonly="1"/>
 			</xpath>
+			<xpath expr="//field[@name='uom_po_id']" position="after">
+				<field name="compare_at_price" readonly="1"/>
+			</xpath>
 		</field>
 	</record>
 	<record id="view_product_varients_form_inherit" model="ir.ui.view">

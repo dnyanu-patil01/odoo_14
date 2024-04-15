@@ -411,7 +411,7 @@ class ShopifyProductProductEpt(models.Model):
         if is_set_price:
             price = instance.shopify_pricelist_id.get_product_price(variant.product_id, 1.0, partner=False,
                                                                     uom_id=variant.product_id.uom_id.id)
-            variant_vals.update({"price": float(price)})
+            variant_vals.update({"price": float(price),"compare_at_price": variant.product_id.compare_at_price})
         if is_set_basic_detail:
             variant_vals.update({"barcode": variant.product_id.barcode or "",
                                  "grams": int(variant.product_id.weight * 1000),
