@@ -83,6 +83,14 @@ class ProductTemplate(models.Model):
     #             raise UserError(message)
     #     return super(ProductTemplate, self).write(vals)
 
+    @api.model
+    def create(self, vals):
+        """
+        This method is to make product price '0' if the product has variants
+        """
+        if 'attribute_line_ids' in vals.keys():
+            vals['list_price'] = 0
+        return super(ProductTemplate, self).create(vals)
 
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
