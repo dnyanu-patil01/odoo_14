@@ -14,3 +14,4 @@ class AccountMove(models.Model):
             folio = self.env["hotel.folio"].browse(self._context["folio_id"])
             folio.write({"hotel_invoice_id": res.id, "invoice_status": "invoiced"})
         return res
+

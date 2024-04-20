@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="invoice_report_custom_fields" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@id='informations']" position="inside">
+            <div>
+                <strong>Check-In:</strong> <span t-field="o.checkin_date" t-options='{"format": "dd-MM-yyyy"}'/><br/>
+                <strong>Check-Out:</strong> <span t-field="o.checkout_date" t-options='{"format": "dd-MM-yyyy"}'/><br/>
+            </div>
+        </xpath>
+
+
+        <xpath expr="//div[@class='clearfix']" position="inside">
+            <strong>Pay type:</strong>
+            <table class="table table-sm">
+                <tbody>
+                <t t-set="payment_lines" t-value="json.loads(o.invoice_payments_widget)"/>
+                    <tr t-foreach="payment_lines['content']" t-as="payment">
+                        <td><span t-esc="payment['date']"/></td>
+                        <td><span t-esc="payment['ref']"/></td>
+                        <td><span t-esc="payment['journal_name']"/></td>
+                        <td><span t-esc="payment['amount']"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+        
+        <xpath expr="//p[@name='incoterm']" position="after">
+            <div style="text-align: center;">
+        <img src="/hotel_reservation/static/src/img/invioce_stamp_pin.jpg" style="height: 150px; width: 150px; "/>
+            </div>
+        </xpath>
+        
+    </template>
+</odoo>

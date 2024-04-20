@@ -231,6 +231,7 @@ class HotelFolio(models.Model):
                         [("folio_id", "=", rec.id)]
                     )
                     folio_romline_rec.write(room_vals)
+
         return super(HotelFolio, self).write(vals)
 
     @api.onchange("partner_id")

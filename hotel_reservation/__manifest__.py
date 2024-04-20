@@ -22,6 +22,7 @@
         "report/room_max_report_template.xml",
         "report/hotel_reservation_report_template.xml",
         "report/report_view.xml",
+        "report/account_report_inherit.xml",
         "views/assets.xml",
         "wizards/hotel_reservation_wizard.xml",
     ],
