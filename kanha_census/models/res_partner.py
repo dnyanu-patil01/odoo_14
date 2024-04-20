@@ -30,6 +30,8 @@ class ResPartner(models.Model):
         ('Husband', 'Husband'),
         ('Wife', 'Wife'),
         ('Other', 'Other'),
+        ('Sister', 'Sister'),
+        ('Brother', 'Brother')
     ], string='Relation')
     relative_name = fields.Char(string='Name of Relative')
     relative_surname = fields.Char(string='Surname of Relative')

@@ -2113,7 +2113,7 @@
                     <div t-attf-class="col-xl-6 #{error.get('relation_type') and 'o_has_error' or ''} ">
                         <select id="relation_type_field" name="relation_type" t-attf-class="form-control s_website_form_input #{error.get('relation_type') and 'is-invalid' or ''}">
                             <option value="">Select...</option>
-                            <t t-foreach="['Father', 'Mother', 'Husband', 'Wife', 'Other']" t-as="relation">
+                            <t t-foreach="['Father', 'Mother', 'Husband', 'Wife', 'Other', 'Sister', 'Brother']" t-as="relation">
                                 <option t-att-value="relation" t-att-selected="relation == relation_type if relation_type else relation == partner.relation_type if partner else null">
                                     <t t-esc="relation" />
                                 </option>
