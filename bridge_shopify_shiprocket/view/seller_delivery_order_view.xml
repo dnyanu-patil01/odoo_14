@@ -25,7 +25,6 @@
         <field name="inherit_id" ref="seller_management.view_seller_stock_picking_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
-                <field name="shopify_order_number"/>
                 <field name="response_comment" readonly="1"/>
                 <field name="cancel_reason" readonly="1"/>
             </xpath>

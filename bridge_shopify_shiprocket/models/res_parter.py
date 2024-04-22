@@ -29,5 +29,3 @@ class StockPicking(models.Model):
     shopify_order_number = fields.Char(related="sale_id.shopify_order_number", string="Shopify Order Number", store=True)
 
 
-
-
