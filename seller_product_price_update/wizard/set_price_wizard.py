@@ -16,6 +16,10 @@ class SetPrice(models.TransientModel):
         'New Price', default=1,
         digits='Product Unit of Measure', required=True,
         help='This Price of the product.')
+    
+    new_compare_at_price = fields.Float(
+        'New Compare at Price', default=0,
+        digits='Product Unit of Measure', required=True)
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
@@ -31,8 +35,9 @@ class SetPrice(models.TransientModel):
         """
         if self.product_variant_count == 1:
             self.product_tmpl_id.write({'list_price':self.new_price})
+            self.product_id.write({'compare_at_price':self.new_compare_at_price})
         else:
-            self.product_id.write({'lst_price':self.new_price})
+            self.product_id.write({'compare_at_price':self.new_compare_at_price})
         
         pricelist = self.env["product.pricelist.item"].search(
                         [

@@ -14,7 +14,8 @@
                             attrs="{'invisible': [('product_variant_count', '=', 1)]}"
                             invisible="context.get('default_product_id')"
                             readonly="context.get('default_product_id')"/>
-                        <field name="new_price"/>
+                        <field name="new_price" attrs="{'invisible': [('product_variant_count', '!=', 1)]}"/>
+                        <field name="new_compare_at_price"/>
                     </group>
                     <footer>
                         <button name="change_product_price" string="Set Price" type="object" class="btn-primary"/>

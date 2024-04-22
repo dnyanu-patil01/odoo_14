@@ -9,7 +9,7 @@
             ref="seller_management.view_seller_product_template_form" />
         <field name="arch" type="xml">
             <xpath expr="//button[@name='seller_update_stock_quantity']" position='after'>
-                <button string="Update Price" type="object" name="action_update_price" attrs="{'invisible': [('product_variant_count', '!=', 1)]}"/>
+                <button string="Update Price" type="object" name="action_update_price"/>
                 <button string="Configure Variants" type="action" name="%(product.product_attribute_value_action)d"
                         attrs="{'invisible': ['|', ('attribute_line_ids', '&lt;=', 0), ('is_product_variant', '=', True)]}"
                         groups="product.group_product_variant"/>
