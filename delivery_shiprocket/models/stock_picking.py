@@ -254,19 +254,6 @@ class StockPicking(models.Model):
         self.get_shiprocket_status()
         if response_data:
             self.write(response_data)
-        url = False
-        attachment = False
-        if self.manifest_url:
-            url,attachment = self.generate_attachment_pdf(self.manifest_url,'Manifest')
-        elif 'manifest_url' in response_data:
-            url,attachment = self.generate_attachment_pdf(response_data['manifest_url'],'Manifest')
-        if url and attachment:
-            return {
-            "type": "ir.actions.act_url",
-            "url": url,
-            "target": "new",
-        }
-        return True
 
     def shiprocket_cancel_shipment(self):
         """To Cancel Order In Shiprocket"""
