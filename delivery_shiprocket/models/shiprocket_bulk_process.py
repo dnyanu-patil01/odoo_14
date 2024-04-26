@@ -24,7 +24,7 @@ class ShiprocketBulkProcess(models.Model):
     pickup_location_id = fields.Many2one(
         "shiprocket.pickup.location", "Shiprocket Pickup Location", tracking=True,required=True
     )
-    stock_picking_ids = fields.Many2many("stock.picking", string="Delivery Orders",domain="[('pickup_location','=',pickup_location_id),('picking_type_code', '=', 'outgoing'),('shiprocket_awb_code','=',False)]")
+    stock_picking_ids = fields.Many2many("stock.picking", string="Delivery Orders",domain="[('pickup_location','=',pickup_location_id),('picking_type_code', '=', 'outgoing'),('shiprocket_awb_code','=',False),('state','!=','cancel')]")
     channel_id = fields.Many2one("shiprocket.channel", "Channel", tracking=True,default=_get_default_channel_id)
     shiprocket_courier_priority = fields.Selection(
         [
