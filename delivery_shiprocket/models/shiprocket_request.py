@@ -399,21 +399,28 @@ class ShipRocket:
         :param picking: stock.picking object
         :return: order items dict
         """
-        order_items = []
+        order_items = {}
         order_value = 0
+
         for line in picking.move_lines:
-            order_line_vals = {
-                "name": line.product_id.name,
-                "sku": line.product_id.default_code,
-                "units": line.quantity_done,
-                "selling_price": line.sale_line_id.price_unit,
-                "discount": "",
-                "hsn": line.product_id.l10n_in_hsn_code or "",
-                "tax": "",
-            }
+            sku = line.product_id.default_code
+            if sku in order_items:
+                # If SKU already exists in order_items, add quantities
+                order_items[sku]["units"] += line.quantity_done
+            else:
+                # Create a new line for the SKU
+                order_items[sku] = {
+                    "name": line.product_id.name,
+                    "sku": sku,
+                    "units": line.quantity_done,
+                    "selling_price": line.sale_line_id.price_unit,
+                    "discount": "",
+                    "hsn": line.product_id.l10n_in_hsn_code or "",
+                    "tax": "",
+                }
             order_value += (line.quantity_done * line.sale_line_id.price_unit)
-            order_items.append(order_line_vals)
-        return order_items,order_value
+
+        return list(order_items.values()), order_value
 
     def _prepare_parcel(self, picking):
         """Prepare data related to package dimensions
