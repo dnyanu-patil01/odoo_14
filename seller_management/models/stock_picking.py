@@ -73,6 +73,7 @@ class StockPicking(models.Model):
                 ############################
                 template = self.env.ref('seller_management.escalation_email_alert_to_seller')
                 template.with_context(ctx).send_mail(self.id, force_send=True)
+                
 
     def delivery_escalation_to_fulfillment_team(self):
         """To Trigger Mail To Fulfillment team if the delivery is not processed for 96 hrs"""
