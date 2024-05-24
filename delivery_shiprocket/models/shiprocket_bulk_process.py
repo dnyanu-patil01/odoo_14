@@ -77,7 +77,7 @@ class ShiprocketBulkProcess(models.Model):
         self.bulk_process_log_line.unlink()
         log_lines = []
         if self.state in ('awb_created_partially','waiting_awb'):
-            for line in self.stock_picking_ids.filtered(lambda line: line.is_awb_generated == False):
+            for line in self.stock_picking_ids.filtered(lambda line: line.is_awb_generated == False and line.shipment_id == False):
                 log_lines.append({'picking_id':line.id,'bulk_process_id':self.id,'response_comment':line.response_comment})
         elif self.state in ("waiting_create_pickup","pickup_created_partially","pickup_created"):
             for line in self.stock_picking_ids.filtered(lambda line: line.is_pickup_request_done == False):
@@ -112,6 +112,8 @@ class ShiprocketBulkProcess(models.Model):
                 for line in transfer.move_ids_without_package:
                     line.quantity_done = line.forecast_availability
                 transfer.button_validate()
+            elif transfer.state == 'done':
+                transfer.send_to_shipper()
 
     def shiprocket_create_awb(self):
         '''
