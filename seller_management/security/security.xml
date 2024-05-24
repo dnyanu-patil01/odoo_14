@@ -17,6 +17,13 @@
             <field name="name">User</field>
             <field name="category_id" ref="module_seller_management" />
         </record>
+        <record id="access_ir_config_parameter_user" model="ir.model.access">
+            <field name="name">User Access to Configuration Parameters</field>
+            <field name="model_id" ref="base.model_ir_config_parameter"/>
+            <field name="group_id" ref="group_sellers_management_user"/>
+            <field name="perm_read" eval="True"/>
+        </record>
+
         <!-- Seller Manager -->
         <record model="res.groups" id="group_sellers_management_manager">
             <field name="name">Manager</field>
