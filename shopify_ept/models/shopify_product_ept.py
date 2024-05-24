@@ -283,26 +283,25 @@ class ShopifyProductProductEpt(models.Model):
         return True
 
     def prepare_export_update_product_attribute_vals(self, template, new_product):
-        if len(template.shopify_product_ids) > 1:
-            attribute_list = []
-            attribute_position = 1
-            product_attribute_line_obj = self.env["product.template.attribute.line"]
-            product_attribute_lines = product_attribute_line_obj.search(
-                [("id", "in", template.product_tmpl_id.attribute_line_ids.ids)], order="attribute_id")
-            for attribute_line in product_attribute_lines:
-                info = {}
-                attribute = attribute_line.attribute_id
-                value_names = []
-                for value in attribute_line.value_ids:
-                    value_names.append(value.name)
+        attribute_list = []
+        attribute_position = 1
+        product_attribute_line_obj = self.env["product.template.attribute.line"]
+        product_attribute_lines = product_attribute_line_obj.search(
+            [("id", "in", template.product_tmpl_id.attribute_line_ids.ids)], order="attribute_id")
+        for attribute_line in product_attribute_lines:
+            info = {}
+            attribute = attribute_line.attribute_id
+            value_names = []
+            for value in attribute_line.value_ids:
+                value_names.append(value.name)
 
-                info.update({"name": attribute.name or attribute.name, "values": value_names,
-                             "position": attribute_position})
-                attribute_list.append(info)
-                attribute_position = attribute_position + 1
-                # if attribute_position > 3:
-                #     break
-            new_product.options = attribute_list
+            info.update({"name": attribute.name or attribute.name, "values": value_names,
+                            "position": attribute_position})
+            attribute_list.append(info)
+            attribute_position = attribute_position + 1
+            # if attribute_position > 3:
+            #     break
+        new_product.options = attribute_list
         return True
 
     def update_products_in_shopify(self, instance, templates, is_set_price, is_set_images, is_publish,
