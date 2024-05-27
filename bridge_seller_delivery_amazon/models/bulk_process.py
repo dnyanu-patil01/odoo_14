@@ -29,7 +29,7 @@ class BulkProcessInherit(models.Model):
     def generate_amzn_shipment_document(self):
         self._check_amzn_stock_picking_ids()
         merged_pdf = PdfFileMerger()
-        pickings = self.stock_picking_ids.filtered(lambda r: r.carrier_id.name == 'amazon')
+        pickings = self.stock_picking_ids.filtered(lambda r: r.carrier_id.delivery_type == 'amazon_shipment')
         if not pickings:
             raise UserError(('No Amazon Pickings To Proceed'))
         else:

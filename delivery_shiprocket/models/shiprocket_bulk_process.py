@@ -131,7 +131,7 @@ class ShiprocketBulkProcess(models.Model):
         '''
         Job Queue Function Executed Asyn
         '''
-        for picking in self.stock_picking_ids.filtered(lambda r: not r.is_awb_generated and r.carrier_id.name == 'Shiprocket Delivery'):
+        for picking in self.stock_picking_ids.filtered(lambda r: not r.is_awb_generated and r.carrier_id.delivery_type == 'shiprocket'):
             picking.with_delay(priority=1,channel='create_awb').bulk_awb_creation_request(self)
         self.with_delay(priority=30,channel='create_awb').send_mail_on_queue_completion()
         self.with_delay(priority=50,channel='create_awb').create_log_lines()
