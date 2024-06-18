@@ -5,5 +5,12 @@
         <record model="res.groups" id="group_delete_access">
         <field name="name">Access to Delete User</field>
         </record>
+      <record id="res_partner_rule" model="ir.rule">
+            <field name="name">Res Partner Rule</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">[('kanha_location_id', 'in', user.allowed_locations_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>  
+
     </data>
 </odoo>

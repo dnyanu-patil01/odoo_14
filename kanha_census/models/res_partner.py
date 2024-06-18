@@ -4,7 +4,8 @@
 from odoo import fields, models, api, _
 from datetime import date, timedelta
 from odoo.exceptions import AccessError
-
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class ResPartner(models.Model):
@@ -271,4 +272,12 @@ class ResPartner(models.Model):
             template.with_context(ctx).send_mail(self.id, force_send=True) 
 
 
-
+    @api.model
+    def search(self, args, offset=0, limit=None, order=None, count=False):
+        user = self.env.user
+        if user.allowed_locations_ids:
+            domain = [('kanha_location_id', 'in', user.allowed_locations_ids.ids)]
+        else:
+            domain = []
+        _logger.info('Domain: %s', domain)
+        return super(ResPartner, self).search(domain + args, offset=offset, limit=limit, order=order, count=count)
