@@ -281,3 +281,15 @@ class ResPartner(models.Model):
             domain = []
         _logger.info('Domain: %s', domain)
         return super(ResPartner, self).search(domain + args, offset=offset, limit=limit, order=order, count=count)
+
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        user = self.env.user
+        if user.allowed_locations_ids:
+            location_domain = [('kanha_location_id', 'in', user.allowed_locations_ids.ids)]
+        else:
+            location_domain = []
+        full_domain = location_domain + domain
+        _logger.info('Full Domain (read_group): %s', full_domain)
+
+        return super(ResPartner, self).read_group(full_domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
