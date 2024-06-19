@@ -22,6 +22,7 @@
         'views/kanha_location_view.xml',
         'views/res_partner_view.xml',
         'views/residents_documents_downloads_history.xml',
+        'views/res_users_view.xml',
         'wizard/residents_document_download.xml',
         'views/work_profile_views.xml',
         'views/work_department_view.xml',
