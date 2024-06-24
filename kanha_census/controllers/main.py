@@ -73,9 +73,12 @@ class CustomerPortal(CustomerPortal):
         
         # For admin user display all partner records
         print(request.env.user.has_group('base.group_user'))
+        if request.env.user.has_group('base.group_portal'):
+            domain = ['|',('id','=',request.env.user.partner_id.id),('create_uid', '=', request.env.user.id)]
         if request.env.user.has_group('base.group_user'):
+            domain = [('kanha_location_id', 'in', request.env.user.allowed_locations_ids.ids)]
+        if request.env.user.has_group('base.group_system'):
             domain = []
-        
         if search:
             subdomains = [('name', 'ilike', search)]
             domain = domain+subdomains
