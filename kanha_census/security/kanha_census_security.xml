@@ -5,6 +5,10 @@
         <record model="res.groups" id="group_delete_access">
         <field name="name">Access to Delete User</field>
         </record>
+        <record model="ir.rule" id="base.res_partner_rule_private_employee">
+            <field name="active">False</field>
+        </record>
+
         <record model="ir.rule" id="multi_locations_comp_admin_rule">
             <field name="name">Locations For Admin</field>
             <field name="model_id" ref="base.model_res_partner"/>
@@ -12,19 +16,19 @@
             <field name="domain_force">[(1,'=',1)]</field>
             <field name="groups" eval="[(4, ref('base.group_system'))]"/>
         </record>
-        <record model="ir.rule" id="multi_locations_comp_user_rule">
+        <record model="ir.rule" id="multi_locations_internal_user_rule">
             <field name="name">Locations For Users</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="global" eval="True"/>
-            <field name="domain_force">['&amp;','|',('id','=',user.partner_id.id),('create_uid', '=', user.id), ('kanha_location_id', 'in', user.allowed_locations_ids.ids)]</field>
+            <field name="domain_force">[('kanha_location_id', 'in', user.allowed_locations_ids.ids)]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
         </record> 
-        <record model="ir.rule" id="kanha_location_user_rule">
-            <field name="name">Kanha Locations For Users</field>
-            <field name="model_id" ref="model_kanha_location"/>
+        <record model="ir.rule" id="multi_locations_portal_user_rule">
+            <field name="name">Locations For Users</field>
+            <field name="model_id" ref="base.model_res_partner"/>
             <field name="global" eval="True"/>
-            <field name="domain_force">[('id','in', user.allowed_locations_ids.ids)]</field>
-            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-        </record> 
+            <field name="domain_force">['|',('id','=',user.partner_id.id),('create_uid', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
     </data>
 </odoo>
