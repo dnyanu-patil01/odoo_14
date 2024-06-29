@@ -80,7 +80,7 @@ class ResPartner(models.Model):
         ('Other','Other')
     ])
     
-    work_profile_id = fields.Many2one('work.profile', string="Work Profile")
+    work_profile_id = fields.Many2one('work.profile', string="Resident Type")
     employee_id = fields.Char(string='ID Number')
     department_id = fields.Many2one('work.department',string='Department')
     rfid_card_no = fields.Integer("RFID Card No")
