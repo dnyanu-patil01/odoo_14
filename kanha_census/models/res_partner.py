@@ -56,7 +56,7 @@ class ResPartner(models.Model):
     adhar_card_back_side_filename = fields.Char()
     age_proof = fields.Binary(string='Age Proof')
     age_proof_filename = fields.Char()
-    address_proof = fields.Binary( string='Address Proof', required=True)
+    address_proof = fields.Binary( string='Address Proof')
     address_proof_filename = fields.Char()
     application_type = fields.Selection([
         ('New Application', 'New Application'),
