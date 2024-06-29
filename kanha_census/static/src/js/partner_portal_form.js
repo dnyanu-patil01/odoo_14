@@ -639,7 +639,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_front_image_filename").value = "";
 				document.getElementsByName("passport_front_iamge").value = "";
@@ -671,7 +672,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_back_image_filename").value = "";
 				document.getElementsByName("passport_back_iamge").value = "";
@@ -703,7 +705,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("indian_visa_filename").value = "";
 				document.getElementsByName("indian_visa").value = "";
@@ -735,7 +738,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_photo_filename").value = "";
 				document.getElementsByName("passport_photo").value = "";
@@ -800,7 +804,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("kanha_voter_id_image_filename").value = "";
 				document.getElementsByName("kanha_voter_id_image").value = "";
@@ -832,7 +837,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("kanha_voter_id_back_image_filename").value = "";
 				document.getElementsByName("kanha_voter_id_back_image").value = "";
@@ -883,7 +889,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("age_proof_filename").value = "";
 				document.getElementsByName("age_proof").value = "";
@@ -910,7 +917,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("address_proof_filename").value = "";
 				document.getElementsByName("address_proof").value = "";
@@ -937,7 +945,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is" + fileSizeFormatted + "MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("adhar_card_filename").value = "";
 				document.getElementsByName("adhar_front").value = "";
@@ -964,7 +973,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("adhar_card_back_side_filename").value = "";
 				document.getElementsByName("adhar_back").value = "";
