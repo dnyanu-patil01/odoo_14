@@ -110,9 +110,9 @@ class ResPartner(models.Model):
         ('No', 'No'),
     ], string="Do you have Voter ID")
     kanha_voter_id_number = fields.Encrypted(string="Existing Voter ID Number")
-    kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True, required=True)
+    kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True)
     kanha_voter_id_image_filename = fields.Char()
-    kanha_voter_id_back_image = fields.Binary('Voter ID Back Image', attachment=True, required=True)
+    kanha_voter_id_back_image = fields.Binary('Voter ID Back Image', attachment=True)
     kanha_voter_id_back_image_filename = fields.Char()
     declaration_form = fields.Binary('Declaration Form File', attachment=True, required=False)
     declaration_form_filename = fields.Char()

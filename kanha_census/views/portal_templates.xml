@@ -1947,12 +1947,11 @@
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field kanha_voter_id_image #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'Yes') and 'd-none' or ''}">
                     <div t-attf-class="col-lg-6 ">
                         <label class="col-form-label" for="Voter ID Image">Voter ID  Front Image</label>
-                        <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-4 #{error.get('voter_id_number_id') and 'o_has_error' or ''}">
                         <input type="file" t-att-filename_input="'kanha_voter_id_image_filename'" class="d-none kanha_voter_id_image_upload form-control s_website_form_input" id="kanha_voter_id_image_field" name="kanha_voter_id_image" accept="image/*" />
                         <div class="attachment-input-container">
-                            <input id="kanha_voter_id_image_filename_field" t-att-required="'true' if partner and partner.already_have_kanha_voter_id == 'Yes' else None" type="text" name="kanha_voter_id_image_filename" t-attf-class="kanha_voter_id_image_filename form-control s_website_form_input #{error.get('kanha_voter_id_image_filename') and 'is-invalid' or ''}" t-att-value="kanha_voter_id_image_filename or partner and partner.kanha_voter_id_image_filename" />
+                            <input id="kanha_voter_id_image_filename_field" type="text" name="kanha_voter_id_image_filename" t-attf-class="kanha_voter_id_image_filename form-control s_website_form_input #{error.get('kanha_voter_id_image_filename') and 'is-invalid' or ''}" t-att-value="kanha_voter_id_image_filename or partner and partner.kanha_voter_id_image_filename" />
                             <t t-if="partner and partner.kanha_voter_id_image">
                                 <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="/web/content?model=res.partner&amp;field=kanha_voter_id_image&amp;field_filename=kanha_voter_id_image_filename&amp;id={{partner.id}}" class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
                                     <i class="fa fa-download" />
@@ -1973,12 +1972,11 @@
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field kanha_voter_id_back_image #{not partner and 'd-none' or ''} #{(partner and partner.already_have_kanha_voter_id != 'Yes') and 'd-none' or ''}">
                     <div t-attf-class="col-lg-6 ">
                         <label class="col-form-label" for="Voter ID Back Image">Voter ID  Back Image</label>
-                        <span class="s_website_form_mark">*</span>
                     </div>
                     <div t-attf-class="col-xl-4 #{error.get('voter_id_number_id') and 'o_has_error' or ''}">
                         <input type="file" t-att-filename_input="'kanha_voter_id_back_image_filename'" class="d-none kanha_voter_id_back_image_upload form-control s_website_form_input" id="kanha_voter_id_back_image_field" name="kanha_voter_id_back_image" accept="image/*" />
                         <div class="attachment-input-container">
-                            <input id="kanha_voter_id_back_image_filename_field" t-att-required="'true' if partner and partner.already_have_kanha_voter_id == 'Yes' else None" type="text" name="kanha_voter_id_back_image_filename" t-attf-class="kanha_voter_id_back_image_filename form-control s_website_form_input #{error.get('kanha_voter_id_back_image_filename') and 'is-invalid' or ''}" t-att-value="kanha_voter_id_back_image_filename or partner and partner.kanha_voter_id_back_image_filename" />
+                            <input id="kanha_voter_id_back_image_filename_field" type="text" name="kanha_voter_id_back_image_filename" t-attf-class="kanha_voter_id_back_image_filename form-control s_website_form_input #{error.get('kanha_voter_id_back_image_filename') and 'is-invalid' or ''}" t-att-value="kanha_voter_id_back_image_filename or partner and partner.kanha_voter_id_back_image_filename" />
                             <t t-if="partner and partner.kanha_voter_id_back_image">
                                 <a id="download_kanha_voter_id_back_image" target="_blank" t-attf-href="/web/content?model=res.partner&amp;field=kanha_voter_id_back_image&amp;field_filename=kanha_voter_id_back_image_filename&amp;id={{partner.id}}" class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
                                     <i class="fa fa-download" />

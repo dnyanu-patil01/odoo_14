@@ -428,10 +428,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#kanha_voter_id_number_field').attr('required', true);
 			
 			$('.kanha_voter_id_image').removeClass('d-none');
-			$('#kanha_voter_id_image_field').attr('required', true);
+			// $('#kanha_voter_id_image_field').attr('required', true);
 			
 			$('.kanha_voter_id_back_image').removeClass('d-none');
-			$('#kanha_voter_id_back_image_field').attr('required', true);
+			// $('#kanha_voter_id_back_image_field').attr('required', true);
 			
 			$('.change_voter_id_address').removeClass('d-none');
 			

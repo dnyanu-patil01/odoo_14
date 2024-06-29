@@ -84,8 +84,8 @@
 		                              	<field name="already_have_kanha_voter_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
 		                              	<field name="change_voter_id_address" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')]}" readonly="1"/>
 		                              	<field name="kanha_voter_id_number" widget="Encrypted" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')],'required':[('already_have_kanha_voter_id','=','Yes')]}" readonly="1"/>
-		                              	<field name="kanha_voter_id_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')],'required':[('already_have_kanha_voter_id','=','Yes')]}" readonly="1"/>
-		                              	<field name="kanha_voter_id_back_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')],'required':[('already_have_kanha_voter_id','=','Yes')]}" readonly="1"/>
+		                              	<field name="kanha_voter_id_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')]}" readonly="1"/>
+		                              	<field name="kanha_voter_id_back_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')]}" readonly="1"/>
 		                              	<field name="need_new_kanha_voter_id" attrs="{'invisible':[('already_have_kanha_voter_id','!=','No')],'required':[('already_have_kanha_voter_id','=','No')]}" readonly="1"/>
 		                              	<field name="application_type" attrs="{'invisible':[('need_new_kanha_voter_id','!=','Yes')],'required':[('need_new_kanha_voter_id','=','Yes')]}" readonly="1"/>
 		                              	<field name="declaration_form" required="1" invisible="1"/>
