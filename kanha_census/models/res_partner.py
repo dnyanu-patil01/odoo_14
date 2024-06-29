@@ -64,7 +64,7 @@ class ResPartner(models.Model):
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
     aadhaar_card_number = fields.Encrypted(string="Aadhar Card Number", index=True)
-    pan_card_number = fields.Encrypted(string="Pan card number")
+    # pan_card_number = fields.Encrypted(string="Pan card number")
     members_count = fields.Char(string="How many members staying with you?")
     citizenship = fields.Selection([
         ('Indian', 'Indian'),

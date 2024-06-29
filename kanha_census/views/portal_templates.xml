@@ -198,14 +198,14 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                        <!-- <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="PAN Card Number">PAN Card Number</label>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('pan_card_number') and 'o_has_error' or ''}">
                                                 <input id="pan_card_number_id" tabindex="5" type="text" t-attf-class="form-control s_website_form_input #{error.get('pan_card_number') and 'is-invalid' or ''}" name="pan_card_number" t-att-value="pan_card_number or partner and partner.pan_card_number" />
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Aadhaar Card Number">Aadhaar Card Number</label>
@@ -521,14 +521,14 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                        <!-- <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="PAN Card Number">PAN Card Number</label>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('pan_card_number') and 'o_has_error' or ''}">
                                                 <input id="pan_card_number_id" type="text" t-attf-class="form-control s_website_form_input #{error.get('pan_card_number') and 'is-invalid' or ''}" placeholder="AAAAA1234A" name="pan_card_number" t-att-value="pan_card_number or partner and partner.pan_card_number" />
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Aadhaar Card Number">Aadhaar Card Number</label>
@@ -1270,14 +1270,14 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                        <!-- <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="pan_card_number">PAN Card Number</label>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('email') and 'o_has_error' or ''}">
                                                 <input id="pan_card_number_id" type="text" t-attf-class="form-control s_website_form_input #{error.get('pan_card_number') and 'is-invalid' or ''}" name="pan_card_number" t-att-value="pan_card_number or partner and partner.pan_card_number" />
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Aadhaar Card Number">Aadhaar Card Number</label>

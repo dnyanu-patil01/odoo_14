@@ -29,7 +29,7 @@
 								<field name="name" required="1" readonly="1"/>
 								<field name="email" required="1" readonly="1"/>
 								<field name="gender" readonly="1"/>
-								<field name="pan_card_number" widget="Encrypted" readonly="1"/>
+								<!-- <field name="pan_card_number" widget="Encrypted" readonly="1"/> -->
 								<field name="aadhaar_card_number" widget="Encrypted" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
 								<field name="abhyasi_id" readonly="1"/>
 								<field name="residence_type" readonly="1"/>
