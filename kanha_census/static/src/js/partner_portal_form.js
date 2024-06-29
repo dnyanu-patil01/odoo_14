@@ -132,7 +132,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keypress #mobile_number_id': '_restrictSpecialCharacter',
 		'keydown #mobile_number_id': '_restrictSpecialCharacter',
 		'click .partner_clear': '_onClickDeletePartner',
-
+		'change select[name="do_you_need_voter_id_in_kanha"]': '_onVoterIdChange',
 		
     },
  
@@ -150,6 +150,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		this.$kanhaHouseNumber = this.$('select[name="kanha_house_number_id"]');
         this.$kanhaHouseNumberOptions = this.$kanhaHouseNumber.filter(':enabled').find('option:not(:first)');
 		this._adaptKanhaHouseNumberStateAddressForm();
+		this._restoreSettings();
         return def;
     },
 
@@ -270,6 +271,61 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 	_onWorkProfileChange: function () {
 		
 		this._adaptWorkDepartmentAddressForm();
+	},
+
+
+
+	_onVoterIdChange: function (ev) {
+		var $target = $(ev.currentTarget);
+		var selectedValue = $target.val();
+		// Always enable mandatory fields when 'Yes' is selected
+		if (selectedValue === 'Yes') {
+			$('#tab-kanha_voter_id').show(); // Show the tab
+			$('#kanha_voter_id_info').show(); // Show the template
+			this._enableMandatoryFields(); // Enable mandatory fields
+
+		} else if (selectedValue === 'No') { // If 'No' is selected
+			$('#tab-kanha_voter_id').hide(); // Hide the tab
+			$('#kanha_voter_id_info').hide(); // Hide the template
+			this._disableMandatoryFields(); // Disable mandatory fields
+
+			localStorage.setItem('voterIdSelected', 'No'); // Store selected value
+			location.reload(); // Refresh the page
+		}
+
+		localStorage.setItem('voterIdSelected', selectedValue); // Store selected value
+	},
+
+	// // Function to disable mandatory fields
+	_disableMandatoryFields: function () {
+		$('.col-lg-8 input[required], .col-lg-8 select[required]').each(function () {
+			$(this).attr('data-original-required', 'true'); // Store original required state
+			$(this).prop('required', false); // Set required to false
+		});
+	},
+
+	// // Function to enable mandatory fields
+	_enableMandatoryFields: function () {
+		$('.col-lg-8 input, .col-lg-8 select').each(function () {
+			if ($(this).attr('data-original-required') === 'true') {
+				$(this).prop('required', true); // Set to true based on original required state
+			} else {
+				$(this).prop('required', false); // Disable other fields
+			}
+		});
+	},
+
+	// Function to restore settings on page load
+	_restoreSettings: function () {
+		var selectedValue = localStorage.getItem('voterIdSelected');
+		if (selectedValue === 'No') {
+			$('#tab-kanha_voter_id').hide();
+			$('#kanha_voter_id_info').hide();
+			this._disableMandatoryFields();
+		} else {
+			$('#tab-kanha_voter_id').show();
+			$('#kanha_voter_id_info').show();
+		}
 	},
 
 

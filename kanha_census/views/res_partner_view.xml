@@ -48,6 +48,7 @@
 								<!-- <field name="visa_start_date" readonly="1" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}"/>
 								<field name="visa_end_date" readonly="1" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}"/> -->
 								<field name="emergency_contact" required="1" readonly="1"/>
+								<field name="do_you_need_voter_id_in_kanha" readonly="1" />
 							</group>
 						</group>
 						<notebook>
@@ -68,7 +69,7 @@
 									<field name="rejection_reason" nolabel="1" readonly="1"/>
 								</group>
                     		</page>
-                    		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible':[('citizenship','!=','Indian')]}">
+                    		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible': ['|', ('do_you_need_voter_id_in_kanha', '=', 'No'), ('citizenship', '!=', 'Indian')]}">
                     			<group>
 		                            <group>
 			                            <field name="birth_country_id" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>

@@ -158,6 +158,10 @@ class ResPartner(models.Model):
         ('AB+', 'AB+')
     ], string='Blood Group')
     emergency_contact = fields.Char(string='Emergency Contact No.')
+    do_you_need_voter_id_in_kanha = fields.Selection([
+        ('No', 'No'),
+        ('Yes', 'Yes') 
+    ], string='Do you need Voter ID in Kanha')
 
     def mail_reminder(self):
         """
