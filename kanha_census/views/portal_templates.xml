@@ -918,12 +918,12 @@
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field">
                     <div t-attf-class="col-lg-3 ">
                         <label class="col-form-label" for="Age Proof">Age Proof</label>
-                        <span class="s_website_form_mark">*</span>
+                        
                     </div>
                     <div t-attf-class="col-xl-5 #{error.get('age_proof') and 'o_has_error' or ''} ">
                         <input type="file" t-att-filename_input="'age_proof_filename'" class="d-none age_proof_upload form-control s_website_form_input" name="age_proof" accept="image/*"/>
                         <div class="attachment-input-container">
-                            <input type="text" id="age_proof_file" required="" name="age_proof_filename" t-attf-class="age_proof_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="age_proof_filename or partner and partner.age_proof_filename" />
+                            <input type="text" id="age_proof_file"  name="age_proof_filename" t-attf-class="age_proof_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="age_proof_filename or partner and partner.age_proof_filename" />
                             <t t-if="partner and partner.age_proof">
                                 <a id="download_age_proof" target="_blank" t-attf-href="/web/content?model=res.partner&amp;field=age_proof&amp;field_filename=age_proof_filename&amp;id={{partner.id}}" class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
                                     <i class="fa fa-download" />
@@ -1151,12 +1151,12 @@
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field">
                     <div t-attf-class="col-lg-3 ">
                         <label class="col-form-label" for="Age Proof">Age Proof</label>
-                        <span class="s_website_form_mark">*</span>
+                        
                     </div>
                     <div t-attf-class="col-xl-5 #{error.get('age_proof') and 'o_has_error' or ''} ">
                         <input type="file" t-att-filename_input="'age_proof_filename'" class="d-none age_proof_upload form-control s_website_form_input" name="age_proof" accept="image/*"/>
                         <div class="attachment-input-container">
-                            <input type="text" id="age_proof_file" required="" name="age_proof_filename" t-attf-class="age_proof_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="age_proof_filename or partner and partner.age_proof_filename" />
+                            <input type="text" id="age_proof_file"  name="age_proof_filename" t-attf-class="age_proof_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="age_proof_filename or partner and partner.age_proof_filename" />
                             <t t-if="partner and partner.age_proof">
                                 <a id="download_age_proof" target="_blank" t-attf-href="/web/content?model=res.partner&amp;field=age_proof&amp;field_filename=age_proof_filename&amp;id={{partner.id}}" class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
                                     <i class="fa fa-download" />

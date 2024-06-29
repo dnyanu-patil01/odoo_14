@@ -54,7 +54,7 @@ class ResPartner(models.Model):
     adhar_card_filename = fields.Char()
     adhar_card_back_side = fields.Binary('Aadhar Card Back', attachment=True)
     adhar_card_back_side_filename = fields.Char()
-    age_proof = fields.Binary(string='Age Proof', required=True)
+    age_proof = fields.Binary(string='Age Proof')
     age_proof_filename = fields.Char()
     address_proof = fields.Binary( string='Address Proof', required=True)
     address_proof_filename = fields.Char()
