@@ -24,19 +24,5 @@
             <field name="domain_force">[('id','in',user.allowed_locations_ids.ids)]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
         </record>
-        <record id="base.res_partner_rule_private_employee" model="ir.rule">
-            <field name="active">False</field>
-        </record>
-
-        <record id="res_partner_rule_allowed_locations" model="ir.rule">
-            <field name="name">res.partner allowed locations</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field name="domain_force">[
-                '&amp;',
-                '|', ('type', '!=', 'private'), ('type', '=', False),
-                '|', ('kanha_location_id', 'in', user.allowed_locations_ids.ids), ('kanha_location_id', '=', False)
-            ]</field>
-        </record>
     </data>
 </odoo>
