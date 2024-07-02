@@ -21,7 +21,7 @@ class ResPartner(models.Model):
     town = fields.Char(string='Town/Village Name')
     district = fields.Char(string='District')
     birth_town = fields.Char(string='Birth Town', required=True)
-    birth_district = fields.Char(string='Birth District', required=True)
+    birth_district = fields.Char(string='Birth District')
     birth_country_id = fields.Many2one('res.country', string="Birth Country", default=lambda self: self.env['res.country'].search([('code','=','IN')]))
     birth_state_id = fields.Many2one("res.country.state", string='Birth State')
     relation_other = fields.Char(string="Other Relative")
@@ -162,7 +162,6 @@ class ResPartner(models.Model):
         ('No', 'No'),
         ('Yes', 'Yes') 
     ], string='Do you need Voter ID in Kanha')
-
     def mail_reminder(self):
         """
         Cron to send email regarding the Visa expiry
