@@ -5,10 +5,6 @@
         <record model="res.groups" id="group_delete_access">
         <field name="name">Access to Delete User</field>
         </record>
-        <record model="ir.rule" id="base.res_partner_rule_private_employee">
-            <field name="active">False</field>
-        </record>
-
         <record model="ir.rule" id="multi_locations_comp_admin_rule">
             <field name="name">Locations For Admin</field>
             <field name="model_id" ref="base.model_res_partner"/>
@@ -16,19 +12,31 @@
             <field name="domain_force">[(1,'=',1)]</field>
             <field name="groups" eval="[(4, ref('base.group_system'))]"/>
         </record>
-        <record model="ir.rule" id="multi_locations_internal_user_rule">
-            <field name="name">Locations For Users</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="global" eval="True"/>
-            <field name="domain_force">[('kanha_location_id', 'in', user.allowed_locations_ids.ids)]</field>
+        <record model="ir.rule" id="kanha_locations_admin_rule">
+            <field name="name">Kanha Locations For Admin</field>
+            <field name="model_id" ref="model_kanha_location"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+        <record model="ir.rule" id="kanha_locations_user_rule">
+            <field name="name">Kanha Locations For User</field>
+            <field name="model_id" ref="model_kanha_location"/>
+            <field name="domain_force">[('id','in',user.allowed_locations_ids.ids)]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-        </record> 
-        <record model="ir.rule" id="multi_locations_portal_user_rule">
-            <field name="name">Locations For Users</field>
+        </record>
+        <record id="base.res_partner_rule_private_employee" model="ir.rule">
+            <field name="active">False</field>
+        </record>
+
+        <record id="res_partner_rule_allowed_locations" model="ir.rule">
+            <field name="name">res.partner allowed locations</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="global" eval="True"/>
-            <field name="domain_force">['|',('id','=',user.partner_id.id),('create_uid', '=', user.id)]</field>
-            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[
+                '&amp;',
+                '|', ('type', '!=', 'private'), ('type', '=', False),
+                '|', ('kanha_location_id', 'in', user.allowed_locations_ids.ids), ('kanha_location_id', '=', False)
+            ]</field>
         </record>
     </data>
 </odoo>
