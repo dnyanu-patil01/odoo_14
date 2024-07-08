@@ -1835,7 +1835,7 @@
     </template>
 
     <template id="kanha_voter_id_info" name="Kanha Voter ID Info">
-        <div class="col-lg-8">
+        <div class="col-lg-8" id="voter_details_div">
             <div class="row">
                 <div class="col-lg-12 row form-group s_website_form_field">
                     <div class="col-lg-6">
@@ -2509,7 +2509,7 @@
     </template>
 
     <template id="kanha_address_info" name="Kanha Address Info">
-        <div class="col-lg-10">
+        <div class="col-lg-10" id="kanha_address">
             <div class="row">
                 <div class="col-lg-12 row form-group s_website_form_field">
                     <div class="col-lg-6">
