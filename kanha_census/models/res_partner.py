@@ -6,6 +6,7 @@ from datetime import date, timedelta
 from odoo.exceptions import AccessError
 import logging
 _logger = logging.getLogger(__name__)
+from odoo.osv import expression
 
 
 class ResPartner(models.Model):
@@ -273,3 +274,22 @@ class ResPartner(models.Model):
         ctx['email_from'] = self.env.user.company_id.email
         if template:
             template.with_context(ctx).send_mail(self.id, force_send=True) 
+
+    @api.model
+    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
+        user = self.env.user
+        if user.allowed_locations_ids and user.has_group('base.group_user'):
+            # Restrict to partners within the allowed locations of the current user
+            allowed_location_ids = user.allowed_locations_ids.ids
+            args += [('kanha_location_id', 'in', allowed_location_ids),('kanha_location_id','!=',False)]
+        return super(ResPartner, self)._search(args, offset, limit, order, count, access_rights_uid)
+    
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        # Add the domain to filter by the computed field
+        user = self.env.user
+        if user.allowed_locations_ids and user.has_group('base.group_user'):
+            allowed_location_ids = user.allowed_locations_ids.ids
+            domain = expression.AND([domain, [('kanha_location_id', 'in', allowed_location_ids)]])
+        return super(ResPartner, self).read_group(domain, fields, groupby, offset, limit, orderby, lazy)
+

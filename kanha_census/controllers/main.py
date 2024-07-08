@@ -77,6 +77,7 @@ class CustomerPortal(CustomerPortal):
             domain = ['|', ('type', '!=', 'private'), ('type', '=', False),('kanha_location_id', 'in', request.env.user.allowed_locations_ids.ids)]
         if request.env.user.has_group('base.group_system'):
             domain = []
+
         if search:
             subdomains = [('name', 'ilike', search)]
             domain = domain+subdomains
