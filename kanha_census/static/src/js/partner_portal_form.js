@@ -281,16 +281,25 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		// Always enable mandatory fields when 'Yes' is selected
 		if (selectedValue === 'Yes') {
 			$('#tab-kanha_voter_id').show(); // Show the tab
-			$('#kanha_voter_id_info').show(); // Show the template
+			$('#voter_details_div').show();
+			// $('#pane-kanha_voter_id').removeClass('d-none');
+			$('#collapse-kanha_voter_id').collapse('show'); // Show the template
 			this._enableMandatoryFields(); // Enable mandatory fields
 
 		} else if (selectedValue === 'No') { // If 'No' is selected
 			$('#tab-kanha_voter_id').hide(); // Hide the tab
-			$('#kanha_voter_id_info').hide(); // Hide the template
+			$('#kanha_voter_id_info').hide();
+			$('#voter_details_div').hide();
+			$('#kanha_address').focus();
+			$('#collapse-kanha_voter_id').collapse('hide');
+			// Hide the template
 			this._disableMandatoryFields(); // Disable mandatory fields
 
-			localStorage.setItem('voterIdSelected', 'No'); // Store selected value
-			location.reload(); // Refresh the page
+			localStorage.setItem('voterIdSelected', 'No'); 
+			
+			$('#collapse-kanha_voter_id').collapse('hide'); // Hide the content
+			// $('#pane-kanha_voter_id').addClass('d-none');// Store selected value
+			//location.reload(); // Refresh the page
 		}
 
 		localStorage.setItem('voterIdSelected', selectedValue); // Store selected value
