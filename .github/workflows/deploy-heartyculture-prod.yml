@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - 'Release_Prod_Heartycluture*'
+env: 
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: True
+  
 jobs:
   deploy:
     runs-on: heartyculture-prod-aws
