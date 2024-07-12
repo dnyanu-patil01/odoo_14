@@ -277,7 +277,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
 	_onVoterIdChange: function (ev) {
 		var $target = $(ev.currentTarget);
-		var selectedValue = $target.val();
+		var selectedValue = this.$('select[name="do_you_need_voter_id_in_kanha"]').val();
 		// Always enable mandatory fields when 'Yes' is selected
 		if (selectedValue === 'Yes') {
 			$('#tab-kanha_voter_id').show(); // Show the tab
@@ -295,14 +295,14 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			// Hide the template
 			this._disableMandatoryFields(); // Disable mandatory fields
 
-			localStorage.setItem('voterIdSelected', 'No'); 
+			// localStorage.setItem('voterIdSelected', 'No'); 
 			
 			$('#collapse-kanha_voter_id').collapse('hide'); // Hide the content
 			// $('#pane-kanha_voter_id').addClass('d-none');// Store selected value
 			//location.reload(); // Refresh the page
 		}
 
-		localStorage.setItem('voterIdSelected', selectedValue); // Store selected value
+		// localStorage.setItem('voterIdSelected', selectedValue); // Store selected value
 	},
 
 	// // Function to disable mandatory fields
@@ -326,7 +326,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
 	// Function to restore settings on page load
 	_restoreSettings: function () {
-		var selectedValue = localStorage.getItem('voterIdSelected');
+		var selectedValue = this.$('select[name="do_you_need_voter_id_in_kanha"]').val();
 		if (selectedValue === 'No') {
 			$('#tab-kanha_voter_id').hide();
 			$('#kanha_voter_id_info').hide();
