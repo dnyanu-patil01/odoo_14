@@ -555,7 +555,7 @@ odoo.define('pos_coupon.pos', function (require) {
             const collectRewards = (validPrograms, rewardGetter) => {
                 const allRewards = [];
                 for (let [program, coupon_id] of validPrograms) {
-                    if (program.discount_apply_on === 'specific_products' && program.reward_type == 'discount' ){
+                    if (program.discount_apply_on === 'specific_products' || program.reward_type == 'discount' ){
                         const [rewards, reason] = rewardGetter(program, coupon_id);
                         if (reason) {
                             const notAwarded = new Reward({ awarded: false, reason, program, coupon_id });
