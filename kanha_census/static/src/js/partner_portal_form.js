@@ -228,6 +228,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 						// $("html, body").animate({ scrollTop: 0 }, "slow");
 					})
 					.guardedCatch(function () {
+						console.log("LINE 231",this)
 						this.update_status('error');
 					});
 				},
@@ -1391,7 +1392,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
             }
         })
         .guardedCatch(function () {
-            this.update_status('error');
+			console.log("line 1395 this",this)
+			console.log("line 1396 self",self)
+            self.update_status('error');
         });
 	},
 	
@@ -1578,6 +1581,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     },
 
     update_status: function (status, message) {
+		console.log("Inside Update Status",status,message)
         if (status !== 'success') { // Restore submit button behavior if result is an error
             this.$target.find('.family_website_form_submit')
                 .removeAttr('disabled')
