@@ -188,56 +188,53 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
 	/* deletes a record */
 	_onClickDeletePartner: function (e) {
+		var self = this;  // Ensure `self` is defined and used for correct context
+		
 		var def = new Promise(function (resolve, reject) {
-            var message = _t("Are you sure you want to delete this record?");
-            var dialog = Dialog.confirm(self, message, {
-                title: _t("Confirmation"),
-                confirm_callback: function() {
-					var self = this;
-					var deleted_partner_ids = []
-					var partner_id = $(e.target).attr('id')
-					deleted_partner_ids.push(partner_id)
-					var form_values = {};
-					form_values['deleted_partner_ids'] = deleted_partner_ids
-					
+			var message = _t("Are you sure you want to delete this record?");
+			
+			var dialog = Dialog.confirm(self, message, {
+				title: _t("Confirmation"),
+				confirm_callback: function() {
+					var partner_id = $(e.target).attr('id');
+					var deleted_partner_ids = [partner_id];  // Collect the partner ID to delete
+	
+					var form_values = {
+						'deleted_partner_ids': deleted_partner_ids
+					};
+	
 					// Post form and handle result
 					ajax.post('/delete_family_members', form_values)
-					.then(function (result) {
-						var result_span = self.$('.family_delete_result');   
-						self.$('#delete_result').removeClass('d-none')
-						if(result == "deleted") {
-							//result_span.html("Record has been deleted successfully");
-							Dialog.alert(self, _t("Record has been deleted successfully."), {
-								confirm_callback: function() {
-									$(window.location).attr('href', "/family/");
-								},
-							});	
-						}   
-						else if(result == "current_user") {		        
-							// result_span.html("Please contact Administrator to delete the record");
-							Dialog.alert(null, "Please contact Administrator to delete the record.");
-						}
-						else if(result == "cannot_delete") {		        
-							// result_span.html("Please contact Administrator to delete the record");
-							Dialog.alert(null, "You can delete only Rejected and Not Yet Submitted records. or You have assigned RFID card from Ashram Office, if so please contact Ashram office for deleting this record.");
-						}
-						else if(result == "no_records") {		        
-							Dialog.alert(null, "Record does not exist.");
-						}
-						
-						// $("html, body").animate({ scrollTop: 0 }, "slow");
-					})
-					.guardedCatch(function () {
-						console.log("LINE 231",this)
-						this.update_status('error');
-					});
+						.then(function (result) {
+							// Handle various responses from the server
+							if (result === "deleted") {
+								Dialog.alert(self, _t("Record has been deleted successfully."), {
+									confirm_callback: function() {
+										$(window.location).attr('href', "/family/");
+									},
+								});
+							} else if (result === "current_user") {
+								Dialog.alert(null, _t("Please contact Administrator to delete the record."));
+							} else if (result === "cannot_delete") {
+								Dialog.alert(null, _t("You can delete only Rejected and Not Yet Submitted records. If you have assigned an RFID card from Ashram Office, please contact Ashram office for deleting this record."));
+							} else if (result === "no_records") {
+								Dialog.alert(null, _t("Record does not exist."));
+							}
+						})
+						.guardedCatch(function () {
+							// Handle any errors that occurred during the request
+							console.log("Error occurred during deletion.");
+							Dialog.alert(self, _t("An error occurred while attempting to delete the record. Please try again later."));
+						});
 				},
-                cancel_callback: reject,
-            });
-            dialog.on('closed', self, reject);
-        });
+				cancel_callback: reject,
+			});
+	
+			// Reject the promise if the dialog is closed without confirmation
+			dialog.on('closed', self, reject);
+		});
 	},
-
+	
 	_onChangeRelationType: function (ev) {
 		// document.getElementById("relation_type_field").value = "";
         // $(ev.currentTarget).closest('form').find('select[name="relation_type"]').trigger('change');
@@ -1320,84 +1317,73 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 				form_values['birth_state_textfield'] = '';
 			}
 		}
-        
-		// Post form and handle result
-        ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
-        .then(function (result_data) {
-			// Hide Loading
-	    	$("#loading").addClass('hide');
-            // Restore Submit button behavior
-            self.$target.find('.family_website_form_submit')
-                .removeAttr('disabled')
-                .removeClass('disabled'); // !compatibility
-            result_data = JSON.parse(result_data);
-            if (!result_data.id) {
-                // Failure, the server didn't return the created record ID
-                self.update_status('error', result_data.error_message ? result_data.error_message : false);
-                if (result_data.error_fields) {
-                    // If the server return a list of bad fields, show these fields for users
-                    //self.check_error_fields(result_data.error_fields);
-					self.check_error_fields_save(Object.keys(result_data.error_fields))
-					self.$target.find('.family_website_form_save').removeClass('disabled').attr('enabled', 'enabled');
-					//window.scrollTo(0,0);
-					$("html, body").animate({ scrollTop: 0 }, "slow");
+        // Post form and handle result
+ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
+.then(function (result_data) {
+	// Hide Loading
+	$("#loading").addClass('hide');
+	// Restore Submit button behavior
+	self.$target.find('.family_website_form_submit')
+		.removeAttr('disabled')
+		.removeClass('disabled'); // !compatibility
 
-					
-                }
-            } else {
-                // Success, redirect or update status
-                let successMode = $form[0].dataset.successMode;
-                let successPage = $form[0].dataset.successPage;
-                if (!successMode) {
-                    successPage = $form.attr('data-success_page'); // Compatibility
-                    successMode = successPage ? 'redirect' : 'nothing';
-                }
-                switch (successMode) {
-                    case 'redirect':
-                        if (successPage.charAt(0) === "#") {
-                            dom.scrollTo($(successPage)[0], {
-                                duration: 500,
-                                extraOffset: 0,
-                            });
-                        } else {
-						    if( is_submit == true) {
-								$(window.location).attr('href', successPage);
-							}   
-						    else {
-								$(window.location).attr('href', "/family/");
-						   		//let saveSuccessPage = $form[0].dataset.saveSuccessPage;
-								//$(window.location).attr('href', saveSuccessPage);
-								//location.reload()
-								
-								// Prevent users from crazy clicking
-						        /*self.$target.find('.family_website_form_save')
-						            .removeClass('disabled')    // !compatibility
-						            .attr('disabled', false);
-								self.$('#form_result_success').removeClass('d-none')
-								setTimeout(function(){
-									$(window.location).attr('href', "/website_form_family/"+result_data.id+"/res.partner");
-            					}, 1000);*/
-								//self.update_status('success', _t("The form has been saved successfully."));
-							}
-                        }
-                        break;
-                    case 'message':
-                        self.$target[0].classList.add('d-none');
-                        self.$target[0].parentElement.querySelector('.s_website_form_end_message').classList.remove('d-none');
-                        break;
-                    default:
-                        self.update_status('success');
-                        break;
-                }
-            }
-        })
-        .guardedCatch(function () {
-			console.log("line 1395 this",this)
-			console.log("line 1396 self",self)
-            self.update_status('error');
-        });
+	result_data = JSON.parse(result_data);
+
+	if (!result_data.id) {
+		// Failure, the server didn't return the created record ID
+		let errorMessage = result_data.error_message ? result_data.error_message : "An unexpected error occurred while submitting the form.";
+		self.update_status('error', errorMessage);
+
+		if (result_data.error_fields) {
+			// Show bad fields to users
+			self.check_error_fields_save(Object.keys(result_data.error_fields));
+			self.$target.find('.family_website_form_save').removeClass('disabled').attr('enabled', 'enabled');
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+		}
+	} else {
+		// Success, redirect or update status
+		let successMode = $form[0].dataset.successMode;
+		let successPage = $form[0].dataset.successPage;
+
+		if (!successMode) {
+			successPage = $form.attr('data-success_page'); // Compatibility
+			successMode = successPage ? 'redirect' : 'nothing';
+		}
+
+		switch (successMode) {
+			case 'redirect':
+				if (successPage.charAt(0) === "#") {
+					dom.scrollTo($(successPage)[0], { duration: 500, extraOffset: 0 });
+				} else {
+					if (is_submit === true) {
+						$(window.location).attr('href', successPage);
+					} else {
+						$(window.location).attr('href', "/family/");
+					}
+				}
+				break;
+
+			case 'message':
+				self.$target[0].classList.add('d-none');
+				self.$target[0].parentElement.querySelector('.s_website_form_end_message').classList.remove('d-none');
+				break;
+
+			default:
+				self.update_status('success', "Form submitted successfully!");
+				break;
+		}
+	}
+})
+.guardedCatch(function () {
+	// Log for debugging
+	console.log("line 1395 this", this);
+	console.log("line 1396 self", self);
+
+	// Provide a general error message in case of an unhandled exception
+	self.update_status('error', "An error occurred while submitting the form. Please try again later.");
+});
+
 	},
-	
 	
 	_validateForm: function (e) {
         e.preventDefault(); // Prevent the default submit behavior
@@ -1581,32 +1567,33 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     },
 
     update_status: function (status, message) {
-		console.log("Inside Update Status",status,message)
-        if (status !== 'success') { // Restore submit button behavior if result is an error
-            this.$target.find('.family_website_form_submit')
-                .removeAttr('disabled')
-                .removeClass('disabled'); // !compatibility
-        }
-		if ((status === 'error') || (status !== 'success')) {
-			var $result = this.$('.family_website_form_result');
-			this.$('#form_result_error').removeClass('d-none')
-        }
-		else{
-			var $result = this.$('.family_website_form_result');
-			if(message){
-				this.$('#form_result_success').removeClass('d-none')
+		console.log("Inside Update Status", status, message);
+		
+		// Ensure the message has a fallback if undefined
+		message = message || '';
+	
+		if (status !== 'success') { 
+			// Restore submit button behavior if the result is an error
+			this.$target.find('.family_website_form_submit')
+				.removeAttr('disabled')
+				.removeClass('disabled');
+		}
+	
+		var $result = this.$('.family_website_form_result');
+	
+		if (status === 'error') {
+			this.$('#form_result_error').removeClass('d-none');
+			if (!message) {
+				message = _t("An error has occurred, the form has not been sent.");
+			}
+		} else if (status === 'success') {
+			if (message) {
+				this.$('#form_result_success').removeClass('d-none');
 			}
 		}
-		if (status === 'error' && !message) {
-            message = _t("An error has occured, the form has not been sent.");
-        }
-        // Note: we still need to wait that the widget is properly started
-        // before any qweb rendering which depends on xmlDependencies
-        // because the event handlers are binded before the call to
-        // willStart for public widgets...
-        $result.html(
-           message
-        );
-    },
+	
+		// Set the result message regardless of status
+		$result.html(message);
+	},	
 });
 });
