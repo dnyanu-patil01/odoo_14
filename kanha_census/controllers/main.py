@@ -289,7 +289,7 @@ class CustomerPortal(CustomerPortal):
             return False
 
     @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="user", methods=['POST'], website=True)
-    def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
+    def save_portal_form(self, partner_id=None, model_name=None, csrf=False, access_token=None, **post):
         request.params.pop('csrf_token', None)
         is_submit = post.get("is_submit")
         post.pop("is_submit")
