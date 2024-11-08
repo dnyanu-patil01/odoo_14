@@ -1220,170 +1220,148 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
 	/* saves a record */
 	_onSaveForm: function (e, is_submit) {
-		//Show loading
-		$("#loading").removeClass('hide');
-		var $form = $(e.currentTarget).closest('form');
-		var self = this;
-		
-		/*// Clear form submission status if any
-		this.$('#form_result_error').addClass('d-none')
-		
-		// Update field color if invalid or erroneous
-		this.$target.find('.form-field, .s_website_form_field').each(function (k, field) { 
-			var $field = $(field);
-        	$field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
- 		});*/
+		try {
+			console.log("Initiating form save process...");
+			// Show loading indicator
+			$("#loading").removeClass('hide');
 	
+			var $form = $(e.currentTarget).closest('form');
+			var self = this;
+			var form_values = {};
 	
-		// Prepare form inputs
-        this.form_fields = $form.serializeArray();
-        $.each(this.$target.find('input[type=file]'), function (outer_index, input) {
-            $.each($(input).prop('files'), function (index, file) {
-                // Index field name as ajax won't accept arrays of files
-                // when aggregating multiple files into a single field value
-                self.form_fields.push({
-                    //name: input.name + '[' + outer_index + '][' + index + ']',
- 					name: input.name + '[' + outer_index + '][' + index + ']',
-                    value: file
-                });
-            });
-        });
-
-        // Serialize form inputs into a single object
-        // Aggregate multiple values into arrays
-        var form_values = {};
-        _.each(this.form_fields, function (input) {
-            if (input.name in form_values) {
-                // If a value already exists for this field,
-                // we are facing a x2many field, so we store
-                // the values in an array.
-                if (Array.isArray(form_values[input.name])) {
-                    form_values[input.name].push(input.value);
-                } else {
-                    form_values[input.name] = [form_values[input.name], input.value];
-                }
-            } else {
-                if (input.value !== '') {
-                    form_values[input.name] = input.value;
-                }
-				// To save None value
-				else if (input.value == '') {
-                    form_values[input.name] = '';
-                }
-            }
-        });
-
-        // force server date format usage for existing fields
-        this.$target.find('.s_website_form_field:not(.s_website_form_custom)')
-        .find('.s_website_form_date, .s_website_form_datetime').each(function () {
-            var date = $(this).datetimepicker('viewDate').clone().locale('en');
-            var format = 'YYYY-MM-DD';
-            if ($(this).hasClass('s_website_form_datetime')) {
-                date = date.utc();
-                format = 'YYYY-MM-DD HH:mm:ss';
-            }
-            form_values[$(this).find('input').attr('name')] = date.format(format);
-        });
-
-		// Prepare Vehicle Info
-		var vehicle_details = {}
-		var vehicle_new_lines = []
-		$('#vehicle_table tbody tr:not(:last-child)').each(function() {
-			var vehicle_vals = {}
-			var vehicle_row_id = $(this).attr('id')
-			$(this).find('td').each(function() {
-			    var name = $(this).attr('name'); 
-				var value = $(this).html();
-				if(name){
-					vehicle_vals[name] = value.trim();
+			// Serialize form inputs and handle file inputs
+			this.form_fields = $form.serializeArray();
+			console.log("Serialized form fields:", this.form_fields);
+	
+			// Collect file inputs and handle them separately
+			this.$target.find('input[type=file]').each(function (outer_index, input) {
+				$.each($(input).prop('files'), function (index, file) {
+					self.form_fields.push({
+						name: `${input.name}[${outer_index}][${index}]`,
+						value: file
+					});
+				});
+			});
+	
+			// Serialize form fields into an object, managing multiple values
+			_.each(this.form_fields, function (input) {
+				if (input.name in form_values) {
+					form_values[input.name] = Array.isArray(form_values[input.name])
+						? [...form_values[input.name], input.value]
+						: [form_values[input.name], input.value];
+				} else {
+					form_values[input.name] = input.value || ''; // Handle empty values as ''
 				}
 			});
-			if(vehicle_row_id){
-				vehicle_details[parseInt(vehicle_row_id)] = vehicle_vals
-			}
-			else{
-				vehicle_new_lines.push(vehicle_vals)
-			}
-		});
-		form_values['vehicle_details_ids'] = JSON.stringify(vehicle_details)
-		form_values['vehicle_new_lines'] = JSON.stringify(vehicle_new_lines)
-		form_values['is_submit'] = is_submit;
-
-
-		var birth_country = document.getElementById("birth_country_id_field");
-		if(typeof birth_country !== 'undefined' && birth_country !== null) {
-			var selected_country = birth_country.options[birth_country.selectedIndex].text;
-			if(selected_country.trim() == 'India'){
-				form_values['birth_state_textfield'] = '';
-			}
-		}
-        // Post form and handle result
-ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
-.then(function (result_data) {
-	// Hide Loading
-	$("#loading").addClass('hide');
-	// Restore Submit button behavior
-	self.$target.find('.family_website_form_submit')
-		.removeAttr('disabled')
-		.removeClass('disabled'); // !compatibility
-
-	result_data = JSON.parse(result_data);
-
-	if (!result_data.id) {
-		// Failure, the server didn't return the created record ID
-		let errorMessage = result_data.error_message ? result_data.error_message : "An unexpected error occurred while submitting the form.";
-		self.update_status('error', errorMessage);
-
-		if (result_data.error_fields) {
-			// Show bad fields to users
-			self.check_error_fields_save(Object.keys(result_data.error_fields));
-			self.$target.find('.family_website_form_save').removeClass('disabled').attr('enabled', 'enabled');
-			$("html, body").animate({ scrollTop: 0 }, "slow");
-		}
-	} else {
-		// Success, redirect or update status
-		let successMode = $form[0].dataset.successMode;
-		let successPage = $form[0].dataset.successPage;
-
-		if (!successMode) {
-			successPage = $form.attr('data-success_page'); // Compatibility
-			successMode = successPage ? 'redirect' : 'nothing';
-		}
-
-		switch (successMode) {
-			case 'redirect':
-				if (successPage.charAt(0) === "#") {
-					dom.scrollTo($(successPage)[0], { duration: 500, extraOffset: 0 });
-				} else {
-					if (is_submit === true) {
-						$(window.location).attr('href', successPage);
-					} else {
-						$(window.location).attr('href', "/family/");
-					}
+			console.log("Form values after processing:", form_values);
+	
+			// Apply server date format for date fields
+			this.$target.find('.s_website_form_field:not(.s_website_form_custom) .s_website_form_date, .s_website_form_datetime').each(function () {
+				var dateInput = $(this).find('input');
+				if (dateInput.length > 0) {
+					var date = $(this).datetimepicker('viewDate').clone().locale('en');
+					var format = $(this).hasClass('s_website_form_datetime') ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD';
+					form_values[dateInput.attr('name')] = date.utc().format(format);
 				}
-				break;
-
-			case 'message':
-				self.$target[0].classList.add('d-none');
-				self.$target[0].parentElement.querySelector('.s_website_form_end_message').classList.remove('d-none');
-				break;
-
-			default:
-				self.update_status('success', "Form submitted successfully!");
-				break;
+			});
+			console.log("Form values after date formatting:", form_values);
+	
+			// Process vehicle details
+			var vehicle_details = {};
+			var vehicle_new_lines = [];
+			$('#vehicle_table tbody tr:not(:last-child)').each(function () {
+				var vehicle_vals = {};
+				var vehicle_row_id = $(this).attr('id');
+	
+				$(this).find('td').each(function () {
+					var name = $(this).attr('name');
+					var value = $(this).html().trim();
+					if (name) {
+						vehicle_vals[name] = value;
+					}
+				});
+	
+				if (vehicle_row_id) {
+					vehicle_details[parseInt(vehicle_row_id)] = vehicle_vals;
+				} else {
+					vehicle_new_lines.push(vehicle_vals);
+				}
+			});
+			form_values['vehicle_details_ids'] = JSON.stringify(vehicle_details);
+			form_values['vehicle_new_lines'] = JSON.stringify(vehicle_new_lines);
+			form_values['is_submit'] = is_submit;
+			console.log("Processed vehicle details:", vehicle_details);
+			console.log("New vehicle lines:", vehicle_new_lines);
+	
+			// Specific form logic: clear birth state if country is 'India'
+			var birth_country = document.getElementById("birth_country_id_field");
+			if (birth_country) {
+				var selected_country = birth_country.options[birth_country.selectedIndex].text;
+				if (selected_country.trim() === 'India') {
+					form_values['birth_state_textfield'] = '';
+				}
+			}
+	
+			// Send form data to the server
+			ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
+				.then(function (result_data) {
+					// Hide loading indicator
+					$("#loading").addClass('hide');
+					// Re-enable submit button
+					self.$target.find('.family_website_form_submit')
+						.removeAttr('disabled')
+						.removeClass('disabled');
+	
+					try {
+						result_data = JSON.parse(result_data);
+					} catch (error) {
+						console.error("Error parsing result data:", error);
+						self.update_status('error', "Invalid server response.");
+						return;
+					}
+	
+					if (!result_data.id) {
+						let errorMessage = result_data.error_message || "An unexpected error occurred while submitting the form.";
+						self.update_status('error', errorMessage);
+	
+						if (result_data.error_fields) {
+							self.check_error_fields_save(Object.keys(result_data.error_fields));
+							$("html, body").animate({ scrollTop: 0 }, "slow");
+						}
+					} else {
+						let successMode = $form[0].dataset.successMode || ($form.attr('data-success_page') ? 'redirect' : 'nothing');
+						let successPage = $form[0].dataset.successPage || $form.attr('data-success_page');
+	
+						switch (successMode) {
+							case 'redirect':
+								if (successPage.charAt(0) === "#") {
+									dom.scrollTo($(successPage)[0], { duration: 500 });
+								} else {
+									$(window.location).attr('href', is_submit ? successPage : "/family/");
+								}
+								break;
+	
+							case 'message':
+								self.$target.addClass('d-none');
+								self.$target.parent().find('.s_website_form_end_message').removeClass('d-none');
+								break;
+	
+							default:
+								self.update_status('success', "Form submitted successfully!");
+								break;
+						}
+					}
+				})
+				.guardedCatch(function (error) {
+					console.error("Form submission error:", error);
+					self.update_status('error', "An error occurred while submitting the form. Please try again later.");
+				});
+	
+		} catch (error) {
+			console.error("Error in _onSaveForm function:", error);
+			alert("An issue occurred while processing the form. Check the console for more details.");
 		}
-	}
-})
-.guardedCatch(function () {
-	// Log for debugging
-	console.log("line 1395 this", this);
-	console.log("line 1396 self", self);
-
-	// Provide a general error message in case of an unhandled exception
-	self.update_status('error', "An error occurred while submitting the form. Please try again later.");
-});
-
-	},
+	},	
 	
 	_validateForm: function (e) {
         e.preventDefault(); // Prevent the default submit behavior
@@ -1568,18 +1546,15 @@ ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('mode
 
     update_status: function (status, message) {
 		console.log("Inside Update Status", status, message);
-		
+	
 		// Ensure the message has a fallback if undefined
 		message = message || '';
-	
-		if (status !== 'success') { 
-			// Restore submit button behavior if the result is an error
-			this.$target.find('.family_website_form_submit')
-				.removeAttr('disabled')
-				.removeClass('disabled');
-		}
-	
+		
 		var $result = this.$('.family_website_form_result');
+	
+		// Reset visibility of both result elements
+		this.$('#form_result_error').addClass('d-none');
+		this.$('#form_result_success').addClass('d-none');
 	
 		if (status === 'error') {
 			this.$('#form_result_error').removeClass('d-none');
@@ -1587,13 +1562,19 @@ ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('mode
 				message = _t("An error has occurred, the form has not been sent.");
 			}
 		} else if (status === 'success') {
-			if (message) {
-				this.$('#form_result_success').removeClass('d-none');
-			}
+			this.$('#form_result_success').removeClass('d-none');
+		}
+	
+		// Restore submit button behavior if the result is an error
+		if (status !== 'success') {
+			this.$target.find('.family_website_form_submit')
+				.removeAttr('disabled')
+				.removeClass('disabled');
 		}
 	
 		// Set the result message regardless of status
 		$result.html(message);
-	},	
+	},
+	
 });
 });
