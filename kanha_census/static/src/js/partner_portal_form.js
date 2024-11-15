@@ -1,6 +1,5 @@
 odoo.define('kanha_census.partner_portal_form', function (require) {
 'use strict';
-
 var core = require('web.core');
 var time = require('web.time');
 var ajax = require('web.ajax');
@@ -220,14 +219,11 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 							// result_span.html("Please contact Administrator to delete the record");
 							Dialog.alert(null, "You can delete only Rejected and Not Yet Submitted records. or You have assigned RFID card from Ashram Office, if so please contact Ashram office for deleting this record.");
 						}
-						else if(result == "no_records") {		        
-							Dialog.alert(null, "Record does not exist.");
-						}
 						
 						// $("html, body").animate({ scrollTop: 0 }, "slow");
 					})
 					.guardedCatch(function () {
-						this.update_status('error');
+						self.update_status('error');
 					});
 				},
                 cancel_callback: reject,
@@ -1316,7 +1312,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
             }
         })
         .guardedCatch(function () {
-            this.update_status('error');
+            self.update_status('error');
         });
 	},
 	
