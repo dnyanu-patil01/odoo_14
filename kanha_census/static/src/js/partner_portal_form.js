@@ -1,5 +1,6 @@
 odoo.define('kanha_census.partner_portal_form', function (require) {
 'use strict';
+
 var core = require('web.core');
 var time = require('web.time');
 var ajax = require('web.ajax');
@@ -131,7 +132,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keypress #mobile_number_id': '_restrictSpecialCharacter',
 		'keydown #mobile_number_id': '_restrictSpecialCharacter',
 		'click .partner_clear': '_onClickDeletePartner',
-
+		'change select[name="do_you_need_voter_id_in_kanha"]': '_onVoterIdChange',
 		
     },
  
@@ -149,6 +150,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		this.$kanhaHouseNumber = this.$('select[name="kanha_house_number_id"]');
         this.$kanhaHouseNumberOptions = this.$kanhaHouseNumber.filter(':enabled').find('option:not(:first)');
 		this._adaptKanhaHouseNumberStateAddressForm();
+		this._restoreSettings();
         return def;
     },
 
@@ -186,52 +188,53 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
 	/* deletes a record */
 	_onClickDeletePartner: function (e) {
+		var self = this;  // Ensure `self` is defined and used for correct context
+		
 		var def = new Promise(function (resolve, reject) {
-            var message = _t("Are you sure you want to delete this record?");
-            var dialog = Dialog.confirm(self, message, {
-                title: _t("Confirmation"),
-                confirm_callback: function() {
-					var self = this;
-					var deleted_partner_ids = []
-					var partner_id = $(e.target).attr('id')
-					deleted_partner_ids.push(partner_id)
-					var form_values = {};
-					form_values['deleted_partner_ids'] = deleted_partner_ids
-					
+			var message = _t("Are you sure you want to delete this record?");
+			
+			var dialog = Dialog.confirm(self, message, {
+				title: _t("Confirmation"),
+				confirm_callback: function() {
+					var partner_id = $(e.target).attr('id');
+					var deleted_partner_ids = [partner_id];  // Collect the partner ID to delete
+	
+					var form_values = {
+						'deleted_partner_ids': deleted_partner_ids
+					};
+	
 					// Post form and handle result
 					ajax.post('/delete_family_members', form_values)
-					.then(function (result) {
-						var result_span = self.$('.family_delete_result');   
-						self.$('#delete_result').removeClass('d-none')
-						if(result == "deleted") {
-							//result_span.html("Record has been deleted successfully");
-							Dialog.alert(self, _t("Record has been deleted successfully."), {
-								confirm_callback: function() {
-									$(window.location).attr('href', "/family/");
-								},
-							});	
-						}   
-						else if(result == "current_user") {		        
-							// result_span.html("Please contact Administrator to delete the record");
-							Dialog.alert(null, "Please contact Administrator to delete the record.");
-						}
-						else if(result == "cannot_delete") {		        
-							// result_span.html("Please contact Administrator to delete the record");
-							Dialog.alert(null, "You can delete only Rejected and Not Yet Submitted records. or You have assigned RFID card from Ashram Office, if so please contact Ashram office for deleting this record.");
-						}
-						
-						// $("html, body").animate({ scrollTop: 0 }, "slow");
-					})
-					.guardedCatch(function () {
-						self.update_status('error');
-					});
+						.then(function (result) {
+							// Handle various responses from the server
+							if (result === "deleted") {
+								Dialog.alert(self, _t("Record has been deleted successfully."), {
+									confirm_callback: function() {
+										$(window.location).attr('href', "/family/");
+									},
+								});
+							} else if (result === "current_user") {
+								Dialog.alert(null, _t("Please contact Administrator to delete the record."));
+							} else if (result === "cannot_delete") {
+								Dialog.alert(null, _t("You can delete only Rejected and Not Yet Submitted records. If you have assigned an RFID card from Ashram Office, please contact Ashram office for deleting this record."));
+							} else if (result === "no_records") {
+								Dialog.alert(null, _t("Record does not exist."));
+							}
+						})
+						.guardedCatch(function () {
+							// Handle any errors that occurred during the request
+							console.log("Error occurred during deletion.");
+							Dialog.alert(self, _t("An error occurred while attempting to delete the record. Please try again later."));
+						});
 				},
-                cancel_callback: reject,
-            });
-            dialog.on('closed', self, reject);
-        });
+				cancel_callback: reject,
+			});
+	
+			// Reject the promise if the dialog is closed without confirmation
+			dialog.on('closed', self, reject);
+		});
 	},
-
+	
 	_onChangeRelationType: function (ev) {
 		// document.getElementById("relation_type_field").value = "";
         // $(ev.currentTarget).closest('form').find('select[name="relation_type"]').trigger('change');
@@ -266,6 +269,70 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 	_onWorkProfileChange: function () {
 		
 		this._adaptWorkDepartmentAddressForm();
+	},
+
+
+
+	_onVoterIdChange: function (ev) {
+		var $target = $(ev.currentTarget);
+		var selectedValue = this.$('select[name="do_you_need_voter_id_in_kanha"]').val();
+		// Always enable mandatory fields when 'Yes' is selected
+		if (selectedValue === 'Yes') {
+			$('#tab-kanha_voter_id').show(); // Show the tab
+			$('#voter_details_div').show();
+			// $('#pane-kanha_voter_id').removeClass('d-none');
+			$('#collapse-kanha_voter_id').collapse('show'); // Show the template
+			this._enableMandatoryFields(); // Enable mandatory fields
+
+		} else if (selectedValue === 'No') { // If 'No' is selected
+			$('#tab-kanha_voter_id').hide(); // Hide the tab
+			$('#kanha_voter_id_info').hide();
+			$('#voter_details_div').hide();
+			$('#kanha_address').focus();
+			$('#collapse-kanha_voter_id').collapse('hide');
+			// Hide the template
+			this._disableMandatoryFields(); // Disable mandatory fields
+
+			// localStorage.setItem('voterIdSelected', 'No'); 
+			
+			$('#collapse-kanha_voter_id').collapse('hide'); // Hide the content
+			// $('#pane-kanha_voter_id').addClass('d-none');// Store selected value
+			//location.reload(); // Refresh the page
+		}
+
+		// localStorage.setItem('voterIdSelected', selectedValue); // Store selected value
+	},
+
+	// // Function to disable mandatory fields
+	_disableMandatoryFields: function () {
+		$('.col-lg-8 input[required], .col-lg-8 select[required]').each(function () {
+			$(this).attr('data-original-required', 'true'); // Store original required state
+			$(this).prop('required', false); // Set required to false
+		});
+	},
+
+	// // Function to enable mandatory fields
+	_enableMandatoryFields: function () {
+		$('.col-lg-8 input, .col-lg-8 select').each(function () {
+			if ($(this).attr('data-original-required') === 'true') {
+				$(this).prop('required', true); // Set to true based on original required state
+			} else {
+				$(this).prop('required', false); // Disable other fields
+			}
+		});
+	},
+
+	// Function to restore settings on page load
+	_restoreSettings: function () {
+		var selectedValue = this.$('select[name="do_you_need_voter_id_in_kanha"]').val();
+		if (selectedValue === 'No') {
+			$('#tab-kanha_voter_id').hide();
+			$('#kanha_voter_id_info').hide();
+			this._disableMandatoryFields();
+		} else {
+			$('#tab-kanha_voter_id').show();
+			$('#kanha_voter_id_info').show();
+		}
 	},
 
 
@@ -368,10 +435,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#kanha_voter_id_number_field').attr('required', true);
 			
 			$('.kanha_voter_id_image').removeClass('d-none');
-			$('#kanha_voter_id_image_field').attr('required', true);
+			// $('#kanha_voter_id_image_field').attr('required', true);
 			
 			$('.kanha_voter_id_back_image').removeClass('d-none');
-			$('#kanha_voter_id_back_image_field').attr('required', true);
+			// $('#kanha_voter_id_back_image_field').attr('required', true);
 			
 			$('.change_voter_id_address').removeClass('d-none');
 			
@@ -635,7 +702,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_front_image_filename").value = "";
 				document.getElementsByName("passport_front_iamge").value = "";
@@ -667,7 +735,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_back_image_filename").value = "";
 				document.getElementsByName("passport_back_iamge").value = "";
@@ -699,7 +768,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("indian_visa_filename").value = "";
 				document.getElementsByName("indian_visa").value = "";
@@ -731,7 +801,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_photo_filename").value = "";
 				document.getElementsByName("passport_photo").value = "";
@@ -796,7 +867,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("kanha_voter_id_image_filename").value = "";
 				document.getElementsByName("kanha_voter_id_image").value = "";
@@ -828,7 +900,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("kanha_voter_id_back_image_filename").value = "";
 				document.getElementsByName("kanha_voter_id_back_image").value = "";
@@ -879,7 +952,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("age_proof_filename").value = "";
 				document.getElementsByName("age_proof").value = "";
@@ -906,7 +980,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("address_proof_filename").value = "";
 				document.getElementsByName("address_proof").value = "";
@@ -933,7 +1008,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is" + fileSizeFormatted + "MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("adhar_card_filename").value = "";
 				document.getElementsByName("adhar_front").value = "";
@@ -960,7 +1036,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
+				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
+				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("adhar_card_back_side_filename").value = "";
 				document.getElementsByName("adhar_back").value = "";
@@ -1143,179 +1220,148 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
 	/* saves a record */
 	_onSaveForm: function (e, is_submit) {
-		//Show loading
-		$("#loading").removeClass('hide');
-		var $form = $(e.currentTarget).closest('form');
-		var self = this;
-		
-		/*// Clear form submission status if any
-		this.$('#form_result_error').addClass('d-none')
-		
-		// Update field color if invalid or erroneous
-		this.$target.find('.form-field, .s_website_form_field').each(function (k, field) { 
-			var $field = $(field);
-        	$field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
- 		});*/
+		try {
+			console.log("Initiating form save process...");
+			// Show loading indicator
+			$("#loading").removeClass('hide');
 	
+			var $form = $(e.currentTarget).closest('form');
+			var self = this;
+			var form_values = {};
 	
-		// Prepare form inputs
-        this.form_fields = $form.serializeArray();
-        $.each(this.$target.find('input[type=file]'), function (outer_index, input) {
-            $.each($(input).prop('files'), function (index, file) {
-                // Index field name as ajax won't accept arrays of files
-                // when aggregating multiple files into a single field value
-                self.form_fields.push({
-                    //name: input.name + '[' + outer_index + '][' + index + ']',
- 					name: input.name + '[' + outer_index + '][' + index + ']',
-                    value: file
-                });
-            });
-        });
-
-        // Serialize form inputs into a single object
-        // Aggregate multiple values into arrays
-        var form_values = {};
-        _.each(this.form_fields, function (input) {
-            if (input.name in form_values) {
-                // If a value already exists for this field,
-                // we are facing a x2many field, so we store
-                // the values in an array.
-                if (Array.isArray(form_values[input.name])) {
-                    form_values[input.name].push(input.value);
-                } else {
-                    form_values[input.name] = [form_values[input.name], input.value];
-                }
-            } else {
-                if (input.value !== '') {
-                    form_values[input.name] = input.value;
-                }
-				// To save None value
-				else if (input.value == '') {
-                    form_values[input.name] = '';
-                }
-            }
-        });
-
-        // force server date format usage for existing fields
-        this.$target.find('.s_website_form_field:not(.s_website_form_custom)')
-        .find('.s_website_form_date, .s_website_form_datetime').each(function () {
-            var date = $(this).datetimepicker('viewDate').clone().locale('en');
-            var format = 'YYYY-MM-DD';
-            if ($(this).hasClass('s_website_form_datetime')) {
-                date = date.utc();
-                format = 'YYYY-MM-DD HH:mm:ss';
-            }
-            form_values[$(this).find('input').attr('name')] = date.format(format);
-        });
-
-		// Prepare Vehicle Info
-		var vehicle_details = {}
-		var vehicle_new_lines = []
-		$('#vehicle_table tbody tr:not(:last-child)').each(function() {
-			var vehicle_vals = {}
-			var vehicle_row_id = $(this).attr('id')
-			$(this).find('td').each(function() {
-			    var name = $(this).attr('name'); 
-				var value = $(this).html();
-				if(name){
-					vehicle_vals[name] = value.trim();
+			// Serialize form inputs and handle file inputs
+			this.form_fields = $form.serializeArray();
+			console.log("Serialized form fields:", this.form_fields);
+	
+			// Collect file inputs and handle them separately
+			this.$target.find('input[type=file]').each(function (outer_index, input) {
+				$.each($(input).prop('files'), function (index, file) {
+					self.form_fields.push({
+						name: `${input.name}[${outer_index}][${index}]`,
+						value: file
+					});
+				});
+			});
+	
+			// Serialize form fields into an object, managing multiple values
+			_.each(this.form_fields, function (input) {
+				if (input.name in form_values) {
+					form_values[input.name] = Array.isArray(form_values[input.name])
+						? [...form_values[input.name], input.value]
+						: [form_values[input.name], input.value];
+				} else {
+					form_values[input.name] = input.value || ''; // Handle empty values as ''
 				}
 			});
-			if(vehicle_row_id){
-				vehicle_details[parseInt(vehicle_row_id)] = vehicle_vals
-			}
-			else{
-				vehicle_new_lines.push(vehicle_vals)
-			}
-		});
-		form_values['vehicle_details_ids'] = JSON.stringify(vehicle_details)
-		form_values['vehicle_new_lines'] = JSON.stringify(vehicle_new_lines)
-		form_values['is_submit'] = is_submit;
-
-
-		var birth_country = document.getElementById("birth_country_id_field");
-		if(typeof birth_country !== 'undefined' && birth_country !== null) {
-			var selected_country = birth_country.options[birth_country.selectedIndex].text;
-			if(selected_country.trim() == 'India'){
-				form_values['birth_state_textfield'] = '';
-			}
-		}
-        
-		// Post form and handle result
-        ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
-        .then(function (result_data) {
-			// Hide Loading
-	    	$("#loading").addClass('hide');
-            // Restore Submit button behavior
-            self.$target.find('.family_website_form_submit')
-                .removeAttr('disabled')
-                .removeClass('disabled'); // !compatibility
-            result_data = JSON.parse(result_data);
-            if (!result_data.id) {
-                // Failure, the server didn't return the created record ID
-                self.update_status('error', result_data.error_message ? result_data.error_message : false);
-                if (result_data.error_fields) {
-                    // If the server return a list of bad fields, show these fields for users
-                    //self.check_error_fields(result_data.error_fields);
-					self.check_error_fields_save(Object.keys(result_data.error_fields))
-					self.$target.find('.family_website_form_save').removeClass('disabled').attr('enabled', 'enabled');
-					//window.scrollTo(0,0);
-					$("html, body").animate({ scrollTop: 0 }, "slow");
-
-					
-                }
-            } else {
-                // Success, redirect or update status
-                let successMode = $form[0].dataset.successMode;
-                let successPage = $form[0].dataset.successPage;
-                if (!successMode) {
-                    successPage = $form.attr('data-success_page'); // Compatibility
-                    successMode = successPage ? 'redirect' : 'nothing';
-                }
-                switch (successMode) {
-                    case 'redirect':
-                        if (successPage.charAt(0) === "#") {
-                            dom.scrollTo($(successPage)[0], {
-                                duration: 500,
-                                extraOffset: 0,
-                            });
-                        } else {
-						    if( is_submit == true) {
-								$(window.location).attr('href', successPage);
-							}   
-						    else {
-								$(window.location).attr('href', "/family/");
-						   		//let saveSuccessPage = $form[0].dataset.saveSuccessPage;
-								//$(window.location).attr('href', saveSuccessPage);
-								//location.reload()
-								
-								// Prevent users from crazy clicking
-						        /*self.$target.find('.family_website_form_save')
-						            .removeClass('disabled')    // !compatibility
-						            .attr('disabled', false);
-								self.$('#form_result_success').removeClass('d-none')
-								setTimeout(function(){
-									$(window.location).attr('href', "/website_form_family/"+result_data.id+"/res.partner");
-            					}, 1000);*/
-								//self.update_status('success', _t("The form has been saved successfully."));
-							}
-                        }
-                        break;
-                    case 'message':
-                        self.$target[0].classList.add('d-none');
-                        self.$target[0].parentElement.querySelector('.s_website_form_end_message').classList.remove('d-none');
-                        break;
-                    default:
-                        self.update_status('success');
-                        break;
-                }
-            }
-        })
-        .guardedCatch(function () {
-            self.update_status('error');
-        });
-	},
+			console.log("Form values after processing:", form_values);
 	
+			// Apply server date format for date fields
+			this.$target.find('.s_website_form_field:not(.s_website_form_custom) .s_website_form_date, .s_website_form_datetime').each(function () {
+				var dateInput = $(this).find('input');
+				if (dateInput.length > 0) {
+					var date = $(this).datetimepicker('viewDate').clone().locale('en');
+					var format = $(this).hasClass('s_website_form_datetime') ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD';
+					form_values[dateInput.attr('name')] = date.utc().format(format);
+				}
+			});
+			console.log("Form values after date formatting:", form_values);
+	
+			// Process vehicle details
+			var vehicle_details = {};
+			var vehicle_new_lines = [];
+			$('#vehicle_table tbody tr:not(:last-child)').each(function () {
+				var vehicle_vals = {};
+				var vehicle_row_id = $(this).attr('id');
+	
+				$(this).find('td').each(function () {
+					var name = $(this).attr('name');
+					var value = $(this).html().trim();
+					if (name) {
+						vehicle_vals[name] = value;
+					}
+				});
+	
+				if (vehicle_row_id) {
+					vehicle_details[parseInt(vehicle_row_id)] = vehicle_vals;
+				} else {
+					vehicle_new_lines.push(vehicle_vals);
+				}
+			});
+			form_values['vehicle_details_ids'] = JSON.stringify(vehicle_details);
+			form_values['vehicle_new_lines'] = JSON.stringify(vehicle_new_lines);
+			form_values['is_submit'] = is_submit;
+			console.log("Processed vehicle details:", vehicle_details);
+			console.log("New vehicle lines:", vehicle_new_lines);
+	
+			// Specific form logic: clear birth state if country is 'India'
+			var birth_country = document.getElementById("birth_country_id_field");
+			if (birth_country) {
+				var selected_country = birth_country.options[birth_country.selectedIndex].text;
+				if (selected_country.trim() === 'India') {
+					form_values['birth_state_textfield'] = '';
+				}
+			}
+	
+			// Send form data to the server
+			ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
+				.then(function (result_data) {
+					// Hide loading indicator
+					$("#loading").addClass('hide');
+					// Re-enable submit button
+					self.$target.find('.family_website_form_submit')
+						.removeAttr('disabled')
+						.removeClass('disabled');
+	
+					try {
+						result_data = JSON.parse(result_data);
+					} catch (error) {
+						console.error("Error parsing result data:", error);
+						self.update_status('error', "Invalid server response.");
+						return;
+					}
+	
+					if (!result_data.id) {
+						let errorMessage = result_data.error_message || "An unexpected error occurred while submitting the form.";
+						self.update_status('error', errorMessage);
+	
+						if (result_data.error_fields) {
+							self.check_error_fields_save(Object.keys(result_data.error_fields));
+							$("html, body").animate({ scrollTop: 0 }, "slow");
+						}
+					} else {
+						let successMode = $form[0].dataset.successMode || ($form.attr('data-success_page') ? 'redirect' : 'nothing');
+						let successPage = $form[0].dataset.successPage || $form.attr('data-success_page');
+	
+						switch (successMode) {
+							case 'redirect':
+								if (successPage.charAt(0) === "#") {
+									dom.scrollTo($(successPage)[0], { duration: 500 });
+								} else {
+									$(window.location).attr('href', is_submit ? successPage : "/family/");
+								}
+								break;
+	
+							case 'message':
+								self.$target.addClass('d-none');
+								self.$target.parent().find('.s_website_form_end_message').removeClass('d-none');
+								break;
+	
+							default:
+								self.update_status('success', "Form submitted successfully!");
+								break;
+						}
+					}
+				})
+				.guardedCatch(function (error) {
+					console.error("Form submission error:", error);
+					self.update_status('error', "An error occurred while submitting the form. Please try again later.");
+				});
+	
+		} catch (error) {
+			console.error("Error in _onSaveForm function:", error);
+			alert("An issue occurred while processing the form. Check the console for more details.");
+		}
+	},	
 	
 	_validateForm: function (e) {
         e.preventDefault(); // Prevent the default submit behavior
@@ -1499,31 +1545,36 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     },
 
     update_status: function (status, message) {
-        if (status !== 'success') { // Restore submit button behavior if result is an error
-            this.$target.find('.family_website_form_submit')
-                .removeAttr('disabled')
-                .removeClass('disabled'); // !compatibility
-        }
-		if ((status === 'error') || (status !== 'success')) {
-			var $result = this.$('.family_website_form_result');
-			this.$('#form_result_error').removeClass('d-none')
-        }
-		else{
-			var $result = this.$('.family_website_form_result');
-			if(message){
-				this.$('#form_result_success').removeClass('d-none')
+		console.log("Inside Update Status", status, message);
+	
+		// Ensure the message has a fallback if undefined
+		message = message || '';
+		
+		var $result = this.$('.family_website_form_result');
+	
+		// Reset visibility of both result elements
+		this.$('#form_result_error').addClass('d-none');
+		this.$('#form_result_success').addClass('d-none');
+	
+		if (status === 'error') {
+			this.$('#form_result_error').removeClass('d-none');
+			if (!message) {
+				message = _t("An error has occurred, the form has not been sent.");
 			}
+		} else if (status === 'success') {
+			this.$('#form_result_success').removeClass('d-none');
 		}
-		if (status === 'error' && !message) {
-            message = _t("An error has occured, the form has not been sent.");
-        }
-        // Note: we still need to wait that the widget is properly started
-        // before any qweb rendering which depends on xmlDependencies
-        // because the event handlers are binded before the call to
-        // willStart for public widgets...
-        $result.html(
-           message
-        );
-    },
+	
+		// Restore submit button behavior if the result is an error
+		if (status !== 'success') {
+			this.$target.find('.family_website_form_submit')
+				.removeAttr('disabled')
+				.removeClass('disabled');
+		}
+	
+		// Set the result message regardless of status
+		$result.html(message);
+	},
+	
 });
 });
