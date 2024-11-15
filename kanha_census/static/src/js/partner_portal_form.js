@@ -132,7 +132,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keypress #mobile_number_id': '_restrictSpecialCharacter',
 		'keydown #mobile_number_id': '_restrictSpecialCharacter',
 		'click .partner_clear': '_onClickDeletePartner',
-		'change select[name="do_you_need_voter_id_in_kanha"]': '_onVoterIdChange',
+
 		
     },
  
@@ -150,7 +150,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		this.$kanhaHouseNumber = this.$('select[name="kanha_house_number_id"]');
         this.$kanhaHouseNumberOptions = this.$kanhaHouseNumber.filter(':enabled').find('option:not(:first)');
 		this._adaptKanhaHouseNumberStateAddressForm();
-		this._restoreSettings();
         return def;
     },
 
@@ -274,61 +273,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 	},
 
 
-
-	_onVoterIdChange: function (ev) {
-		var $target = $(ev.currentTarget);
-		var selectedValue = $target.val();
-		// Always enable mandatory fields when 'Yes' is selected
-		if (selectedValue === 'Yes') {
-			$('#tab-kanha_voter_id').show(); // Show the tab
-			$('#kanha_voter_id_info').show(); // Show the template
-			this._enableMandatoryFields(); // Enable mandatory fields
-
-		} else if (selectedValue === 'No') { // If 'No' is selected
-			$('#tab-kanha_voter_id').hide(); // Hide the tab
-			$('#kanha_voter_id_info').hide(); // Hide the template
-			this._disableMandatoryFields(); // Disable mandatory fields
-
-			localStorage.setItem('voterIdSelected', 'No'); // Store selected value
-			location.reload(); // Refresh the page
-		}
-
-		localStorage.setItem('voterIdSelected', selectedValue); // Store selected value
-	},
-
-	// // Function to disable mandatory fields
-	_disableMandatoryFields: function () {
-		$('.col-lg-8 input[required], .col-lg-8 select[required]').each(function () {
-			$(this).attr('data-original-required', 'true'); // Store original required state
-			$(this).prop('required', false); // Set required to false
-		});
-	},
-
-	// // Function to enable mandatory fields
-	_enableMandatoryFields: function () {
-		$('.col-lg-8 input, .col-lg-8 select').each(function () {
-			if ($(this).attr('data-original-required') === 'true') {
-				$(this).prop('required', true); // Set to true based on original required state
-			} else {
-				$(this).prop('required', false); // Disable other fields
-			}
-		});
-	},
-
-	// Function to restore settings on page load
-	_restoreSettings: function () {
-		var selectedValue = localStorage.getItem('voterIdSelected');
-		if (selectedValue === 'No') {
-			$('#tab-kanha_voter_id').hide();
-			$('#kanha_voter_id_info').hide();
-			this._disableMandatoryFields();
-		} else {
-			$('#tab-kanha_voter_id').show();
-			$('#kanha_voter_id_info').show();
-		}
-	},
-
-
 	/**
      * Show/Hide Voter ID details based on selected value of Change Voter ID address
      *
@@ -428,10 +372,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			$('#kanha_voter_id_number_field').attr('required', true);
 			
 			$('.kanha_voter_id_image').removeClass('d-none');
-			// $('#kanha_voter_id_image_field').attr('required', true);
+			$('#kanha_voter_id_image_field').attr('required', true);
 			
 			$('.kanha_voter_id_back_image').removeClass('d-none');
-			// $('#kanha_voter_id_back_image_field').attr('required', true);
+			$('#kanha_voter_id_back_image_field').attr('required', true);
 			
 			$('.change_voter_id_address').removeClass('d-none');
 			
@@ -695,8 +639,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_front_image_filename").value = "";
 				document.getElementsByName("passport_front_iamge").value = "";
@@ -728,8 +671,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_back_image_filename").value = "";
 				document.getElementsByName("passport_back_iamge").value = "";
@@ -761,8 +703,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("indian_visa_filename").value = "";
 				document.getElementsByName("indian_visa").value = "";
@@ -794,8 +735,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("passport_photo_filename").value = "";
 				document.getElementsByName("passport_photo").value = "";
@@ -860,8 +800,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("kanha_voter_id_image_filename").value = "";
 				document.getElementsByName("kanha_voter_id_image").value = "";
@@ -893,8 +832,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("kanha_voter_id_back_image_filename").value = "";
 				document.getElementsByName("kanha_voter_id_back_image").value = "";
@@ -945,8 +883,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("age_proof_filename").value = "";
 				document.getElementsByName("age_proof").value = "";
@@ -973,8 +910,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("address_proof_filename").value = "";
 				document.getElementsByName("address_proof").value = "";
@@ -1001,8 +937,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is" + fileSizeFormatted + "MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("adhar_card_filename").value = "";
 				document.getElementsByName("adhar_front").value = "";
@@ -1029,8 +964,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		if(mimeType.indexOf("image/") == 0){
 		  	var fileSize = file.size / 1024 / 1024; // in MiB
 	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2); // formatted to 2 decimal places
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+				Dialog.alert(null, "File is too big. File size cannot exceed 5MB.");
 				// Reset fields
 	        	document.getElementsByName("adhar_card_back_side_filename").value = "";
 				document.getElementsByName("adhar_back").value = "";
