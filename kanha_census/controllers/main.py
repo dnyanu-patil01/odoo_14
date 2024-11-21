@@ -439,7 +439,8 @@ class CustomerPortal(CustomerPortal):
                     # Links family members
                     if(kanha_house_number_id != partner.kanha_house_number_id.id):
                         partner.write({'family_members_ids': [(5,)]})
-                        partner_list_to_unlink = ResPartner.sudo().search([('family_members_ids', '=', partner.id)])
+                        # partner_list_to_unlink = ResPartner.sudo().search([('family_members_ids', '=', partner.id)])
+                        partner_list_to_unlink = []
                         for partner_list in partner_list_to_unlink:
                             partner_list.write({'family_members_ids': [(3, partner.id)]})
                         # Links family members
