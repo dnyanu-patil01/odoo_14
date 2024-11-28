@@ -133,6 +133,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		'keydown #mobile_number_id': '_restrictSpecialCharacter',
 		'click .partner_clear': '_onClickDeletePartner',
 		'change select[name="do_you_need_voter_id_in_kanha"]': '_onVoterIdChange',
+		'change select[name="is_preceptor"]': '_onChangeIsPreceptor',
 		
     },
  
@@ -1542,6 +1543,25 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
                 throw new Error(_.str.sprintf(_t("'%s' is not a correct date"), value));
         }
         return value;
+    },
+	/**
+     * Show/Hide fields based on selected value of Already have kanha voter ID
+     *
+     * @private
+     */
+    _onChangeIsPreceptor: function (ev) {
+		// Hide the fields and value based on the super parent field visibility
+		var is_preceptor = this.$('select[name="is_preceptor"]');
+		if(is_preceptor.val() == 'Yes'){
+			$('#abhyasi_id_id').attr('required', true);
+		}
+		else if(is_preceptor.val() == 'No'){
+			
+			$('#abhyasi_id_id').removeAttr('required');
+		}
+		else{
+			$('#abhyasi_id_id').removeAttr('required');
+		}
     },
 
     update_status: function (status, message) {

@@ -163,6 +163,11 @@ class ResPartner(models.Model):
         ('No', 'No'),
         ('Yes', 'Yes') 
     ], string='Do you need Voter ID in Kanha')
+    is_preceptor = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No')],
+        string='Is Preceptor?'
+    )
     def mail_reminder(self):
         """
         Cron to send email regarding the Visa expiry

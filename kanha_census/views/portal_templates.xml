@@ -310,11 +310,28 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div t-attf-class="col-lg-6 ">
+                                                <label class="col-form-label" for="">Is Preceptor?</label>
+                                                <span class="s_website_form_mark">*</span>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('is_preceptor') and 'o_has_error' or ''}">
+                                                <select id="is_preceptor_field" required="" name="is_preceptor" t-attf-class="form-control s_website_form_input #{error.get('is_preceptor') and 'is-invalid' or ''}">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['Yes', 'No']" t-as="is_preceptor_value">
+                                                        <option t-att-value="is_preceptor_value" t-att-selected="is_preceptor_value == is_preceptor if is_preceptor else is_preceptor_value == partner.is_preceptor if partner else null">
+                                                            <t t-esc="is_preceptor_value" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-12 row form-group s_website_form_field abhyasi_id_id_class #{not partner and 'd-none' or ''} #{(partner and partner.is_preceptor != 'Yes') and 'd-none' or ''}">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Abhyasi ID">Abhyasi ID</label>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('abhyasi_id') and 'o_has_error' or ''}">
-                                                <input id="abhyasi_id_id" tabindex="8" type="text" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
+                                                <input id="abhyasi_id_id" tabindex="8" type="text" t-att-required="'true' if partner and partner.is_preceptor == 'Yes' else None" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
                                             </div>
                                         </div>
                                       
@@ -601,11 +618,27 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div t-attf-class="col-lg-6 ">
+                                                <label class="col-form-label" for="">Is Preceptor?</label>
+                                                <span class="s_website_form_mark">*</span>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('is_preceptor') and 'o_has_error' or ''}">
+                                                <select id="is_preceptor_field" required="" name="is_preceptor" t-attf-class="form-control s_website_form_input #{error.get('is_preceptor') and 'is-invalid' or ''}">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['Yes', 'No']" t-as="is_preceptor_value">
+                                                        <option t-att-value="is_preceptor_value" t-att-selected="is_preceptor_value == is_preceptor if is_preceptor else is_preceptor_value == partner.is_preceptor if partner else null">
+                                                            <t t-esc="is_preceptor_value" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 row form-group s_website_form_field abhyasi_id_id_class #{not partner and 'd-none' or ''} #{(partner and partner.is_preceptor != 'Yes') and 'd-none' or ''}">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Abhyasi ID">Abhyasi ID</label>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('abhyasi_id') and 'o_has_error' or ''}">
-                                                <input id="abhyasi_id_id" type="text" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
+                                                <input id="abhyasi_id_id" tabindex="8" type="text" t-att-required="'true' if partner and partner.is_preceptor == 'Yes' else None" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
                                             </div>
                                         </div>
                                     
@@ -1359,11 +1392,27 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-12 row form-group s_website_form_field">
+                                            <div t-attf-class="col-lg-6 ">
+                                                <label class="col-form-label" for="">Is Preceptor?</label>
+                                                <span class="s_website_form_mark">*</span>
+                                            </div>
+                                            <div t-attf-class="col-xl-6 #{error.get('is_preceptor') and 'o_has_error' or ''}">
+                                                <select id="is_preceptor_field" required="" name="is_preceptor" t-attf-class="form-control s_website_form_input #{error.get('is_preceptor') and 'is-invalid' or ''}">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['Yes', 'No']" t-as="is_preceptor_value">
+                                                        <option t-att-value="is_preceptor_value" t-att-selected="is_preceptor_value == is_preceptor if is_preceptor else is_preceptor_value == partner.is_preceptor if partner else null">
+                                                            <t t-esc="is_preceptor_value" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 row form-group s_website_form_field abhyasi_id_id_class #{not partner and 'd-none' or ''} #{(partner and partner.is_preceptor != 'Yes') and 'd-none' or ''}">
                                             <div class="col-lg-6">
-                                                <label class="col-form-label" for="abhyasi_id">Abhyasi ID</label>
+                                                <label class="col-form-label" for="Abhyasi ID">Abhyasi ID</label>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('abhyasi_id') and 'o_has_error' or ''}">
-                                                <input id="abhyasi_id_id" type="text" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
+                                                <input id="abhyasi_id_id" tabindex="8" type="text" t-att-required="'true' if partner and partner.is_preceptor == 'Yes' else None" class="form-control s_website_form_input" name="abhyasi_id" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
                                             </div>
                                         </div>
                                     </div>
