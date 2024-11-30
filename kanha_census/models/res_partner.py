@@ -166,7 +166,7 @@ class ResPartner(models.Model):
     is_preceptor = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No')],
-        string='Is Preceptor?'
+        string='Are you a preceptor?'
     )
     def mail_reminder(self):
         """
