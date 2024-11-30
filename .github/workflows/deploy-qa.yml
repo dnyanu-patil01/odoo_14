@@ -11,7 +11,7 @@ jobs:
   deploy:
     runs-on: ski-qa-aws
     steps:
-      - uses: actions/checkout@v4.2.1
+      - uses: actions/checkout@v2
         name: Checkout Code
 
       - name: restart odoo
