@@ -1,0 +1,5 @@
+##############################################################################
+# security/ir.model.access.csv
+##############################################################################
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_partner_idcard,res.partner.idcard,model_res_partner,group_id_card_printer,1,1,0,0

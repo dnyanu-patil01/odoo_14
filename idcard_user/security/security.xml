@@ -1,0 +1,16 @@
+##############################################################################
+# security/security.xml
+##############################################################################
+<odoo>
+    <record id="group_id_card_printer" model="res.groups">
+        <field name="name">ID Card Printer</field>
+        <field name="category_id" ref="base.module_category_tools"/>
+    </record>
+
+    <record id="res_partner_idcard_rule" model="ir.rule">
+        <field name="name">ID Card Access</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[]</field>
+        <field name="groups" eval="[(4, ref('group_id_card_printer'))]"/>
+    </record>
+</odoo>
