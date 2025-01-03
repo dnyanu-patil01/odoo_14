@@ -18,7 +18,7 @@ class ResPartner(models.Model):
         ('Female', 'Female'),
         ('Other', 'Other')
     ], required=True)
-    date_of_birth = fields.Date(string='Date of birth', required=True)
+    date_of_birth = fields.Date(string='Date of birth', required=False)
     town = fields.Char(string='Town/Village Name')
     district = fields.Char(string='District')
     birth_town = fields.Char(string='Birth Town', required=True)
@@ -168,6 +168,7 @@ class ResPartner(models.Model):
         ('No', 'No')],
         string='Are you a preceptor?'
     )
+    year_of_birth = fields.Integer(string="Year Of Birth",readonly=True)
     def mail_reminder(self):
         """
         Cron to send email regarding the Visa expiry

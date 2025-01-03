@@ -656,7 +656,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 			//$('#passport_number_input').attr('disabled', true);
 			
 			// Add Required attribute
-			$("label[for='Aadhaar Card Number']").next(".s_website_form_mark").removeClass('d-none')
+			// $("label[for='Aadhaar Card Number']").next(".s_website_form_mark").removeClass('d-none')
 			$("label[for='Aadhar Card Front']").next(".s_website_form_mark").removeClass('d-none')
 			$("label[for='Aadhar Card Back']").next(".s_website_form_mark").removeClass('d-none')
 			$('#aadhaar_card_number_field').attr('required', true);
@@ -1405,18 +1405,25 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 		var aadhaar_card_number = $('#aadhaar_card_number_field').val();
 		var passport_number = $('#passport_number_input').val();
 		var name_input = $('#name_input').val();
+		var blood_group_input = $('#blood_group_id').val();
+		if(!blood_group_input){
+			$('#blood_group_id').addClass('is-invalid');
+			this.update_status('error', _t("Blood Group is Mandatory to Save Record!"));
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+			return false;
+		}
 		if(!name_input){
 			$('#name_input').addClass('is-invalid');
 			this.update_status('error', _t("Name is Mandatory to Save Record!"));
 			$("html, body").animate({ scrollTop: 0 }, "slow");
 			return false;
 		}
-		if(citizenship == 'Indian' && !aadhaar_card_number){
-			$('#aadhaar_card_number_field').addClass('is-invalid');
-			this.update_status('error', _t("Aadhaar Card Number is Mandatory to Save/Submit Record!"));
-			$("html, body").animate({ scrollTop: 0 }, "slow");
-			return false;
-		}
+		// if(citizenship == 'Indian' && !aadhaar_card_number){
+		// 	$('#aadhaar_card_number_field').addClass('is-invalid');
+		// 	this.update_status('error', _t("Aadhaar Card Number is Mandatory to Save/Submit Record!"));
+		// 	$("html, body").animate({ scrollTop: 0 }, "slow");
+		// 	return false;
+		// }
 		if(citizenship == 'Overseas' && !passport_number){
 			$('#passport_number_input').addClass('is-invalid');
 			this.update_status('error', _t("Passport Number is Mandatory to Save/Submit Record!"));

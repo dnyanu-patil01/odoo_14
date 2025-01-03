@@ -54,7 +54,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Mobile</th>
-                            <th>Date of Birth</th>
+                            <!-- <th>Date of Birth</th> -->
                             <th>Status</th>
                             <th></th>
                         </tr>
@@ -72,9 +72,9 @@
                             <td>
                                 <t t-esc="partner.mobile" />
                             </td>
-                            <td>
-                                <t t-esc="partner.date_of_birth" />
-                            </td>
+                            <!-- <td>
+                                <t t-esc="partner." />
+                            </td> -->
                             <td>
                             <t t-if="partner.application_status == 'draft'">
                                 <span class="badge badge-pill badge-warning"><span class="d-none d-md-inline"> Not Yet Submitted</span></span>
@@ -239,7 +239,7 @@
                                                 <input id="mobile_number_id" tabindex="9" type="tel" class="form-control s_website_form_input" name="mobile" required="" placeholder="9898989898 - 10 digit Indian Number" t-att-value="mobile or partner and partner.mobile" />
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                        <!-- <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Date of Birth">Date of Birth</label>
                                                 <span class="s_website_form_mark">*</span>
@@ -247,7 +247,23 @@
                                             <div t-attf-class="col-xl-6 #{error.get('date_of_birth') and 'o_has_error' or ''}">
                                                 <input id="date_of_birth_id" tabindex="10" type="date" class="form-control s_website_form_input" name="date_of_birth" required="" t-att-value="date_of_birth or partner and partner.date_of_birth" />
                                             </div>
-                                        </div>
+                                        </div> -->
+<div class="col-lg-12 row form-group s_website_form_field">
+    <div t-attf-class="col-lg-6 ">
+        <label class="col-form-label" for="">Year Of Birth</label>
+        <span class="s_website_form_mark">*</span>
+    </div>
+    <div t-attf-class="col-xl-6 #{error.get('year_of_birth') and 'o_has_error' or ''}">
+        <select id="year_of_birth_field" required="" name="year_of_birth" t-attf-class="form-control s_website_form_input #{error.get('year_of_birth') and 'is-invalid' or ''}">
+            <option value="">Select...</option>
+            <t t-foreach="range(1900, 2100)" t-as="year_of_birth_value">
+                <option t-att-value="year_of_birth_value" t-att-selected="year_of_birth_value == year_of_birth if year_of_birth else year_of_birth_value == partner.year_of_birth if partner else null">
+                    <t t-esc="year_of_birth_value" />
+                </option>
+            </t>
+        </select>
+    </div>
+</div>
                                         <div class="form-group s_website_form_field">
                                         	<input type="text" class="form-control s_website_form_input citizenship d-none" name="citizenship" value="Overseas" />
                                         </div>
@@ -351,7 +367,7 @@
                                                 <span class="s_website_form_mark">*</span>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('blood_group') and 'o_has_error' or ''}">
-                                                <select name="blood_group" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('blood_group') and 'is-invalid' or ''}" required="">
+                                                <select id="blood_group_id" name="blood_group" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('blood_group') and 'is-invalid' or ''}" required="">
                                                     <option value="">Select...</option>
                                                     <t t-foreach="['A+', 'A-', 'B+', 'B-', 'O+' ,'O-', 'AB-', 'AB+']" t-as="blood">
                                                         <option t-att-value="blood" t-att-selected="blood == blood_group if blood_group else blood == partner.blood_group if partner else null">
@@ -549,11 +565,11 @@
                                         <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Aadhaar Card Number">Aadhaar Card Number</label>
-                                            	<span>*</span>
+                                            	<!-- <span>*</span> -->
                                             
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('aadhaar_card_number') and 'o_has_error' or ''}" data-type="char" data-name="Field">
-                                                <input id="aadhaar_card_number_field" type="text" t-attf-class="adhar_number_field form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}" name="aadhaar_card_number" placeholder="ex: 2345 6789 1100" t-att-required="None if partner and partner.citizenship == 'Overseas' else 'true'" t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
+                                                <input id="aadhaar_card_number_field" type="text" t-attf-class="adhar_number_field form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}" name="aadhaar_card_number" placeholder="ex: 2345 6789 1100" t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
                                             </div>
                                         </div>
                                         <!-- == add == -->
@@ -581,7 +597,7 @@
                                                 <input id="mobile_number_id" type="tel" class="form-control s_website_form_input" name="mobile" required="" placeholder="9898989898 - 10 digit Indian Number" t-att-value="mobile or partner and partner.mobile" />
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                        <!-- <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Date of Birth">Date of Birth</label>
                                                 <span class="s_website_form_mark">*</span>
@@ -589,7 +605,23 @@
                                             <div t-attf-class="col-xl-6 #{error.get('date_of_birth') and 'o_has_error' or ''}">
                                                 <input id="date_of_birth_id" type="date" class="form-control s_website_form_input" name="date_of_birth" required="" t-att-value="date_of_birth or partner and partner.date_of_birth" />
                                             </div>
-                                        </div>
+                                        </div> -->
+<div class="col-lg-12 row form-group s_website_form_field">
+    <div t-attf-class="col-lg-6 ">
+        <label class="col-form-label" for="year_of_birth">Year Of Birth</label>
+        <span class="s_website_form_mark">*</span>
+    </div>
+    <div t-attf-class="col-xl-6 #{error.get('year_of_birth') and 'o_has_error' or ''}">
+        <select id="year_of_birth_field" required="" name="year_of_birth" t-attf-class="form-control s_website_form_input #{error.get('year_of_birth') and 'is-invalid' or ''}">
+            <option value="">Select...</option>
+            <t t-foreach="range(1900, 2100)" t-as="year_of_birth_value">
+                <option t-att-value="year_of_birth_value" t-att-selected="year_of_birth_value == year_of_birth if year_of_birth else year_of_birth_value == partner.year_of_birth if partner else null">
+                    <t t-esc="year_of_birth_value" />
+                </option>
+            </t>
+        </select>
+    </div>
+</div>
                                         <div class="form-group s_website_form_field">
                                  			<input type="text" class="form-control s_website_form_input citizenship d-none" name="citizenship" value="Indian" />
                                         </div>
@@ -649,7 +681,7 @@
                                                 <span class="s_website_form_mark">*</span>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('blood_group') and 'o_has_error' or ''}">
-                                                <select name="blood_group" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('blood_group') and 'is-invalid' or ''}" required="">
+                                                <select id="blood_group_id" name="blood_group" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('blood_group') and 'is-invalid' or ''}" required="">
                                                     <option value="">Select...</option>
                                                     <t t-foreach="['A+', 'A-', 'B+', 'B-', 'O+' ,'O-', 'AB-', 'AB+']" t-as="blood">
                                                         <option t-att-value="blood" t-att-selected="blood == blood_group if blood_group else blood == partner.blood_group if partner else null">
@@ -1317,7 +1349,7 @@
                                                 <span t-attf-class="s_website_form_mark #{(partner and partner.citizenship == 'Overseas') and 'd-none' or ''} ">*</span>
                                             </div>
                                             <div t-attf-class="col-xl-6 #{error.get('aadhaar_card_number') and 'o_has_error' or ''}" data-type="char" data-name="Field">
-                                                <input id="aadhaar_card_number_field" type="text" t-attf-class="form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}" name="aadhaar_card_number" placeholder="ex: 2345 6789 1100" t-att-required="None if partner and partner.citizenship == 'Overseas' else 'true'" t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
+                                                <input id="aadhaar_card_number_field" type="text" t-attf-class="form-control s_website_form_input #{error.get('aadhaar_card_number') and 'is-invalid' or ''}" name="aadhaar_card_number" placeholder="ex: 2345 6789 1100" t-att-value="aadhaar_card_number or partner and partner.aadhaar_card_number" />
                                             </div>
                                         </div>
                                     </div>
@@ -1333,7 +1365,7 @@
                                                 <input id="mobile_number_id" type="tel" class="form-control s_website_form_input" name="mobile" required="" t-att-value="mobile or partner and partner.mobile" />
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 row form-group s_website_form_field">
+                                        <!-- <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Date of Birth">Date of Birth</label>
                                                 <span class="s_website_form_mark">*</span>
@@ -1341,7 +1373,23 @@
                                             <div t-attf-class="col-xl-6 #{error.get('date_of_birth') and 'o_has_error' or ''}">
                                                 <input id="date_of_birth_id" type="date" class="form-control s_website_form_input" name="date_of_birth" required="" t-att-value="date_of_birth or partner and partner.date_of_birth" />
                                             </div>
-                                        </div>
+                                        </div> -->
+<div class="col-lg-12 row form-group s_website_form_field">
+    <div t-attf-class="col-lg-6 ">
+        <label class="col-form-label" for="year_of_birth">Year Of Birth</label>
+        <span class="s_website_form_mark">*</span>
+    </div>
+    <div t-attf-class="col-xl-6 #{error.get('year_of_birth') and 'o_has_error' or ''}">
+        <select id="year_of_birth_field" required="" name="year_of_birth" t-attf-class="form-control s_website_form_input #{error.get('year_of_birth') and 'is-invalid' or ''}">
+            <option value="">Select...</option>
+            <t t-foreach="range(1900, 2100)" t-as="year_of_birth_value">
+                <option t-att-value="year_of_birth_value" t-att-selected="year_of_birth_value == year_of_birth if year_of_birth else year_of_birth_value == partner.year_of_birth if partner else null">
+                    <t t-esc="year_of_birth_value" />
+                </option>
+            </t>
+        </select>
+    </div>
+</div>
                                         <div class="col-lg-12 row form-group s_website_form_field">
                                             <div class="col-lg-6">
                                                 <label class="col-form-label" for="Citizenship">Citizenship</label>

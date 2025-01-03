@@ -150,13 +150,20 @@ class CustomerPortal(CustomerPortal):
                 error["mobile"] = _('Invalid Mobile Number!')
                 error_message.append(_('Invalid Mobile Number!')) 
                 
-        # Date of Birth validation
-        if data.get('date_of_birth'):
-            is_valid = self.is_valid_date(data.get('date_of_birth'))
-            if not is_valid:
-                error["date_of_birth"] = _('You cannot enter a date in the future for Date of Birth !')
-                error_message.append(_('You cannot enter a date in the future for Date of Birth!'))             
+        # # Date of Birth validation
+        # if data.get('date_of_birth'):
+        #     is_valid = self.is_valid_date(data.get('date_of_birth'))
+        #     if not is_valid:
+        #         error["date_of_birth"] = _('You cannot enter a date in the future for Date of Birth !')
+        #         error_message.append(_('You cannot enter a date in the future for Date of Birth!'))             
         
+        # Year of Birth validation
+        if data.get('year_of_birth'):
+            is_valid = self.is_valid_year(data.get('year_of_birth'))
+            if not is_valid:
+                error["year_of_birth"] = _('You cannot enter a Year in the future for Year of Birth !')
+                error_message.append(_('You cannot enter a Year in the future for Year of Birth!'))
+
         # Resident of kanha from date validation
         if data.get("resident_of_kanha_from_date"):
             is_valid = self.is_valid_date(data.get('resident_of_kanha_from_date'))
@@ -277,6 +284,18 @@ class CustomerPortal(CustomerPortal):
             return True
         else:
             return False
+    
+    def is_valid_year(self, year_val):
+        # Validate that the year is not greater than the current year
+        try:
+            year_val = int(year_val)
+            current_year = datetime.now().year
+            if year_val <= current_year:
+                return True
+            else:
+                return False
+        except ValueError:
+            return False  # If year_val is not a valid number, return False
 
     def is_valid_future_date(self, date_val):
         # Validate date value should not be more than today's date
@@ -360,8 +379,8 @@ class CustomerPortal(CustomerPortal):
                     values['indian_visa'] = ''
                 
                 # Set False if the value for the date field is not given
-                if(values.get("date_of_birth") == ''):
-                    values['date_of_birth'] = False
+                # if(values.get("date_of_birth") == ''):
+                #     values['date_of_birth'] = False
                 if(values.get("resident_of_kanha_from_date") == ''):
                     values['resident_of_kanha_from_date'] = False
                 if(values.get("visa_start_date") == ''):

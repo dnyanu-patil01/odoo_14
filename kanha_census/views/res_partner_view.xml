@@ -42,7 +42,8 @@
 							<group>
 								<field name="surname" readonly="1"/>
 								<field name="mobile" required="1" readonly="1"/>
-								<field name="date_of_birth" readonly="1"/>
+								<!-- <field name="date_of_birth" readonly="1"/> -->
+								<field name="year_of_birth" readonly="1"/>
 								<field name="citizenship" readonly="1"/>
 								<field name="passport_number" widget="Encrypted"  attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
 								<field name="members_count" readonly="1"/>
@@ -187,7 +188,7 @@
 					<field name="mobile" class="o_force_ltr" optional="show" />
 					<field name="email" />
 					<field name="gender" />
-					<field name="date_of_birth" />
+					<!-- <field name="date_of_birth" /> -->
 				</tree>
 			</xpath>
 		</field>
