@@ -256,7 +256,7 @@
     <div t-attf-class="col-xl-6 #{error.get('year_of_birth') and 'o_has_error' or ''}">
         <select id="year_of_birth_field" required="" name="year_of_birth" t-attf-class="form-control s_website_form_input #{error.get('year_of_birth') and 'is-invalid' or ''}">
             <option value="">Select...</option>
-            <t t-foreach="range(1900, 2100)" t-as="year_of_birth_value">
+            <t t-foreach="range(1930, 2026)" t-as="year_of_birth_value">
                 <option t-att-value="year_of_birth_value" t-att-selected="year_of_birth_value == year_of_birth if year_of_birth else year_of_birth_value == partner.year_of_birth if partner else null">
                     <t t-esc="year_of_birth_value" />
                 </option>
@@ -614,7 +614,7 @@
     <div t-attf-class="col-xl-6 #{error.get('year_of_birth') and 'o_has_error' or ''}">
         <select id="year_of_birth_field" required="" name="year_of_birth" t-attf-class="form-control s_website_form_input #{error.get('year_of_birth') and 'is-invalid' or ''}">
             <option value="">Select...</option>
-            <t t-foreach="range(1900, 2100)" t-as="year_of_birth_value">
+            <t t-foreach="range(1930, 2026)" t-as="year_of_birth_value">
                 <option t-att-value="year_of_birth_value" t-att-selected="year_of_birth_value == year_of_birth if year_of_birth else year_of_birth_value == partner.year_of_birth if partner else null">
                     <t t-esc="year_of_birth_value" />
                 </option>
@@ -1382,7 +1382,7 @@
     <div t-attf-class="col-xl-6 #{error.get('year_of_birth') and 'o_has_error' or ''}">
         <select id="year_of_birth_field" required="" name="year_of_birth" t-attf-class="form-control s_website_form_input #{error.get('year_of_birth') and 'is-invalid' or ''}">
             <option value="">Select...</option>
-            <t t-foreach="range(1900, 2100)" t-as="year_of_birth_value">
+            <t t-foreach="range(1930, 2026)" t-as="year_of_birth_value">
                 <option t-att-value="year_of_birth_value" t-att-selected="year_of_birth_value == year_of_birth if year_of_birth else year_of_birth_value == partner.year_of_birth if partner else null">
                     <t t-esc="year_of_birth_value" />
                 </option>
