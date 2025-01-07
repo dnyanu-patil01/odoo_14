@@ -905,12 +905,12 @@
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field">
                     <div t-attf-class="col-lg-3 ">
                         <label class="col-form-label" for="Aadhar Card Front">Aadhar Card Front</label>
-                    	<span class="s_website_form_mark">*</span>
+                    	<!-- <span class="s_website_form_mark">*</span> -->
                     </div>
                     <div t-attf-class="col-xl-5 #{error.get('adhar_card') and 'o_has_error' or ''}">
                         <input type="file" t-att-filename_input="'adhar_card_filename'" class="d-none adhar_file_upload form-control s_website_form_input" name="adhar_card" accept="image/*"/>
                         <div class="attachment-input-container">
-                            <input type="text" id="adhar_card_file_front" required="" name="adhar_card_filename" t-attf-class="adhar_card_filename form-control s_website_form_input #{error.get('adhar_card_filename') and 'is-invalid' or ''}" t-att-value="adhar_card_filename or partner and partner.adhar_card_filename" />
+                            <input type="text" id="adhar_card_file_front" name="adhar_card_filename" t-attf-class="adhar_card_filename form-control s_website_form_input #{error.get('adhar_card_filename') and 'is-invalid' or ''}" t-att-value="adhar_card_filename or partner and partner.adhar_card_filename" />
                             <t t-if="partner and partner.adhar_card">
                                 <a id="download_adhar" target="_blank" t-attf-href="/web/content?model=res.partner&amp;field=adhar_card&amp;field_filename=adhar_card_filename&amp;id={{partner.id}}" class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
                                     <i class="fa fa-download" />
@@ -931,12 +931,12 @@
                 <div t-attf-class="col-lg-12 row form-group s_website_form_field">
                     <div t-attf-class="col-lg-3 ">
                         <label class="col-form-label" for="Aadhar Card Back">Aadhar Card Back</label>
-                      	<span class="s_website_form_mark">*</span>
+                      	<!-- <span class="s_website_form_mark">*</span> -->
                     </div>
                     <div t-attf-class="col-xl-5 #{error.get('adhar_card_back_side') and 'o_has_error' or ''}">
                         <input type="file" t-att-filename_input="'adhar_card_back_side_filename'" class="d-none adhar_file_back_side_upload form-control s_website_form_input" name="adhar_card_back_side" accept="image/*"/>
                         <div class="attachment-input-container">
-                            <input type="text" id="adhar_card_file_back" required="" name="adhar_card_back_side_filename" t-attf-class="adhar_card_back_side_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="adhar_card_back_side_filename or partner and partner.adhar_card_back_side_filename" />
+                            <input type="text" id="adhar_card_file_back" name="adhar_card_back_side_filename" t-attf-class="adhar_card_back_side_filename form-control s_website_form_input #{error.get('adhar_card_back_side_filename') and 'is-invalid' or ''}" t-att-value="adhar_card_back_side_filename or partner and partner.adhar_card_back_side_filename" />
                             <t t-if="partner and partner.adhar_card_back_side">
                                 <a id="download_adhar_back_side" target="_blank" t-attf-href="/web/content?model=res.partner&amp;field=adhar_card_back_side&amp;field_filename=adhar_card_back_side_filename&amp;id={{partner.id}}" class="btn btn-primary text-decoration-none ml-1 ml-sm-2" title="Download Content" role="img" aria-label="Download">
                                     <i class="fa fa-download" />

@@ -15,6 +15,7 @@
 						<button name="button_approve" string="Approve" type="object" attrs="{'invisible':[('application_status','!=','to_approve')]}" class="btn-success"/>
 						<button name="button_reject" string="Reject" type="object" attrs="{'invisible':[('application_status','!=','to_approve')]}" class="btn-danger"/>
 						<field name="application_status" widget="statusbar" />
+						<field name="is_geoadmin" invisible="1"/>
 					</header>
 					<sheet>
 						<widget name="web_ribbon" title="Saved Not Submitted"
@@ -30,7 +31,7 @@
 								<field name="email" required="1" readonly="1"/>
 								<field name="gender" readonly="1"/>
 								<!-- <field name="pan_card_number" widget="Encrypted" readonly="1"/> -->
-								<field name="aadhaar_card_number" widget="Encrypted" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
+								<field name="aadhaar_card_number" widget="Encrypted" readonly="1" attrs="{'required':[('citizenship','=','Indian')],'invisible': [('is_geoadmin', '=', True)]}"/>
 								<field name="is_preceptor" readonly="1"/>
 								<field name="abhyasi_id" readonly="1"/>
 								<field name="residence_type" readonly="1"/>
@@ -107,14 +108,14 @@
 							<page string="Documents" name="documents" >
                         		<group>
 		                            <group string="Documents" name="documents">
-		                                <field name="adhar_card" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
-		                                <field name="adhar_card_back_side" attrs="{'required':[('citizenship','=','Indian')]}" readonly="1"/>
-		                                <field name="passport_front_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
-		                                <field name="passport_back_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
+		                                <field name="adhar_card" attrs="{'required':[('citizenship','=','Indian')],'invisible': [('is_geoadmin', '=', True)]}" readonly="1"/>
+		                                <field name="adhar_card_back_side" attrs="{'required':[('citizenship','=','Indian')],'invisible': [('is_geoadmin', '=', True)]}" readonly="1"/>
+		                                <field name="passport_front_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')]}" readonly="1" />
+		                                <field name="passport_back_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')]}" readonly="1" />
 		                               	<field name="indian_visa" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
-		                                <field name="passport_photo" readonly="1"/>
+		                                <field name="passport_photo" readonly="1" groups="kanha_census.group_geoadmin_access"/>
 		                                <field name="address_proof" readonly="1"/>
-		                              	<field name="age_proof" readonly="1"/>
+		                              	<field name="age_proof" readonly="1" groups="kanha_census.group_geoadmin_access"/>
 		                            </group>
                         		</group>
                     		</page>

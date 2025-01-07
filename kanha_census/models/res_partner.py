@@ -98,7 +98,19 @@ class ResPartner(models.Model):
     ], string="Residence Type")
     family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id',  string='Family Members', readonly=True ,compute='_compute_family_members')
     relative_aadhaar_card_number = fields.Encrypted(string="Relative Aadhar Card Number")
-    
+    is_geoadmin = fields.Boolean(
+        string='Is Geo Admin', 
+        compute='_compute_is_geoadmin', 
+        store=False
+    )
+
+    @api.depends('user_id')  # A dummy dependency to ensure it recomputes
+    def _compute_is_geoadmin(self):
+        """Check if the current user belongs to the Geo Admin group."""
+        group_geo_admin = self.env.ref('kanha_census.group_geoadmin_access')
+        for record in self:
+            record.is_geoadmin = group_geo_admin in self.env.user.groups_id
+
     @api.depends('kanha_house_number_id')
     def _compute_family_members(self):
         for record in self:

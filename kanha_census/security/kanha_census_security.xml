@@ -5,6 +5,10 @@
         <record model="res.groups" id="group_delete_access">
         <field name="name">Access to Delete User</field>
         </record>
+        <!-- Group to Allow Access to Document User-->
+        <record model="res.groups" id="group_geoadmin_access">
+        <field name="name">Geo Admin</field>
+        </record>
         <record model="ir.rule" id="multi_locations_comp_admin_rule">
             <field name="name">Locations For Admin</field>
             <field name="model_id" ref="base.model_res_partner"/>
