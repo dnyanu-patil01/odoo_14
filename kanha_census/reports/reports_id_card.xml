@@ -43,9 +43,9 @@
                     <div id="id-container">                  
 						<div id="id-card-front-page" t-attf-style="background-image:url('/kanha_census/static/src/img/id_card_front.jpg');background-repeat:no-repeat!important;100%;width: 380px;height: 595px;" >
 								
-								<div class="profile">
+								<div class="profile" style="text-align: center;">
 									<t t-if="oeo.image_1920">
-										<img t-att-src="'data:image/png;base64,%s' % to_text(oeo.image_1920)" />
+										<img t-att-src="'data:image/png;base64,%s' % to_text(oeo.image_1920)" style=";width:120px"/>
 									</t>
                             	</div>
 								
