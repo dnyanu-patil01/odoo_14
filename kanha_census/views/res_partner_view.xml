@@ -31,7 +31,7 @@
 								<field name="email" required="1" readonly="1"/>
 								<field name="gender" readonly="1"/>
 								<!-- <field name="pan_card_number" widget="Encrypted" readonly="1"/> -->
-								<field name="aadhaar_card_number" widget="Encrypted" readonly="1" attrs="{'required':[('citizenship','=','Indian')],'invisible': [('is_geoadmin', '=', True)]}"/>
+								<field name="aadhaar_card_number" widget="Encrypted" readonly="1" attrs="{'invisible': [('is_geoadmin', '=', True)]}"/>
 								<field name="is_preceptor" readonly="1"/>
 								<field name="abhyasi_id" readonly="1"/>
 								<field name="residence_type" readonly="1"/>
