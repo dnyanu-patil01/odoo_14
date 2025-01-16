@@ -105,7 +105,7 @@
                                         </t>
                                         <t t-if="oeo.emergency_contact">
                                             <div class="secondary-data">
-                                                <p style="font-size: 18px;">Emergency Contact :
+                                                <p style="font-size: 18px;">Emg-Contact :
                                                 <span class="font-weight-bold" style="font-size: 18px;">
                                                     <t  t-esc="oeo.emergency_contact"/>
                                                 </span>
