@@ -113,9 +113,9 @@
 		                                <field name="passport_front_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')]}" readonly="1" />
 		                                <field name="passport_back_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')]}" readonly="1" />
 		                               	<field name="indian_visa" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')]}" readonly="1"/>
-		                                <field name="passport_photo" readonly="1" attrs="{'invisible': [('is_geoadmin', '!=', True)]}"/>
+		                                <field name="passport_photo" readonly="1"/>
 		                                <field name="address_proof" readonly="1"/>
-		                              	<field name="age_proof" readonly="1" attrs="{'invisible': [('is_geoadmin', '!=', True)]}"/>
+		                              	<field name="age_proof" readonly="1"/>
 		                            </group>
                         		</group>
                     		</page>
