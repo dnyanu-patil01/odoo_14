@@ -45,10 +45,11 @@
 								
 								<div class="profile" style="text-align: center;">
 									<t t-if="oeo.image_1920">
-										<img t-att-src="'data:image/png;base64,%s' % to_text(oeo.image_1920)" style=";width:120px"/>
+										<img t-att-src="'data:image/png;base64,%s' % to_text(oeo.image_1920)" style="width:160px; height:180px;" />
 									</t>
                             	</div>
-								
+								<br />
+                                <br />
 								<div class="front-page-info-container">
 									<div class="personal-info text-center">
 										<p style="font-weight: bold;font-size: 19px;text-transform: uppercase;direction: rtl;">
