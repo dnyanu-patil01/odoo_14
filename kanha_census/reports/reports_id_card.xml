@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report
+        id="action_kanha_census_id_card_report"
+        string="Print ID Card"
+        model="res.partner"
+        report_type="qweb-pdf"
+        name="kanha_census.kanha_census_id_card"
+        file="kanha_census.kanha_census_id_card"
+        print_report_name="'Print ID Card - %s' % (object.name).replace('/', '')"
+        menu="False"
+    />
+
+    <record id="paperformat_idcard" model="report.paperformat">
+        <field name="name">Reports Paper format for ID Cards</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">84</field>
+        <field name="page_width">54</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_kanha_census_id_card_report" model="ir.actions.report">
+        <field name="paperformat_id" ref="kanha_census.paperformat_idcard"/>
+    </record>
+
+    <template id="minimal_layout_inherit" inherit_id="web.minimal_layout">
+        <xpath expr="//head" position="inside">
+            <link rel="stylesheet" type="text/css" href="/kanha_census/static/src/css/idcard_style.css"/>
+        </xpath>
+    </template>
+	
+    <template id="kanha_census_id_card">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="oeo">
+                <div class="page" style="page-break-after: always">
+                    <div id="full-page">
+                        <div id="id-container">                  
+                            <div id="id-card-front-page" t-attf-style="background-image:url('/kanha_census/static/src/img/id_card_front.jpg');background-repeat:no-repeat!important;100%;width: 380px;height: 595px;" >
+                                <div class="profile" style="text-align: center;">
+                                    <t t-if="oeo.image_1920">
+                                        <img t-att-src="'data:image/png;base64,%s' % to_text(oeo.image_1920)" style="width:160px; height:180px;" />
+                                    </t>
+                                </div>
+                                <br />
+                                <br />
+                                <div class="front-page-info-container">
+                                    <div class="personal-info text-center">
+                                        <p style="font-weight: bold;font-size: 19px;text-transform: uppercase;direction: rtl;">
+                                            <t t-esc="oeo.name + ' ' + oeo.surname" />
+                                        </p>
+                                        <p class="kanha-location">
+                                            <t t-if="oeo.kanha_location_id">
+                                                <t t-esc="oeo.kanha_location_id.name" />
+                                            </t>
+                                        </p>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="page">
+                            <div id="full-page">
+                                <div id="id-container">
+                                    <div id="id-card-back-page" t-attf-style="background-image:url('/kanha_census/static/src/img/id_card_back.jpg');background-repeat:no-repeat!important;100%;">
+                                        <div class="secondary-data-container">
+                                            <br></br>
+                                            <br></br>
+                                            <t t-if="oeo.mobile">
+                                                <div class="secondary-data">
+                                                    <p style="font-size: 18px;">Phone :
+                                                        <span class="font-weight-bold" style="font-size: 18px;">
+                                                            <t t-esc="oeo.mobile"/>
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </t>
+                                            <t t-if="oeo.blood_group">
+                                                <div class="secondary-data">
+                                                    <p style="font-size: 18px;">Blood Group :
+                                                        <span class="font-weight-bold" style="font-size: 18px;">
+                                                            <t  t-esc="oeo.blood_group"/>
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </t>
+                                            <t t-if="oeo.emergency_contact">
+                                                <div class="secondary-data">
+                                                    <p style="font-size: 18px;">Emg-Contact :
+                                                        <span class="font-weight-bold" style="font-size: 18px;">
+                                                            <t  t-esc="oeo.emergency_contact"/>
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </t>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

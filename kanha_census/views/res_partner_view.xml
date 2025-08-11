@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	<record model="ir.ui.view" id="kanha_inherit_view_partner_form">
+		<field name="name">kanha.inherit.view.partner.form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form" />
+		<field name="mode">primary</field>
+		<field name="arch" type="xml">
+			<xpath expr="//form" position="replace">
+				<form string="Kanha Census">
+					<header>
+						<button name="button_approve" string="Approve" type="object" attrs="{'invisible':[('application_status','!=','to_approve')]}" class="btn-success"/>
+						<button name="button_reject" string="Reject" type="object" attrs="{'invisible':[('application_status','!=','to_approve')]}" class="btn-danger"/>
+						<button name="button_print_card" 
+        string="Card Printed" 
+        type="object" 
+        attrs="{'invisible':[('application_status','not in',['Approved but Card Not Printed','Card Printed'])]}" 
+        class="btn-primary"/>
+						<button name="button_approval_for_edit" string="Approval for Edit" type="object" attrs="{'invisible':[('application_status','not in',['Approved but Card Not Printed','Card Printed','rejected'])]}" class="btn-warning"/>
+						<field name="application_status" widget="statusbar" />
+						<field name="is_geoadmin" invisible="1"/>
+					</header>
+					<sheet>
+						<widget name="web_ribbon" title="Draft" bg_color="bg-secondary" attrs="{'invisible': [('application_status', '!=', 'draft')]}"/>
+						<widget name="web_ribbon" title="To Approve" bg_color="bg-warning" attrs="{'invisible': [('application_status', '!=', 'to_approve')]}"/>
+						<widget name="web_ribbon" title="Approved" bg_color="bg-success" attrs="{'invisible': [('application_status', '!=', 'Approved but Card Not Printed')]}"/>
+						<widget name="web_ribbon" title="Card Printed" bg_color="bg-info" attrs="{'invisible': [('application_status', '!=', 'Card Printed')]}"/>
+						<widget name="web_ribbon" title="Rejected" bg_color="bg-danger" attrs="{'invisible': [('application_status', '!=', 'rejected')]}"/>
+						<widget name="web_ribbon" title="Approved for Edit" bg_color="bg-primary" attrs="{'invisible': [('application_status', '!=', 'approved_for_edit')]}"/>
+						<field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+						<group>
+							<group>
+								<field name="name" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="email" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="gender" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="aadhaar_card_number" widget="Encrypted" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])], 'invisible': [('is_geoadmin', '=', True)]}"/>
+								<field name="is_preceptor" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="abhyasi_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="residence_type" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="id" string="Resident ID number" readonly="1"/>
+								<field name="state" invisible="1"/>
+								<field name="blood_group" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+							</group>
+							<group>
+								<field name="surname" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="mobile" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="year_of_birth" readonly="1"/>
+								<field name="citizenship" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="passport_number" widget="Encrypted" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="members_count" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="emergency_contact" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="do_you_need_voter_id_in_kanha" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}" />
+							</group>
+						</group>
+						<notebook>
+							<page string="Kanha Address" name="kanha_address" >
+                        		<group>
+		                            <group string="Kanha Address" name="kanha_address">
+		                            	<field name="resident_of_kanha_from_date" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+										<field name="work_profile_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+										<field name="employee_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+										<field name="rfid_card_no"/>
+										<field name="department_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="kanha_location_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="kanha_house_number_id" string="House Number" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                            </group>
+                        		</group>
+								<group string="Rejection Reason">
+									<field name="rejection_reason" nolabel="1" readonly="1"/>
+								</group>
+                    		</page>
+                    		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible': ['|', ('do_you_need_voter_id_in_kanha', '=', 'No'), ('citizenship', '!=', 'Indian')]}">
+                    			<group>
+		                            <group>
+			                            <field name="birth_country_id" attrs="{'required':[('citizenship','=','Indian')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+										<field name="birth_country_name" invisible="1" />
+										<field name="birth_state_id" attrs="{'invisible':[('birth_country_name','!=','India')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+										<field name="birth_state_textfield" attrs="{'invisible':[('birth_country_name','==','India')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="birth_district" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                             	<field name="application_reference_no" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+                              		</group>
+                              		<group>
+		                              	<field name="already_have_kanha_voter_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                              	<field name="change_voter_id_address" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                              	<field name="kanha_voter_id_number" widget="Encrypted" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')],'required':[('already_have_kanha_voter_id','=','Yes')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                              	<field name="kanha_voter_id_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                              	<field name="kanha_voter_id_back_image" attrs="{'invisible':[('already_have_kanha_voter_id','!=','Yes')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                              	<field name="need_new_kanha_voter_id" attrs="{'invisible':[('already_have_kanha_voter_id','!=','No')],'required':[('already_have_kanha_voter_id','=','No')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                              	<field name="application_type" attrs="{'invisible':[('need_new_kanha_voter_id','!=','Yes')],'required':[('need_new_kanha_voter_id','=','Yes')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                              	<field name="declaration_form" required="1" invisible="1"/>
+                                	</group>
+                                </group>
+                                <group>
+		                            <group string="Relative details">
+                                		<field name="relative_name" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="relative_surname" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                            	<field name="relation_type" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                            	<field name="relation_other" attrs="{'invisible':[('relation_type','!=','Other')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                            	<field name="relative_aadhaar_card_number" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                          	</group>
+		               			</group>
+                    		</page>
+							<page string="Documents" name="documents" >
+                        		<group>
+		                            <group string="Documents" name="documents">
+		                                <field name="adhar_card" attrs="{'required':[('citizenship','=','Indian')],'invisible': [('is_geoadmin', '=', True)], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="adhar_card_back_side" attrs="{'required':[('citizenship','=','Indian')],'invisible': [('is_geoadmin', '=', True)], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="passport_front_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="passport_back_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                               	<field name="indian_visa" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="passport_photo" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="address_proof" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                              	<field name="age_proof" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                            </group>
+                        		</group>
+                    		</page>
+                    		<page string="Vehicle Details" name="vehicle_details" >
+                    			<field name="vehicle_details_ids" colspan="4" nolabel="1">
+	                            	<tree string="Vehicle Details" create="0">
+	                               		<field name="vehicle_number" readonly="1"/>
+		                                <field name="vehicle_owner" readonly="1"/>
+		                                <field name="vehicle_type" readonly="1"/>
+		                                <field name="fasttag_rfid_no" readonly="1"/>
+	                            	</tree>
+	                            	<form string="Vehicle Details">
+		                                <group col="4">
+		                                    <field name="vehicle_number" readonly="1"/>
+			                                <field name="vehicle_owner" readonly="1"/>
+			                                <field name="vehicle_type" readonly="1"/>
+			                                <field name="fasttag_rfid_no" readonly="1"/>
+		                                </group>
+	                            	</form>
+                        		</field>
+                    		</page>
+                    		<page string="Existing Voter ID Details" name="existing_voter_id_details" attrs="{'invisible':['|', ('change_voter_id_address','!=','Yes'), ('citizenship','!=','Indian')]}">
+							<group>
+								<group string="Existing Voter ID Details" name="existing_voter_id_details">
+									<field name="country_id" invisible="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+									<field name="state_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+									<field name="assembly_constituency" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+									<field name="house_number" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+									<field name="locality" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+									<field name="town" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+									<field name="post_office" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+									<field name="zip" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+									<field name="district" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								</group>
+							</group>
+						</page>
+                    		<page string="Family Members">
+	                    		<field name="family_members_ids" widget="one2many_list">
+	                    			<tree string="Family Members">
+		                                <field name="name" />
+	                                </tree>
+	                                <form>
+	                             		<group>
+			                                <field name="name" readonly="1"/>
+	                                  	</group>
+	                               	 </form>
+	                      		</field>
+                   			</page>
+                   			<page string="Card Print Log">
+	                    		<field name="card_print_log_ids" widget="one2many_list" readonly="1">
+	                    			<tree string="Card Print History" create="0" edit="0" delete="0">
+		                                <field name="user_name" string="Printed By"/>
+		                                <field name="user_id" string="User ID" invisible="1"/>
+		                                <field name="print_date" string="Print Date &amp; Time"/>
+	                                </tree>
+	                                <form>
+	                             		<group>
+			                                <field name="user_name" string="Printed By" readonly="1"/>
+			                                <field name="user_id" string="User ID" readonly="1"/>
+			                                <field name="print_date" string="Print Date &amp; Time" readonly="1"/>
+	                                  	</group>
+	                               	 </form>
+	                      		</field>
+                   			</page>
+						</notebook>
+					</sheet>
+					 <div class="oe_chatter">
+						<field name="message_follower_ids"/>
+						<field name="message_ids"/>
+					</div>
+				</form>
+			</xpath>
+		</field>
+	</record>
+
+	<record id="kanha_iherit_view_partner_tree" model="ir.ui.view">
+		<field name="name">res.partner.tree</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_tree"/>
+		<field name="arch" type="xml">
+			<xpath expr="//tree" position="replace">
+				<tree string="Kanha Census" sample="1" multi_edit="1" default_order="name">
+					<field name="name" />
+					<field name="mobile" class="o_force_ltr" optional="show" />
+					<field name="email" />
+					<field name="gender" />
+					<field name="application_status" />
+				</tree>
+			</xpath>
+		</field>
+	</record>
+
+	<record id="view_bulk_card_print_wizard_form" model="ir.ui.view">
+		<field name="name">bulk.card.print.wizard.form</field>
+		<field name="model">bulk.card.print.wizard</field>
+		<field name="arch" type="xml">
+			<form string="Confirm Bulk Card Print">
+				<div class="alert alert-info" role="alert">
+					<strong>Confirmation Required</strong>
+				</div>
+				<group>
+					<field name="message" nolabel="1" readonly="1" widget="text"/>
+					<group>
+						<field name="total_count" string="Total Selected Records" readonly="1"/>
+						<field name="approved_count" string="Eligible for Print" readonly="1"/>
+					</group>
+				</group>
+				<footer>
+					<button name="action_confirm_print" string="Confirm Print" type="object" class="btn-primary" close="1"/>
+					<button name="action_cancel" string="Cancel" type="object" class="btn-secondary" close="1"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_bulk_print_cards" model="ir.actions.server">
+		<field name="name">Bulk Card Print</field>
+		<field name="model_id" ref="base.model_res_partner"/>
+		<field name="binding_model_id" ref="base.model_res_partner"/>
+		<field name="binding_view_types">list</field>
+		<field name="state">code</field>
+		<field name="code">
+if records:
+	approved_records = records.filtered(lambda r: r.application_status == 'Approved but Card Not Printed')
+	total_selected = len(records)
+	approved_count = len(approved_records)
+	
+	if approved_count == 0:
+		action = {
+			'type': 'ir.actions.client',
+			'tag': 'display_notification',
+			'params': {
+				'title': 'Warning',
+				'message': 'No records are eligible for card printing. Only records with "Approved but Card Not Printed" status can be printed.',
+				'type': 'warning',
+				'sticky': False,
+			}
+		}
+	else:
+		message_text = "You have selected " + str(total_selected) + " record(s). " + str(approved_count) + " record(s) are eligible for card printing.\n\nDo you want to continue?"
+		wizard = env['bulk.card.print.wizard'].create({
+			'partner_ids': [(6, 0, records.ids)],
+			'approved_count': approved_count,
+			'total_count': total_selected,
+			'message': message_text
+		})
+		
+		action = {
+			'name': 'Confirm Bulk Card Print',
+			'type': 'ir.actions.act_window',
+			'res_model': 'bulk.card.print.wizard',
+			'view_mode': 'form',
+			'res_id': wizard.id,
+			'target': 'new',
+		}
+		</field>
+	</record>
+
+	<menuitem id="menu_applications_root" name="Applications" parent="kanha_census.menu_kanha_census_root" sequence="1"/>
+
+	<record id="kanha_partner_action" model="ir.actions.act_window">
+		<field name="name">All Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
+	</record>
+	
+	<menuitem id="menu_kanha_partner" parent="menu_applications_root" action="kanha_partner_action" sequence="30"/>
+
+	<record id="kanha_submitted_application_action" model="ir.actions.act_window">
+		<field name="name">Submitted Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('application_status','=','to_approve')]</field>
+		<field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
+	</record>
+
+	<menuitem id="menu_kanha_submitted_application" parent="menu_applications_root" action="kanha_submitted_application_action" sequence="10"/>
+	
+	<record id="kanha_approved_application_action" model="ir.actions.act_window">
+		<field name="name">Approved Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('application_status','=','Approved but Card Not Printed')]</field>
+		<field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
+	</record>
+
+	<menuitem id="menu_kanha_approved_application" parent="menu_applications_root" action="kanha_approved_application_action" sequence="20"/>
+
+	<record id="kanha_card_printed_application_action" model="ir.actions.act_window">
+		<field name="name">Card Printed Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('application_status','=','Card Printed')]</field>
+		<field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
+	</record>
+
+	<menuitem id="menu_kanha_card_printed_application" parent="menu_applications_root" action="kanha_card_printed_application_action" sequence="25"/>
+
+	<record id="kanha_rejected_application_action" model="ir.actions.act_window">
+		<field name="name">Rejected Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('application_status','=','rejected')]</field>
+		<field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
+	</record>
+
+	<menuitem id="menu_kanha_rejected_application" parent="menu_applications_root" action="kanha_rejected_application_action" sequence="30"/>
+
+	<record id="kanha_approved_for_edit_application_action" model="ir.actions.act_window">
+		<field name="name">Approved for Edit Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('application_status','=','approved_for_edit')]</field>
+		<field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
+	</record>
+
+	<menuitem id="menu_kanha_approved_for_edit_application" parent="menu_applications_root" action="kanha_approved_for_edit_application_action" sequence="35"/>
+
+</odoo>

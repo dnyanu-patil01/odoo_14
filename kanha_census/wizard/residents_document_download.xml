@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="residents_document_download_view_form" model="ir.ui.view">
+        <field name="name">residents.document.download.view.form</field>
+        <field name="model">residents.document.download</field>
+        <field name="arch" type="xml">
+            <form string="Residents Document Download">
+            	<group>
+                    <group>
+                         <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="download_document" string="Download" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+	<record id="action_residents_document_download" model="ir.actions.act_window">
+         <field name="name">Residents Document Download</field>
+          <field name="type">ir.actions.act_window</field>
+         <field name="res_model">residents.document.download</field>
+         <field name="view_mode">form</field>
+         <field name="view_id" ref="residents_document_download_view_form"/>
+         <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_residents_document_download" name="Residents Document Download" action="action_residents_document_download" parent="kanha_census.menu_kanha_census_configuration_root" sequence="10"/>
+  
+</odoo>

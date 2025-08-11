@@ -1,0 +1,116 @@
+/* Style the file attachment input */
+.attachment-input-container {
+    display: flex;
+    border: 1px solid #a9a9a9;
+    justify-content: space-between;
+}
+.attachment-input-container input:focus, .attachment-input-container input:active {
+    outline: none;
+}
+.attachment-input-container input {
+    border: none;
+}
+.empty-row{
+	height: 33px;
+}
+
+/* Style the tab */
+.kanha-portal-tab-wrap{
+    padding: 30px 0px;
+    position: relative;
+}
+.kanha-portal-tab-wrap .nav-tabs {
+    display:none;
+    border-bottom: none;
+	overflow: hidden;
+	border: 1px solid #ccc;
+	background-color: #f1f1f1;
+}
+.kanha-portal-tab-wrap .nav-tabs .nav-item {
+    margin-right: 10px;
+    margin-bottom: 0px;
+}
+.kanha-portal-tab-wrap .nav-tabs .nav-link{
+    border: none;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+.kanha-portal-tab-wrap .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
+	background: #ccc;
+}
+.word-wrap{
+	word-wrap: break-word;
+}
+
+@media(min-width:1024px) {
+    .kanha-portal-tab-wrap .nav-tabs {
+        display: flex;
+    }
+    .kanha-portal-tab-wrap .card {
+        border: none;
+    }
+    .kanha-portal-tab-wrap .card .card-header {
+        display:none;
+    }
+    .kanha-portal-tab-wrap .card .collapse{
+        display:block;
+    }
+}
+
+@media(max-width:1023px){
+    .kanha-portal-tab-wrap .tab-content > .tab-pane {
+        display: block;
+        opacity: 1;
+        margin-bottom: 10px;
+    }
+    .kanha-portal-tab-wrap .card-header {
+        border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+    .kanha-portal-tab-wrap .card-header h5 a{
+        border-bottom: none;
+        text-decoration: none;
+        font-size: 16px;
+        display: block;
+    }
+    .kanha-portal-tab-wrap .card-header h5 a i {
+        float: right;
+        padding-top: 5px;
+    }
+    .kanha-portal-tab-wrap .card-body {
+		border: 1px solid #ccc;
+    }
+}
+
+.formheading{  
+    background-color: #ccc;
+	color: #212529;
+	padding: 6px;
+	width: 100%;
+}
+
+/*Loading*/
+#loading {
+	width: 100%;
+   	height: 100%;
+   	top: 0px;
+   	left: 0px;
+   	position: fixed;
+   	opacity: 0.7;
+	background-color: rgb(0, 0, 0, 0.5);
+   	z-index: 99;
+   	text-align: center;
+}
+
+#loading-content {
+	position: absolute;
+  	top: 50%;
+  	left: 40%;
+  	text-align: center;
+  	z-index: 100;
+	color:white;
+	font-size:23px;
+}
+
+.hide{
+	display: none;
+}
