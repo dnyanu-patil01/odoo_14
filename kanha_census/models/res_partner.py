@@ -8,7 +8,7 @@ import logging
 _logger = logging.getLogger(__name__)
 from odoo.osv import expression
 
-
+#########################
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
