@@ -1,10 +1,56 @@
-# -*- coding: utf-8 -*-
 from odoo import fields, models, api, _
 from datetime import date, timedelta, datetime
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, ValidationError
 import logging
 _logger = logging.getLogger(__name__)
 from odoo.osv import expression
+import re
+
+
+class FamilyMember(models.Model):
+    _name = 'family.member'
+    _description = 'Family Member Details'
+
+    partner_id = fields.Many2one('res.partner', string='Partner', required=True, ondelete='cascade')
+    name = fields.Char(string='Name', required=True)
+    relation = fields.Selection([
+        ('Head', 'Head of Family'),
+        ('Father', 'Father'),
+        ('Mother', 'Mother'),
+        ('Husband', 'Husband'),
+        ('Wife', 'Wife'),
+        ('Son', 'Son'),
+        ('Daughter', 'Daughter'),
+        ('Brother', 'Brother'),
+        ('Sister', 'Sister'),
+        ('Grandfather', 'Grandfather'),
+        ('Grandmother', 'Grandmother'),
+        ('Father-in-law', 'Father-in-law'),
+        ('Mother-in-law', 'Mother-in-law'),
+        ('Brother-in-law', 'Brother-in-law'),
+        ('Sister-in-law', 'Sister-in-law'),
+        ('Son-in-law', 'Son-in-law'),
+        ('Daughter-in-law', 'Daughter-in-law'),
+        ('Spouse', 'Spouse'),
+        ('Other', 'Other'),
+    ], string='Relation', required=True)
+    blood_group = fields.Selection([
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+        ('AB-', 'AB-'),
+        ('AB+', 'AB+')
+    ], string='Blood Group')
+    sequence = fields.Integer(string='Sequence', default=1)
+    govt_id_proof = fields.Binary('Government ID Proof', attachment=True)
+    govt_id_proof_filename = fields.Char()
+    passport_photo = fields.Binary('Passport Size Photo', attachment=True)
+    passport_photo_filename = fields.Char()
+    address_proof = fields.Binary('Kanha Address Proof', attachment=True)
+    address_proof_filename = fields.Char()
 
 
 class CardPrintLog(models.Model):
@@ -69,7 +115,7 @@ class BulkCardPrintWizard(models.TransientModel):
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
-
+    
     surname = fields.Char(string='Surname')
     gender = fields.Selection([
         ('Male', 'Male'),
@@ -79,9 +125,9 @@ class ResPartner(models.Model):
     date_of_birth = fields.Date(string='Date of birth', required=False)
     town = fields.Char(string='Town/Village Name')
     district = fields.Char(string='District')
-    birth_town = fields.Char(string='Birth Town', required=True)
+    birth_town = fields.Char(string='Birth Town')
     birth_district = fields.Char(string='Birth District')
-    birth_country_id = fields.Many2one('res.country', string="Birth Country", default=lambda self: self.env['res.country'].search([('code','=','IN')]))
+    birth_country_id = fields.Many2one('res.country', string="Birth Country", default=lambda self: self.env['res.country'].search([('code','=','IN')], limit=1))
     birth_state_id = fields.Many2one("res.country.state", string='Birth State')
     relation_other = fields.Char(string="Other Relative")
     relation_type = fields.Selection([
@@ -89,46 +135,59 @@ class ResPartner(models.Model):
         ('Mother', 'Mother'),
         ('Husband', 'Husband'),
         ('Wife', 'Wife'),
-        ('Other', 'Other'),
+        ('Son', 'Son'),
+        ('Daughter', 'Daughter'),
+        ('Brother', 'Brother'),
         ('Sister', 'Sister'),
-        ('Brother', 'Brother')
-    ], string='Relation')
+        ('Grandfather', 'Grandfather'),
+        ('Grandmother', 'Grandmother'),
+        ('Father-in-law', 'Father-in-law'),
+        ('Mother-in-law', 'Mother-in-law'),
+        ('Brother-in-law', 'Brother-in-law'),
+        ('Sister-in-law', 'Sister-in-law'),
+        ('Son-in-law', 'Son-in-law'),
+        ('Daughter-in-law', 'Daughter-in-law'),
+        ('Spouse', 'Spouse'),
+        ('Other', 'Other'),
+    ], string="Relation")
     relative_name = fields.Char(string='Name of Relative')
     relative_surname = fields.Char(string='Surname of Relative')
-    kanha_location_id = fields.Many2one('kanha.location', string="Kanha Location", required=True)
+    kanha_location_id = fields.Many2one('kanha.location', string="Kanha Location")
     house_number = fields.Char(string='House Number')
-    kanha_house_number_id = fields.Many2one('kanha.house.number', string='Kanha House Number', required=True)
-    resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date', required=True)
-    existing_voter_id_number = fields.Char(string="Existing Voter ID Number", required=True)
+    kanha_house_number_id = fields.Many2one('kanha.house.number', string='Kanha House Number')
+    resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date')
+    existing_voter_id_number = fields.Char(string="Existing Voter ID Number")
+    voter_id_number_optional = fields.Char(string="Voter ID Number (Optional)")
     assembly_constituency = fields.Char(string="Assembly Constituency")
     locality = fields.Char(string="Locality")
     post_office = fields.Char(string="Post Office")
-    indian_visa = fields.Image(string="Photo of Indian Visa",attachment=True)
+    indian_visa = fields.Binary(string="Photo of Indian Visa", attachment=True)
     indian_visa_filename = fields.Char()
-    passport_photo = fields.Image(string="Passport Size Photo", required=True)
+    passport_photo = fields.Binary(string="Passport Size Photo", attachment=True)
     passport_photo_filename = fields.Char()
-    passport_id_image = fields.Image(string="Passport ID", attachment=True)
+    passport_id_image = fields.Binary(string="Passport ID", attachment=True)
     passport_id_image_filename = fields.Char()
     adhar_card = fields.Binary('Aadhar Card Front', attachment=True)
     adhar_card_filename = fields.Char()
     adhar_card_back_side = fields.Binary('Aadhar Card Back', attachment=True)
     adhar_card_back_side_filename = fields.Char()
-    age_proof = fields.Binary(string='Age Proof')
+    age_proof = fields.Binary(string='Age Proof', attachment=True)
     age_proof_filename = fields.Char()
-    address_proof = fields.Binary( string='Address Proof')
+    address_proof = fields.Binary(string='Address Proof', attachment=True)
     address_proof_filename = fields.Char()
     application_type = fields.Selection([
         ('New Application', 'New Application'),
         ('Transfer Application', 'Transfer Application'),
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
-    aadhaar_card_number = fields.Encrypted(string="Aadhar Card Number", index=True)
+    aadhaar_card_number = fields.Char(string="Aadhar Card Number")
+    govt_id_proof = fields.Char(string="Any Govt. ID Proof", help="Masked Aadhar Card, Voter ID Card or Driving License")
     members_count = fields.Char(string="How many members staying with you?")
     citizenship = fields.Selection([
         ('Indian', 'Indian'),
         ('Overseas', 'Overseas')
-    ], required=True)
-    passport_number = fields.Encrypted(string="Passport Number")
+    ], required=True, default='Overseas')
+    passport_number = fields.Char(string="Passport Number")
     work_profile = fields.Selection([
         ('Resident', 'Resident'),
         ('Volunteer', 'Volunteer'),
@@ -137,12 +196,10 @@ class ResPartner(models.Model):
         ('Contractor', 'Contractor'),
         ('Other','Other')
     ])
-    
     work_profile_id = fields.Many2one('work.profile', string="Resident Type")
     employee_id = fields.Char(string='ID Number')
     department_id = fields.Many2one('work.department',string='Department')
     rfid_card_no = fields.Integer("RFID Card No")
-
     change_voter_id_address = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
@@ -152,33 +209,28 @@ class ResPartner(models.Model):
         ('Owner', 'Owner'),
         ('General Accommodation', 'General Accommodation'),        
     ], string="Residence Type")
-    family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id',  string='Family Members', readonly=True ,compute='_compute_family_members')
-    relative_aadhaar_card_number = fields.Encrypted(string="Relative Aadhar Card Number")
-    is_geoadmin = fields.Boolean(
-        string='Is Geo Admin', 
-        compute='_compute_is_geoadmin', 
-        store=False
-    )
+    property_owner_name = fields.Char(string="Property Owner Name")
+    property_owner_email = fields.Char(string="Owner's Email ID")
+    property_owner_phone = fields.Char(string="Owner's Phone Number")
+    family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id',  string='Family Members', readonly=True, compute='_compute_family_members')
+    relative_aadhaar_card_number = fields.Char(string="Relative Aadhar Card Number")
+    is_geoadmin = fields.Boolean(string='Is Geo Admin', compute='_compute_is_geoadmin', store=False)
     card_print_log_ids = fields.One2many('card.print.log', 'partner_id', string='Card Print Logs')
-
-    @api.depends('user_id')  
-    def _compute_is_geoadmin(self):
-        group_geo_admin = self.env.ref('kanha_census.group_geoadmin_access')
-        for record in self:
-            record.is_geoadmin = group_geo_admin in self.env.user.groups_id
-
-    @api.depends('kanha_house_number_id')
-    def _compute_family_members(self):
-        for record in self:
-            family_members = self.search([('kanha_house_number_id', '=', record.kanha_house_number_id.id)]).filtered(lambda member: member.id != record.id)
-            record.family_members_ids = [(6, 0, family_members.ids)]
-
+    family_member_ids = fields.One2many('family.member', 'partner_id', string='Family Members Details')
+    birth_country_name = fields.Char(related="birth_country_id.name", string="Birth Country Name", store=True)
+    full_name_passport = fields.Char(string='Full Name (as per Passport)')
+    srcm_id = fields.Char(string='SRCM ID')
+    preceptor_incharge_name = fields.Char(string='Preceptor Name / In-charge Name')
     vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
     already_have_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Do you have Voter ID")
-    kanha_voter_id_number = fields.Encrypted(string="Existing Voter ID Number")
+    has_voter_id_in_kanha = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Do you have a Voter ID in Kanha?", related='already_have_kanha_voter_id')
+    kanha_voter_id_number = fields.Char(string="Existing Voter ID Number")
     kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True)
     kanha_voter_id_image_filename = fields.Char()
     kanha_voter_id_back_image = fields.Binary('Voter ID Back Image', attachment=True)
@@ -189,14 +241,18 @@ class ResPartner(models.Model):
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Need New Voter ID")
+    wants_to_apply_voter_id = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Do you want to apply for Voter ID?")
     state = fields.Selection([
         ('saved_not_submitted', 'Saved Not Submitted'),
         ('submitted', 'Submitted'),
-        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='saved_not_submitted')
+    ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='saved_not_submitted')
     application_reference_no = fields.Char(string='If already applied for Kanha voter ID, please provide application reference number')
-    passport_front_image = fields.Image(string="Passport Front Image", attachment=True)
+    passport_front_image = fields.Binary(string="Passport Front Image", attachment=True)
     passport_front_image_filename = fields.Char()
-    passport_back_image = fields.Image(string="Passport Back Image", attachment=True)
+    passport_back_image = fields.Binary(string="Passport Back Image", attachment=True)
     passport_back_image_filename = fields.Char()
     residents_documents_downloads_history_id = fields.Many2one('residents.documents.downloads.history','Residents Documents Downloads History') 
     visa_start_date = fields.Date(string='Visa Start Date')
@@ -215,10 +271,9 @@ class ResPartner(models.Model):
         ('Card Printed', 'Card Printed'),
         ('rejected', 'Rejected'),
         ('approved_for_edit', 'Approved for Edit'),
-    ],default="draft")
+    ], default="draft")
     rejection_reason = fields.Text("Reason For Rejection")
     birth_state_textfield = fields.Char(string="Birth State")
-    birth_country_name = fields.Char(related="birth_country_id.name", string="Birth Country Name")
     blood_group = fields.Selection([
         ('A+', 'A+'),
         ('A-', 'A-'),
@@ -233,14 +288,197 @@ class ResPartner(models.Model):
     do_you_need_voter_id_in_kanha = fields.Selection([
         ('No', 'No'),
         ('Yes', 'Yes') 
-    ], string='Do you need Voter ID in Kannah')
+    ], string='Do you need a Voter ID in Kanha?')
     is_preceptor = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No')],
         string='Are you a preceptor?'
     )
-    year_of_birth = fields.Integer(string="Year Of Birth",readonly=True)
+    year_of_birth = fields.Integer(string="Year Of Birth", compute='_compute_year_of_birth', store=True)
+    family_details = fields.Text(string='Family Details', compute='_compute_family_details', store=False)
     
+    @api.depends('family_member_ids')
+    def _compute_family_details(self):
+        for record in self:
+            if record.family_member_ids:
+                details = []
+                for member in record.family_member_ids:
+                    member_info = f"{member.name} ({member.relation})"
+                    if member.blood_group:
+                        member_info += f" - {member.blood_group}"
+                    details.append(member_info)
+                record.family_details = "\n".join(details)
+            else:
+                record.family_details = ""
+    
+    @api.constrains('members_count')
+    def _check_members_count(self):
+        for record in self:
+            if record.members_count:
+                cleaned_value = record.members_count.strip()
+                if not re.match(r'^[1-8]$', cleaned_value):
+                    raise ValidationError(_("Members count must be a single digit between 1 and 8 only."))
+
+    @api.onchange('members_count')
+    def _onchange_members_count(self):
+        if self.members_count:
+            self.members_count = self.members_count.strip()
+            if not re.match(r'^[1-8]$', self.members_count):
+                return {
+                    'warning': {
+                        'title': _('Invalid Input'),
+                        'message': _('Please enter only a single digit between 1 and 8.')
+                    }
+                }
+
+    @api.depends('user_id')  
+    def _compute_is_geoadmin(self):
+        group_geo_admin = self.env.ref('kanha_census.group_geoadmin_access', raise_if_not_found=False)
+        for record in self:
+            if group_geo_admin:
+                record.is_geoadmin = group_geo_admin in self.env.user.groups_id
+            else:
+                record.is_geoadmin = False
+
+    @api.depends('kanha_house_number_id')
+    def _compute_family_members(self):
+        for record in self:
+            if record.kanha_house_number_id:
+                family_members = self.search([('kanha_house_number_id', '=', record.kanha_house_number_id.id)]).filtered(lambda member: member.id != record.id)
+                record.family_members_ids = [(6, 0, family_members.ids)]
+            else:
+                record.family_members_ids = [(6, 0, [])]
+
+    @api.depends('date_of_birth')
+    def _compute_year_of_birth(self):
+        for record in self:
+            if record.date_of_birth:
+                record.year_of_birth = record.date_of_birth.year
+            else:
+                record.year_of_birth = False
+
+    def _normalize_relation_value(self, relation_value):
+        return relation_value
+
+    def process_family_members_data(self, vals):
+        if not vals:
+            return []
+        
+        members_count = vals.get('members_count', '1')
+        if members_count and re.match(r'^[1-8]$', str(members_count).strip()):
+            members_count = int(members_count)
+        else:
+            members_count = 1
+            
+        family_data = []
+        
+        for i in range(members_count):
+            name_key = f'family_member_name_{i}'
+            relation_key = f'family_member_relation_{i}'
+            blood_group_key = f'family_member_blood_group_{i}'
+            govt_id_key = f'family_member_govt_id_{i}'
+            passport_photo_key = f'family_member_passport_photo_{i}'
+            address_proof_key = f'family_member_address_proof_{i}'
+            
+            if name_key in vals and vals[name_key]:
+                relation_value = vals.get(relation_key, '')
+                normalized_relation = self._normalize_relation_value(relation_value)
+                
+                member_data = {
+                    'name': vals[name_key],
+                    'relation': normalized_relation,
+                    'blood_group': vals.get(blood_group_key, ''),
+                    'sequence': i + 1
+                }
+                
+                if govt_id_key in vals and vals[govt_id_key]:
+                    member_data['govt_id_proof'] = vals[govt_id_key]
+                    
+                if passport_photo_key in vals and vals[passport_photo_key]:
+                    member_data['passport_photo'] = vals[passport_photo_key]
+                    
+                if address_proof_key in vals and vals[address_proof_key]:
+                    member_data['address_proof'] = vals[address_proof_key]
+                
+                family_data.append(member_data)
+            
+            for key in [name_key, relation_key, blood_group_key, govt_id_key, passport_photo_key, address_proof_key]:
+                if key in vals:
+                    del vals[key]
+        
+        return family_data
+
+    @api.model
+    def create(self, vals_list):
+        if not isinstance(vals_list, list):
+            vals_list = [vals_list]
+            
+        processed_vals_list = []
+        family_data_list = []
+        
+        for vals in vals_list:
+            family_data = self.process_family_members_data(vals)
+            processed_vals_list.append(vals)
+            family_data_list.append(family_data)
+        
+        records = super(ResPartner, self).create(processed_vals_list)
+        
+        for i, record in enumerate(records):
+            family_data = family_data_list[i]
+            if family_data:
+                for member_data in family_data:
+                    member_data['partner_id'] = record.id
+                    self.env['family.member'].create(member_data)
+            else:
+                record._create_default_family_member()
+        
+        return records
+
+    def _create_default_family_member(self):
+        for record in self:
+            existing_head = self.env['family.member'].search([
+                ('partner_id', '=', record.id),
+                ('relation', '=', 'Head')
+            ], limit=1)
+            
+            if not existing_head:
+                self.env['family.member'].create({
+                    'partner_id': record.id,
+                    'name': record.name or '',
+                    'relation': 'Head',
+                    'blood_group': record.blood_group or False,
+                    'sequence': 1,
+                })
+
+    def write(self, vals):
+        family_data = self.process_family_members_data(vals)
+        result = super(ResPartner, self).write(vals)
+        
+        if family_data:
+            for record in self:
+                record.family_member_ids.unlink()
+                for member_data in family_data:
+                    member_data['partner_id'] = record.id
+                    self.env['family.member'].create(member_data)
+        elif 'name' in vals or 'blood_group' in vals:
+            for record in self:
+                head_member = self.env['family.member'].search([
+                    ('partner_id', '=', record.id),
+                    ('relation', '=', 'Head')
+                ], limit=1)
+                
+                if head_member:
+                    update_vals = {}
+                    if 'name' in vals:
+                        update_vals['name'] = vals['name']
+                    if 'blood_group' in vals:
+                        update_vals['blood_group'] = vals['blood_group']
+                    
+                    if update_vals:
+                        head_member.write(update_vals)
+        
+        return result
+
     def button_print_card(self):
         self.env['card.print.log'].create({
             'partner_id': self.id,
@@ -284,7 +522,10 @@ class ResPartner(models.Model):
         return True
     
     def mail_reminder(self):
-        template = self.env.ref('kanha_census.mail_template_visa_reminder')
+        template = self.env.ref('kanha_census.mail_template_visa_reminder', raise_if_not_found=False)
+        if not template:
+            return
+            
         today = date.today()
         weekday = today.weekday()
         week_start_date = today - timedelta(days=weekday)
@@ -321,7 +562,10 @@ class ResPartner(models.Model):
         return self.write({'application_status':'Approved but Card Not Printed'})
     
     def send_rejection_reason_in_mail(self):
-        template = self.env.ref('kanha_census.mail_template_application_rejection')
+        template = self.env.ref('kanha_census.mail_template_application_rejection', raise_if_not_found=False)
+        if not template:
+            return
+            
         ctx = dict(self.env.context)
         ctx['reason'] = self.rejection_reason
         ctx['subject'] = self.name +" Application Rejected - Regards"
@@ -348,37 +592,45 @@ class ResPartner(models.Model):
     def send_application_status_mail(self, application_status):
         email_to = self.email
         emails = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
+        
+        template = None
         if(application_status =="approved"):
-            template = self.env.ref('kanha_census.mail_template_application_approved')
+            template = self.env.ref('kanha_census.mail_template_application_approved', raise_if_not_found=False)
         elif(application_status =="to_approve"):
-            template = self.env.ref('kanha_census.mail_template_application_submitted')
+            template = self.env.ref('kanha_census.mail_template_application_submitted', raise_if_not_found=False)
             if emails:
                 email_to = ','.join([emails,email_to])
         elif(application_status =="deleted"):
-            template = self.env.ref('kanha_census.mail_template_application_delete')
+            template = self.env.ref('kanha_census.mail_template_application_delete', raise_if_not_found=False)
             if emails:
                 email_to = ','.join([emails,email_to])
-        ctx = dict(self.env.context)
-        ctx['email_to'] = email_to
-        ctx['email_from'] = self.env.user.company_id.email
+                
         if template:
+            ctx = dict(self.env.context)
+            ctx['email_to'] = email_to
+            ctx['email_from'] = self.env.user.company_id.email
             template.with_context(ctx).send_mail(self.id, force_send=True)  
 
     def send_deleted_application_mail(self):
-        template = self.env.ref('kanha_census.mail_template_application_delete')
+        template = self.env.ref('kanha_census.mail_template_application_delete', raise_if_not_found=False)
+        if not template:
+            return
+            
         ctx = dict(self.env.context)
         emails = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
-        resident_email = self.email
-        email_to = ','.join([emails,resident_email])
+        if emails and self.email:
+            email_to = ','.join([emails, self.email])
+        else:
+            email_to = emails or self.email
         ctx['email_to'] = email_to
         ctx['email_from'] = self.env.user.company_id.email
         if template:
-            template.with_context(ctx).send_mail(self.id, force_send=True) 
+            template.with_context(ctx).send_mail(self.id, force_send=True)
 
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         user = self.env.user
-        if user.allowed_locations_ids and user.has_group('base.group_user'):
+        if hasattr(user, 'allowed_locations_ids') and user.allowed_locations_ids and user.has_group('base.group_user'):
             allowed_location_ids = user.allowed_locations_ids.ids
             args += [('kanha_location_id', 'in', allowed_location_ids),('kanha_location_id','!=',False)]
         return super(ResPartner, self)._search(args, offset, limit, order, count, access_rights_uid)
@@ -386,7 +638,7 @@ class ResPartner(models.Model):
     @api.model
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
         user = self.env.user
-        if user.allowed_locations_ids and user.has_group('base.group_user'):
+        if hasattr(user, 'allowed_locations_ids') and user.allowed_locations_ids and user.has_group('base.group_user'):
             allowed_location_ids = user.allowed_locations_ids.ids
             domain = expression.AND([domain, [('kanha_location_id', 'in', allowed_location_ids)]])
         return super(ResPartner, self).read_group(domain, fields, groupby, offset, limit, orderby, lazy)

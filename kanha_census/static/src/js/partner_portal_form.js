@@ -12,761 +12,1440 @@ var _t = core._t;
 publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     selector: '.o_portal_partner_details',
     events: {
-		'change select[name="relation_type"]': '_onChangeRelationType',
-		'change select[name="change_voter_id_address"]': '_onChangeVoterAddressToKanha',
-		'change select[name="citizenship"]': '_onCitizenshipChange',
-		'change select[name="already_have_kanha_voter_id"]': '_onChangeAlreadyHaveKanhaVoterID',
-		'change select[name="need_new_kanha_voter_id"]': '_onChangeNeedNewKanhaVoterID',
-		'click .adhar_file_edit': '_onBrowseFile',
-		'change .adhar_file_upload': '_onUploadAdharFrontImage',
-		'click .adhar_file_browse': '_onBrowseFile',
-		'click .adhar_file_clear': '_onClearFile',
-		'click .adhar_file_back_side_edit': '_onBrowseFile',
-		'change .adhar_file_back_side_upload': '_onUploadAdharBackImage',
-		'click .adhar_file_back_side_browse': '_onBrowseFile',
-		'click .adhar_file_back_side_clear': '_onClearFile',
-		'click .age_proof_edit': '_onBrowseFile',
-		'change .age_proof_upload': '_onUploadAgeProof',
-		'click .age_proof_browse': '_onBrowseFile',
-		'click .age_proof_clear': '_onClearFile',
-		'click .address_proof_edit': '_onBrowseFile',
-		'change .address_proof_upload': '_onUploadAddressProof',
-		'click .address_proof_browse': '_onBrowseFile',
-		'click .address_proof_clear': '_onClearFile',
-		'click .indian_visa_edit': '_onBrowseFile',
-		'change .indian_visa_upload': '_onUploadIndianVisa',
-		'click .indian_visa_browse': '_onBrowseFile',
-		'click .indian_visa_clear': '_onClearFile',
-		'click .passport_photo_edit': '_onBrowseFile',
-		'change .passport_photo_upload': '_onUploadPassportPhoto',
-		'click .passport_photo_browse': '_onBrowseFile',
-		'click .passport_photo_clear': '_onClearFile',
-		'click .passport_front_image_edit': '_onBrowseFile',
-		'change .passport_front_image_upload': '_onUploadPassportFrontImage',
-		'click .passport_front_image_browse': '_onBrowseFile',
-		'click .passport_front_image_clear': '_onClearFile',
-		'click .passport_back_image_edit': '_onBrowseFile',
-		'change .passport_back_image_upload': '_onUploadPassportBackImage',
-		'click .passport_back_image_browse': '_onBrowseFile',
-		'click .passport_back_image_clear': '_onClearFile',
-		'click .kanha_voter_id_image_browse': '_onBrowseFile',
-		'change .kanha_voter_id_image_upload': '_onUploadKanhaVoterIdImage',
-		'click .kanha_voter_id_image_edit': '_onBrowseFile',
-		'click .kanha_voter_id_image_clear': '_onClearFile',
-		'click .kanha_voter_id_back_image_browse': '_onBrowseFile',
-		'change .kanha_voter_id_back_image_upload': '_onUploadKanhaVoterIdBackImage',
-		'click .kanha_voter_id_back_image_edit': '_onBrowseFile',
-		'click .kanha_voter_id_back_image_clear': '_onClearFile',
-		'change select[name="birth_country_id"]': '_onBirthCountryChange',
-		'change select[name="country_id"]': '_onCountryChange',
-		'change select[name="kanha_location_id"]': '_onKanhaLocationChange',
-		'change select[name="work_profile_id"]': '_onWorkProfileChange',
-		'click .vehicle_add_new': '_onShowVehicleModal',
-		'click .vehicle_edit_new': '_onShowVehicleModal',
-		'click .vehicle_edit_exist': '_onShowVehicleModal',
-		'click .save_vehicle_line': '_onSaveVehicle',
-		'click .vehicle_clear': '_onDeleteVehicleLine',
-		'keypress #adhar_card_file_front': '_onRestrictInput',
-		'keydown #adhar_card_file_front': '_onRestrictInput',
-		'keypress #adhar_card_file_back': '_onRestrictInput',
-		'keydown #adhar_card_file_back': '_onRestrictInput',
-		'keypress #passport_photo_file': '_onRestrictInput',
-		'keydown #passport_photo_file': '_onRestrictInput',
-		'keypress #passport_front_image_file': '_onRestrictInput',
-		'keydown #passport_front_image_file': '_onRestrictInput',
-		'keypress #passport_back_image_file': '_onRestrictInput',
-		'keydown #passport_back_image_file': '_onRestrictInput',
-		'keypress #indian_visa_file': '_onRestrictInput',
-		'keydown #indian_visa_file': '_onRestrictInput',
-		'keypress #age_proof_file': '_onRestrictInput',
-		'keydown #age_proof_file': '_onRestrictInput',
-		'keypress #address_proof_file': '_onRestrictInput',
-		'keydown #address_proof_file': '_onRestrictInput',
-		'keypress #kanha_voter_id_image_filename_field': '_onRestrictInput',
-		'keydown #kanha_voter_id_image_filename_field': '_onRestrictInput',
-		'keypress #kanha_voter_id_back_image_filename_field': '_onRestrictInput',
-		'keydown #kanha_voter_id_back_image_filename_field': '_onRestrictInput',
-		'click .family_website_form_submit': '_onSubmitForm',
-		'click .family_website_form_save': '_onClickSave',
-		'keypress #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
-		'change #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
-		'keypress #pan_card_number_id': '_restrictSpecialCharacter',
-		'keydown #pan_card_number_id': '_restrictSpecialCharacter',
-		'keypress #mobile_number_id': '_restrictSpecialCharacter',
-		'keydown #mobile_number_id': '_restrictSpecialCharacter',
-		'click .partner_clear': '_onClickDeletePartner',
-		'change select[name="do_you_need_voter_id_in_kanha"]': '_onVoterIdChange',
-		'change select[name="is_preceptor"]': '_onChangeIsPreceptor',
-		'input .search-input': '_onSearchInput',
-		'keyup .search-input': '_onSearchInput',
+        'change select[name="relation_type"]': '_onChangeRelationType',
+        'change select[name="change_voter_id_address"]': '_onChangeVoterAddressToKanha',
+        'change select[name="citizenship"]': '_onCitizenshipChange',
+        'change select[name="already_have_kanha_voter_id"]': '_onChangeAlreadyHaveKanhaVoterID',
+        'change select[name="need_new_kanha_voter_id"]': '_onChangeNeedNewKanhaVoterID',
+        'change input[name="members_count"]': '_onMembersCountChange',
+        'input input[name="members_count"]': '_onMembersCountInput',
+        'keypress input[name="members_count"]': '_onMembersCountKeypress',
+        'change select[name="property_owner"]': '_onChangePropertyOwner',
+        'change select[name="residence_type"]': '_onChangeResidenceType',
+        'click .adhar_file_edit': '_onBrowseFile',
+        'change .adhar_file_upload': '_onUploadAdharFrontImage',
+        'click .adhar_file_browse': '_onBrowseFile',
+        'click .adhar_file_clear': '_onClearFile',
+        'click .adhar_file_back_side_edit': '_onBrowseFile',
+        'change .adhar_file_back_side_upload': '_onUploadAdharBackImage',
+        'click .adhar_file_back_side_browse': '_onBrowseFile',
+        'click .adhar_file_back_side_clear': '_onClearFile',
+        'click .age_proof_edit': '_onBrowseFile',
+        'change .age_proof_upload': '_onUploadAgeProof',
+        'click .age_proof_browse': '_onBrowseFile',
+        'click .age_proof_clear': '_onClearFile',
+        'click .address_proof_edit': '_onBrowseFile',
+        'change .address_proof_upload': '_onUploadAddressProof',
+        'click .address_proof_browse': '_onBrowseFile',
+        'click .address_proof_clear': '_onClearFile',
+        'click .indian_visa_edit': '_onBrowseFile',
+        'change .indian_visa_upload': '_onUploadIndianVisa',
+        'click .indian_visa_browse': '_onBrowseFile',
+        'click .indian_visa_clear': '_onClearFile',
+        'click .passport_photo_edit': '_onBrowseFile',
+        'change .passport_photo_upload': '_onUploadPassportPhoto',
+        'click .passport_photo_browse': '_onBrowseFile',
+        'click .passport_photo_clear': '_onClearFile',
+        'click .passport_front_image_edit': '_onBrowseFile',
+        'change .passport_front_image_upload': '_onUploadPassportFrontImage',
+        'click .passport_front_image_browse': '_onBrowseFile',
+        'click .passport_front_image_clear': '_onClearFile',
+        'click .passport_back_image_edit': '_onBrowseFile',
+        'change .passport_back_image_upload': '_onUploadPassportBackImage',
+        'click .passport_back_image_browse': '_onBrowseFile',
+        'click .passport_back_image_clear': '_onClearFile',
+        'click .kanha_voter_id_image_browse': '_onBrowseFile',
+        'change .kanha_voter_id_image_upload': '_onUploadKanhaVoterIdImage',
+        'click .kanha_voter_id_image_edit': '_onBrowseFile',
+        'click .kanha_voter_id_image_clear': '_onClearFile',
+        'click .kanha_voter_id_back_image_browse': '_onBrowseFile',
+        'change .kanha_voter_id_back_image_upload': '_onUploadKanhaVoterIdBackImage',
+        'click .kanha_voter_id_back_image_edit': '_onBrowseFile',
+        'click .kanha_voter_id_back_image_clear': '_onClearFile',
+        'change select[name="birth_country_id"]': '_onBirthCountryChange',
+        'change select[name="country_id"]': '_onCountryChange',
+        'change select[name="kanha_location_id"]': '_onKanhaLocationChange',
+        'change select[name="work_profile_id"]': '_onWorkProfileChange',
+        'click .vehicle_add_new': '_onShowVehicleModal',
+        'click .vehicle_edit_new': '_onShowVehicleModal',
+        'click .vehicle_edit_exist': '_onShowVehicleModal',
+        'click .save_vehicle_line': '_onSaveVehicle',
+        'click .vehicle_clear': '_onDeleteVehicleLine',
+        'keypress #adhar_card_file_front': '_onRestrictInput',
+        'keydown #adhar_card_file_front': '_onRestrictInput',
+        'keypress #adhar_card_file_back': '_onRestrictInput',
+        'keydown #adhar_card_file_back': '_onRestrictInput',
+        'keypress #passport_photo_file': '_onRestrictInput',
+        'keydown #passport_photo_file': '_onRestrictInput',
+        'keypress #passport_front_image_file': '_onRestrictInput',
+        'keydown #passport_front_image_file': '_onRestrictInput',
+        'keypress #passport_back_image_file': '_onRestrictInput',
+        'keydown #passport_back_image_file': '_onRestrictInput',
+        'keypress #indian_visa_file': '_onRestrictInput',
+        'keydown #indian_visa_file': '_onRestrictInput',
+        'keypress #age_proof_file': '_onRestrictInput',
+        'keydown #age_proof_file': '_onRestrictInput',
+        'keypress #address_proof_file': '_onRestrictInput',
+        'keydown #address_proof_file': '_onRestrictInput',
+        'keypress #kanha_voter_id_image_filename_field': '_onRestrictInput',
+        'keydown #kanha_voter_id_image_filename_field': '_onRestrictInput',
+        'keypress #kanha_voter_id_back_image_filename_field': '_onRestrictInput',
+        'keydown #kanha_voter_id_back_image_filename_field': '_onRestrictInput',
+        'click .family_website_form_submit': '_onSubmitForm',
+        'click .family_website_form_save': '_onClickSave',
+        'keypress #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+        'change #aadhaar_card_number_field': '_insertCardNumberBlankSpace',
+        'keypress #pan_card_number_id': '_restrictSpecialCharacter',
+        'keydown #pan_card_number_id': '_restrictSpecialCharacter',
+        'keypress #mobile_number_id': '_restrictSpecialCharacter',
+        'keydown #mobile_number_id': '_restrictSpecialCharacter',
+        'click .partner_clear': '_onClickDeletePartner',
+        'change select[name="has_voter_id_in_kanha"]': '_onHasVoterIdChange',
+        'change select[name="is_preceptor"]': '_onChangeIsPreceptor',
+        'input .search-input': '_onSearchInput',
+        'keyup .search-input': '_onSearchInput',
     },
  
+    init: function (parent, options) {
+        this._super.apply(this, arguments);
+        this.$target = this.$el;
+        this.isFormSaved = false;
+        window.generateFamilyMembers = this._generateFamilyRows.bind(this);
+        window.togglePropertyOwnerFields = this.togglePropertyOwnerFields.bind(this);
+    },
+
     start: function () {
         var def = this._super.apply(this, arguments);
-		this.$birthState = this.$('select[name="birth_state_id"]');
+        this.$target = this.$el;
+        this.$birthState = this.$('select[name="birth_state_id"]');
         this.$birthStateOptions = this.$birthState.filter(':enabled').find('option:not(:first)');
         this._adaptBirthStateAddressForm();
-		this.$state = this.$('select[name="state_id"]');
+        this.$state = this.$('select[name="state_id"]');
         this.$stateOptions = this.$state.filter(':enabled').find('option:not(:first)');
         this._adaptAddressForm();
-		this.$kanhaHouseNumber = this.$('select[name="kanha_house_number_id"]');
+        this.$kanhaHouseNumber = this.$('select[name="kanha_house_number_id"]');
         this.$kanhaHouseNumberOptions = this.$kanhaHouseNumber.filter(':enabled').find('option:not(:first)');
-		this._adaptKanhaHouseNumberStateAddressForm();
-		this._restoreSettings();
-		this._removeRequiredFields();
+        this._adaptKanhaHouseNumberStateAddressForm();
+        this._restoreSettings();
+        this._removeRequiredFields();
+        this._initializeFamilyTable();
+        this._initializePropertyOwnerFields();
+        this._setIndianMandatoryFields();
+        this._checkIfFormSaved();
         return def;
     },
 
-	_removeRequiredFields: function() {
-		$('#year_of_birth_field').removeAttr('required');
-		$('#birth_state_id_field').removeAttr('required');
-		$('#birth_district_field').removeAttr('required');
-	},
-
-	_onSearchInput: function(ev) {
-		var searchValue = $(ev.currentTarget).val().toLowerCase();
-		var $tableRows = $('table tbody tr');
+    _checkIfFormSaved: function() {
+		var partnerId = this.$('input[name="partner_id"]').val();
+		var recordExists = this.$('input[name="record_exists"]').val();
+		var applicationState = this.$('input[name="application_state"]').val() || 
+							this.$('select[name="application_state"]').val() ||
+							this.$('.application_state').val();
 		
-		if (searchValue === '') {
-			$tableRows.show();
-		} else {
-			$tableRows.each(function() {
-				var $row = $(this);
-				var name = $row.find('td:first').text().toLowerCase();
-				var email = $row.find('td:nth-child(2)').text().toLowerCase();
-				var mobile = $row.find('td:nth-child(3)').text().toLowerCase();
-				
-				if (name.includes(searchValue) || email.includes(searchValue) || mobile.includes(searchValue)) {
-					$row.show();
-				} else {
-					$row.hide();
-				}
-			});
-		}
-	},
-
-	_onRestrictInput: function (ev) {
-		ev.preventDefault();
-	},
-	
-	_restrictSpecialCharacter(e) {  
-	    var k;  
-	    document.all ? k = e.keyCode : k = e.which;  
-	    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 9 || k == 8 || k == 32 || (k >= 48 && k <= 57));  
-	}, 
-	
-	_insertCardNumberBlankSpace: function (e) {
-		var restrictSpecialChar = this._restrictSpecialCharacter(e)
-  		e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
-		return restrictSpecialChar;
-	},
-
-	_onClickDeletePartner: function (e) {
-		var self = this;
-		
-		var def = new Promise(function (resolve, reject) {
-			var message = _t("Are you sure you want to delete this record?");
+		if (partnerId && recordExists === 'true') {
+			this.isFormSaved = true;
 			
-			var dialog = Dialog.confirm(self, message, {
-				title: _t("Confirmation"),
-				confirm_callback: function() {
-					var partner_id = $(e.target).attr('id');
-					var deleted_partner_ids = [partner_id];
-	
-					var form_values = {
-						'deleted_partner_ids': deleted_partner_ids
-					};
-	
-					ajax.post('/delete_family_members', form_values)
-						.then(function (result) {
-							if (result === "deleted") {
-								Dialog.alert(self, _t("Record has been deleted successfully."), {
-									confirm_callback: function() {
-										$(window.location).attr('href', "/family/");
-									},
-								});
-							} else if (result === "current_user") {
-								Dialog.alert(null, _t("Please contact Administrator to delete the record."));
-							} else if (result === "cannot_delete") {
-								Dialog.alert(null, _t("You can delete only Rejected and Not Yet Submitted records. If you have assigned an RFID card from Ashram Office, please contact Ashram office for deleting this record."));
-							} else if (result === "no_records") {
-								Dialog.alert(null, _t("Record does not exist."));
-							}
-						})
-						.guardedCatch(function () {
-							console.log("Error occurred during deletion.");
-							Dialog.alert(self, _t("An error occurred while attempting to delete the record. Please try again later."));
-						});
-				},
-				cancel_callback: reject,
-			});
-	
-			dialog.on('closed', self, reject);
-		});
-	},
-	
-	_onChangeRelationType: function (ev) {
-		var relation_type = this.$('select[name="relation_type"]');
-		if(relation_type.val() == 'Other'){
-			$('.relation_other_class').removeClass('d-none');
-		}
-		else{
-			$('.relation_other_class').addClass('d-none');
+			if (applicationState && (applicationState === 'draft' || applicationState === 'approved_for_edit')) {
+				this.isFormSaved = false;
+			}
+			
+			if (this.isFormSaved) {
+				this._makeFormReadonly();
+			}
 		}
 	},
 
-	_adaptWorkDepartmentAddressForm: function () {
-		var work_profile = document.getElementById("work_profile_id_field");
-		if(typeof work_profile !== 'undefined' && work_profile !== null) {
-			var selected_work_profile = work_profile.options[work_profile.selectedIndex].text;
-			if(selected_work_profile.trim() != 'Resident'){
-				$('.department').removeClass('d-none');
-				$('.employee_id').removeClass('d-none');
-			}
-			else{
-				document.getElementById("department_id").value = "";
-			    document.getElementById("employee_id_id").value = "";
-				$('.department').addClass('d-none');
-				$('.employee_id').addClass('d-none');
-			}
+    _makeFormReadonly: function() {
+		var applicationState = this.$('input[name="application_state"]').val() || 
+							this.$('select[name="application_state"]').val() ||
+							this.$('.application_state').val();
+		
+		if (applicationState && (applicationState === 'draft' || applicationState === 'approved_for_edit')) {
+			return;
 		}
+		
+		this._makeFamilyDetailsReadonly();
+		this._makeDocumentsReadonly();
+		this._makeMainFormReadonly();
+	},
+
+	_makeMainFormReadonly: function() {
+		this.$('input:not([type="hidden"]), select, textarea').each(function() {
+			var $element = $(this);
+			if (!$element.hasClass('search-input') && $element.attr('name') !== 'members_count') {
+				$element.attr('readonly', true).attr('disabled', true);
+			}
+		});
+		
+		$('.family_website_form_submit, .family_website_form_save').hide();
+	},
+
+
+    _makeFamilyDetailsReadonly: function() {
+		var applicationState = this.$('input[name="application_state"]').val() || 
+							this.$('select[name="application_state"]').val() ||
+							this.$('.application_state').val();
+		
+		if (applicationState && (applicationState === 'draft' || applicationState === 'approved_for_edit')) {
+			return;
+		}
+		
+		var citizenship = $('select[name="citizenship"]').val();
+		var isOverseas = (citizenship === 'Overseas');
+		var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
+		
+		$tableBody.find('input, select').each(function() {
+			$(this).attr('readonly', true).attr('disabled', true);
+		});
+		
+		$tableBody.find('input[type="file"]').each(function() {
+			$(this).attr('disabled', true).hide();
+		});
+		
+		$('#members_count_id').attr('readonly', true).attr('disabled', true);
+	},
+
+    _makeDocumentsReadonly: function() {
+		var applicationState = this.$('input[name="application_state"]').val() || 
+							this.$('select[name="application_state"]').val() ||
+							this.$('.application_state').val();
+		
+		if (applicationState && (applicationState === 'draft' || applicationState === 'approved_for_edit')) {
+			return;
+		}
+		
+		$('.adhar_file_edit, .adhar_file_browse, .adhar_file_clear').hide();
+		$('.adhar_file_back_side_edit, .adhar_file_back_side_browse, .adhar_file_back_side_clear').hide();
+		$('.age_proof_edit, .age_proof_browse, .age_proof_clear').hide();
+		$('.address_proof_edit, .address_proof_browse, .address_proof_clear').hide();
+		$('.indian_visa_edit, .indian_visa_browse, .indian_visa_clear').hide();
+		$('.passport_photo_edit, .passport_photo_browse, .passport_photo_clear').hide();
+		$('.passport_front_image_edit, .passport_front_image_browse, .passport_front_image_clear').hide();
+		$('.passport_back_image_edit, .passport_back_image_browse, .passport_back_image_clear').hide();
+		$('.kanha_voter_id_image_browse, .kanha_voter_id_image_edit, .kanha_voter_id_image_clear').hide();
+		$('.kanha_voter_id_back_image_browse, .kanha_voter_id_back_image_edit, .kanha_voter_id_back_image_clear').hide();
+		
+		$('input[type="file"]').attr('disabled', true).hide();
+		
+		$('.adhar_file_upload, .adhar_file_back_side_upload').hide();
+		$('.age_proof_upload, .address_proof_upload').hide();
+		$('.indian_visa_upload, .passport_photo_upload').hide();
+		$('.passport_front_image_upload, .passport_back_image_upload').hide();
+		$('.kanha_voter_id_image_upload, .kanha_voter_id_back_image_upload').hide();
+	},
+
+    _setIndianMandatoryFields: function() {
+        var citizenship = this.$('select[name="citizenship"]').val();
+        if (citizenship === 'Indian' || !citizenship) {
+            $('#govt_id_proof_field').attr('required', true);
+            $('#has_voter_id_in_kanha_field').attr('required', true);
+            $('#members_count_id').attr('required', true);
+            
+            $("label[for='govt_id_proof']").append('<span class="s_website_form_mark"> *</span>');
+            $("label[for='has_voter_id_in_kanha'] .s_website_form_mark").remove();
+            $("label[for='has_voter_id_in_kanha']").append('<span class="s_website_form_mark"> *</span>');
+        }
     },
-	
-	_onWorkProfileChange: function () {
-		this._adaptWorkDepartmentAddressForm();
+
+    _initializePropertyOwnerFields: function() {
+        var residenceType = this.$('select[name="residence_type"]').val();
+        this._togglePropertyOwnerFieldsBasedOnResidence(residenceType);
+    }, 
+
+    _onChangeResidenceType: function(ev) {
+        var residenceType = $(ev.currentTarget).val();
+        this._togglePropertyOwnerFieldsBasedOnResidence(residenceType);
+        
+        var propertyOwnerSelect = this.$('select[name="property_owner"]');
+        if (propertyOwnerSelect.length) {
+            propertyOwnerSelect.val('');
+            propertyOwnerSelect.trigger('change');
+        }
+    },
+
+    _togglePropertyOwnerFieldsBasedOnResidence: function(residenceType) {
+        var propertyOwnerNameField = $('#property_owner_name_field');
+        var propertyOwnerEmailField = $('#property_owner_email_field');
+        var propertyOwnerPhoneField = $('#property_owner_phone_field');
+        
+        if (residenceType === 'Rented Place' || residenceType === 'Guest House') {
+            propertyOwnerNameField.removeClass('d-none');
+            propertyOwnerEmailField.removeClass('d-none');
+            propertyOwnerPhoneField.removeClass('d-none');
+            
+            $('#property_owner_name_input').attr('required', true);
+            $('#property_owner_email_input').attr('required', true);
+            $('#property_owner_phone_input').attr('required', true);
+        } else {
+            propertyOwnerNameField.addClass('d-none');
+            propertyOwnerEmailField.addClass('d-none');
+            propertyOwnerPhoneField.addClass('d-none');
+            
+            $('#property_owner_name_input').removeAttr('required').val('');
+            $('#property_owner_email_input').removeAttr('required').val('');
+            $('#property_owner_phone_input').removeAttr('required').val('');
+        }
+    },
+
+    _clearPropertyOwnerSubFields: function() {
+        var propertyOwnerOtherDiv = document.querySelector('.property_owner_other');
+        var propertyOwnerRelationDiv = document.querySelector('.property_owner_relation');
+        
+        if (propertyOwnerOtherDiv) {
+            propertyOwnerOtherDiv.classList.add('d-none');
+            var otherInput = propertyOwnerOtherDiv.querySelector('input');
+            if (otherInput) {
+                otherInput.value = '';
+            }
+        }
+        
+        if (propertyOwnerRelationDiv) {
+            propertyOwnerRelationDiv.classList.add('d-none');
+            var relationSelect = propertyOwnerRelationDiv.querySelector('select');
+            if (relationSelect) {
+                relationSelect.value = '';
+            }
+        }
+    },
+
+    togglePropertyOwnerFields: function(selectElement) {
+        var value = selectElement ? selectElement.value : '';
+        var propertyOwnerOtherDiv = document.querySelector('.property_owner_other');
+        var propertyOwnerRelationDiv = document.querySelector('.property_owner_relation');
+        
+        if (propertyOwnerOtherDiv) {
+            if (value === 'Other') {
+                propertyOwnerOtherDiv.classList.remove('d-none');
+            } else {
+                propertyOwnerOtherDiv.classList.add('d-none');
+                var otherInput = propertyOwnerOtherDiv.querySelector('input');
+                if (otherInput) {
+                    otherInput.value = '';
+                }
+            }
+        }
+        
+        if (propertyOwnerRelationDiv) {
+            if (value === 'Family Member') {
+                propertyOwnerRelationDiv.classList.remove('d-none');
+            } else {
+                propertyOwnerRelationDiv.classList.add('d-none');
+                var relationSelect = propertyOwnerRelationDiv.querySelector('select');
+                if (relationSelect) {
+                    relationSelect.value = '';
+                }
+            }
+        }
+    },
+
+    _onChangePropertyOwner: function(ev) {
+        this.togglePropertyOwnerFields(ev.currentTarget);
+    },
+
+    _initializeFamilyTable: function() {
+		var self = this;
+		setTimeout(function() {
+			var membersCount = parseInt($('#members_count_id').val()) || 1;
+			self._generateFamilyRows(membersCount);
+		}, 100);
 	},
 
-	_onVoterIdChange: function (ev) {
-		var $target = $(ev.currentTarget);
-		var selectedValue = this.$('select[name="do_you_need_voter_id_in_kanha"]').val();
-		if (selectedValue === 'Yes') {
-			$('#tab-kanha_voter_id').show();
-			$('#voter_details_div').show();
-			$('#collapse-kanha_voter_id').collapse('show');
-			this._enableMandatoryFields();
-		} else if (selectedValue === 'No') {
-			$('#tab-kanha_voter_id').hide();
-			$('#kanha_voter_id_info').hide();
-			$('#voter_details_div').hide();
-			$('#kanha_address').focus();
-			$('#collapse-kanha_voter_id').collapse('hide');
-			this._disableMandatoryFields();
-			$('#collapse-kanha_voter_id').collapse('hide');
+
+    _generateInitialRow: function() {
+        var citizenship = $('select[name="citizenship"]').val() || 'Indian';
+        var isOverseas = (citizenship === 'Overseas');
+        
+        var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
+        if ($tableBody.length === 0) return;
+        
+        $tableBody.empty();
+        
+        var applicantName = $('input[name="name"]').val() || '';
+        var applicantBloodGroup = $('select[name="blood_group"]').val() || '';
+        var applicantGovtId = '';
+        
+        if (isOverseas) {
+            applicantGovtId = $('input[name="passport_number"]').val() || $('input[name="govt_id_proof"]').val() || '';
+        }
+        
+        var bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB-', 'AB+'];
+        
+        var rowHtml = '<tr id="family-row-0">';
+        
+        var nameReadonly = this.isFormSaved ? ' readonly disabled' : '';
+        var selectDisabled = this.isFormSaved ? ' disabled' : '';
+        
+        rowHtml += '<td><input type="text" class="form-control" name="family_member_name_0" placeholder="Enter Name" value="' + applicantName + '"' + nameReadonly + ' /></td>';
+        rowHtml += '<td><select class="form-control" name="family_member_relation_0"' + selectDisabled + '><option value="Head" selected>Head</option></select></td>';
+        
+        rowHtml += '<td><select class="form-control" name="family_member_blood_group_0"' + selectDisabled + '><option value="">Select...</option>';
+        bloodGroupOptions.forEach(function(bloodGroup) {
+            var selected = (bloodGroup === applicantBloodGroup) ? ' selected' : '';
+            rowHtml += '<option value="' + bloodGroup + '"' + selected + '>' + bloodGroup + '</option>';
+        });
+        rowHtml += '</select></td>';
+        
+        if (isOverseas) {
+            rowHtml += '<td><input type="text" class="form-control" name="family_member_govt_id_0" placeholder="Enter Govt ID" value="' + applicantGovtId + '"' + nameReadonly + ' /></td>';
+            var fileDisabled = this.isFormSaved ? ' disabled style="display:none;"' : '';
+            rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_0" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+            rowHtml += '<td><input type="file" class="form-control" name="family_member_address_proof_0" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+        }
+        
+        rowHtml += '</tr>';
+        
+        $tableBody.append(rowHtml);
+        this._syncApplicantData();
+    },
+
+    _onMembersCountKeypress: function(ev) {
+		var applicationState = this.$('input[name="application_state"]').val() || 
+							this.$('select[name="application_state"]').val() ||
+							this.$('.application_state').val();
+		
+		if (this.isFormSaved && !(applicationState === 'draft' || applicationState === 'approved_for_edit')) {
+			ev.preventDefault();
+			return false;
 		}
+		
+		var charCode = ev.which || ev.keyCode;
+		var char = String.fromCharCode(charCode);
+		
+		if (charCode === 8 || charCode === 9 || charCode === 46) {
+			return true;
+		}
+		
+		if (!/^[1-8]$/.test(char)) {
+			ev.preventDefault();
+			return false;
+		}
+		
+		var currentValue = $(ev.currentTarget).val();
+		if (currentValue.length >= 1) {
+			ev.preventDefault();
+			return false;
+		}
+		
+		return true;
 	},
 
-	_disableMandatoryFields: function () {
-		$('.col-lg-8 input[required], .col-lg-8 select[required]').each(function () {
-			$(this).attr('data-original-required', 'true');
-			$(this).prop('required', false);
-		});
-	},
-
-	_enableMandatoryFields: function () {
-		$('.col-lg-8 input, .col-lg-8 select').each(function () {
-			if ($(this).attr('data-original-required') === 'true') {
-				$(this).prop('required', true);
-			} else {
-				$(this).prop('required', false);
-			}
-		});
-	},
-
-	_restoreSettings: function () {
-		var selectedValue = this.$('select[name="do_you_need_voter_id_in_kanha"]').val();
-		if (selectedValue === 'No') {
-			$('#tab-kanha_voter_id').hide();
-			$('#kanha_voter_id_info').hide();
-			this._disableMandatoryFields();
+    _onMembersCountInput: function(ev) {
+		var applicationState = this.$('input[name="application_state"]').val() || 
+							this.$('select[name="application_state"]').val() ||
+							this.$('.application_state').val();
+		
+		if (this.isFormSaved && !(applicationState === 'draft' || applicationState === 'approved_for_edit')) {
+			return;
+		}
+		
+		var value = $(ev.currentTarget).val();
+		var sanitizedValue = value.replace(/[^1-8]/g, '');
+		
+		if (sanitizedValue.length > 1) {
+			sanitizedValue = sanitizedValue.charAt(0);
+		}
+		
+		if (value !== sanitizedValue) {
+			$(ev.currentTarget).val(sanitizedValue);
+		}
+		
+		if (sanitizedValue && sanitizedValue !== '') {
+			this._generateFamilyRows(parseInt(sanitizedValue));
 		} else {
-			$('#tab-kanha_voter_id').show();
-			$('#kanha_voter_id_info').show();
+			this._clearFamilyTable();
+			this._generateInitialRow();
 		}
 	},
+
+
+    _onMembersCountChange: function(ev) {
+		var applicationState = this.$('input[name="application_state"]').val() || 
+							this.$('select[name="application_state"]').val() ||
+							this.$('.application_state').val();
+		
+		if (this.isFormSaved && !(applicationState === 'draft' || applicationState === 'approved_for_edit')) {
+			return;
+		}
+		
+		var value = $(ev.currentTarget).val();
+		var membersCount = parseInt(value);
+		
+		if (!isNaN(membersCount) && membersCount >= 1 && membersCount <= 8) {
+			this._generateFamilyRows(membersCount);
+		} else {
+			this._clearFamilyTable();
+			this._generateInitialRow();
+		}
+	},
+
+    _clearFamilyTable: function() {
+        $('#family-table-body').empty();
+        $('#overseas-family-table-body').empty();
+    },
+
+    _generateFamilyRows: function(count) {
+    var self = this;
+    var citizenship = $('select[name="citizenship"]').val();
+    
+    var isOverseas = false;
+    if (citizenship === 'Overseas') {
+        isOverseas = true;
+    } else if (!citizenship && window.location.href.includes('overseas')) {
+        isOverseas = true;
+    }
+    
+    this._clearFamilyTable();
+    
+    var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
+    
+    if ($tableBody.length === 0) {
+        return;
+    }
+    
+    var applicantName = $('input[name="name"]').val() || '';
+    var applicantBloodGroup = $('select[name="blood_group"]').val() || '';
+    var applicantGovtId = '';
+    
+    if (isOverseas) {
+        applicantGovtId = $('input[name="passport_number"]').val() || $('input[name="govt_id_proof"]').val() || '';
+    }
+    
+    var bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB-', 'AB+'];
+    var relationOptions = [
+        'Father', 'Mother', 'Husband', 'Wife', 'Brother', 'Sister', 
+        'Son', 'Daughter', 'Grandfather', 'Grandmother', 
+        'Father-in-law', 'Mother-in-law', 'Brother-in-law', 'Sister-in-law', 
+        'Son-in-law', 'Daughter-in-law', 'Spouse', 'Other'
+    ];
+    
+    var existingFamilyData = this._getExistingFamilyData();
+    
+    for (var i = 0; i < count; i++) {
+        var rowHtml = '<tr id="family-row-' + i + '">';
+        
+        var nameValue = '';
+        var relationValue = '';
+        var bloodGroupValue = '';
+        var govtIdValue = '';
+        
+        if (existingFamilyData && existingFamilyData[i]) {
+            nameValue = existingFamilyData[i].name || '';
+            relationValue = existingFamilyData[i].relation || '';
+            bloodGroupValue = existingFamilyData[i].blood_group || '';
+            if (isOverseas) {
+                govtIdValue = existingFamilyData[i].govt_id || '';
+            }
+        } else if (i === 0) {
+            nameValue = applicantName;
+            relationValue = 'Head';
+            bloodGroupValue = applicantBloodGroup;
+            if (isOverseas) {
+                govtIdValue = applicantGovtId;
+            }
+        }
+        
+        var nameReadonly = this.isFormSaved ? ' readonly disabled' : '';
+        var selectDisabled = this.isFormSaved ? ' disabled' : '';
+        
+        rowHtml += '<td><input type="text" class="form-control" name="family_member_name_' + i + '" placeholder="Enter Name" value="' + nameValue + '"' + nameReadonly + ' /></td>';
+        
+        if (i === 0) {
+            rowHtml += '<td><select class="form-control" name="family_member_relation_' + i + '"' + selectDisabled + '><option value="Head" selected>Head</option></select></td>';
+        } else {
+            rowHtml += '<td><select class="form-control" name="family_member_relation_' + i + '"' + selectDisabled + '><option value="">Select Relation</option>';
+            relationOptions.forEach(function(relation) {
+                var selected = (relation === relationValue) ? ' selected' : '';
+                rowHtml += '<option value="' + relation + '"' + selected + '>' + relation + '</option>';
+            });
+            rowHtml += '</select></td>';
+        }
+        
+        rowHtml += '<td><select class="form-control" name="family_member_blood_group_' + i + '"' + selectDisabled + '><option value="">Select...</option>';
+        bloodGroupOptions.forEach(function(bloodGroup) {
+            var selected = (bloodGroup === bloodGroupValue) ? ' selected' : '';
+            rowHtml += '<option value="' + bloodGroup + '"' + selected + '>' + bloodGroup + '</option>';
+        });
+        rowHtml += '</select></td>';
+        
+        if (isOverseas) {
+            rowHtml += '<td><input type="text" class="form-control" name="family_member_govt_id_' + i + '" placeholder="Enter Govt ID" value="' + govtIdValue + '"' + nameReadonly + ' /></td>';
+            
+            var fileDisabled = this.isFormSaved ? ' disabled style="display:none;"' : '';
+            rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_' + i + '" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+            rowHtml += '<td><input type="file" class="form-control" name="family_member_address_proof_' + i + '" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+        }
+        
+        rowHtml += '</tr>';
+        
+        $tableBody.append(rowHtml);
+    }
+    
+    if (!existingFamilyData) {
+        this._syncApplicantData();
+    }
+},
+   
+    _getExistingFamilyData: function() {
+		var familyDataInput = $('input[name="existing_family_data"]');
+		if (familyDataInput.length && familyDataInput.val()) {
+			try {
+				return JSON.parse(familyDataInput.val());
+			} catch (e) {
+				console.log('Error parsing existing family data:', e);
+			}
+		}
+		return null;
+	},
+
+    _onCitizenshipChange: function () {
+        var citizenship = this.$('select[name="citizenship"]');
+        if(citizenship.val() == 'Overseas'){
+            $('#change_voter_id_address_field').val("");
+            $('#change_voter_id_address_field').change();
+            $('#already_have_kanha_voter_id_field').val("")
+            $('#already_have_kanha_voter_id_field').change()
+            $('.passport_field').removeClass('d-none');
+            $('#passport_number_input').attr('required', true);
+            $('.passport_front_image_div').removeClass('d-none');
+            $('.passport_back_image_div').removeClass('d-none');
+            $('#passport_front_image_file').attr('required', true);
+            $('#passport_back_image_file').attr('required', true);
+            $('.indian_visa_div').removeClass('d-none');
+            $('#indian_visa_file').attr('required', true);
+
+            $('#aadhaar_card_number_field').removeAttr('required');
+            $("label[for='Aadhaar Card Number']").next(".s_website_form_mark").addClass('d-none')
+            $("label[for='Aadhar Card Front']").next(".s_website_form_mark").addClass('d-none')
+            $("label[for='Aadhar Card Back']").next(".s_website_form_mark").addClass('d-none')
+            $('#adhar_card_file_front').removeAttr('required');
+            $("#adhar_card_file_front").next(".s_website_form_mark").addClass('d-none')
+            $('#adhar_card_file_back').removeAttr('required');
+            $("#adhar_card_file_back").next(".s_website_form_mark").addClass('d-none')
+            
+            $('#govt_id_proof_field').removeAttr('required');
+            $('#has_voter_id_in_kanha_field').removeAttr('required');
+            $('#voter_id_number_optional_field').removeAttr('required');
+            $('#wants_to_apply_voter_id_field').removeAttr('required');
+            $('#members_count_id').removeAttr('required');
+            $("label[for='govt_id_proof'] .s_website_form_mark").remove();
+            $("label[for='has_voter_id_in_kanha'] .s_website_form_mark").remove();
+            $("label[for='voter_id_number_optional'] .s_website_form_mark").remove();
+            $("label[for='wants_to_apply_voter_id'] .s_website_form_mark").remove();
+            
+            var is_kanha_voter_tab_active = $('a#tab-kanha_voter_id').hasClass('active');
+            $('#tab-kanha_voter_id').addClass('d-none');
+            $('#pane-kanha_voter_id').addClass('d-none');
+            if(is_kanha_voter_tab_active)
+            {
+                $('a.active').removeClass("active");
+                $('div.active').removeClass("active");
+                $('#tab-kanha').addClass('active');
+                $('#pane-kanha').addClass('active');
+                $('#pane-kanha').addClass('show');
+            }
+            
+            $('#birth_country_id_field').removeAttr('required');
+            $('#change_voter_id_address_field').removeAttr('required');
+            $('#voter_id_number_field').removeAttr('required');
+            $('#already_have_kanha_voter_id_field').removeAttr('required');
+            $('#kanha_voter_id_number_field').removeAttr('required');
+            $('#kanha_voter_id_image_field').removeAttr('required');
+            $('#kanha_voter_id_image_filename_field').removeAttr('required');
+            $('#kanha_voter_id_back_image_field').removeAttr('required');
+            $('#kanha_voter_id_back_image_filename_field').removeAttr('required');
+            $('#need_new_kanha_voter_id_field').removeAttr('required');
+            $('#application_type_field').removeAttr('required');
+            $('#existing_voter_id_number_field').removeAttr('required');
+            $('#voter_id_file_field').removeAttr('required');
+            $('#voter_id_file_filename_field').removeAttr('required');
+        }
+        else{
+            $('.passport_field').addClass('d-none');
+            $('#passport_number_input').removeAttr('required');
+            $('.passport_front_image_div').addClass('d-none');
+            $('.passport_back_image_div').addClass('d-none');
+            $('#passport_front_image_file').removeAttr('required');
+            $('#passport_back_image_file').removeAttr('required');
+            $('.indian_visa_div').addClass('d-none');
+            $('#indian_visa_file').removeAttr('required');
+            
+            $("label[for='Aadhar Card Front']").next(".s_website_form_mark").removeClass('d-none')
+            $("label[for='Aadhar Card Back']").next(".s_website_form_mark").removeClass('d-none')
+            $('#aadhaar_card_number_field').attr('required', true);
+            $('#adhar_card_file_front').attr('required', true);
+            $('#adhar_card_file_back').attr('required', true);
+            
+            $('#govt_id_proof_field').attr('required', true);
+            $('#has_voter_id_in_kanha_field').attr('required', true);
+            $('#members_count_id').attr('required', true);
+            $("label[for='govt_id_proof'] .s_website_form_mark").remove();
+            $("label[for='govt_id_proof']").append('<span class="s_website_form_mark"> *</span>');
+            $("label[for='has_voter_id_in_kanha'] .s_website_form_mark").remove();
+            $("label[for='has_voter_id_in_kanha']").append('<span class="s_website_form_mark"> *</span>');
+            
+            var hasVoterIdValue = this.$('select[name="has_voter_id_in_kanha"]').val();
+            if (hasVoterIdValue === 'Yes') {
+                $('input[name="voter_id_number_optional"]').attr('required', true);
+                $("label[for='voter_id_number_optional'] .s_website_form_mark").remove();
+                $("label[for='voter_id_number_optional']").append('<span class="s_website_form_mark"> *</span>');
+            } else if (hasVoterIdValue === 'No') {
+                $('select[name="wants_to_apply_voter_id"]').attr('required', true);
+                $("label[for='wants_to_apply_voter_id'] .s_website_form_mark").remove();
+                $("label[for='wants_to_apply_voter_id']").append('<span class="s_website_form_mark"> *</span>');
+            }
+            
+            $('#tab-kanha_voter_id').removeClass('d-none');
+            $('#pane-kanha_voter_id').removeClass('d-none');
+            
+            $('#birth_country_id_field').attr('required', true);
+            $('#already_have_kanha_voter_id_field').attr('required', true);
+        }
+        
+        this._generateInitialRow();
+    },
+
+    _syncApplicantData: function() {
+        var self = this;
+        var citizenship = $('select[name="citizenship"]').val() || 'Indian';
+        var isOverseas = (citizenship === 'Overseas');
+        
+        if (this.isFormSaved) {
+            return;
+        }
+        
+        $('input[name="name"]').off('input.familySync').on('input.familySync', function() {
+            $('input[name="family_member_name_0"]').val($(this).val());
+        });
+        
+        $('select[name="blood_group"]').off('change.familySync').on('change.familySync', function() {
+            $('select[name="family_member_blood_group_0"]').val($(this).val());
+        });
+        
+        if (isOverseas) {
+            $('input[name="passport_number"]').off('input.familySync').on('input.familySync', function() {
+                var passportValue = $(this).val();
+                $('input[name="family_member_govt_id_0"]').val(passportValue);
+            });
+            
+            $('input[name="govt_id_proof"]').off('input.familySync').on('input.familySync', function() {
+                if (!$('input[name="passport_number"]').val()) {
+                    $('input[name="family_member_govt_id_0"]').val($(this).val());
+                }
+            });
+        }
+        
+        var currentName = $('input[name="name"]').val();
+        var currentBloodGroup = $('select[name="blood_group"]').val();
+        var currentGovtId = '';
+        
+        if (isOverseas) {
+            currentGovtId = $('input[name="passport_number"]').val() || $('input[name="govt_id_proof"]').val() || '';
+        }
+        
+        if (currentName) {
+            $('input[name="family_member_name_0"]').val(currentName);
+        }
+        if (currentBloodGroup) {
+            $('select[name="family_member_blood_group_0"]').val(currentBloodGroup);
+        }
+        if (isOverseas && currentGovtId) {
+            $('input[name="family_member_govt_id_0"]').val(currentGovtId);
+        }
+    },
+
+    _removeRequiredFields: function() {
+        $('#year_of_birth_field').removeAttr('required');
+        $('#birth_state_id_field').removeAttr('required');
+        $('#birth_district_field').removeAttr('required');
+    },
+
+    _onSearchInput: function(ev) {
+        var searchValue = $(ev.currentTarget).val().toLowerCase();
+        var $tableRows = $('table tbody tr');
+        
+        if (searchValue === '') {
+            $tableRows.show();
+        } else {
+            $tableRows.each(function() {
+                var $row = $(this);
+                var name = $row.find('td:first').text().toLowerCase();
+                var email = $row.find('td:nth-child(2)').text().toLowerCase();
+                var mobile = $row.find('td:nth-child(3)').text().toLowerCase();
+                
+                if (name.includes(searchValue) || email.includes(searchValue) || mobile.includes(searchValue)) {
+                    $row.show();
+                } else {
+                    $row.hide();
+                }
+            });
+        }
+    },
+
+    _onRestrictInput: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+        }
+    },
+    
+    _restrictSpecialCharacter: function(e) {  
+        var k;  
+        document.all ? k = e.keyCode : k = e.which;  
+        return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 9 || k == 8 || k == 32 || (k >= 48 && k <= 57));  
+    }, 
+    
+    _insertCardNumberBlankSpace: function (e) {
+        var restrictSpecialChar = this._restrictSpecialCharacter(e)
+        e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+        return restrictSpecialChar;
+    },
+
+    _onClickDeletePartner: function (e) {
+        var self = this;
+        
+        var def = new Promise(function (resolve, reject) {
+            var message = _t("Are you sure you want to delete this record?");
+            
+            var dialog = Dialog.confirm(self, message, {
+                title: _t("Confirmation"),
+                confirm_callback: function() {
+                    var partner_id = $(e.target).attr('id');
+                    var deleted_partner_ids = [partner_id];
+
+                    var form_values = {
+                        'deleted_partner_ids': deleted_partner_ids
+                    };
+
+                    ajax.post('/delete_family_members', form_values)
+                        .then(function (result) {
+                            if (result === "deleted") {
+                                Dialog.alert(self, _t("Record has been deleted successfully."), {
+                                    confirm_callback: function() {
+                                        $(window.location).attr('href', "/family/");
+                                    },
+                                });
+                            } else if (result === "current_user") {
+                                Dialog.alert(null, _t("Please contact Administrator to delete the record."));
+                            } else if (result === "cannot_delete") {
+                                Dialog.alert(null, _t("You can delete only Rejected and Not Yet Submitted records. If you have assigned an RFID card from Ashram Office, please contact Ashram office for deleting this record."));
+                            } else if (result === "no_records") {
+                                Dialog.alert(null, _t("Record does not exist."));
+                            }
+                        })
+                        .guardedCatch(function () {
+                            console.log("Error occurred during deletion.");
+                            Dialog.alert(self, _t("An error occurred while attempting to delete the record. Please try again later."));
+                        });
+                },
+                cancel_callback: reject,
+            });
+
+            dialog.on('closed', self, reject);
+        });
+    },
+    
+    _onChangeRelationType: function (ev) {
+        var relation_type = this.$('select[name="relation_type"]');
+        if(relation_type.val() == 'Other'){
+            $('.relation_other_class').removeClass('d-none');
+        }
+        else{
+            $('.relation_other_class').addClass('d-none');
+        }
+    },
+
+    _adaptWorkDepartmentAddressForm: function () {
+        var work_profile = document.getElementById("work_profile_id_field");
+        if(typeof work_profile !== 'undefined' && work_profile !== null) {
+            var selected_work_profile = work_profile.options[work_profile.selectedIndex].text;
+            if(selected_work_profile.trim() != 'Resident'){
+                $('.department').removeClass('d-none');
+                $('.employee_id').removeClass('d-none');
+            }
+            else{
+                document.getElementById("department_id").value = "";
+                document.getElementById("employee_id_id").value = "";
+                $('.department').addClass('d-none');
+                $('.employee_id').addClass('d-none');
+            }
+        }
+    },
+    
+    _onWorkProfileChange: function () {
+        this._adaptWorkDepartmentAddressForm();
+    },
+
+    _onHasVoterIdChange: function (ev) {
+        var selectedValue = this.$('select[name="has_voter_id_in_kanha"]').val();
+        var citizenship = this.$('select[name="citizenship"]').val();
+        
+        if (selectedValue === 'Yes') {
+            $('.voter_id_number_optional_field').removeClass('d-none');
+            $('.wants_to_apply_voter_id_field').addClass('d-none');
+            
+            if (citizenship === 'Indian' || !citizenship) {
+                $('input[name="voter_id_number_optional"]').attr('required', true);
+                $("label[for='voter_id_number_optional'] .s_website_form_mark").remove();
+                $("label[for='voter_id_number_optional']").append('<span class="s_website_form_mark"> *</span>');
+            }
+            
+            $('select[name="wants_to_apply_voter_id"]').val('').removeAttr('required');
+            $("label[for='wants_to_apply_voter_id'] .s_website_form_mark").remove();
+            
+        } else if (selectedValue === 'No') {
+            $('.voter_id_number_optional_field').addClass('d-none');
+            $('.wants_to_apply_voter_id_field').removeClass('d-none');
+            
+            if (citizenship === 'Indian' || !citizenship) {
+                $('select[name="wants_to_apply_voter_id"]').attr('required', true);
+                $("label[for='wants_to_apply_voter_id'] .s_website_form_mark").remove();
+                $("label[for='wants_to_apply_voter_id']").append('<span class="s_website_form_mark"> *</span>');
+            }
+            
+            $('input[name="voter_id_number_optional"]').val('').removeAttr('required');
+            $("label[for='voter_id_number_optional'] .s_website_form_mark").remove();
+            
+        } else {
+            $('.voter_id_number_optional_field').addClass('d-none');
+            $('.wants_to_apply_voter_id_field').addClass('d-none');
+            $('input[name="voter_id_number_optional"]').val('').removeAttr('required');
+            $('select[name="wants_to_apply_voter_id"]').val('').removeAttr('required');
+            $("label[for='voter_id_number_optional'] .s_website_form_mark").remove();
+            $("label[for='wants_to_apply_voter_id'] .s_website_form_mark").remove();
+        }
+    },
+
+    _restoreSettings: function () {
+        var selectedValue = this.$('select[name="has_voter_id_in_kanha"]').val();
+        var citizenship = this.$('select[name="citizenship"]').val();
+        
+        if (selectedValue === 'Yes') {
+            $('.voter_id_number_optional_field').removeClass('d-none');
+            $('.wants_to_apply_voter_id_field').addClass('d-none');
+            if (citizenship === 'Indian' || !citizenship) {
+                $('input[name="voter_id_number_optional"]').attr('required', true);
+                $("label[for='voter_id_number_optional'] .s_website_form_mark").remove();
+                $("label[for='voter_id_number_optional']").append('<span class="s_website_form_mark"> *</span>');
+            }
+        } else if (selectedValue === 'No') {
+            $('.voter_id_number_optional_field').addClass('d-none');
+            $('.wants_to_apply_voter_id_field').removeClass('d-none');
+            if (citizenship === 'Indian' || !citizenship) {
+                $('select[name="wants_to_apply_voter_id"]').attr('required', true);
+                $("label[for='wants_to_apply_voter_id'] .s_website_form_mark").remove();
+                $("label[for='wants_to_apply_voter_id']").append('<span class="s_website_form_mark"> *</span>');
+            }
+        } else {
+            $('.voter_id_number_optional_field').addClass('d-none');
+            $('.wants_to_apply_voter_id_field').addClass('d-none');
+        }
+    },
 
     _onChangeVoterAddressToKanha: function (ev) {
-		document.getElementById("application_type_field").value = "";
+        document.getElementById("application_type_field").value = "";
         $(ev.currentTarget).closest('form').find('select[name="application_type"]').trigger('change');
-	
-		var voter_is_there = this.$('select[id="already_have_kanha_voter_id_field"]');
-		var voter_address_change = this.$('select[name="change_voter_id_address"]');
-		if(voter_address_change.val() == 'Yes'){
-			$('.voter_id_tab').removeClass('d-none');
-			
-			$('#existing_voter_id_number_field').attr('required', true);
-			$('#voter_country_id').attr('required', true);
-			$('#voter_state_id').attr('required', true);
-			$('#assembly_constituency_field').attr('required', true);
-			$('#house_number_field').attr('required', true);
-			$('#locality_field').attr('required', true);
-			$('#town_field').attr('required', true);
-			$('#post_office_field').attr('required', true);
-			$('#zip_field').attr('required', true);
-			$('#district_field').attr('required', true);
-			$('.voter_application_type').removeClass('d-none');
-			$('#application_type_field').attr('required', true);
 
-			var transfer_application = '<option value="Transfer Application">Transfer Application</option>'
-			if(voter_is_there.val() == 'Yes'){
-				$('#application_type_field').empty().append(transfer_application);
-				$('#application_type_field').change()
-			}
-		}
-		else{
-			var is_voter_tab_active = $('a.voter_id_tab').hasClass('active');
-			$('.voter_id_tab').addClass('d-none');
-			
-			$('#existing_voter_id_number_field').removeAttr('required');
-			$('#voter_country_id').removeAttr('required');
-			$('#voter_state_id').removeAttr('required');
-			$('#assembly_constituency_field').removeAttr('required');
-			$('#house_number_field').removeAttr('required');
-			$('#locality_field').removeAttr('required');
-			$('#town_field').removeAttr('required');
-			$('#post_office_field').removeAttr('required');
-			$('#zip_field').removeAttr('required');
-			$('#district_field').removeAttr('required');
-			
-			$('.voter_application_type').addClass('d-none');
-			$('#application_type_field').removeAttr('required');
-			
-			if(is_voter_tab_active)
-			{
-				$('a.active').removeClass("active");
-				$('div.active').removeClass("active");
-				$('#tab-kanha').addClass('active');
-				$('#pane-kanha').addClass('active');
-				$('#pane-kanha').addClass('show');
-			}
-		}
+        var voter_is_there = this.$('select[id="already_have_kanha_voter_id_field"]');
+        var voter_address_change = this.$('select[name="change_voter_id_address"]');
+        if(voter_address_change.val() == 'Yes'){
+            $('.voter_id_tab').removeClass('d-none');
+            
+            $('#existing_voter_id_number_field').attr('required', true);
+            $('#voter_country_id').attr('required', true);
+            $('#voter_state_id').attr('required', true);
+            $('#assembly_constituency_field').attr('required', true);
+            $('#house_number_field').attr('required', true);
+            $('#locality_field').attr('required', true);
+            $('#town_field').attr('required', true);
+            $('#post_office_field').attr('required', true);
+            $('#zip_field').attr('required', true);
+            $('#district_field').attr('required', true);
+            $('.voter_application_type').removeClass('d-none');
+            $('#application_type_field').attr('required', true);
+
+            var transfer_application = '<option value="Transfer Application">Transfer Application</option>'
+            if(voter_is_there.val() == 'Yes'){
+                $('#application_type_field').empty().append(transfer_application);
+                $('#application_type_field').change()
+            }
+        }
+        else{
+            var is_voter_tab_active = $('a.voter_id_tab').hasClass('active');
+            $('.voter_id_tab').addClass('d-none');
+            
+            $('#existing_voter_id_number_field').removeAttr('required');
+            $('#voter_country_id').removeAttr('required');
+            $('#voter_state_id').removeAttr('required');
+            $('#assembly_constituency_field').removeAttr('required');
+            $('#house_number_field').removeAttr('required');
+            $('#locality_field').removeAttr('required');
+            $('#town_field').removeAttr('required');
+            $('#post_office_field').removeAttr('required');
+            $('#zip_field').removeAttr('required');
+            $('#district_field').removeAttr('required');
+            
+            $('.voter_application_type').addClass('d-none');
+            $('#application_type_field').removeAttr('required');
+            
+            if(is_voter_tab_active)
+            {
+                $('a.active').removeClass("active");
+                $('div.active').removeClass("active");
+                $('#tab-kanha').addClass('active');
+                $('#pane-kanha').addClass('active');
+                $('#pane-kanha').addClass('show');
+            }
+        }
     },
 
     _onChangeAlreadyHaveKanhaVoterID: function (ev) {
-		document.getElementById("need_new_kanha_voter_id_field").value = "";
+        document.getElementById("need_new_kanha_voter_id_field").value = "";
         $(ev.currentTarget).closest('form').find('select[name="need_new_kanha_voter_id"]').trigger('change');
 
-		var already_have_kanha_voter_id = this.$('select[name="already_have_kanha_voter_id"]');
-		if(already_have_kanha_voter_id.val() == 'Yes'){
-			$('.need_new_kanha_voter_id').addClass('d-none');
-			$('#need_new_kanha_voter_id_field').removeAttr('required');
-			$('.kanha_voter_id_number').removeClass('d-none');
-			$('#kanha_voter_id_number_field').attr('required', true);
-			$('.kanha_voter_id_image').removeClass('d-none');
-			$('.kanha_voter_id_back_image').removeClass('d-none');
-			$('.change_voter_id_address').removeClass('d-none');
-		}
-		else if(already_have_kanha_voter_id.val() == 'No'){
-			$('#change_voter_id_address_field').val("");
-			$('#change_voter_id_address_field').change();
-			$('.kanha_voter_id_number').addClass('d-none');
-			$('#kanha_voter_id_number_field').removeAttr('required');
-			$('.kanha_voter_id_image').addClass('d-none');
-			$('#kanha_voter_id_image_field').removeAttr('required');
-			$('.kanha_voter_id_back_image').addClass('d-none');
-			$('#kanha_voter_id_back_image_field').removeAttr('required');
-			$('.need_new_kanha_voter_id').removeClass('d-none');
-			$('#need_new_kanha_voter_id_field').attr('required', true);
-			$('.change_voter_id_address').addClass('d-none');
-		}
-		else{
-			$('.need_new_kanha_voter_id').addClass('d-none');
-			$('#need_new_kanha_voter_id_field').removeAttr('required');
-			$('.kanha_voter_id_number').addClass('d-none');
-			$('#kanha_voter_id_number_field').removeAttr('required');
-			$('.kanha_voter_id_image').addClass('d-none');
-			$('#kanha_voter_id_image_field').removeAttr('required');
-			$('.kanha_voter_id_back_image').addClass('d-none');
-			$('#kanha_voter_id_back_image_field').removeAttr('required');
-			$('.change_voter_id_address').addClass('d-none');
-		}
+        var already_have_kanha_voter_id = this.$('select[name="already_have_kanha_voter_id"]');
+        if(already_have_kanha_voter_id.val() == 'Yes'){
+            $('.need_new_kanha_voter_id').addClass('d-none');
+            $('#need_new_kanha_voter_id_field').removeAttr('required');
+            $('.kanha_voter_id_number').removeClass('d-none');
+            $('#kanha_voter_id_number_field').attr('required', true);
+            $('.kanha_voter_id_image').removeClass('d-none');
+            $('.kanha_voter_id_back_image').removeClass('d-none');
+            $('.change_voter_id_address').removeClass('d-none');
+        }
+        else if(already_have_kanha_voter_id.val() == 'No'){
+            $('#change_voter_id_address_field').val("");
+            $('#change_voter_id_address_field').change();
+            $('.kanha_voter_id_number').addClass('d-none');
+            $('#kanha_voter_id_number_field').removeAttr('required');
+            $('.kanha_voter_id_image').addClass('d-none');
+            $('#kanha_voter_id_image_field').removeAttr('required');
+            $('.kanha_voter_id_back_image').addClass('d-none');
+            $('#kanha_voter_id_back_image_field').removeAttr('required');
+            $('.need_new_kanha_voter_id').removeClass('d-none');
+            $('#need_new_kanha_voter_id_field').attr('required', true);
+            $('.change_voter_id_address').addClass('d-none');
+        }
+        else{
+            $('.need_new_kanha_voter_id').addClass('d-none');
+            $('#need_new_kanha_voter_id_field').removeAttr('required');
+            $('.kanha_voter_id_number').addClass('d-none');
+            $('#kanha_voter_id_number_field').removeAttr('required');
+            $('.kanha_voter_id_image').addClass('d-none');
+            $('#kanha_voter_id_image_field').removeAttr('required');
+            $('.kanha_voter_id_back_image').addClass('d-none');
+            $('#kanha_voter_id_back_image_field').removeAttr('required');
+            $('.change_voter_id_address').addClass('d-none');
+        }
     },
 
     _onChangeNeedNewKanhaVoterID: function (ev) {
-		document.getElementById("application_type_field").value = "";
+        document.getElementById("application_type_field").value = "";
         $(ev.currentTarget).closest('form').find('select[name="application_type"]').trigger('change');
 
-		var need_new_kanha_voter_id = this.$('select[name="need_new_kanha_voter_id"]');
-		if(need_new_kanha_voter_id.val() == 'Yes'){
-			$('.voter_application_type').removeClass('d-none');
-			$('#application_type_field').attr('required', true);
-			var new_application = '<option value="New Application">New Application</option>'
-			$('#application_type_field').empty().append(new_application);
-			$('#application_type_field').change()
-		}
-		else{
-			$('.voter_application_type').addClass('d-none');
-			$('#application_type_field').removeAttr('required');
-		}
+        var need_new_kanha_voter_id = this.$('select[name="need_new_kanha_voter_id"]');
+        if(need_new_kanha_voter_id.val() == 'Yes'){
+            $('.voter_application_type').removeClass('d-none');
+            $('#application_type_field').attr('required', true);
+            var new_application = '<option value="New Application">New Application</option>'
+            $('#application_type_field').empty().append(new_application);
+            $('#application_type_field').change()
+        }
+        else{
+            $('.voter_application_type').addClass('d-none');
+            $('#application_type_field').removeAttr('required');
+        }
     },
 
-	_onCitizenshipChange: function () {
-		var citizenship = this.$('select[name="citizenship"]');
-		if(citizenship.val() == 'Overseas'){
-			$('#change_voter_id_address_field').val("");
-			$('#change_voter_id_address_field').change();
-			$('#already_have_kanha_voter_id_field').val("")
-			$('#already_have_kanha_voter_id_field').change()
-			$('.passport_field').removeClass('d-none');
-			$('#passport_number_input').attr('required', true);
-			$('.passport_front_image_div').removeClass('d-none');
-			$('.passport_back_image_div').removeClass('d-none');
-			$('#passport_front_image_file').attr('required', true);
-			$('#passport_back_image_file').attr('required', true);
-			$('.indian_visa_div').removeClass('d-none');
-			$('#indian_visa_file').attr('required', true);
-
-			$('#aadhaar_card_number_field').removeAttr('required');
-			$("label[for='Aadhaar Card Number']").next(".s_website_form_mark").addClass('d-none')
-			$("label[for='Aadhar Card Front']").next(".s_website_form_mark").addClass('d-none')
-			$("label[for='Aadhar Card Back']").next(".s_website_form_mark").addClass('d-none')
-			$('#adhar_card_file_front').removeAttr('required');
-			$("#adhar_card_file_front").next(".s_website_form_mark").addClass('d-none')
-			$('#adhar_card_file_back').removeAttr('required');
-			$("#adhar_card_file_back").next(".s_website_form_mark").addClass('d-none')
-			
-			var is_kanha_voter_tab_active = $('a#tab-kanha_voter_id').hasClass('active');
-			$('#tab-kanha_voter_id').addClass('d-none');
-			$('#pane-kanha_voter_id').addClass('d-none');
-			if(is_kanha_voter_tab_active)
-			{
-				$('a.active').removeClass("active");
-				$('div.active').removeClass("active");
-				$('#tab-kanha').addClass('active');
-				$('#pane-kanha').addClass('active');
-				$('#pane-kanha').addClass('show');
-			}
-			
-			$('#birth_country_id_field').removeAttr('required');
-			$('#change_voter_id_address_field').removeAttr('required');
-			$('#voter_id_number_field').removeAttr('required');
-			$('#already_have_kanha_voter_id_field').removeAttr('required');
-			$('#kanha_voter_id_number_field').removeAttr('required');
-			$('#kanha_voter_id_image_field').removeAttr('required');
-			$('#kanha_voter_id_image_filename_field').removeAttr('required');
-			$('#kanha_voter_id_back_image_field').removeAttr('required');
-			$('#kanha_voter_id_back_image_filename_field').removeAttr('required');
-			$('#need_new_kanha_voter_id_field').removeAttr('required');
-			$('#application_type_field').removeAttr('required');
-			$('#existing_voter_id_number_field').removeAttr('required');
-			$('#voter_id_file_field').removeAttr('required');
-			$('#voter_id_file_filename_field').removeAttr('required');
-		}
-		else{
-			$('.passport_field').addClass('d-none');
-			$('#passport_number_input').removeAttr('required');
-			$('.passport_front_image_div').addClass('d-none');
-			$('.passport_back_image_div').addClass('d-none');
-			$('#passport_front_image_file').removeAttr('required');
-			$('#passport_back_image_file').removeAttr('required');
-			$('.indian_visa_div').addClass('d-none');
-			$('#indian_visa_file').removeAttr('required');
-			
-			$("label[for='Aadhar Card Front']").next(".s_website_form_mark").removeClass('d-none')
-			$("label[for='Aadhar Card Back']").next(".s_website_form_mark").removeClass('d-none')
-			$('#aadhaar_card_number_field').attr('required', true);
-			$('#adhar_card_file_front').attr('required', true);
-			$('#adhar_card_file_back').attr('required', true);
-			
-			$('#tab-kanha_voter_id').removeClass('d-none');
-			$('#pane-kanha_voter_id').removeClass('d-none');
-			
-			$('#birth_country_id_field').attr('required', true);
-			$('#already_have_kanha_voter_id_field').attr('required', true);
-		}
-    },
-
-	 _onUploadPassportFrontImage: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
+    _onBrowseFile: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
             return;
         }
-		var file = files[0]
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("passport_front_image_filename").value = "";
-				document.getElementsByName("passport_front_iamge").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
-
-	 _onUploadPassportBackImage: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
-            return;
-        }
-		var file = files[0]
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("passport_back_image_filename").value = "";
-				document.getElementsByName("passport_back_iamge").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
-
-	 _onUploadIndianVisa: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
-            return;
-        }
-		var file = files[0]
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("indian_visa_filename").value = "";
-				document.getElementsByName("indian_visa").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
-	
-	_onUploadPassportPhoto: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
-            return;
-        }
-		var file = files[0]
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("passport_photo_filename").value = "";
-				document.getElementsByName("passport_photo").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
-	
-	_onUploadKanhaVoterIdImage: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
-            return;
-        }
-		var file = files[0];
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("kanha_voter_id_image_filename").value = "";
-				document.getElementsByName("kanha_voter_id_image").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
-	
-	_onUploadKanhaVoterIdBackImage: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
-            return;
-        }
-		var file = files[0];
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("kanha_voter_id_back_image_filename").value = "";
-				document.getElementsByName("kanha_voter_id_back_image").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
-	
-	_onBrowseFile: function (ev) {
-		ev.preventDefault();
-		var fileupload = $(ev.target).attr('fileupload')
+        
+        ev.preventDefault();
+        var fileupload = $(ev.target).attr('fileupload')
         $(ev.currentTarget).closest('form').find('.'+fileupload).trigger('click');
- 	},
+    },
+
+    _onClearFile: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+            return;
+        }
+        
+        var fileupload_input = $(ev.target).attr('fileupload_input')
+        var filename_input = $(ev.target).attr('filename_input')
+        var $form = $(ev.currentTarget).closest('form');
+        $form.find('.'+filename_input).val('');
+        $form.find('.'+fileupload_input).val('');
+    },
+
+    _onUploadPassportFrontImage: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+            return;
+        }
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0]
+        var mimeType = file.type
+        if(mimeType.indexOf("image/") == 0){
+            var fileSize = file.size / 1024 / 1024;
+            if (fileSize > 5) {
+                var fileSizeFormatted = fileSize.toFixed(2);
+                Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+                ev.target.value = "";
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input');
+                $form.find('.'+filename_input).val('');
+            }
+            else{
+                var file_name = ev.target.files[0].name
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input')
+                $form.find('.'+filename_input).val(file_name);
+            }
+        }
+        else{
+            Dialog.alert(null, "Accepts only image files.");
+            ev.target.value = "";
+        }
+    },
+
+    _onUploadPassportBackImage: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+            return;
+        }
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0]
+        var mimeType = file.type
+        if(mimeType.indexOf("image/") == 0){
+            var fileSize = file.size / 1024 / 1024;
+            if (fileSize > 5) {
+                var fileSizeFormatted = fileSize.toFixed(2);
+                Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+                ev.target.value = "";
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input');
+                $form.find('.'+filename_input).val('');
+            }
+            else{
+                var file_name = ev.target.files[0].name
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input')
+                $form.find('.'+filename_input).val(file_name);
+            }
+        }
+        else{
+            Dialog.alert(null, "Accepts only image files.");
+            ev.target.value = "";
+        }
+    },
+
+    _onUploadIndianVisa: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+            return;
+        }
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0]
+        var mimeType = file.type
+        if(mimeType.indexOf("image/") == 0){
+            var fileSize = file.size / 1024 / 1024;
+            if (fileSize > 5) {
+                var fileSizeFormatted = fileSize.toFixed(2);
+                Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+                ev.target.value = "";
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input');
+                $form.find('.'+filename_input).val('');
+            }
+            else{
+                var file_name = ev.target.files[0].name
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input')
+                $form.find('.'+filename_input).val(file_name);
+            }
+        }
+        else{
+            Dialog.alert(null, "Accepts only image files.");
+            ev.target.value = "";
+        }
+    },
+    
+    _onUploadPassportPhoto: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+            return;
+        }
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0];
+        var mimeType = file.type;
+        
+        if(mimeType !== "image/jpeg" && mimeType !== "image/jpg"){
+            Dialog.alert(null, "Only JPG format is allowed.");
+            ev.target.value = "";
+            return;
+        }
+        
+        var fileSize = file.size / 1024;
+        if (fileSize > 500) {
+            var fileSizeFormatted = fileSize.toFixed(2);
+            Dialog.alert(null, "File is too big. Your File size is " + fileSizeFormatted + "KB. File size cannot exceed 500KB.");
+            ev.target.value = "";
+            var $form = $(ev.currentTarget).closest('form');
+            var filename_input = $(ev.target).attr('filename_input');
+            $form.find('.'+filename_input).val('');
+        }
+        else{
+            var file_name = ev.target.files[0].name;
+            var $form = $(ev.currentTarget).closest('form');
+            var filename_input = $(ev.target).attr('filename_input');
+            $form.find('.'+filename_input).val(file_name);
+        }
+    },
+
+    _onUploadKanhaVoterIdImage: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+            return;
+        }
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0];
+        var mimeType = file.type
+        if(mimeType.indexOf("image/") == 0){
+            var fileSize = file.size / 1024 / 1024;
+            if (fileSize > 5) {
+                var fileSizeFormatted = fileSize.toFixed(2);
+                Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+                ev.target.value = "";
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input');
+                $form.find('.'+filename_input).val('');
+            }
+            else{
+                var file_name = ev.target.files[0].name
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input')
+                $form.find('.'+filename_input).val(file_name);
+            }
+        }
+        else{
+            Dialog.alert(null, "Accepts only image files.");
+            ev.target.value = "";
+        }
+    },
+    
+    _onUploadKanhaVoterIdBackImage: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+            return;
+        }
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0];
+        var mimeType = file.type
+        if(mimeType.indexOf("image/") == 0){
+            var fileSize = file.size / 1024 / 1024;
+            if (fileSize > 5) {
+                var fileSizeFormatted = fileSize.toFixed(2);
+                Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+                ev.target.value = "";
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input');
+                $form.find('.'+filename_input).val('');
+            }
+            else{
+                var file_name = ev.target.files[0].name
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input')
+                $form.find('.'+filename_input).val(file_name);
+            }
+        }
+        else{
+            Dialog.alert(null, "Accepts only image files.");
+            ev.target.value = "";
+        }
+    },
 
     _onFileUploadChange: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
+            return;
+        }
+        
         if (!ev.currentTarget.files.length) {
             return;
         }
-		var file_name = ev.target.files[0].name
-		var $form = $(ev.currentTarget).closest('form');
-		var filename_input = $(ev.target).attr('filename_input')
-		$form.find('.'+filename_input).val(file_name);
+        var file_name = ev.target.files[0].name
+        var $form = $(ev.currentTarget).closest('form');
+        var filename_input = $(ev.target).attr('filename_input')
+        $form.find('.'+filename_input).val(file_name);
     },
 
-	_onUploadAgeProof: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
+    _onUploadAgeProof: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
             return;
         }
-		var file = files[0]
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("age_proof_filename").value = "";
-				document.getElementsByName("age_proof").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0]
+        var mimeType = file.type
+        if(mimeType.indexOf("image/") == 0){
+            var fileSize = file.size / 1024 / 1024;
+            if (fileSize > 5) {
+                var fileSizeFormatted = fileSize.toFixed(2);
+                Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
+                ev.target.value = "";
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input');
+                $form.find('.'+filename_input).val('');
+            }
+            else{
+                var file_name = ev.target.files[0].name
+                var $form = $(ev.currentTarget).closest('form');
+                var filename_input = $(ev.target).attr('filename_input')
+                $form.find('.'+filename_input).val(file_name);
+            }
+        }
+        else{
+            Dialog.alert(null, "Accepts only image files.");
+            ev.target.value = "";
+        }
+    },
 
-	_onUploadAddressProof: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
+    _onUploadAddressProof: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
             return;
         }
-		var file = files[0]
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("address_proof_filename").value = "";
-				document.getElementsByName("address_proof").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0];
+        var mimeType = file.type;
+        
+        if(mimeType !== "image/jpeg" && mimeType !== "image/jpg"){
+            Dialog.alert(null, "Only JPG format is allowed.");
+            ev.target.value = "";
+            return;
+        }
+        
+        var fileSize = file.size / 1024;
+        if (fileSize > 500) {
+            var fileSizeFormatted = fileSize.toFixed(2);
+            Dialog.alert(null, "File is too big. Your File size is " + fileSizeFormatted + "KB. File size cannot exceed 500KB.");
+            ev.target.value = "";
+            var $form = $(ev.currentTarget).closest('form');
+            var filename_input = $(ev.target).attr('filename_input');
+            $form.find('.'+filename_input).val('');
+        }
+        else{
+            var file_name = ev.target.files[0].name;
+            var $form = $(ev.currentTarget).closest('form');
+            var filename_input = $(ev.target).attr('filename_input');
+            $form.find('.'+filename_input).val(file_name);
+        }
+    },
 
-	_onUploadAdharFrontImage: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
+    _onUploadAdharFrontImage: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
             return;
         }
-		var file = files[0]
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is" + fileSizeFormatted + "MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("adhar_card_filename").value = "";
-				document.getElementsByName("adhar_front").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0];
+        var mimeType = file.type;
+        
+        if(mimeType !== "image/jpeg" && mimeType !== "image/jpg"){
+            Dialog.alert(null, "Only JPG format is allowed.");
+            ev.target.value = "";
+            return;
+        }
+        
+        var fileSize = file.size / 1024;
+        if (fileSize > 500) {
+            var fileSizeFormatted = fileSize.toFixed(2);
+            Dialog.alert(null, "File is too big. Your File size is " + fileSizeFormatted + "KB. File size cannot exceed 500KB.");
+            ev.target.value = "";
+            var $form = $(ev.currentTarget).closest('form');
+            var filename_input = $(ev.target).attr('filename_input');
+            $form.find('.'+filename_input).val('');
+        }
+        else{
+            var file_name = ev.target.files[0].name;
+            var $form = $(ev.currentTarget).closest('form');
+            var filename_input = $(ev.target).attr('filename_input');
+            $form.find('.'+filename_input).val(file_name);
+        }
+    },
 
-	_onUploadAdharBackImage: function (ev) {
-		var files = ev.target.files;
-		if (!files.length) {
+    _onUploadAdharBackImage: function (ev) {
+        if (this.isFormSaved) {
+            ev.preventDefault();
             return;
         }
-		var file = files[0]
-		var mimeType = file.type
-		if(mimeType.indexOf("image/") == 0){
-		  	var fileSize = file.size / 1024 / 1024;
-	  		if (fileSize > 5) {
-				var fileSizeFormatted = fileSize.toFixed(2);
-				Dialog.alert(null, "File is too big. Your File size is"+ fileSizeFormatted +"MB. file size cannot exceed 5MB.");
-	        	document.getElementsByName("adhar_card_back_side_filename").value = "";
-				document.getElementsByName("adhar_back").value = "";
-			}
-			else{
-				var file_name = ev.target.files[0].name
-				var $form = $(ev.currentTarget).closest('form');
-				var filename_input = $(ev.target).attr('filename_input')
-				$form.find('.'+filename_input).val(file_name);
-			}
-		}
-		else{
-			Dialog.alert(null, "Accepts only image files.");
-		}
-	},
- 	
-    _onClearFile: function (ev) {
-		var fileupload_input = $(ev.target).attr('fileupload_input')
-		var filename_input = $(ev.target).attr('filename_input')
-        var $form = $(ev.currentTarget).closest('form');
-        $form.find('.'+filename_input).val('');
-		$form.find('.'+fileupload_input).val('');
+        
+        var files = ev.target.files;
+        if (!files.length) {
+            return;
+        }
+        var file = files[0];
+        var mimeType = file.type;
+        
+        if(mimeType !== "image/jpeg" && mimeType !== "image/jpg"){
+            Dialog.alert(null, "Only JPG format is allowed.");
+            ev.target.value = "";
+            return;
+        }
+        
+        var fileSize = file.size / 1024;
+        if (fileSize > 500) {
+            var fileSizeFormatted = fileSize.toFixed(2);
+            Dialog.alert(null, "File is too big. Your File size is " + fileSizeFormatted + "KB. File size cannot exceed 500KB.");
+            ev.target.value = "";
+            var $form = $(ev.currentTarget).closest('form');
+            var filename_input = $(ev.target).attr('filename_input');
+            $form.find('.'+filename_input).val('');
+        }
+        else{
+            var file_name = ev.target.files[0].name;
+            var $form = $(ev.currentTarget).closest('form');
+            var filename_input = $(ev.target).attr('filename_input');
+            $form.find('.'+filename_input).val(file_name);
+        }
     },
 
     _adaptBirthStateAddressForm: function () {
@@ -776,28 +1455,28 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         var $displayedBirthState = this.$birthStateOptions.filter('[data-country_id=' + birthCountryID + ']');
         var nb = $displayedBirthState.appendTo(this.$birthState).show().length;
 
-		var birth_country = document.getElementById("birth_country_id_field");
-		if(typeof birth_country !== 'undefined' && birth_country !== null) {
-			var selected_country = birth_country.options[birth_country.selectedIndex].text;
-			if(selected_country.trim() == 'India'){
-				$('#birth_state_textfield_id').attr('required', false);
-				$('.birth_state_dropdown_field_div').removeClass('d-none');
-				$('.birth_state_textfield_div').addClass('d-none');
-			}
-			else{
-				$('#birth_state_textfield_id').attr('required', true);
-				$('.birth_state_dropdown_field_div').addClass('d-none');
-				$('.birth_state_textfield_div').removeClass('d-none');
-			}
-		}
+        var birth_country = document.getElementById("birth_country_id_field");
+        if(typeof birth_country !== 'undefined' && birth_country !== null) {
+            var selected_country = birth_country.options[birth_country.selectedIndex].text;
+            if(selected_country.trim() == 'India'){
+                $('#birth_state_textfield_id').attr('required', false);
+                $('.birth_state_dropdown_field_div').removeClass('d-none');
+                $('.birth_state_textfield_div').addClass('d-none');
+            }
+            else{
+                $('#birth_state_textfield_id').attr('required', true);
+                $('.birth_state_dropdown_field_div').addClass('d-none');
+                $('.birth_state_textfield_div').removeClass('d-none');
+            }
+        }
     },
 
     _onKanhaLocationChange: function () {
         this._adaptKanhaHouseNumberStateAddressForm();
     },
 
-	 _adaptKanhaHouseNumberStateAddressForm: function () {
-		var $kanha_location = this.$('select[name="kanha_location_id"]');
+    _adaptKanhaHouseNumberStateAddressForm: function () {
+        var $kanha_location = this.$('select[name="kanha_location_id"]');
         var KanhaLocationID = ($kanha_location.val() || 0);
         this.$kanhaHouseNumberOptions.detach();
         var $displayedKanhaHouseNumber = this.$kanhaHouseNumberOptions.filter('[data-kanha_location_id=' + KanhaLocationID + ']');
@@ -820,341 +1499,439 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         this._adaptAddressForm();
     },
 
- 	_onDeleteVehicleLine: function (ev) {
-		var $row = $(ev.currentTarget).closest("tr");
-		$row.remove();
-	},
-	
-	_onShowVehicleModal: function (ev) {
-    var $row = $(ev.currentTarget).closest("tr");
-	var id = ev.target.id
-	
-	var vehicle_vals = {}
-	$row.each(function() {
-		$(this).find('td').each(function() {
-		    var name = $(this).attr('name');
-			var value = $(this).html();
-			if(name){
-				vehicle_vals[name] = value.trim();
-			}
-		});
-	});
-	
-	ajax.post('/vehicle_details_form', vehicle_vals).then(function (modal) {
- 		var $modal = $(modal);
-        $modal.modal({backdrop: 'static', keyboard: false});
-        $modal.appendTo('body').modal();
-		
-		$modal.on('click', '.save_vehicle_line', function (ev) {
-			$(".save_vehicle_line").attr('disabled',true)
-			var vehicle_number = $modal.find('input[name="vehicle_number"]').val();
-			var vehicle_owner = $modal.find('input[name="vehicle_owner"]').val();
-			var vehicle_type = $modal.find('select[name="vehicle_type"]').val();
-			var fasttag_rfid_no = $modal.find('input[name="fasttag_rfid_no"]').val();
-
-			var isValid = true;
-			var errorMessages = [];
-
-			if (!vehicle_number || vehicle_number.trim() === '') {
-				isValid = false;
-				errorMessages.push('Vehicle Number is required');
-				$modal.find('input[name="vehicle_number"]').addClass('is-invalid');
-			} else {
-				$modal.find('input[name="vehicle_number"]').removeClass('is-invalid');
-			}
-
-			if (!vehicle_owner || vehicle_owner.trim() === '') {
-				isValid = false;
-				errorMessages.push('Vehicle Owner is required');
-				$modal.find('input[name="vehicle_owner"]').addClass('is-invalid');
-			} else {
-				$modal.find('input[name="vehicle_owner"]').removeClass('is-invalid');
-			}
-
-			if (!vehicle_type || vehicle_type === '' || vehicle_type === 'Select...') {
-				isValid = false;
-				errorMessages.push('Vehicle Type is required');
-				$modal.find('select[name="vehicle_type"]').addClass('is-invalid');
-			} else {
-				$modal.find('select[name="vehicle_type"]').removeClass('is-invalid');
-			}
-
-			if (!isValid) {
-				$(".save_vehicle_line").attr('disabled', false);
-				Dialog.alert(null, errorMessages.join(', '));
-				return false;
-			}
-
-			if(id){
-				$('#vehicle_table tr#'+id).find('.vehicle_number').text(vehicle_number)
-				$('#vehicle_table tr#'+id).find('.vehicle_owner').text(vehicle_owner)
-				$('#vehicle_table tr#'+id).find('.vehicle_type').text(vehicle_type)
-				$('#vehicle_table tr#'+id).find('.fasttag_rfid_no').text(fasttag_rfid_no)
-			}
-			else{
-				if(vehicle_number || vehicle_owner || vehicle_type || fasttag_rfid_no)
-				{
-					var vehicle_table = document.getElementById('vehicle_table');
-				    var index = vehicle_table.rows.length - 1;
-					var newRow=document.getElementById('vehicle_table').insertRow(index);
-					
-					if(!$row.hasClass('empty-row')){
-						$row.remove();
-					}
-					newRow.innerHTML = '<td class="d-none"></td><td name="vehicle_number" class="vehicle_number">'+vehicle_number+'</td><td name="vehicle_owner">'+vehicle_owner+'</td><td name="vehicle_type">'+vehicle_type+'</td><td name="fasttag_rfid_no">'+fasttag_rfid_no+'</td><td class="text-right"><button type="button" class="btn btn-secondary fa fa-pencil mr-1 vehicle_edit_new" title="Edit" aria-label="Edit"/><button type="button" class="btn btn-secondary fa fa-trash-o vehicle_clear" title="Clear" aria-label="Clear"/></td>';
-				}
-			}
-		 	$modal.modal('hide');	
+    _onDeleteVehicleLine: function (ev) {
+        var $row = $(ev.currentTarget).closest("tr");
+        $row.remove();
+    },
+    
+    _onShowVehicleModal: function (ev) {
+        var $row = $(ev.currentTarget).closest("tr");
+        var id = ev.target.id
+        
+        var vehicle_vals = {}
+        $row.each(function() {
+            $(this).find('td').each(function() {
+                var name = $(this).attr('name');
+                var value = $(this).html();
+                if(name){
+                    vehicle_vals[name] = value.trim();
+                }
+            });
         });
-	})
-},
+        
+        ajax.post('/vehicle_details_form', vehicle_vals).then(function (modal) {
+            var $modal = $(modal);
+            $modal.modal({backdrop: 'static', keyboard: false});
+            $modal.appendTo('body').modal();
+            
+            $modal.on('click', '.save_vehicle_line', function (ev) {
+                $(".save_vehicle_line").attr('disabled',true)
+                var vehicle_number = $modal.find('input[name="vehicle_number"]').val();
+                var vehicle_owner = $modal.find('input[name="vehicle_owner"]').val();
+                var vehicle_type = $modal.find('select[name="vehicle_type"]').val();
+                var fasttag_rfid_no = $modal.find('input[name="fasttag_rfid_no"]').val();
 
-	_onSaveForm: function (e, is_submit) {
-		try {
-			console.log("Initiating form save process...");
-			$("#loading").removeClass('hide');
-	
-			var $form = $(e.currentTarget).closest('form');
-			var self = this;
-			var form_values = {};
-	
-			this.form_fields = $form.serializeArray();
-			console.log("Serialized form fields:", this.form_fields);
-	
-			this.$target.find('input[type=file]').each(function (outer_index, input) {
-				$.each($(input).prop('files'), function (index, file) {
-					self.form_fields.push({
-						name: `${input.name}[${outer_index}][${index}]`,
-						value: file
-					});
-				});
-			});
-	
-			_.each(this.form_fields, function (input) {
-				if (input.name in form_values) {
-					form_values[input.name] = Array.isArray(form_values[input.name])
-						? [...form_values[input.name], input.value]
-						: [form_values[input.name], input.value];
-				} else {
-					form_values[input.name] = input.value || '';
-				}
-			});
-			console.log("Form values after processing:", form_values);
-	
-			this.$target.find('.s_website_form_field:not(.s_website_form_custom) .s_website_form_date, .s_website_form_datetime').each(function () {
-				var dateInput = $(this).find('input');
-				if (dateInput.length > 0) {
-					var date = $(this).datetimepicker('viewDate').clone().locale('en');
-					var format = $(this).hasClass('s_website_form_datetime') ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD';
-					form_values[dateInput.attr('name')] = date.utc().format(format);
-				}
-			});
-			console.log("Form values after date formatting:", form_values);
-	
-			var vehicle_details = {};
-			var vehicle_new_lines = [];
-			$('#vehicle_table tbody tr:not(:last-child)').each(function () {
-				var vehicle_vals = {};
-				var vehicle_row_id = $(this).attr('id');
-	
-				$(this).find('td').each(function () {
-					var name = $(this).attr('name');
-					var value = $(this).html().trim();
-					if (name) {
-						vehicle_vals[name] = value;
-					}
-				});
-	
-				if (vehicle_row_id) {
-					vehicle_details[parseInt(vehicle_row_id)] = vehicle_vals;
-				} else {
-					vehicle_new_lines.push(vehicle_vals);
-				}
-			});
-			form_values['vehicle_details_ids'] = JSON.stringify(vehicle_details);
-			form_values['vehicle_new_lines'] = JSON.stringify(vehicle_new_lines);
-			form_values['is_submit'] = is_submit;
-			console.log("Processed vehicle details:", vehicle_details);
-			console.log("New vehicle lines:", vehicle_new_lines);
-	
-			var birth_country = document.getElementById("birth_country_id_field");
-			if (birth_country) {
-				var selected_country = birth_country.options[birth_country.selectedIndex].text;
-				if (selected_country.trim() === 'India') {
-					form_values['birth_state_textfield'] = '';
-				}
-			}
-	
-			ajax.post($form.attr('action') + ($form.data('force_action') || $form.data('model_name')), form_values)
-				.then(function (result_data) {
-					$("#loading").addClass('hide');
-					self.$target.find('.family_website_form_submit')
-						.removeAttr('disabled')
-						.removeClass('disabled');
-	
-					try {
-						result_data = JSON.parse(result_data);
-					} catch (error) {
-						console.error("Error parsing result data:", error);
-						self.update_status('error', "Invalid server response.");
-						return;
-					}
-	
-					if (!result_data.id) {
-						let errorMessage = result_data.error_message || "An unexpected error occurred while submitting the form.";
-						self.update_status('error', errorMessage);
-	
-						if (result_data.error_fields) {
-							self.check_error_fields_save(Object.keys(result_data.error_fields));
-							$("html, body").animate({ scrollTop: 0 }, "slow");
-						}
-					} else {
-						let successMode = $form[0].dataset.successMode || ($form.attr('data-success_page') ? 'redirect' : 'nothing');
-						let successPage = $form[0].dataset.successPage || $form.attr('data-success_page');
-	
-						switch (successMode) {
-							case 'redirect':
-								if (successPage.charAt(0) === "#") {
-									dom.scrollTo($(successPage)[0], { duration: 500 });
-								} else {
-									$(window.location).attr('href', is_submit ? successPage : "/family/");
-								}
-								break;
-	
-							case 'message':
-								self.$target.addClass('d-none');
-								self.$target.parent().find('.s_website_form_end_message').removeClass('d-none');
-								break;
-	
-							default:
-								self.update_status('success', "Form submitted successfully!");
-								break;
-						}
-					}
-				})
-				.guardedCatch(function (error) {
-					console.error("Form submission error:", error);
-					self.update_status('error', "An error occurred while submitting the form. Please try again later.");
-				});
-	
-		} catch (error) {
-			console.error("Error in _onSaveForm function:", error);
-			alert("An issue occurred while processing the form. Check the console for more details.");
-		}
-	},	
-	
-	_validateForm: function (e) {
-        e.preventDefault();
-		
+                var isValid = true;
+                var errorMessages = [];
+
+                if (!vehicle_number || vehicle_number.trim() === '') {
+                    isValid = false;
+                    errorMessages.push('Vehicle Number is required');
+                    $modal.find('input[name="vehicle_number"]').addClass('is-invalid');
+                } else {
+                    $modal.find('input[name="vehicle_number"]').removeClass('is-invalid');
+                }
+
+                if (!vehicle_owner || vehicle_owner.trim() === '') {
+                    isValid = false;
+                    errorMessages.push('Vehicle Owner is required');
+                    $modal.find('input[name="vehicle_owner"]').addClass('is-invalid');
+                } else {
+                    $modal.find('input[name="vehicle_owner"]').removeClass('is-invalid');
+                }
+
+                if (!vehicle_type || vehicle_type === '' || vehicle_type === 'Select...') {
+                    isValid = false;
+                    errorMessages.push('Vehicle Type is required');
+                    $modal.find('select[name="vehicle_type"]').addClass('is-invalid');
+                } else {
+                    $modal.find('select[name="vehicle_type"]').removeClass('is-invalid');
+                }
+
+                if (!isValid) {
+                    $(".save_vehicle_line").attr('disabled', false);
+                    Dialog.alert(null, errorMessages.join(', '));
+                    return false;
+                }
+
+                if(id){
+                    $('#vehicle_table tr#'+id).find('.vehicle_number').text(vehicle_number)
+                    $('#vehicle_table tr#'+id).find('.vehicle_owner').text(vehicle_owner)
+                    $('#vehicle_table tr#'+id).find('.vehicle_type').text(vehicle_type)
+                    $('#vehicle_table tr#'+id).find('.fasttag_rfid_no').text(fasttag_rfid_no)
+                }
+                else{
+                    if(vehicle_number || vehicle_owner || vehicle_type || fasttag_rfid_no)
+                    {
+                        var vehicle_table = document.getElementById('vehicle_table');
+                        var index = vehicle_table.rows.length - 1;
+                        var newRow=document.getElementById('vehicle_table').insertRow(index);
+                        
+                        if(!$row.hasClass('empty-row')){
+                            $row.remove();
+                        }
+                        newRow.innerHTML = '<td class="d-none"></td><td name="vehicle_number" class="vehicle_number">'+vehicle_number+'</td><td name="vehicle_owner">'+vehicle_owner+'</td><td name="vehicle_type">'+vehicle_type+'</td><td name="fasttag_rfid_no">'+fasttag_rfid_no+'</td><td class="text-right"><button type="button" class="btn btn-secondary fa fa-pencil mr-1 vehicle_edit_new" title="Edit" aria-label="Edit"/><button type="button" class="btn btn-secondary fa fa-trash-o vehicle_clear" title="Clear" aria-label="Clear"/></td>';
+                    }
+                }
+                $modal.modal('hide');	
+            });
+        })
+    },
+
+    _onSaveForm: function (e, is_submit) {
         var self = this;
-        this.$target.find('.family_website_form_result').html();
-		var is_form_valid = Object.keys(self.check_error_fields({}))
-		if (is_form_valid == 'false') {
-			var missing_fields = Object.values(self.check_error_fields({}))
-            self.update_status('error', _t("Please fill in the form correctly."+'\n'.concat(missing_fields.join())));
-			return false;
+        
+        $(".family_website_form_submit, .family_website_form_save").attr('disabled', true).addClass('disabled');
+        $("#loading").removeClass('hide');
+
+        var $form = $(e.currentTarget).closest('form');
+        var form_action = $form.attr('action');
+        
+        if (!form_action) {
+            self.update_status('error', "Form action URL is missing.");
+            self._enableButtons();
+            $("#loading").addClass('hide');
+            return;
         }
-		return true;
+
+        var formData = new FormData();
+
+        var excludedFields = ['csrf_token', 'request_token', '_token', 'authenticity_token'];
+
+        $form.find('input, select, textarea').each(function() {
+            var $input = $(this);
+            var name = $input.attr('name');
+            var value = $input.val();
+            
+            if (name && $input.attr('type') !== 'file' && excludedFields.indexOf(name) === -1) {
+                if ($input.attr('type') === 'checkbox') {
+                    if ($input.is(':checked')) {
+                        formData.append(name, value);
+                    }
+                } else {
+                    formData.append(name, value || '');
+                }
+            }
+        });
+
+        $form.find('input[type="file"]').each(function() {
+            var fileInput = this;
+            if (fileInput.files && fileInput.files[0] && fileInput.name) {
+                formData.append(fileInput.name, fileInput.files[0]);
+            }
+        });
+
+        var vehicle_details = {};
+        var vehicle_new_lines = [];
+        $('#vehicle_table tbody tr:not(:last-child)').each(function () {
+            var vehicle_vals = {};
+            var vehicle_row_id = $(this).attr('id');
+
+            $(this).find('td').each(function () {
+                var name = $(this).attr('name');
+                var value = $(this).html().trim();
+                if (name) {
+                    vehicle_vals[name] = value;
+                }
+            });
+
+            if (vehicle_row_id) {
+                vehicle_details[parseInt(vehicle_row_id)] = vehicle_vals;
+            } else {
+                vehicle_new_lines.push(vehicle_vals);
+            }
+        });
+
+        var family_details = {};
+        var citizenship = $('select[name="citizenship"]').val();
+        var isOverseas = (citizenship === 'Overseas');
+        var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
+        
+        $tableBody.find('tr').each(function(index) {
+            var $row = $(this);
+            var familyMember = {
+                'name': $row.find('input[name="family_member_name_' + index + '"]').val() || '',
+                'relation': $row.find('select[name="family_member_relation_' + index + '"]').val() || '',
+                'blood_group': $row.find('select[name="family_member_blood_group_' + index + '"]').val() || ''
+            };
+            
+            if (isOverseas) {
+                familyMember['govt_id'] = $row.find('input[name="family_member_govt_id_' + index + '"]').val() || '';
+                
+                var passportPhotoFile = $row.find('input[name="family_member_passport_photo_' + index + '"]')[0];
+                if (passportPhotoFile && passportPhotoFile.files && passportPhotoFile.files[0]) {
+                    formData.append('family_member_passport_photo_' + index, passportPhotoFile.files[0]);
+                }
+                
+                var addressProofFile = $row.find('input[name="family_member_address_proof_' + index + '"]')[0];
+                if (addressProofFile && addressProofFile.files && addressProofFile.files[0]) {
+                    formData.append('family_member_address_proof_' + index, addressProofFile.files[0]);
+                }
+            }
+            
+            family_details[index] = familyMember;
+        });
+
+        formData.append('vehicle_details_ids', JSON.stringify(vehicle_details));
+        formData.append('vehicle_new_lines', JSON.stringify(vehicle_new_lines));
+        formData.append('family_details', JSON.stringify(family_details));
+        formData.append('is_submit', is_submit ? 'true' : 'false');
+
+        var birth_country = document.getElementById("birth_country_id_field");
+        if (birth_country) {
+            var selected_country = birth_country.options[birth_country.selectedIndex].text;
+            if (selected_country.trim() === 'India') {
+                formData.append('birth_state_textfield', '');
+            }
+        }
+
+        var final_url = form_action;
+        if ($form.data('force_action')) {
+            final_url += $form.data('force_action');
+        } else if ($form.data('model_name')) {
+            final_url += $form.data('model_name');
+        }
+
+        $.ajax({
+            url: final_url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            timeout: 300000,
+            success: function(response) {
+                $("#loading").addClass('hide');
+                self._enableButtons();
+                
+                var result_data;
+                
+                try {
+                    if (typeof response === 'string') {
+                        if (response.trim().startsWith('{') || response.trim().startsWith('[')) {
+                            result_data = JSON.parse(response);
+                        } else {
+                            result_data = { error: true, error_message: response };
+                        }
+                    } else if (typeof response === 'object') {
+                        result_data = response;
+                    } else {
+                        result_data = { error: true, error_message: "Invalid response format" };
+                    }
+                } catch (error) {
+                    console.error("Error parsing response:", error, "Response:", response);
+                    result_data = { error: true, error_message: "Invalid server response format" };
+                }
+
+                if (result_data.error || !result_data.id) {
+                    var errorMessage = result_data.error_message || result_data.message || "Form submission failed. Please try again.";
+                    self.update_status('error', errorMessage);
+
+                    if (result_data.error_fields) {
+                        self.check_error_fields_save(Object.keys(result_data.error_fields));
+                        $("html, body").animate({ scrollTop: 0 }, "slow");
+                    }
+                } else {
+                    self.isFormSaved = true;
+                    self._makeFormReadonly();
+                    
+                    var successMode = $form[0].dataset.successMode || ($form.attr('data-success_page') ? 'redirect' : 'nothing');
+                    var successPage = $form[0].dataset.successPage || $form.attr('data-success_page');
+
+                    switch (successMode) {
+                        case 'redirect':
+                            if (successPage) {
+                                if (successPage.charAt(0) === "#") {
+                                    dom.scrollTo($(successPage)[0], { duration: 500 });
+                                } else {
+                                    window.location.href = is_submit ? successPage : "/family/";
+                                }
+                            } else {
+                                window.location.href = "/family/";
+                            }
+                            break;
+
+                        case 'message':
+                            self.$target.addClass('d-none');
+                            self.$target.parent().find('.s_website_form_end_message').removeClass('d-none');
+                            break;
+
+                        default:
+                            var successMsg = is_submit ? "Form submitted successfully!" : "Form saved successfully!";
+                            self.update_status('success', successMsg);
+                            break;
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                $("#loading").addClass('hide');
+                self._enableButtons();
+                
+                var errorMessage = "Form submission failed. ";
+                
+                if (xhr.status === 0) {
+                    errorMessage += "Network connection error.";
+                } else if (xhr.status === 413) {
+                    errorMessage += "File size too large.";
+                } else if (xhr.status === 500) {
+                    errorMessage += "Server error occurred.";
+                } else if (xhr.status === 404) {
+                    errorMessage += "Form handler not found.";
+                } else {
+                    errorMessage += "Please try again later.";
+                }
+                
+                console.error("Form submission error:", {
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    error: error,
+                    responseText: xhr.responseText
+                });
+                
+                self.update_status('error', errorMessage);
+            }
+        });
+    },
+    
+    _enableButtons: function() {
+        this.$target.find('.family_website_form_submit, .family_website_form_save')
+            .removeAttr('disabled')
+            .removeClass('disabled');
+    },
+    
+    _validateForm: function (e) {
+        e.preventDefault();
+        
+        var self = this;
+        this.$target.find('.family_website_form_result').html('');
+        var validation_result = self.check_error_fields({});
+        var is_form_valid = Object.keys(validation_result)[0] === 'true';
+        
+        if (!is_form_valid) {
+            var missing_fields = Object.values(validation_result)[0] || [];
+            self.update_status('error', _t("Please fill in the form correctly. Missing fields: ") + missing_fields.join(', '));
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            return false;
+        }
+        return true;
     },
 
-	_clearFormStatus: function (e) {
-		this.$('#form_result_error').addClass('d-none');
-		
-		this.$target.find('.form-field, .s_website_form_field').each(function (k, field) { 
-			var $field = $(field);
-        	$field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
- 		});
-	},
-	
-	_onClickSave: function (e, is_submit=false) {
-	this._clearFormStatus(e);
-	var citizenship = $('.citizenship').val();
-	var passport_number = $('#passport_number_input').val();
-	
-	var self = this;
-	var form_valid = true;
-	var missing_fields = [];
-	
-	this.$target.find('.form-field, .s_website_form_field').each(function (k, field) {
-		var $field = $(field);
-		var field_name = $field.find('.col-form-label').attr('for') || $field.find('label').text().replace('*', '').trim();
-		
-		var inputs = $field.find('.s_website_form_input, .o_website_form_input, input, select, textarea').not('#editable_select');
-		var invalid_inputs = inputs.toArray().filter(function (input, k, inputs) {
-			if (input.name === 'year_of_birth' || input.name === 'birth_state_id' || input.name === 'birth_district') {
-				return false;
-			}
-			
-			if (input.required && input.type === 'checkbox') {
-				var checkboxes = _.filter(inputs, function (input) {
-					return input.required && input.type === 'checkbox';
-				});
-				return !_.any(checkboxes, checkbox => checkbox.checked);
-			} else if ($(input).hasClass('s_website_form_date') || $(input).hasClass('o_website_form_date')) {
-				if (!self.is_datetime_valid(input.value, 'date')) {
-					return true;
-				}
-			} else if ($(input).hasClass('s_website_form_datetime') || $(input).hasClass('o_website_form_datetime')) {
-				if (!self.is_datetime_valid(input.value, 'datetime')) {
-					return true;
-				}
-			}
-			return input.required && !input.checkValidity();
-		});
-		
-		$field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
-		
-		if (invalid_inputs.length) {
-			if(field_name && field_name !== 'Year Of Birth' && field_name !== 'Birth State' && field_name !== 'Birth District') {
-				missing_fields.push(field_name);
-			}
-			if(field_name !== 'Year Of Birth' && field_name !== 'Birth State' && field_name !== 'Birth District') {
-				$field.addClass('o_has_error').find('.form-control, .custom-select').addClass('is-invalid');
-				form_valid = false;
-			}
-		}
-	});
-	
-	if(citizenship == 'Overseas' && !passport_number){
-		$('#passport_number_input').addClass('is-invalid');
-		missing_fields.push('Passport Number');
-		form_valid = false;
-	}
-	
-	if(!form_valid) {
-		var errorMessage = _t("Please fill in all required fields: ") + missing_fields.join(', ');
-		this.update_status('error', errorMessage);
-		$("html, body").animate({ scrollTop: 0 }, "slow");
-		return false;
-	}
-	
-	this._onSaveForm(e, is_submit);
-},
-	
-	_onSubmitForm: function (e) {
-		var res = this._validateForm(e)
-		if(res){
-			this._onSaveForm(e, true);
-		}
-		else{
-			$("html, body").animate({ scrollTop: 0 }, "slow");
-			return false;
-		}
+    _clearFormStatus: function (e) {
+        this.$('#form_result_error').addClass('d-none');
+        this.$('#form_result_success').addClass('d-none');
+        
+        this.$target.find('.form-field, .s_website_form_field').each(function (k, field) { 
+            var $field = $(field);
+            $field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
+        });
     },
-
-	check_error_fields_save: function (error_fields_keys) {
-		for (let i = 0; i < error_fields_keys.length; i++) {
-			if (error_fields_keys[i] !== 'year_of_birth' && error_fields_keys[i] !== 'birth_state_id' && error_fields_keys[i] !== 'birth_district') {
-				$("input[name='"+error_fields_keys[i]+"']").addClass('is-invalid');
-			}
-		} 
-	},
-
-	check_error_fields: function (error_fields) {
+    
+    _onClickSave: function (e, is_submit=false) {
+        if (this.isFormSaved) {
+            return;
+        }
+        
+        this._clearFormStatus(e);
+        var citizenship = $('.citizenship').val();
+        var passport_number = $('#passport_number_input').val();
+        
         var self = this;
         var form_valid = true;
-		var missing_fields = []
-		var missing_field_vals = {}
+        var missing_fields = [];
+        
+        this.$target.find('.form-field, .s_website_form_field').each(function (k, field) {
+            var $field = $(field);
+            var field_name = $field.find('.col-form-label').attr('for') || $field.find('label').text().replace('*', '').trim();
+            
+            var inputs = $field.find('.s_website_form_input, .o_website_form_input, input, select, textarea').not('#editable_select');
+            var invalid_inputs = inputs.toArray().filter(function (input, k, inputs) {
+                if (input.name === 'year_of_birth' || input.name === 'birth_state_id' || input.name === 'birth_district') {
+                    return false;
+                }
+                
+                if (input.required && input.type === 'checkbox') {
+                    var checkboxes = _.filter(inputs, function (input) {
+                        return input.required && input.type === 'checkbox';
+                    });
+                    return !_.any(checkboxes, checkbox => checkbox.checked);
+                } else if ($(input).hasClass('s_website_form_date') || $(input).hasClass('o_website_form_date')) {
+                    if (!self.is_datetime_valid(input.value, 'date')) {
+                        return true;
+                    }
+                } else if ($(input).hasClass('s_website_form_datetime') || $(input).hasClass('o_website_form_datetime')) {
+                    if (!self.is_datetime_valid(input.value, 'datetime')) {
+                        return true;
+                    }
+                }
+                return input.required && !input.checkValidity();
+            });
+            
+            $field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
+            
+            if (invalid_inputs.length) {
+                if(field_name && field_name !== 'Year Of Birth' && field_name !== 'Birth State' && field_name !== 'Birth District') {
+                    missing_fields.push(field_name);
+                }
+                if(field_name !== 'Year Of Birth' && field_name !== 'Birth State' && field_name !== 'Birth District') {
+                    $field.addClass('o_has_error').find('.form-control, .custom-select').addClass('is-invalid');
+                    form_valid = false;
+                }
+            }
+        });
+        
+        if(citizenship == 'Overseas' && !passport_number){
+            $('#passport_number_input').addClass('is-invalid');
+            missing_fields.push('Passport Number');
+            form_valid = false;
+        }
+        
+        if(!form_valid) {
+            var errorMessage = _t("Please fill in all required fields: ") + missing_fields.join(', ');
+            this.update_status('error', errorMessage);
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            return false;
+        }
+        
+        this._onSaveForm(e, is_submit);
+    },
+    
+    _onSubmitForm: function (e) {
+        if (this.isFormSaved) {
+            return;
+        }
+        
+        var res = this._validateForm(e)
+        if(res){
+            this._onSaveForm(e, true);
+        }
+        else{
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            return false;
+        }
+    },
+
+    check_error_fields_save: function (error_fields_keys) {
+        for (let i = 0; i < error_fields_keys.length; i++) {
+            if (error_fields_keys[i] !== 'year_of_birth' && error_fields_keys[i] !== 'birth_state_id' && error_fields_keys[i] !== 'birth_district') {
+                $("input[name='"+error_fields_keys[i]+"'], select[name='"+error_fields_keys[i]+"']").addClass('is-invalid');
+            }
+        } 
+    },
+
+    check_error_fields: function (error_fields) {
+        var self = this;
+        var form_valid = true;
+        var missing_fields = []
+        var missing_field_vals = {}
         
         this.$target.find('.form-field, .s_website_form_field').each(function (k, field) {
             var $field = $(field);
@@ -1162,9 +1939,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
             var inputs = $field.find('.s_website_form_input, .o_website_form_input').not('#editable_select');
             var invalid_inputs = inputs.toArray().filter(function (input, k, inputs) {
-				if (input.name === 'year_of_birth' || input.name === 'birth_state_id' || input.name === 'birth_district') {
-					return false;
-				}
+                if (input.name === 'year_of_birth' || input.name === 'birth_state_id' || input.name === 'birth_district') {
+                    return false;
+                }
 
                 if (input.required && input.type === 'checkbox') {
                     var checkboxes = _.filter(inputs, function (input) {
@@ -1186,24 +1963,24 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
 
             $field.removeClass('o_has_error').find('.form-control, .custom-select').removeClass('is-invalid');
             
-			if (invalid_inputs.length || error_fields[field_name]) {
-				if(field_name != undefined && field_name !== 'year_of_birth' && field_name !== 'birth_state_id' && field_name !== 'birth_district'){
-					missing_fields.push(field_name)
-				}
-				if(field_name !== 'year_of_birth' && field_name !== 'birth_state_id' && field_name !== 'birth_district') {
-					$field.addClass('o_has_error').find('.form-control, .custom-select').addClass('is-invalid');
-					
-					if (_.isString(error_fields[field_name])) {
-						$field.popover({content: error_fields[field_name], trigger: 'hover', container: 'body', placement: 'top'});
-						$field.data("bs.popover").config.content = error_fields[field_name];
-						$field.popover('show');
-					}
-					form_valid = false;
-				}
+            if (invalid_inputs.length || error_fields[field_name]) {
+                if(field_name != undefined && field_name !== 'year_of_birth' && field_name !== 'birth_state_id' && field_name !== 'birth_district'){
+                    missing_fields.push(field_name)
+                }
+                if(field_name !== 'year_of_birth' && field_name !== 'birth_state_id' && field_name !== 'birth_district') {
+                    $field.addClass('o_has_error').find('.form-control, .custom-select').addClass('is-invalid');
+                    
+                    if (_.isString(error_fields[field_name])) {
+                        $field.popover({content: error_fields[field_name], trigger: 'hover', container: 'body', placement: 'top'});
+                        $field.data("bs.popover").config.content = error_fields[field_name];
+                        $field.popover('show');
+                    }
+                    form_valid = false;
+                }
             }
         });
-		missing_field_vals[form_valid] = missing_fields
-		return missing_field_vals;
+        missing_field_vals[form_valid] = missing_fields
+        return missing_field_vals;
     },
 
     is_datetime_valid: function (value, type_of_date) {
@@ -1242,45 +2019,49 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     },
 
     _onChangeIsPreceptor: function (ev) {
-		var is_preceptor = this.$('select[name="is_preceptor"]');
-		if(is_preceptor.val() == 'Yes'){
-			$('#abhyasi_id_id').attr('required', true);
-		}
-		else if(is_preceptor.val() == 'No'){
-			$('#abhyasi_id_id').removeAttr('required');
-		}
-		else{
-			$('#abhyasi_id_id').removeAttr('required');
-		}
+        var is_preceptor = this.$('select[name="is_preceptor"]');
+        var preceptor_name_field = $('#preceptor_incharge_name_id').closest('.form-group');
+        
+        if(is_preceptor.val() == 'Yes'){
+            preceptor_name_field.removeClass('d-none');
+            $('#preceptor_incharge_name_id').attr('required', true);
+        }
+        else if(is_preceptor.val() == 'No'){
+            preceptor_name_field.addClass('d-none');
+            $('#preceptor_incharge_name_id').removeAttr('required');
+            $('#preceptor_incharge_name_id').val('');
+        }
+        else{
+            preceptor_name_field.addClass('d-none');
+            $('#preceptor_incharge_name_id').removeAttr('required');
+            $('#preceptor_incharge_name_id').val('');
+        }
     },
 
     update_status: function (status, message) {
-		console.log("Inside Update Status", status, message);
-	
-		message = message || '';
-		
-		var $result = this.$('.family_website_form_result');
-	
-		this.$('#form_result_error').addClass('d-none');
-		this.$('#form_result_success').addClass('d-none');
-	
-		if (status === 'error') {
-			this.$('#form_result_error').removeClass('d-none');
-			if (!message) {
-				message = _t("An error has occurred, the form has not been sent.");
-			}
-		} else if (status === 'success') {
-			this.$('#form_result_success').removeClass('d-none');
-		}
-	
-		if (status !== 'success') {
-			this.$target.find('.family_website_form_submit')
-				.removeAttr('disabled')
-				.removeClass('disabled');
-		}
-	
-		$result.html(message);
-	},
-	
+        console.log("Update Status:", status, message);
+
+        message = message || '';
+        
+        var $result = this.$target.find('.family_website_form_result');
+
+        this.$target.find('#form_result_error').addClass('d-none');
+        this.$target.find('#form_result_success').addClass('d-none');
+
+        if (status === 'error') {
+            this.$target.find('#form_result_error').removeClass('d-none');
+            if (!message) {
+                message = _t("An error has occurred, the form has not been sent.");
+            }
+        } else if (status === 'success') {
+            this.$target.find('#form_result_success').removeClass('d-none');
+        }
+
+        $result.html(message);
+    },
+    
 });
+
+return publicWidget.registry.portalPartnerDetails;
+
 });
