@@ -157,7 +157,6 @@ class ResPartner(models.Model):
     kanha_house_number_id = fields.Many2one('kanha.house.number', string='Kanha House Number')
     resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date')
     existing_voter_id_number = fields.Char(string="Existing Voter ID Number")
-    voter_id_number_optional = fields.Char(string="Voter ID Number (Optional)")
     assembly_constituency = fields.Char(string="Assembly Constituency")
     locality = fields.Char(string="Locality")
     post_office = fields.Char(string="Post Office")
@@ -233,7 +232,11 @@ class ResPartner(models.Model):
     has_voter_id_preserved = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Has Voter ID Preserved")
+    ], string="Voter ID Preserved")
+    voter_id_number_preserved = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Voter ID Number Preserved")
     kanha_voter_id_number = fields.Char(string="Existing Voter ID Number")
     kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True)
     kanha_voter_id_image_filename = fields.Char()

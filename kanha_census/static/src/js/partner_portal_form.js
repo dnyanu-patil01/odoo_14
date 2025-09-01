@@ -133,6 +133,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     this._checkIfFormSaved();
     this._restoreSettings();
     this._restoreVoterIdData();
+    this._restoreFamilyData();
     return def;
 },
 
@@ -181,7 +182,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     
     this.$('input:not([type="hidden"]), select, textarea').each(function() {
         var $element = $(this);
-        var elementName = $element.attr('name');
         var isSearchInput = $element.hasClass('search-input');
         
         if (!isSearchInput) {
@@ -204,8 +204,17 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     });
     
     $('.family_website_form_submit, .family_website_form_save').hide();
+    
+    $('.voter_id_number_optional_field input').prop('readonly', true).css({
+        'background-color': '#e9ecef',
+        'color': '#6c757d'
+    });
+    $('.wants_to_apply_voter_id_field select').prop('disabled', true).css({
+        'pointer-events': 'none',
+        'background-color': '#e9ecef',
+        'color': '#6c757d'
+    });
 },
-
     _makeFamilyDetailsReadonly: function() {
     var applicationState = this.$('input[name="application_state"]').val() || 
                         this.$('select[name="application_state"]').val() ||
@@ -248,7 +257,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         'color': '#6c757d'
     });
 },
-
 
     _makeDocumentsReadonly: function() {
 		var applicationState = this.$('input[name="application_state"]').val() || 
@@ -962,10 +970,7 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         $("label[for='voter_id_number_optional'] .s_website_form_mark").remove();
         $("label[for='wants_to_apply_voter_id'] .s_website_form_mark").remove();
     }
-    
-    this._preserveVoterIdData();
 },
-
     _preserveVoterIdData: function() {
     var hasVoterIdValue = this.$('select[name="has_voter_id_in_kanha"]').val();
     var voterIdNumber = this.$('input[name="voter_id_number_optional"]').val();
@@ -986,7 +991,8 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         $('<input type="hidden" name="wants_to_apply_preserved" value="' + wantsToApply + '">').appendTo('form');
     }
 },
-   _restoreVoterIdData: function() {
+
+_restoreVoterIdData: function() {
     var preservedHasVoterId = $('input[name="has_voter_id_preserved"]').val();
     var preservedVoterIdNumber = $('input[name="voter_id_number_preserved"]').val();
     var preservedWantsToApply = $('input[name="wants_to_apply_preserved"]').val();
@@ -1002,6 +1008,103 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     
     if (preservedWantsToApply) {
         this.$('select[name="wants_to_apply_voter_id"]').val(preservedWantsToApply);
+    }
+},
+    _preserveFamilyData: function() {
+    var citizenship = $('select[name="citizenship"]').val();
+    var isOverseas = (citizenship === 'Overseas');
+    var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
+    var familyData = [];
+    
+    $tableBody.find('tr').each(function(index) {
+        var $row = $(this);
+        var familyMember = {
+            'name': $row.find('input[name="family_member_name_' + index + '"]').val() || '',
+            'relation': $row.find('select[name="family_member_relation_' + index + '"]').val() || '',
+            'blood_group': $row.find('select[name="family_member_blood_group_' + index + '"]').val() || ''
+        };
+        
+        if (isOverseas) {
+            familyMember['govt_id'] = $row.find('input[name="family_member_govt_id_' + index + '"]').val() || '';
+        }
+        
+        if (familyMember.name || familyMember.relation || familyMember.blood_group) {
+            familyData.push(familyMember);
+        }
+    });
+    
+    $('input[name="preserved_family_data"]').remove();
+    $('<input type="hidden" name="preserved_family_data" value="' + JSON.stringify(familyData) + '">').appendTo('form');
+    
+    var membersCount = $('#members_count_id').val();
+    if (membersCount) {
+        $('input[name="preserved_members_count"]').remove();
+        $('<input type="hidden" name="preserved_members_count" value="' + membersCount + '">').appendTo('form');
+    }
+},
+    _restoreFamilyData: function() {
+    var preservedFamilyData = $('input[name="preserved_family_data"]').val();
+    var preservedMembersCount = $('input[name="preserved_members_count"]').val();
+    
+    if (preservedMembersCount) {
+        $('#members_count_id').val(preservedMembersCount);
+    }
+    
+    if (preservedFamilyData) {
+        try {
+            var familyData = JSON.parse(preservedFamilyData);
+            var citizenship = $('select[name="citizenship"]').val();
+            var isOverseas = (citizenship === 'Overseas');
+            var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
+            
+            $tableBody.empty();
+            
+            familyData.forEach(function(member, index) {
+                var rowHtml = '<tr id="family-row-' + index + '">';
+                
+                var nameReadonly = '';
+                var selectReadonly = '';
+                
+                rowHtml += '<td><input type="text" class="form-control" name="family_member_name_' + index + '" value="' + (member.name || '') + '"' + nameReadonly + ' /></td>';
+                
+                if (index === 0) {
+                    rowHtml += '<td><select class="form-control" name="family_member_relation_' + index + '"' + selectReadonly + '><option value="Head" selected>Head</option></select></td>';
+                } else {
+                    var relationOptions = [
+                        'Father', 'Mother', 'Husband', 'Wife', 'Brother', 'Sister', 
+                        'Son', 'Daughter', 'Grandfather', 'Grandmother', 
+                        'Father-in-law', 'Mother-in-law', 'Brother-in-law', 'Sister-in-law', 
+                        'Son-in-law', 'Daughter-in-law', 'Spouse', 'Other'
+                    ];
+                    
+                    rowHtml += '<td><select class="form-control" name="family_member_relation_' + index + '"' + selectReadonly + '><option value="">Select Relation</option>';
+                    relationOptions.forEach(function(relation) {
+                        var selected = (relation === member.relation) ? ' selected' : '';
+                        rowHtml += '<option value="' + relation + '"' + selected + '>' + relation + '</option>';
+                    });
+                    rowHtml += '</select></td>';
+                }
+                
+                var bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB-', 'AB+'];
+                rowHtml += '<td><select class="form-control" name="family_member_blood_group_' + index + '"' + selectReadonly + '><option value="">Select...</option>';
+                bloodGroupOptions.forEach(function(bloodGroup) {
+                    var selected = (bloodGroup === member.blood_group) ? ' selected' : '';
+                    rowHtml += '<option value="' + bloodGroup + '"' + selected + '>' + bloodGroup + '</option>';
+                });
+                rowHtml += '</select></td>';
+                
+                if (isOverseas) {
+                    rowHtml += '<td><input type="text" class="form-control" name="family_member_govt_id_' + index + '" value="' + (member.govt_id || '') + '"' + nameReadonly + ' /></td>';
+                    rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_' + index + '" accept="image/jpeg,image/jpg" /></td>';
+                    rowHtml += '<td><input type="file" class="form-control" name="family_member_address_proof_' + index + '" accept="image/jpeg,image/jpg" /></td>';
+                }
+                
+                rowHtml += '</tr>';
+                $tableBody.append(rowHtml);
+            });
+        } catch (e) {
+            console.log('Error parsing preserved family data:', e);
+        }
     }
 },
 
@@ -1685,6 +1788,9 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     $(".family_website_form_submit, .family_website_form_save").attr('disabled', true).addClass('disabled');
     $("#loading").removeClass('hide');
 
+    this._preserveVoterIdData();
+    this._preserveFamilyData();
+
     var $form = $(e.currentTarget).closest('form');
     var form_action = $form.attr('action');
     
@@ -1696,7 +1802,6 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     }
 
     var formData = new FormData();
-
     var excludedFields = ['csrf_token', 'request_token', '_token', 'authenticity_token'];
 
     $form.find('input, select, textarea').each(function() {
@@ -1773,12 +1878,17 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         family_details[index] = familyMember;
     });
 
-    self._preserveVoterIdData();
-
     formData.append('vehicle_details_ids', JSON.stringify(vehicle_details));
     formData.append('vehicle_new_lines', JSON.stringify(vehicle_new_lines));
     formData.append('family_details', JSON.stringify(family_details));
     formData.append('is_submit', is_submit ? 'true' : 'false');
+    
+    var voterIdData = {
+        has_voter_id_in_kanha: this.$('select[name="has_voter_id_in_kanha"]').val(),
+        voter_id_number_optional: this.$('input[name="voter_id_number_optional"]').val(),
+        wants_to_apply_voter_id: this.$('select[name="wants_to_apply_voter_id"]').val()
+    };
+    formData.append('voter_id_preserved_data', JSON.stringify(voterIdData));
 
     var birth_country = document.getElementById("birth_country_id_field");
     if (birth_country) {
@@ -1835,8 +1945,13 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
                 }
             } else {
                 self.isFormSaved = true;
-                self._makeFormReadonly();
-                self._restoreVoterIdData();
+                
+                if (is_submit || result_data.status === 'submitted') {
+                    self._makeFormReadonly();
+                } else {
+                    self._restoreVoterIdData();
+                    self._restoreFamilyData();
+                }
                 
                 var successMode = $form[0].dataset.successMode || ($form.attr('data-success_page') ? 'redirect' : 'nothing');
                 var successPage = $form[0].dataset.successPage || $form.attr('data-success_page');
