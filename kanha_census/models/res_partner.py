@@ -179,8 +179,6 @@ class ResPartner(models.Model):
         ('Transfer Application', 'Transfer Application'),
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
-    aadhaar_card_number = fields.Char(string="Aadhar Card Number")
-    govt_id_proof = fields.Char(string="Any Govt. ID Proof", help="Masked Aadhar Card, Voter ID Card or Driving License")
     members_count = fields.Char(string="How many members staying with you?")
     citizenship = fields.Selection([
         ('Indian', 'Indian'),
