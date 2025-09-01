@@ -230,6 +230,10 @@ class ResPartner(models.Model):
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Do you have a Voter ID in Kanha?", related='already_have_kanha_voter_id')
+    has_voter_id_preserved = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Has Voter ID Preserved")
     kanha_voter_id_number = fields.Char(string="Existing Voter ID Number")
     kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True)
     kanha_voter_id_image_filename = fields.Char()
@@ -408,20 +412,15 @@ class ResPartner(models.Model):
         
         return family_data
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
-            
-        processed_vals_list = []
         family_data_list = []
         
         for vals in vals_list:
             family_data = self.process_family_members_data(vals)
-            processed_vals_list.append(vals)
             family_data_list.append(family_data)
         
-        records = super(ResPartner, self).create(processed_vals_list)
+        records = super(ResPartner, self).create(vals_list)
         
         for i, record in enumerate(records):
             family_data = family_data_list[i]
