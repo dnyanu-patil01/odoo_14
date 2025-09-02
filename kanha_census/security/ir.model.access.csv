@@ -16,5 +16,3 @@ access_work_dept_portal_user,work.dept.portal.user,model_work_department,base.gr
 access_res_users_group_delete_access,res.users.group.delete.access,base.model_res_users,kanha_census.group_delete_access,1,1,1,1
 access_res_partner_user,res.partner.user,base.model_res_partner,base.group_user,1,0,0,0
 access_card_print_log_user,card.print.log.user,model_card_print_log,base.group_user,1,1,1,1
-access_family_member_user,family.member.user,model_family_member,base.group_user,1,1,1,1
-access_family_member_portal_user,family.member.portal.user,model_family_member,base.group_portal,1,1,1,0
