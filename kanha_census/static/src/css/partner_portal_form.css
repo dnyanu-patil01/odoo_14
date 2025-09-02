@@ -1,45 +1,140 @@
-/* Style the file attachment input */
+.oe_login_form .form-group,
+.oe_login_form .oe_login_buttons button[type="submit"],
+.oe_login_form .form-control,
+.oe_login_form input[name="login"],
+.oe_login_form input[name="password"],
+.oe_login_form .field-login,
+.oe_login_form .field-password,
+.oe_login_form .btn-primary,
+.oe_login_form .oe_login_links {
+    display: none !important;
+}
+
+.oe_login .oe_logo,
+.oe_login .oe_logo img,
+.oe_login_form .oe_single_form_container .oe_logo,
+img[src*="logo"],
+img[alt*="logo"],
+img[alt*="Logo"],
+.logo,
+#logo,
+.brand,
+.navbar-brand {
+    display: none !important;
+}
+
+a[href*="reset"],
+a[href*="forgot"],
+a[href*="password"],
+.reset-password,
+.forgot-password {
+    display: none !important;
+}
+
+.oe_login_form .list-group-item {
+    display: block !important;
+}
+
+.oe_login_form .o_auth_provider {
+    display: block !important;
+}
+
+.oe_login_form .o_database_list {
+    margin-top: 0 !important;
+}
+
+.oe_login_form {
+    text-align: center;
+}
+
+.oe_login_form .o_oauth_provider {
+    margin: 10px auto;
+    display: inline-block;
+}
+
+.list-group-item .fa-google::before {
+    content: "G" !important;
+}
+
+.list-group-item:contains("Odoo.com")::before {
+    content: "G " !important;
+    font-family: Arial, sans-serif !important;
+    font-weight: bold !important;
+    color: #4285f4 !important;
+    margin-right: 8px !important;
+}
+
+/* Hide all original content including dots */
+.list-group-item {
+    font-size: 0 !important;
+}
+
+.list-group-item * {
+    display: none !important;
+}
+
+.list-group-item::before {
+    content: none !important;
+}
+
+.list-group-item::after {
+    content: "Log in with Gmail" !important;
+    font-size: 14px !important;
+    color: #333 !important;
+    font-family: Arial, sans-serif !important;
+    display: inline !important;
+}
+
 .attachment-input-container {
     display: flex;
     border: 1px solid #a9a9a9;
     justify-content: space-between;
 }
-.attachment-input-container input:focus, .attachment-input-container input:active {
+
+.attachment-input-container input:focus,
+.attachment-input-container input:active {
     outline: none;
 }
+
 .attachment-input-container input {
     border: none;
 }
-.empty-row{
-	height: 33px;
+
+.empty-row {
+    height: 33px;
 }
 
-/* Style the tab */
-.kanha-portal-tab-wrap{
+.kanha-portal-tab-wrap {
     padding: 30px 0px;
     position: relative;
 }
+
 .kanha-portal-tab-wrap .nav-tabs {
-    display:none;
+    display: none;
     border-bottom: none;
-	overflow: hidden;
-	border: 1px solid #ccc;
-	background-color: #f1f1f1;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
 }
+
 .kanha-portal-tab-wrap .nav-tabs .nav-item {
     margin-right: 10px;
     margin-bottom: 0px;
 }
-.kanha-portal-tab-wrap .nav-tabs .nav-link{
+
+.kanha-portal-tab-wrap .nav-tabs .nav-link {
     border: none;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
-.kanha-portal-tab-wrap .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
-	background: #ccc;
+
+.kanha-portal-tab-wrap .nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+    background: #ccc;
 }
-.word-wrap{
-	word-wrap: break-word;
+
+.word-wrap {
+    word-wrap: break-word;
 }
 
 @media(min-width:1024px) {
@@ -50,14 +145,14 @@
         border: none;
     }
     .kanha-portal-tab-wrap .card .card-header {
-        display:none;
+        display: none;
     }
-    .kanha-portal-tab-wrap .card .collapse{
-        display:block;
+    .kanha-portal-tab-wrap .card .collapse {
+        display: block;
     }
 }
 
-@media(max-width:1023px){
+@media(max-width:1023px) {
     .kanha-portal-tab-wrap .tab-content > .tab-pane {
         display: block;
         opacity: 1;
@@ -66,7 +161,7 @@
     .kanha-portal-tab-wrap .card-header {
         border-bottom: 1px solid rgba(0,0,0,.125);
     }
-    .kanha-portal-tab-wrap .card-header h5 a{
+    .kanha-portal-tab-wrap .card-header h5 a {
         border-bottom: none;
         text-decoration: none;
         font-size: 16px;
@@ -77,40 +172,39 @@
         padding-top: 5px;
     }
     .kanha-portal-tab-wrap .card-body {
-		border: 1px solid #ccc;
+        border: 1px solid #ccc;
     }
 }
 
-.formheading{  
+.formheading {
     background-color: #ccc;
-	color: #212529;
-	padding: 6px;
-	width: 100%;
+    color: #212529;
+    padding: 6px;
+    width: 100%;
 }
 
-/*Loading*/
 #loading {
-	width: 100%;
-   	height: 100%;
-   	top: 0px;
-   	left: 0px;
-   	position: fixed;
-   	opacity: 0.7;
-	background-color: rgb(0, 0, 0, 0.5);
-   	z-index: 99;
-   	text-align: center;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    opacity: 0.7;
+    background-color: rgb(0, 0, 0, 0.5);
+    z-index: 99;
+    text-align: center;
 }
 
 #loading-content {
-	position: absolute;
-  	top: 50%;
-  	left: 40%;
-  	text-align: center;
-  	z-index: 100;
-	color:white;
-	font-size:23px;
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    text-align: center;
+    z-index: 100;
+    color: white;
+    font-size: 23px;
 }
 
-.hide{
-	display: none;
+.hide {
+    display: none;
 }
