@@ -38,7 +38,6 @@
 								<field name="is_preceptor" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="abhyasi_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="srcm_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								
 								<field name="preceptor_incharge_name" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="residence_type" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="id" string="Resident ID number" readonly="1"/>

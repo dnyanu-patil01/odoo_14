@@ -157,7 +157,6 @@ class ResPartner(models.Model):
     kanha_house_number_id = fields.Many2one('kanha.house.number', string='Kanha House Number')
     resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date')
     existing_voter_id_number = fields.Char(string="Existing Voter ID Number")
-    voter_id_number_optional = fields.Char(string="Voter ID Number (Optional)")
     assembly_constituency = fields.Char(string="Assembly Constituency")
     locality = fields.Char(string="Locality")
     post_office = fields.Char(string="Post Office")
@@ -184,7 +183,6 @@ class ResPartner(models.Model):
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
     members_count = fields.Char(string="How many members staying with you?")
-    preserved_members_count = fields.Char(string="Preserved Members Count")
     citizenship = fields.Selection([
         ('Indian', 'Indian'),
         ('Overseas', 'Overseas')
@@ -222,7 +220,6 @@ class ResPartner(models.Model):
     birth_country_name = fields.Char(related="birth_country_id.name", string="Birth Country Name", store=True)
     full_name_passport = fields.Char(string='Full Name (as per Passport)')
     srcm_id = fields.Char(string='SRCM ID')
-    test = fields.Char(string="Test")
     preceptor_incharge_name = fields.Char(string='Preceptor Name / In-charge Name')
     vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
     already_have_kanha_voter_id = fields.Selection([
@@ -233,20 +230,14 @@ class ResPartner(models.Model):
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Do you have a Voter ID in Kanha?", related='already_have_kanha_voter_id', store=False)
-    voter_id_preserved_data = fields.Selection([
-        ('Yes', 'Yes'),
-        ('No', 'No'),
-    ], string="Voter ID Preserved")
-    voter_id_number_preserved = fields.Char(string="Preserved Voter ID Number")
-    voter_id_number = fields.Char(string="Voter ID Number")
     has_voter_id_preserved = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Has Voter ID Preserved")
-    wants_to_apply_preserved = fields.Selection([
+    ], string="Voter ID Preserved")
+    voter_id_number_preserved = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Wants to Apply for Preserved")
+    ], string="Voter ID Number Preserved")
     kanha_voter_id_number = fields.Char(string="Existing Voter ID Number")
     kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True)
     kanha_voter_id_image_filename = fields.Char()
@@ -313,7 +304,6 @@ class ResPartner(models.Model):
     )
     year_of_birth = fields.Integer(string="Year Of Birth", compute='_compute_year_of_birth', store=True)
     family_details = fields.Text(string='Family Details', compute='_compute_family_details', store=False)
-    preserved_family_data = fields.Text(string='Preserved Family Data')
     
     @api.depends('family_member_ids')
     def _compute_family_details(self):
@@ -426,11 +416,8 @@ class ResPartner(models.Model):
         
         return family_data
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
-            
         family_data_list = []
         
         for vals in vals_list:
