@@ -34,9 +34,12 @@
 								<field name="name" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="email" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="gender" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="aadhaar_card_number" widget="Encrypted" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])], 'invisible': [('is_geoadmin', '=', True)]}"/>
+								<field name="govt_id_proof" widget="Encrypted" string="Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}" help="Masked Aadhar Card, Voter ID Card or Driving License"/>
 								<field name="is_preceptor" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="abhyasi_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="srcm_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								
+								<field name="preceptor_incharge_name" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="residence_type" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="id" string="Resident ID number" readonly="1"/>
 								<field name="state" invisible="1"/>
@@ -47,13 +50,50 @@
 								<field name="mobile" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="year_of_birth" readonly="1"/>
 								<field name="citizenship" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="passport_number" widget="Encrypted" attrs="{'required':[('citizenship','=','Overseas')],'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="passport_number" widget="Encrypted" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="full_name_passport" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="birth_country_name" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="emergency_contact" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="property_owner_name" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="property_owner_email" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="property_owner_phone" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="members_count" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="emergency_contact" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="do_you_need_voter_id_in_kanha" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}" />
+								 <field name="has_voter_id_in_kanha" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+    <field name="do_you_need_voter_id_in_kanha" invisible="1"/>
 							</group>
 						</group>
 						<notebook>
+							<page string="Family Details" name="family_details">
+								<group>
+									<field name="family_member_ids" widget="one2many" nolabel="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}">
+										<tree string="Family Members" editable="bottom" limit="8" create="1" edit="1" delete="1">
+											<field name="sequence" invisible="1"/>
+											<field name="name" required="1" placeholder="Enter Name"/>
+											<field name="relation" required="1"/>
+											<field name="blood_group"/>
+											<field name="govt_id_proof" filename="govt_id_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+											<field name="govt_id_proof_filename" invisible="1"/>
+											<field name="passport_photo" filename="passport_photo_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+											<field name="passport_photo_filename" invisible="1"/>
+											<field name="address_proof" filename="address_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+											<field name="address_proof_filename" invisible="1"/>
+										</tree>
+										<form string="Family Member">
+											<group col="2">
+												<field name="name" required="1"/>
+												<field name="relation" required="1"/>
+												<field name="blood_group"/>
+												<field name="govt_id_proof" filename="govt_id_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+												<field name="govt_id_proof_filename" invisible="1"/>
+												<field name="passport_photo" filename="passport_photo_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+												<field name="passport_photo_filename" invisible="1"/>
+												<field name="address_proof" filename="address_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+												<field name="address_proof_filename" invisible="1"/>
+											</group>
+										</form>
+									</field>
+								</group>
+							</page>
 							<page string="Kanha Address" name="kanha_address" >
                         		<group>
 		                            <group string="Kanha Address" name="kanha_address">
@@ -106,12 +146,11 @@
 		                            <group string="Documents" name="documents">
 		                                <field name="adhar_card" attrs="{'required':[('citizenship','=','Indian')],'invisible': [('is_geoadmin', '=', True)], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 		                                <field name="adhar_card_back_side" attrs="{'required':[('citizenship','=','Indian')],'invisible': [('is_geoadmin', '=', True)], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-		                                <field name="passport_front_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-		                                <field name="passport_back_image" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-		                               	<field name="indian_visa" attrs="{'required':[('citizenship','=','Overseas')], 'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="passport_front_image" attrs="{'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                                <field name="passport_back_image" attrs="{'invisible':['|',('is_geoadmin', '=', True),('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+		                               	<field name="indian_visa" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 		                                <field name="passport_photo" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 		                                <field name="address_proof" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-		                              	<field name="age_proof" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 		                            </group>
                         		</group>
                     		</page>
@@ -148,18 +187,6 @@
 								</group>
 							</group>
 						</page>
-                    		<page string="Family Members">
-	                    		<field name="family_members_ids" widget="one2many_list">
-	                    			<tree string="Family Members">
-		                                <field name="name" />
-	                                </tree>
-	                                <form>
-	                             		<group>
-			                                <field name="name" readonly="1"/>
-	                                  	</group>
-	                               	 </form>
-	                      		</field>
-                   			</page>
                    			<page string="Card Print Log">
 	                    		<field name="card_print_log_ids" widget="one2many_list" readonly="1">
 	                    			<tree string="Card Print History" create="0" edit="0" delete="0">
@@ -270,6 +297,45 @@ if records:
 		</field>
 	</record>
 
+	<record id="view_family_member_tree" model="ir.ui.view">
+		<field name="name">family.member.tree</field>
+		<field name="model">family.member</field>
+		<field name="arch" type="xml">
+			<tree string="Family Members" editable="bottom" limit="8">
+				<field name="sequence" invisible="1"/>
+				<field name="name" required="1"/>
+				<field name="relation" required="1"/>
+				<field name="blood_group"/>
+				<field name="govt_id_proof" filename="govt_id_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+				<field name="govt_id_proof_filename" invisible="1"/>
+				<field name="passport_photo" filename="passport_photo_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+				<field name="passport_photo_filename" invisible="1"/>
+				<field name="address_proof" filename="address_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+				<field name="address_proof_filename" invisible="1"/>
+			</tree>
+		</field>
+	</record>
+
+	<record id="view_family_member_form" model="ir.ui.view">
+		<field name="name">family.member.form</field>
+		<field name="model">family.member</field>
+		<field name="arch" type="xml">
+			<form string="Family Member">
+				<group>
+					<field name="name" required="1"/>
+					<field name="relation" required="1"/>
+					<field name="blood_group"/>
+					<field name="govt_id_proof" filename="govt_id_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+					<field name="govt_id_proof_filename" invisible="1"/>
+					<field name="passport_photo" filename="passport_photo_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+					<field name="passport_photo_filename" invisible="1"/>
+					<field name="address_proof" filename="address_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
+					<field name="address_proof_filename" invisible="1"/>
+				</group>
+			</form>
+		</field>
+	</record>
+
 	<menuitem id="menu_applications_root" name="Applications" parent="kanha_census.menu_kanha_census_root" sequence="1"/>
 
 	<record id="kanha_partner_action" model="ir.actions.act_window">
@@ -349,4 +415,16 @@ if records:
 
 	<menuitem id="menu_kanha_approved_for_edit_application" parent="menu_applications_root" action="kanha_approved_for_edit_application_action" sequence="35"/>
 
+    <record id="kanha_archived_application_action" model="ir.actions.act_window">
+		<field name="name">Archived Applications</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('active','=',False)]</field>
+		<field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
+	</record>
+
+	<menuitem id="menu_kanha_archived_application" parent="menu_applications_root" action="kanha_archived_application_action" sequence="40"/>
 </odoo>
