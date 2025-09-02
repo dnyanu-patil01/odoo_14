@@ -237,10 +237,16 @@ class ResPartner(models.Model):
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Voter ID Preserved")
-    voter_id_number_preserved = fields.Selection([
+    voter_id_number_preserved = fields.Char(string="Preserved Voter ID Number")
+    voter_id_number = fields.Char(string="Voter ID Number")
+    has_voter_id_preserved = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Voter ID Number Preserved")
+    ], string="Has Voter ID Preserved")
+    wants_to_apply_preserved = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Wants to Apply for Preserved")
     kanha_voter_id_number = fields.Char(string="Existing Voter ID Number")
     kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True)
     kanha_voter_id_image_filename = fields.Char()
