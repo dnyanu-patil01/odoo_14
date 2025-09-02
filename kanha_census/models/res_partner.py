@@ -174,6 +174,8 @@ class ResPartner(models.Model):
     age_proof_filename = fields.Char()
     address_proof = fields.Binary(string='Address Proof', attachment=True)
     address_proof_filename = fields.Char()
+    govt_id_proof = fields.Binary('Government ID Proof', attachment=True)
+    govt_id_proof_filename = fields.Char()
     application_type = fields.Selection([
         ('New Application', 'New Application'),
         ('Transfer Application', 'Transfer Application'),
