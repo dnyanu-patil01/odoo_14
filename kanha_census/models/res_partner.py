@@ -5,6 +5,8 @@ import logging
 _logger = logging.getLogger(__name__)
 from odoo.osv import expression
 import re
+import base64
+from werkzeug.datastructures import FileStorage
 
 
 class FamilyMember(models.Model):
@@ -157,6 +159,7 @@ class ResPartner(models.Model):
     kanha_house_number_id = fields.Many2one('kanha.house.number', string='Kanha House Number')
     resident_of_kanha_from_date = fields.Date(string='Resident of Kanha From Date')
     existing_voter_id_number = fields.Char(string="Existing Voter ID Number")
+    voter_id_number_optional = fields.Char(string="Voter ID Number (Optional)")
     assembly_constituency = fields.Char(string="Assembly Constituency")
     locality = fields.Char(string="Locality")
     post_office = fields.Char(string="Post Office")
@@ -177,12 +180,15 @@ class ResPartner(models.Model):
     address_proof_filename = fields.Char()
     govt_id_proof = fields.Binary('Government ID Proof', attachment=True)
     govt_id_proof_filename = fields.Char()
+    any_gov_id_proof = fields.Binary('Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)', attachment=True)
+    any_gov_id_proof_filename = fields.Char()
     application_type = fields.Selection([
         ('New Application', 'New Application'),
         ('Transfer Application', 'Transfer Application'),
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
     members_count = fields.Char(string="How many members staying with you?")
+    preserved_members_count = fields.Char(string="Preserved Members Count")
     citizenship = fields.Selection([
         ('Indian', 'Indian'),
         ('Overseas', 'Overseas')
@@ -212,16 +218,16 @@ class ResPartner(models.Model):
     property_owner_name = fields.Char(string="Property Owner Name")
     property_owner_email = fields.Char(string="Owner's Email ID")
     property_owner_phone = fields.Char(string="Owner's Phone Number")
-    family_members_ids = fields.Many2many('res.partner', 'res_partner_family_members_rel', 'family_member_id', 'partner_id',  string='Family Members', readonly=True, compute='_compute_family_members')
     relative_aadhaar_card_number = fields.Char(string="Relative Aadhar Card Number")
     is_geoadmin = fields.Boolean(string='Is Geo Admin', compute='_compute_is_geoadmin', store=False)
-    card_print_log_ids = fields.One2many('card.print.log', 'partner_id', string='Card Print Logs')
-    family_member_ids = fields.One2many('family.member', 'partner_id', string='Family Members Details')
+    card_print_log_ids = fields.One2many('card.print.log', 'partner_id', string='Card Print Logs', copy=False)
+    family_member_ids = fields.One2many('family.member', 'partner_id', string='Family Members Details', copy=False)
     birth_country_name = fields.Char(related="birth_country_id.name", string="Birth Country Name", store=True)
     full_name_passport = fields.Char(string='Full Name (as per Passport)')
     srcm_id = fields.Char(string='SRCM ID')
+    test = fields.Char(string="Test")
     preceptor_incharge_name = fields.Char(string='Preceptor Name / In-charge Name')
-    vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details')
+    vehicle_details_ids = fields.One2many('vehicle.details', 'partner_id', string='Vehicle Details', copy=False)
     already_have_kanha_voter_id = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
@@ -230,7 +236,7 @@ class ResPartner(models.Model):
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Do you have a Voter ID in Kanha?", related='already_have_kanha_voter_id', store=False)
-    has_voter_id_preserved = fields.Selection([
+    voter_id_preserved_data = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Voter ID Preserved")
@@ -238,6 +244,14 @@ class ResPartner(models.Model):
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Voter ID Number Preserved")
+    has_voter_id_preserved = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Has Voter ID Preserved")
+    wants_to_apply_preserved = fields.Selection([
+        ('Yes', 'Yes'),
+        ('No', 'No'),
+    ], string="Wants to Apply for Preserved")
     kanha_voter_id_number = fields.Char(string="Existing Voter ID Number")
     kanha_voter_id_image = fields.Binary('Voter ID Front Image', attachment=True)
     kanha_voter_id_image_filename = fields.Char()
@@ -304,6 +318,7 @@ class ResPartner(models.Model):
     )
     year_of_birth = fields.Integer(string="Year Of Birth", compute='_compute_year_of_birth', store=True)
     family_details = fields.Text(string='Family Details', compute='_compute_family_details', store=False)
+    preserved_family_data = fields.Text(string='Preserved Family Data')
     
     @api.depends('family_member_ids')
     def _compute_family_details(self):
@@ -348,15 +363,6 @@ class ResPartner(models.Model):
             else:
                 record.is_geoadmin = False
 
-    @api.depends('kanha_house_number_id')
-    def _compute_family_members(self):
-        for record in self:
-            if record.kanha_house_number_id:
-                family_members = self.search([('kanha_house_number_id', '=', record.kanha_house_number_id.id)]).filtered(lambda member: member.id != record.id)
-                record.family_members_ids = [(6, 0, family_members.ids)]
-            else:
-                record.family_members_ids = [(6, 0, [])]
-
     @api.depends('date_of_birth')
     def _compute_year_of_birth(self):
         for record in self:
@@ -367,6 +373,38 @@ class ResPartner(models.Model):
 
     def _normalize_relation_value(self, relation_value):
         return relation_value
+
+    def _process_file_field(self, file_data):
+        if not file_data:
+            return False
+            
+        try:
+            if isinstance(file_data, FileStorage):
+                file_data.seek(0)
+                content = file_data.read()
+                if isinstance(content, bytes):
+                    return base64.b64encode(content).decode('utf-8')
+                else:
+                    return base64.b64encode(content.encode('utf-8')).decode('utf-8')
+            elif hasattr(file_data, 'read'):
+                content = file_data.read()
+                if isinstance(content, bytes):
+                    return base64.b64encode(content).decode('utf-8')
+                else:
+                    return base64.b64encode(content.encode('utf-8')).decode('utf-8')
+            elif isinstance(file_data, str):
+                try:
+                    base64.b64decode(file_data)
+                    return file_data
+                except:
+                    return base64.b64encode(file_data.encode('utf-8')).decode('utf-8')
+            elif isinstance(file_data, bytes):
+                return base64.b64encode(file_data).decode('utf-8')
+            else:
+                return False
+        except Exception as e:
+            _logger.error(f"Error processing file: {e}")
+            return False
 
     def process_family_members_data(self, vals):
         if not vals:
@@ -400,27 +438,53 @@ class ResPartner(models.Model):
                 }
                 
                 if govt_id_key in vals and vals[govt_id_key]:
-                    member_data['govt_id_proof'] = vals[govt_id_key]
+                    processed_file = self._process_file_field(vals[govt_id_key])
+                    if processed_file:
+                        member_data['govt_id_proof'] = processed_file
+                        member_data['govt_id_proof_filename'] = getattr(vals[govt_id_key], 'filename', f'govt_id_{i}.pdf')
                     
                 if passport_photo_key in vals and vals[passport_photo_key]:
-                    member_data['passport_photo'] = vals[passport_photo_key]
+                    processed_file = self._process_file_field(vals[passport_photo_key])
+                    if processed_file:
+                        member_data['passport_photo'] = processed_file
+                        member_data['passport_photo_filename'] = getattr(vals[passport_photo_key], 'filename', f'passport_photo_{i}.jpg')
                     
                 if address_proof_key in vals and vals[address_proof_key]:
-                    member_data['address_proof'] = vals[address_proof_key]
+                    processed_file = self._process_file_field(vals[address_proof_key])
+                    if processed_file:
+                        member_data['address_proof'] = processed_file
+                        member_data['address_proof_filename'] = getattr(vals[address_proof_key], 'filename', f'address_proof_{i}.pdf')
                 
                 family_data.append(member_data)
-            
-            for key in [name_key, relation_key, blood_group_key, govt_id_key, passport_photo_key, address_proof_key]:
-                if key in vals:
-                    del vals[key]
+        
+        keys_to_remove = []
+        for key in vals.keys():
+            if key.startswith('family_member_'):
+                keys_to_remove.append(key)
+        
+        for key in keys_to_remove:
+            vals.pop(key, None)
         
         return family_data
 
-    @api.model_create_multi
+    @api.model
     def create(self, vals_list):
+        if not isinstance(vals_list, list):
+            vals_list = [vals_list]
+        
         family_data_list = []
         
         for vals in vals_list:
+            if 'csrf_token' in vals:
+                vals.pop('csrf_token', None)
+            
+            for key, value in list(vals.items()):
+                if isinstance(value, FileStorage):
+                    processed_file = self._process_file_field(value)
+                    if processed_file:
+                        vals[key] = processed_file
+                        vals[f'{key}_filename'] = getattr(value, 'filename', f'{key}.pdf')
+            
             family_data = self.process_family_members_data(vals)
             family_data_list.append(family_data)
         
@@ -454,6 +518,16 @@ class ResPartner(models.Model):
                 })
 
     def write(self, vals):
+        if 'csrf_token' in vals:
+            vals.pop('csrf_token', None)
+        
+        for key, value in list(vals.items()):
+            if isinstance(value, FileStorage):
+                processed_file = self._process_file_field(value)
+                if processed_file:
+                    vals[key] = processed_file
+                    vals[f'{key}_filename'] = getattr(value, 'filename', f'{key}.pdf')
+        
         family_data = self.process_family_members_data(vals)
         result = super(ResPartner, self).write(vals)
         

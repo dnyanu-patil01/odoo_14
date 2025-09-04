@@ -214,19 +214,30 @@ class CustomerPortal(CustomerPortal):
         for field in ['adhar_card', 'adhar_card_back_side', 'passport_photo', 'address_proof', 'passport_front_image', 'passport_back_image', 'indian_visa']:
             file_data = data.get(field)
             if file_data and hasattr(file_data, 'filename'):
-                file_content = file_data.read()
-                file_size_kb = len(file_content) / 1024
-                
-                if file_size_kb > 500:
-                    error[field] = _('File size cannot exceed 500KB')
-                    error_message.append(_('File size cannot exceed 500KB for %s') % field)
-                
-                filename = file_data.filename.lower()
-                if not (filename.endswith('.jpg') or filename.endswith('.jpeg')):
-                    error[field] = _('Only JPG format is allowed')
-                    error_message.append(_('Only JPG format is allowed for %s') % field)
-                
-                file_data.seek(0)
+                try:
+                    if hasattr(file_data, 'stream'):
+                        file_content = file_data.stream.read()
+                        file_data.stream.seek(0)
+                    elif hasattr(file_data, 'read'):
+                        current_pos = file_data.tell() if hasattr(file_data, 'tell') else 0
+                        file_data.seek(0)
+                        file_content = file_data.read()
+                        file_data.seek(current_pos)
+                    else:
+                        continue
+                        
+                    file_size_kb = len(file_content) / 1024
+                    
+                    if file_size_kb > 500:
+                        error[field] = _('File size cannot exceed 500KB')
+                        error_message.append(_('File size cannot exceed 500KB for %s') % field)
+                    
+                    filename = file_data.filename.lower()
+                    if not (filename.endswith('.jpg') or filename.endswith('.jpeg')):
+                        error[field] = _('Only JPG format is allowed')
+                        error_message.append(_('Only JPG format is allowed for %s') % field)
+                except Exception:
+                    continue
 
         family_member_files = ['govt_id_proof', 'passport_photo_file', 'address_proof_file']
         for idx in range(10):
@@ -234,19 +245,30 @@ class CustomerPortal(CustomerPortal):
                 field_name = f'family_member_{file_field}_{idx}'
                 file_data = data.get(field_name)
                 if file_data and hasattr(file_data, 'filename'):
-                    file_content = file_data.read()
-                    file_size_kb = len(file_content) / 1024
-                    
-                    if file_size_kb > 500:
-                        error[field_name] = _('File size cannot exceed 500KB')
-                        error_message.append(_('File size cannot exceed 500KB for family member document'))
-                    
-                    filename = file_data.filename.lower()
-                    if not (filename.endswith('.jpg') or filename.endswith('.jpeg')):
-                        error[field_name] = _('Only JPG format is allowed')
-                        error_message.append(_('Only JPG format is allowed for family member document'))
-                    
-                    file_data.seek(0)
+                    try:
+                        if hasattr(file_data, 'stream'):
+                            file_content = file_data.stream.read()
+                            file_data.stream.seek(0)
+                        elif hasattr(file_data, 'read'):
+                            current_pos = file_data.tell() if hasattr(file_data, 'tell') else 0
+                            file_data.seek(0)
+                            file_content = file_data.read()
+                            file_data.seek(current_pos)
+                        else:
+                            continue
+                            
+                        file_size_kb = len(file_content) / 1024
+                        
+                        if file_size_kb > 500:
+                            error[field_name] = _('File size cannot exceed 500KB')
+                            error_message.append(_('File size cannot exceed 500KB for family member document'))
+                        
+                        filename = file_data.filename.lower()
+                        if not (filename.endswith('.jpg') or filename.endswith('.jpeg')):
+                            error[field_name] = _('Only JPG format is allowed')
+                            error_message.append(_('Only JPG format is allowed for family member document'))
+                    except Exception:
+                        continue
         
         return error, error_message
 
@@ -318,6 +340,30 @@ class CustomerPortal(CustomerPortal):
         except ValueError:
             return False
 
+    def _process_file_upload(self, file_data):
+        if not file_data or not hasattr(file_data, 'filename'):
+            return None
+            
+        try:
+            if hasattr(file_data, 'stream'):
+                file_data.stream.seek(0)
+                file_content = file_data.stream.read()
+            elif hasattr(file_data, 'read'):
+                current_pos = file_data.tell() if hasattr(file_data, 'tell') else 0
+                file_data.seek(0)
+                file_content = file_data.read()
+                file_data.seek(current_pos)
+            else:
+                return None
+                
+            if file_content:
+                if isinstance(file_content, str):
+                    file_content = file_content.encode('utf-8')
+                return base64.b64encode(file_content).decode('utf-8')
+            return None
+        except Exception:
+            return None
+
     @http.route('/website_form/<int:partner_id>/<string:model_name>', type='http', auth="user", methods=['POST'], website=True, csrf=False)
     def save_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         try:
@@ -339,14 +385,9 @@ class CustomerPortal(CustomerPortal):
                     
                 if not error:
                     post_vals = post.copy()
-                    for field_name, field_value in post_vals.items():
-                        if hasattr(field_value, 'filename'):
-                            post.pop(field_name)
-                            field_name = field_name.split('[', 1)[0]
-                            post[field_name] = field_value
-                            
+                    
                     values = {}
-                    values.update(post)
+                    values.update(post_vals)
                     values.update({'is_published': True})
 
                     field_mapping = {
@@ -413,14 +454,13 @@ class CustomerPortal(CustomerPortal):
 
                     for field in set(['adhar_card', 'adhar_card_back_side', 'passport_photo', 'indian_visa',
                                     'passport_front_image', 'passport_back_image', 'age_proof', 'address_proof',
-                                    'declaration_form', 'kanha_voter_id_back_image', 'kanha_voter_id_image']) & set(values.keys()):
-                        file = post.get(field)
-                        if(file):
-                            file_content = file.read()
-                            if(file_content):
-                                values[field] = base64.encodebytes(file_content)
-                            else:
-                                values.pop(field, None)
+                                    'declaration_form', 'kanha_voter_id_back_image', 'kanha_voter_id_image']) & set(post.keys()):
+                        file_data = post.get(field)
+                        processed_file = self._process_file_upload(file_data)
+                        if processed_file:
+                            values[field] = processed_file
+                        else:
+                            values.pop(field, None)
 
                     vehicle_details_vals = []
                     try:
@@ -464,13 +504,12 @@ class CustomerPortal(CustomerPortal):
                                 (passport_photo_field, 'passport_photo'), 
                                 (address_proof_field, 'address_proof')
                             ]:
-                                file = post.get(file_field)
-                                if file and hasattr(file, 'read'):
-                                    file_content = file.read()
-                                    if file_content:
-                                        member_vals[db_field] = base64.encodebytes(file_content)
-                                        if hasattr(file, 'filename'):
-                                            member_vals[f'{db_field}_filename'] = file.filename
+                                file_data = post.get(file_field)
+                                processed_file = self._process_file_upload(file_data)
+                                if processed_file:
+                                    member_vals[db_field] = processed_file
+                                    if hasattr(file_data, 'filename'):
+                                        member_vals[f'{db_field}_filename'] = file_data.filename
                             
                             family_member_vals.append([0, 0, member_vals])
                         
@@ -521,10 +560,10 @@ class CustomerPortal(CustomerPortal):
                             values['family_member_ids'] = [(5,)] + family_member_vals
 
                         if(kanha_house_number_id and int(kanha_house_number_id) != partner.kanha_house_number_id.id):
-                            partner.write({'family_members_ids': [(5,)]})
+                            partner.write({'family_member_ids': [(5,)]})
                             if(relative_partner):
-                                partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
-                                relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})
+                                partner.sudo().write({'family_member_ids': [(6, 0, relative_partner.ids)]})
+                                relative_partner.sudo().write({'family_member_ids': [(4, partner.id)]})
 
                         rfid_card_no = int(values.get("rfid_card_no", 0)) if values.get("rfid_card_no") else 0
                         if(rfid_card_no != partner.rfid_card_no):
@@ -539,8 +578,8 @@ class CustomerPortal(CustomerPortal):
                         if(partner.application_status == 'to_approve'):
                             partner.send_application_status_mail(partner.application_status)
                         if(relative_partner):
-                            partner.sudo().write({'family_members_ids': [(6, 0, relative_partner.ids)]})
-                            relative_partner.sudo().write({'family_members_ids': [(4, partner.id)]})    
+                            partner.sudo().write({'family_member_ids': [(6, 0, relative_partner.ids)]})
+                            relative_partner.sudo().write({'family_member_ids': [(4, partner.id)]})    
                     
                     return request.make_response(
                         json.dumps({'id': partner.id, 'success': True}),

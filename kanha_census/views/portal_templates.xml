@@ -209,12 +209,21 @@
                                             <input id="srcm_id_field" tabindex="6" type="text" class="form-control s_website_form_input" name="srcm_id" t-att-value="srcm_id or partner and partner.srcm_id" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" />
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                    <div class="col-lg-12 row form-group s_website_form_field d-none">
                                         <div class="col-lg-6">
                                             <label class="col-form-label" for="Any Government ID">Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)</label>
                                         </div>
                                         <div t-attf-class="col-xl-6 #{error.get('govt_id_proof') and 'o_has_error' or ''}" data-type="char" data-name="Field">
                                             <input id="govt_id_proof_field" tabindex="7" type="text" t-attf-class="govt_id_proof_field form-control s_website_form_input #{error.get('govt_id_proof') and 'is-invalid' or ''}" name="govt_id_proof" placeholder="Enter Government ID Number" t-att-value="govt_id_proof or partner and partner.govt_id_proof" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Any Government ID Proof">Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('any_gov_id_proof') and 'o_has_error' or ''}">
+                                            <input id="any_gov_id_proof_field" tabindex="7" type="file" class="form-control s_website_form_input" name="any_gov_id_proof" accept=".pdf,.jpg,.jpeg,.png" required="" t-att-disabled="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" />
                                         </div>
                                     </div>
                                     <div class="col-lg-12 row form-group s_website_form_field">
@@ -497,7 +506,7 @@
             </div>
         </form>
         
-            </t>
+    </t>
 </template>
 <template id="kanha_family_portal_form_indian">
     <t t-call="portal.portal_layout">
@@ -566,13 +575,30 @@
                                         </div>
                                     </div>
                                    
-                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                    <div class="col-lg-12 row form-group s_website_form_field d-none">
                                         <div class="col-lg-6">
                                             <label class="col-form-label" for="Any Govt. ID Proof">Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)</label>
                                             <span class="s_website_form_mark">*</span>
                                         </div>
                                         <div t-attf-class="col-xl-6 #{error.get('govt_id_proof') and 'o_has_error' or ''}" data-type="char" data-name="Field">
-                                            <input id="govt_id_proof_field" type="text" t-attf-class="form-control s_website_form_input #{error.get('govt_id_proof') and 'is-invalid' or ''}" name="govt_id_proof" placeholder="Enter Government ID Number" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="govt_id_proof or partner and partner.govt_id_proof" />
+                                            <input id="govt_id_proof_field" type="text" t-attf-class="form-control s_website_form_input #{error.get('govt_id_proof') and 'is-invalid' or ''}" name="govt_id_proof" placeholder="Enter Government ID Number" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="govt_id_proof or partner and partner.govt_id_proof" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Any Govt. ID Proof">Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('any_gov_id_proof') and 'o_has_error' or ''}">
+                                            <input id="any_gov_id_proof_field" type="file" t-attf-class="form-control s_website_form_input #{error.get('any_gov_id_proof') and 'is-invalid' or ''}" name="any_gov_id_proof" accept=".pdf,.jpg,.jpeg,.png" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None" t-att-disabled="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" />
+                                            <small class="form-text text-muted">Upload PDF, JPG, JPEG, or PNG files only</small>
+                                            <t t-if="partner and partner.any_gov_id_proof">
+                                                <div class="mt-2">
+                                                    <a t-attf-href="/web/content/res.partner/#{partner.id}/any_gov_id_proof/#{partner.any_gov_id_proof_filename or 'any_gov_id_proof'}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fa fa-download"/> View Current File
+                                                    </a>
+                                                </div>
+                                            </t>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 row form-group s_website_form_field">

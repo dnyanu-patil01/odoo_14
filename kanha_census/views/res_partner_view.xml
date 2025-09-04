@@ -34,11 +34,12 @@
 								<field name="name" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="email" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="gender" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="govt_id_proof" widget="Encrypted" string="Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}" help="Masked Aadhar Card, Voter ID Card or Driving License"/>
+								<field name="any_gov_id_proof" widget="Encrypted" string="Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}" help="Masked Aadhar Card, Voter ID Card or Driving License"/>
 								<field name="is_preceptor" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="abhyasi_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="srcm_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="preceptor_incharge_name" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="srcm_id" attrs="{'invisible':[('citizenship','=','Indian')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								
+								<field name="preceptor_incharge_name" attrs="{'invisible':[('citizenship','=','Indian')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="residence_type" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="id" string="Resident ID number" readonly="1"/>
 								<field name="state" invisible="1"/>
@@ -57,8 +58,8 @@
 								<field name="property_owner_email" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="property_owner_phone" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="members_count" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								 <field name="has_voter_id_in_kanha" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-    <field name="do_you_need_voter_id_in_kanha" invisible="1"/>
+								<field name="has_voter_id_in_kanha" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="do_you_need_voter_id_in_kanha" invisible="1"/>
 							</group>
 						</group>
 						<notebook>
@@ -109,7 +110,7 @@
 									<field name="rejection_reason" nolabel="1" readonly="1"/>
 								</group>
                     		</page>
-                    		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible': ['|', ('do_you_need_voter_id_in_kanha', '=', 'No'), ('citizenship', '!=', 'Indian')]}">
+                    		<page string="Kanha Voter ID" name="kanha_voter_id_info" attrs="{'invisible': [('citizenship', '=', 'Indian')]}">
                     			<group>
 		                            <group>
 			                            <field name="birth_country_id" attrs="{'required':[('citizenship','=','Indian')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
@@ -348,6 +349,7 @@ if records:
 	</record>
 	
 	<menuitem id="menu_kanha_partner" parent="menu_applications_root" action="kanha_partner_action" sequence="30"/>
+
 
 	<record id="kanha_submitted_application_action" model="ir.actions.act_window">
 		<field name="name">Submitted Applications</field>
