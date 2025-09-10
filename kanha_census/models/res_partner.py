@@ -68,7 +68,6 @@ class FamilyMember(models.Model):
             if record.emergency_contact and not re.match(r'^[6789]\d{9}$', record.emergency_contact):
                 raise ValidationError(_("Emergency contact must be a valid 10-digit Indian number starting with 6, 7, 8, or 9."))
 
-
 class CardPrintLog(models.Model):
     _name = 'card.print.log'
     _description = 'Card Print Log'
