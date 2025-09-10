@@ -32,6 +32,7 @@ class CustomerPortal(CustomerPortal):
                              "change_voter_id_address",
                              "already_have_kanha_voter_id",
                              "kanha_voter_id_number",
+                             "voter_id_number_optional_id",
                              "kanha_voter_id_image",
                              "kanha_voter_id_image_filename",
                              "kanha_voter_id_back_image",
@@ -105,44 +106,11 @@ class CustomerPortal(CustomerPortal):
             error["email"] = _('Invalid Email! Please enter a valid email address.')
             error_message.append(_('Invalid Email! Please enter a valid email address.'))
         
-        if data.get('govt_id_proof'):
-            govt_id_proof = data.get('govt_id_proof')
-            if not govt_id_proof or len(govt_id_proof.strip()) == 0:
-                error["govt_id_proof"] = _('Government ID Proof is required!')
-                error_message.append(_('Government ID Proof is required!'))
-        
-        if data.get('pan_card_number'):
-            is_valid = self.is_valid_pan_number(data.get('pan_card_number'))
-            if not is_valid:
-                error["pan_card_number"] = _('Invalid Pan Number!')
-                error_message.append(_('Invalid Pan Number!'))
-        
-        if data.get('aadhaar_card_number'):
-            is_valid = self.is_valid_aadhaar_number(data.get('aadhaar_card_number'))
-            if not is_valid:
-                error["aadhaar_card_number"] = _('Invalid Aadhaar Number!')
-                error_message.append(_('Invalid Aadhaar Number!')) 
-            
-            ResPartner = request.env['res.partner']
-            partner = ResPartner.sudo().search([('id', '=', partner_id)])    
-            if(not partner):
-                is_adhar_no_exsist = ResPartner.sudo().search([('aadhaar_card_number', '=', data.get('aadhaar_card_number'))])
-                if(is_adhar_no_exsist): 
-                    error["aadhaar_card_number"] = 'error'
-                    error_message.append(_('Aadhar Number is already exist!'))    
-        
-        if data.get('relative_aadhaar_card_number'):
-            relative_aadhaar_card_number = data.get('relative_aadhaar_card_number')
-            is_valid = self.is_valid_aadhaar_number(relative_aadhaar_card_number)
-            if not is_valid:
-                error["aadhar_card_number"] = _('Invalid Relative Aadhar Number!')
-                error_message.append(_('Invalid Relative Aadhar Number!'))               
-
         if data.get('mobile'):
             is_valid = self.is_valid_mobile_number(data.get('mobile'))
             if not is_valid:
                 error["mobile"] = _('Invalid Mobile Number!')
-                error_message.append(_('Invalid Mobile Number!')) 
+                error_message.append(_('Invalid Mobile Number!'))
         
         if data.get('emergency_contact'):
             is_valid = self.is_valid_mobile_number(data.get('emergency_contact'))
@@ -155,63 +123,46 @@ class CustomerPortal(CustomerPortal):
             if not is_valid:
                 error["property_owner_phone"] = _('Invalid Property Owner Phone Number!')
                 error_message.append(_('Invalid Property Owner Phone Number!'))
+
+        family_member_count = 0
+        while True:
+            mobile_field = f'family_member_mobile_{family_member_count}'
+            emergency_contact_field = f'family_member_emergency_contact_{family_member_count}'
+            
+            if mobile_field not in data and emergency_contact_field not in data:
+                break
+                
+            if data.get(mobile_field):
+                is_valid = self.is_valid_mobile_number(data.get(mobile_field))
+                if not is_valid:
+                    error[mobile_field] = _('Invalid Family Member Mobile Number!')
+                    error_message.append(_('Invalid Family Member Mobile Number!'))
+                    
+            if data.get(emergency_contact_field):
+                is_valid = self.is_valid_mobile_number(data.get(emergency_contact_field))
+                if not is_valid:
+                    error[emergency_contact_field] = _('Invalid Family Member Emergency Contact!')
+                    error_message.append(_('Invalid Family Member Emergency Contact!'))
+            
+            family_member_count += 1
         
         if data.get('year_of_birth'):
             is_valid = self.is_valid_year(data.get('year_of_birth'))
             if not is_valid:
-                error["year_of_birth"] = _('You cannot enter a Year in the future for Year of Birth !')
+                error["year_of_birth"] = _('You cannot enter a Year in the future for Year of Birth!')
                 error_message.append(_('You cannot enter a Year in the future for Year of Birth!'))
 
-        if data.get("resident_of_kanha_from_date"):
-            is_valid = self.is_valid_date(data.get('resident_of_kanha_from_date'))
-            if not is_valid:
-                error["resident_of_kanha_from_date"] = _('You cannot enter a date in the future for Resident of kanha from date!')
-                error_message.append(_('You cannot enter a date in the future for Resident of kanha from date!'))      
-        
-        if data.get("visa_start_date"):
-            is_valid = self.is_valid_date(data.get('visa_start_date'))
-            if not is_valid:
-                error["visa_start_date"] = _('You cannot enter a date in the future for Visa Start date!')
-                error_message.append(_('You cannot enter a date in the future for Visa Start date!'))      
-
-        if data.get("visa_end_date"):
-            is_valid = self.is_valid_future_date(data.get('visa_end_date'))
-            if not is_valid:
-                error["visa_end_date"] = _('You cannot enter a date in the future for Visa End date!')
-                error_message.append(_('You cannot enter a date in the future for Visa End date!'))      
-
-        if data.get("vehicle_new_lines"):
+        if data.get('members_count'):
             try:
-                old_vehicles = []
-                if data.get("vehicle_details_ids"):
-                    vehicle_details_ids = json.loads(data.get("vehicle_details_ids"))
-                    old_vehicles = [v for k, v in vehicle_details_ids.items()]
-                
-                new_vehicles = json.loads(data.get("vehicle_new_lines"))
-                error_encountered = False
-                
-                for vehicle in new_vehicles:
-                    fasttag_number = vehicle.get('fasttag_rfid_no')
-                    if(fasttag_number):
-                        is_valid = self.is_valid_fasttag_rfid(fasttag_number)
-                        if not is_valid:
-                            error_encountered = True  
-                            
-                for vehicle in old_vehicles:
-                    fasttag_number = vehicle.get('fasttag_rfid_no')
-                    if(fasttag_number):
-                        is_valid = self.is_valid_fasttag_rfid(fasttag_number)
-                        if not is_valid:
-                            error_encountered = True
-                            
-                if error_encountered:
-                    error["fasttag_rfid_no"] = _('Please enter a valid 16-digit FastTag RFID starting with 6.')
-                    error_message.append(_('Please enter a valid 16-digit FastTag RFID starting with 6.'))   
-            except (ValueError, TypeError) as e:
-                error["vehicle_new_lines"] = _('Invalid vehicle data format.')
-                error_message.append(_('Invalid vehicle data format.'))
+                members_count = int(data.get('members_count'))
+                if members_count < 1 or members_count > 8:
+                    error["members_count"] = _('Members count must be between 1 and 8!')
+                    error_message.append(_('Members count must be between 1 and 8!'))
+            except ValueError:
+                error["members_count"] = _('Invalid members count!')
+                error_message.append(_('Invalid members count!'))
 
-        for field in ['adhar_card', 'adhar_card_back_side', 'passport_photo', 'address_proof', 'passport_front_image', 'passport_back_image', 'indian_visa']:
+        for field in ['any_gov_id_proof', 'passport_front_image', 'passport_back_image', 'indian_visa', 'passport_photo']:
             file_data = data.get(field)
             if file_data and hasattr(file_data, 'filename'):
                 try:
@@ -239,7 +190,7 @@ class CustomerPortal(CustomerPortal):
                 except Exception:
                     continue
 
-        family_member_files = ['govt_id_proof', 'passport_photo_file', 'address_proof_file']
+        family_member_files = ['passport_photo']
         for idx in range(10):
             for file_field in family_member_files:
                 field_name = f'family_member_{file_field}_{idx}'
@@ -271,6 +222,7 @@ class CustomerPortal(CustomerPortal):
                         continue
         
         return error, error_message
+
 
     def is_valid_pan_number(self, pan_number):
         regex = "[A-Z]{5}[0-9]{4}[A-Z]{1}"
@@ -390,88 +342,16 @@ class CustomerPortal(CustomerPortal):
                     values.update(post_vals)
                     values.update({'is_published': True})
 
-                    field_mapping = {
-                        'members_staying': 'members_count',
-                        'preceptor': 'is_preceptor',
-                        'abhyasi_id': 'abhyasi_id'
-                    }
-
-                    for web_field, backend_field in field_mapping.items():
-                        if web_field in values:
-                            values[backend_field] = values.pop(web_field)
-
-                    if values.get('has_voter_id_in_kanha'):
-                        if values['has_voter_id_in_kanha'] == 'Yes':
-                            values['has_voter_id_in_kanha'] = True
-                        else:
-                            values['has_voter_id_in_kanha'] = False
-                    
-                    if values.get('do_you_need_voter_id_in_kanha'):
-                        if values['do_you_need_voter_id_in_kanha'] == 'Yes':
-                            values['do_you_need_voter_id_in_kanha'] = True
-                        else:
-                            values['do_you_need_voter_id_in_kanha'] = False
-
-                    if(values.get('change_voter_id_address') != 'Yes'):
-                        self.remove_invisible_fields_value(values, self.EXISTING_VOTER_ID_FIELDS)
-                    
-                    if(values.get('citizenship') == 'Overseas'):
-                        self.remove_invisible_fields_value(values, self.KANHA_VOTER_ID_FIELDS)
-                        if values.get('birth_country_name'):
-                            values['birth_country_name'] = values.get('birth_country_name')
-                    else:
-                        self.remove_invisible_fields_value(values)
-
-                    overseas_fields = [
-                        'birth_country_name', 'property_owner_name', 'property_owner_email', 
-                        'property_owner_phone', 'residence_type', 'passport_number', 
-                        'full_name_passport', 'emergency_contact'
-                    ]
-                    
-                    for file_field in ['adhar_card_back_side', 'adhar_card', 'kanha_voter_id_image', 
-                                     'kanha_voter_id_back_image', 'age_proof', 'address_proof', 
-                                     'passport_photo', 'passport_front_image', 'passport_back_image', 'indian_visa']:
-                        if not values.get(f'{file_field}_filename'):
-                            values[file_field] = ''
-                    
-                    for date_field in ["resident_of_kanha_from_date", "visa_start_date", "visa_end_date"]:
-                        if values.get(date_field) == '':
-                            values[date_field] = False
-                    
-                    if(values.get("year_of_birth")):
-                        try:
-                            values['year_of_birth'] = int(values['year_of_birth'])
-                        except:
-                            values['year_of_birth'] = False
-                           
-                    many_2_one_fields = ['birth_state_id', 'kanha_location_id', 'country_id', 'state_id',
-                                       'kanha_house_number_id', 'work_profile_id','department_id','birth_country_id']
-                    for field in set(many_2_one_fields) & set(values.keys()):
-                        try:
-                            values[field] = int(values[field]) if values[field] else False
-                        except:
-                            values[field] = False
-
-                    for field in set(['adhar_card', 'adhar_card_back_side', 'passport_photo', 'indian_visa',
-                                    'passport_front_image', 'passport_back_image', 'age_proof', 'address_proof',
-                                    'declaration_form', 'kanha_voter_id_back_image', 'kanha_voter_id_image']) & set(post.keys()):
-                        file_data = post.get(field)
-                        processed_file = self._process_file_upload(file_data)
-                        if processed_file:
-                            values[field] = processed_file
-                        else:
-                            values.pop(field, None)
-
-                    vehicle_details_vals = []
-                    try:
-                        vehicle_new_lines = json.loads(values.get('vehicle_new_lines', '[]'))
-                        if(vehicle_new_lines):
-                            for vehicle_new_rec in vehicle_new_lines:
-                                vehicle_details_vals.append([0, 0, vehicle_new_rec])
-                        values.pop('vehicle_new_lines', None)
-                        values['vehicle_details_ids'] = vehicle_details_vals
-                    except (ValueError, TypeError):
-                        values.pop('vehicle_new_lines', None)
+                    if values.get('citizenship') == 'Overseas':
+                        overseas_fields = [
+                            'birth_country_name', 'property_owner_name', 'property_owner_email', 
+                            'property_owner_phone', 'residence_type', 'passport_number', 
+                            'full_name_passport', 'emergency_contact'
+                        ]
+                        
+                        if values.get('residence_type') != 'Rented Place':
+                            for field in ['property_owner_name', 'property_owner_email', 'property_owner_phone']:
+                                values[field] = ''
 
                     family_member_vals = []
                     family_member_count = 0
@@ -480,9 +360,9 @@ class CustomerPortal(CustomerPortal):
                         name_field = f'family_member_name_{family_member_count}'
                         relation_field = f'family_member_relation_{family_member_count}'
                         blood_group_field = f'family_member_blood_group_{family_member_count}'
-                        govt_id_field = f'family_member_govt_id_proof_{family_member_count}'
-                        passport_photo_field = f'family_member_passport_photo_file_{family_member_count}'
-                        address_proof_field = f'family_member_address_proof_file_{family_member_count}'
+                        mobile_field = f'family_member_mobile_{family_member_count}'
+                        emergency_contact_field = f'family_member_emergency_contact_{family_member_count}'
+                        passport_photo_field = f'family_member_passport_photo_{family_member_count}'
                         
                         if name_field not in values and name_field not in post:
                             break
@@ -490,54 +370,83 @@ class CustomerPortal(CustomerPortal):
                         member_name = values.get(name_field, '').strip() or post.get(name_field, '').strip()
                         member_relation = values.get(relation_field, '').strip() or post.get(relation_field, '').strip()
                         member_blood_group = values.get(blood_group_field, '').strip() or post.get(blood_group_field, '').strip()
+                        member_mobile = values.get(mobile_field, '').strip() or post.get(mobile_field, '').strip()
+                        member_emergency_contact = values.get(emergency_contact_field, '').strip() or post.get(emergency_contact_field, '').strip()
                         
                         if member_name and member_relation:
                             member_vals = {
                                 'name': member_name,
                                 'relation': member_relation,
                                 'blood_group': member_blood_group,
+                                'mobile': member_mobile,
+                                'emergency_contact': member_emergency_contact,
                                 'sequence': family_member_count,
                             }
                             
-                            for file_field, db_field in [
-                                (govt_id_field, 'govt_id_proof'),
-                                (passport_photo_field, 'passport_photo'), 
-                                (address_proof_field, 'address_proof')
-                            ]:
-                                file_data = post.get(file_field)
-                                processed_file = self._process_file_upload(file_data)
-                                if processed_file:
-                                    member_vals[db_field] = processed_file
-                                    if hasattr(file_data, 'filename'):
-                                        member_vals[f'{db_field}_filename'] = file_data.filename
+                            file_data = post.get(passport_photo_field)
+                            processed_file = self._process_file_upload(file_data)
+                            if processed_file:
+                                member_vals['passport_photo'] = processed_file
+                                if hasattr(file_data, 'filename'):
+                                    member_vals['passport_photo_filename'] = file_data.filename
                             
                             family_member_vals.append([0, 0, member_vals])
                         
-                        for field in [name_field, relation_field, blood_group_field, govt_id_field, 
-                                    passport_photo_field, address_proof_field]:
+                        for field in [name_field, relation_field, blood_group_field, mobile_field, 
+                                    emergency_contact_field, passport_photo_field]:
                             values.pop(field, None)
                         family_member_count += 1
+
+                    if values.get('members_count'):
+                        try:
+                            members_count = int(values.get('members_count'))
+                            if members_count < 1 or members_count > 8:
+                                values['members_count'] = 1
+                            if len(family_member_vals) > members_count:
+                                family_member_vals = family_member_vals[:members_count]
+                        except ValueError:
+                            values['members_count'] = 1
 
                     if family_member_vals:
                         values['family_member_ids'] = family_member_vals
 
-                    relative_partner = False
-                    kanha_house_number_id = post.get('kanha_house_number_id')
-                    kanha_location_id = post.get('kanha_location_id')
-                    if(kanha_house_number_id):
+                    for field in ['any_gov_id_proof', 'passport_front_image', 'passport_back_image', 'passport_photo', 'indian_visa']:
+                        file_data = post.get(field)
+                        processed_file = self._process_file_upload(file_data)
+                        if processed_file:
+                            values[field] = processed_file
+                        else:
+                            values.pop(field, None)
+
+                    if values.get("year_of_birth"):
                         try:
-                            relative_partner = ResPartner.sudo().search([
-                                ('kanha_house_number_id', '=', int(kanha_house_number_id)),
-                                ('kanha_location_id','=', int(kanha_location_id))
-                            ])
-                        except ValueError:
-                            pass
+                            values['year_of_birth'] = int(values['year_of_birth'])
+                        except:
+                            values['year_of_birth'] = False
+
+                    many_2_one_fields = ['kanha_location_id', 'kanha_house_number_id', 'work_profile_id','department_id']
+                    for field in set(many_2_one_fields) & set(values.keys()):
+                        try:
+                            values[field] = int(values[field]) if values[field] else False
+                        except:
+                            values[field] = False
+
+                    vehicle_details_vals = []
+                    try:
+                        vehicle_new_lines = json.loads(values.get('vehicle_new_lines', '[]'))
+                        if vehicle_new_lines:
+                            for vehicle_new_rec in vehicle_new_lines:
+                                vehicle_details_vals.append([0, 0, vehicle_new_rec])
+                        values.pop('vehicle_new_lines', None)
+                        values['vehicle_details_ids'] = vehicle_details_vals
+                    except (ValueError, TypeError):
+                        values.pop('vehicle_new_lines', None)
 
                     if partner:
                         try:
                             vehicle_details_ids = json.loads(post.get('vehicle_details_ids', '{}'))
                             partner_vehicle_ids = partner.vehicle_details_ids.ids
-                            if(vehicle_details_ids):
+                            if vehicle_details_ids:
                                 partner_vehicle_ids = list(map(str, partner_vehicle_ids))
                                 deleted_vehicle_ids = list(set(partner_vehicle_ids).symmetric_difference(set(vehicle_details_ids.keys())))
                                 for deleted_id in deleted_vehicle_ids:
@@ -548,7 +457,7 @@ class CustomerPortal(CustomerPortal):
                                     vehicle_vals = vehicle_details_ids.get(str(partner_vehicle))
                                     if vehicle_vals:
                                         vehicle_details_vals.append([1, int(partner_vehicle), vehicle_vals])
-                            elif(partner_vehicle_ids and not vehicle_details_ids):
+                            elif partner_vehicle_ids and not vehicle_details_ids:
                                 for partner_vehicle in partner_vehicle_ids:
                                     vehicle_details_vals.append([2, partner_vehicle])
                             
@@ -559,27 +468,13 @@ class CustomerPortal(CustomerPortal):
                         if partner.family_member_ids:
                             values['family_member_ids'] = [(5,)] + family_member_vals
 
-                        if(kanha_house_number_id and int(kanha_house_number_id) != partner.kanha_house_number_id.id):
-                            partner.write({'family_member_ids': [(5,)]})
-                            if(relative_partner):
-                                partner.sudo().write({'family_member_ids': [(6, 0, relative_partner.ids)]})
-                                relative_partner.sudo().write({'family_member_ids': [(4, partner.id)]})
-
-                        rfid_card_no = int(values.get("rfid_card_no", 0)) if values.get("rfid_card_no") else 0
-                        if(rfid_card_no != partner.rfid_card_no):
-                            values['state'] = partner.state
-                            values['application_status'] = partner.application_status
-
-                        partner.sudo().write(values)  
-                        if(partner.application_status == 'to_approve'):
-                            partner.send_application_status_mail(partner.application_status)                               
+                        partner.sudo().write(values)
+                        if partner.application_status == 'to_approve':
+                            partner.send_application_status_mail(partner.application_status)
                     else:
                         partner = ResPartner.sudo().create(values)
-                        if(partner.application_status == 'to_approve'):
+                        if partner.application_status == 'to_approve':
                             partner.send_application_status_mail(partner.application_status)
-                        if(relative_partner):
-                            partner.sudo().write({'family_member_ids': [(6, 0, relative_partner.ids)]})
-                            relative_partner.sudo().write({'family_member_ids': [(4, partner.id)]})    
                     
                     return request.make_response(
                         json.dumps({'id': partner.id, 'success': True}),
@@ -601,6 +496,7 @@ class CustomerPortal(CustomerPortal):
             headers={'Content-Type': 'application/json'}
         )
 
+
     @http.route('/website_form_family/<int:partner_id>/<string:model_name>', type='http', auth="user", website=True)
     def family_portal_form(self, partner_id=None, model_name=None, access_token=None, **post):
         ResPartner = request.env['res.partner']
@@ -620,9 +516,9 @@ class CustomerPortal(CustomerPortal):
             response.headers['X-Frame-Options'] = 'DENY'
             return response
         else:
-            print("You cannot access this record !")
+            return request.render('kanha_census.access_denied', {})
     
-    @http.route(['/add_family_members_indian/<int:partner_id>'], type='http', auth="public", website=True)
+    @http.route(['/add_family_members_indian/<int:partner_id>'], type='http', auth="user", website=True)
     def add_family_members_indian(self, redirect=None, partner_id=None, model_name=None, **post):
         values = self.get_default_values_for_kanha()
         current_partner = request.env.user.partner_id
@@ -637,7 +533,7 @@ class CustomerPortal(CustomerPortal):
         response = request.render("kanha_census.kanha_family_portal_form_indian", values)
         return response
     
-    @http.route(['/add_family_members_overseas/<int:partner_id>'], type='http', auth="public", website=True)
+    @http.route(['/add_family_members_overseas/<int:partner_id>'], type='http', auth="user", website=True)
     def add_family_members_overseas(self, redirect=None, partner_id=None, model_name=None,**post):
         values = self.get_default_values_for_kanha()
         current_partner = request.env.user.partner_id
@@ -653,7 +549,7 @@ class CustomerPortal(CustomerPortal):
         response = request.render("kanha_census.kanha_family_portal_form_overseas", values)
         return response
     
-    @http.route(['/select_citizen'], type='http', auth="public", website=True)
+    @http.route(['/select_citizen'], type='http', auth="user", website=True)
     def select_citizen(self, redirect=None, **post):
         values = self.get_default_values_for_kanha()
         current_partner = request.env.user.partner_id
@@ -708,6 +604,7 @@ class CustomerPortal(CustomerPortal):
                 values['need_new_kanha_voter_id'] = ''
             if(values.get('already_have_kanha_voter_id') == 'No'):
                 values['kanha_voter_id_number'] = ''
+                values['voter_id_number_optional_id'] = ''
                 values['kanha_voter_id_image'] = ''
                 values['kanha_voter_id_image_filename'] = '' 
                 values['kanha_voter_id_back_image'] = ''
@@ -741,7 +638,7 @@ class CustomerPortal(CustomerPortal):
                     SELECT id
                       FROM ir_attachment
                      WHERE res_id IN %s AND res_field IN 
-                     ('adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo', 'passport_front_image', 'passport_back_image','indian_visa')
+                     ('any_gov_id_proof', 'adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo', 'passport_front_image', 'passport_back_image','indian_visa')
                 """, [tuple(res_partner.ids)])
             ir_attachments = request.env.cr.fetchall()
             attachments = request.env["ir.attachment"].search([('id','in', ir_attachments)])

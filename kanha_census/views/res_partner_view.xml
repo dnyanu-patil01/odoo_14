@@ -33,8 +33,9 @@
 							<group>
 								<field name="name" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="email" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="full_name_passport" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="gender" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="any_gov_id_proof" widget="Encrypted" string="Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}" help="Masked Aadhar Card, Voter ID Card or Driving License"/>
+								<field name="any_gov_id_proof"  string="Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}" help="Masked Aadhar Card, Voter ID Card or Driving License"/>
 								<field name="is_preceptor" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="abhyasi_id" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="srcm_id" attrs="{'invisible':[('citizenship','=','Indian')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
@@ -51,49 +52,51 @@
 								<field name="year_of_birth" readonly="1"/>
 								<field name="citizenship" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="passport_number" widget="Encrypted" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="full_name_passport" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								
 								<field name="birth_country_name" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="emergency_contact" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="property_owner_name" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="property_owner_email" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="property_owner_phone" attrs="{'invisible':[('citizenship','!=','Overseas')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="members_count" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="has_voter_id_in_kanha" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="has_voter_id_in_kanha" attrs="{'invisible':[('citizenship','!=','Indian')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="voter_id_number_optional_id" attrs="{'invisible':['|',('citizenship','!=','Indian'),('has_voter_id_in_kanha','!=','Yes')], 'required':[('citizenship','=','Indian'),('has_voter_id_in_kanha','=','Yes')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="wants_to_apply_voter_id" attrs="{'invisible':['|',('citizenship','!=','Indian'),('has_voter_id_in_kanha','!=','No')], 'required':[('citizenship','=','Indian'),('has_voter_id_in_kanha','=','No')], 'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="do_you_need_voter_id_in_kanha" invisible="1"/>
 							</group>
 						</group>
 						<notebook>
 							<page string="Family Details" name="family_details">
-								<group>
-									<field name="family_member_ids" widget="one2many" nolabel="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}">
-										<tree string="Family Members" editable="bottom" limit="8" create="1" edit="1" delete="1">
-											<field name="sequence" invisible="1"/>
-											<field name="name" required="1" placeholder="Enter Name"/>
-											<field name="relation" required="1"/>
-											<field name="blood_group"/>
-											<field name="govt_id_proof" filename="govt_id_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
-											<field name="govt_id_proof_filename" invisible="1"/>
-											<field name="passport_photo" filename="passport_photo_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
-											<field name="passport_photo_filename" invisible="1"/>
-											<field name="address_proof" filename="address_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
-											<field name="address_proof_filename" invisible="1"/>
-										</tree>
-										<form string="Family Member">
-											<group col="2">
-												<field name="name" required="1"/>
-												<field name="relation" required="1"/>
-												<field name="blood_group"/>
-												<field name="govt_id_proof" filename="govt_id_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
-												<field name="govt_id_proof_filename" invisible="1"/>
-												<field name="passport_photo" filename="passport_photo_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
-												<field name="passport_photo_filename" invisible="1"/>
-												<field name="address_proof" filename="address_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head')]}"/>
-												<field name="address_proof_filename" invisible="1"/>
-											</group>
-										</form>
-									</field>
-								</group>
-							</page>
+	<group>
+		<field name="family_member_ids" widget="one2many" nolabel="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}">
+			<tree string="Family Members" editable="bottom" limit="8" create="1" edit="1" delete="1">
+				<field name="sequence" invisible="1"/>
+				<field name="name" required="1" placeholder="Enter Name"/>
+				<field name="relation" required="1"/>
+				<field name="blood_group"/>
+				<field name="govt_id_proof" filename="govt_id_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head'),('parent.citizenship','!=','Indian')], 'column_invisible':[('parent.citizenship','=','Indian')]}"/>
+				<field name="govt_id_proof_filename" invisible="1"/>
+				<field name="passport_photo" filename="passport_photo_filename" widget="binary" attrs="{'required':[('relation','!=','Head'),('parent.citizenship','!=','Indian')], 'column_invisible':[('parent.citizenship','=','Indian')]}"/>
+				<field name="passport_photo_filename" invisible="1"/>
+				<field name="address_proof" filename="address_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head'),('parent.citizenship','!=','Indian')], 'column_invisible':[('parent.citizenship','=','Indian')]}"/>
+				<field name="address_proof_filename" invisible="1"/>
+			</tree>
+			<form string="Family Member">
+				<group col="2">
+					<field name="name" required="1"/>
+					<field name="relation" required="1"/>
+					<field name="blood_group"/>
+					<field name="govt_id_proof" filename="govt_id_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head'),('parent.citizenship','!=','Indian')], 'invisible':[('parent.citizenship','=','Indian')]}"/>
+					<field name="govt_id_proof_filename" invisible="1"/>
+					<field name="passport_photo" filename="passport_photo_filename" widget="binary" attrs="{'required':[('relation','!=','Head'),('parent.citizenship','!=','Indian')], 'invisible':[('parent.citizenship','=','Indian')]}"/>
+					<field name="passport_photo_filename" invisible="1"/>
+					<field name="address_proof" filename="address_proof_filename" widget="binary" attrs="{'required':[('relation','!=','Head'),('parent.citizenship','!=','Indian')], 'invisible':[('parent.citizenship','=','Indian')]}"/>
+					<field name="address_proof_filename" invisible="1"/>
+				</group>
+			</form>
+		</field>
+	</group>
+</page>
 							<page string="Kanha Address" name="kanha_address" >
                         		<group>
 		                            <group string="Kanha Address" name="kanha_address">

@@ -45,14 +45,28 @@ class FamilyMember(models.Model):
         ('O-', 'O-'),
         ('AB-', 'AB-'),
         ('AB+', 'AB+')
-    ], string='Blood Group')
+    ], string='Blood Group', required=True)
+    mobile = fields.Char(string='Mobile Number', required=True)
+    emergency_contact = fields.Char(string='Emergency Contact', required=True)
     sequence = fields.Integer(string='Sequence', default=1)
     govt_id_proof = fields.Binary('Government ID Proof', attachment=True)
     govt_id_proof_filename = fields.Char()
-    passport_photo = fields.Binary('Passport Size Photo', attachment=True)
+    passport_photo = fields.Binary('Passport Size Photo', attachment=True, required=True)
     passport_photo_filename = fields.Char()
     address_proof = fields.Binary('Kanha Address Proof', attachment=True)
     address_proof_filename = fields.Char()
+
+    @api.constrains('mobile')
+    def _check_mobile_number(self):
+        for record in self:
+            if record.mobile and not re.match(r'^[6789]\d{9}$', record.mobile):
+                raise ValidationError(_("Mobile number must be a valid 10-digit Indian number starting with 6, 7, 8, or 9."))
+
+    @api.constrains('emergency_contact')
+    def _check_emergency_contact(self):
+        for record in self:
+            if record.emergency_contact and not re.match(r'^[6789]\d{9}$', record.emergency_contact):
+                raise ValidationError(_("Emergency contact must be a valid 10-digit Indian number starting with 6, 7, 8, or 9."))
 
 
 class CardPrintLog(models.Model):
@@ -187,12 +201,12 @@ class ResPartner(models.Model):
         ('Transfer Application', 'Transfer Application'),
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
-    members_count = fields.Char(string="How many members staying with you?")
+    members_count = fields.Char(string="Total members staying along with you can be mentioned.?")
     preserved_members_count = fields.Char(string="Preserved Members Count")
     citizenship = fields.Selection([
         ('Indian', 'Indian'),
         ('Overseas', 'Overseas')
-    ], required=True, default='Overseas')
+    ], required=True, default='Indian')
     passport_number = fields.Char(string="Passport Number")
     work_profile = fields.Selection([
         ('Resident', 'Resident'),
@@ -223,7 +237,7 @@ class ResPartner(models.Model):
     card_print_log_ids = fields.One2many('card.print.log', 'partner_id', string='Card Print Logs', copy=False)
     family_member_ids = fields.One2many('family.member', 'partner_id', string='Family Members Details', copy=False)
     birth_country_name = fields.Char(related="birth_country_id.name", string="Birth Country Name", store=True)
-    full_name_passport = fields.Char(string='Full Name (as per Passport)')
+    #full_name_passport = fields.Char(string='Full Name (as per Passport)')
     srcm_id = fields.Char(string='SRCM ID')
     test = fields.Char(string="Test")
     preceptor_incharge_name = fields.Char(string='Preceptor Name / In-charge Name')
@@ -235,15 +249,12 @@ class ResPartner(models.Model):
     has_voter_id_in_kanha = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
-    ], string="Do you have a Voter ID in Kanha?", related='already_have_kanha_voter_id', store=False)
+    ], string="Do you have a Voter ID in Kanha?")
     voter_id_preserved_data = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
     ], string="Voter ID Preserved")
-    voter_id_number_preserved = fields.Selection([
-        ('Yes', 'Yes'),
-        ('No', 'No'),
-    ], string="Voter ID Number Preserved")
+    voter_id_number_optional_id = fields.Char(string="Voter ID Number Preserved")
     has_voter_id_preserved = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No'),
@@ -319,6 +330,24 @@ class ResPartner(models.Model):
     year_of_birth = fields.Integer(string="Year Of Birth", compute='_compute_year_of_birth', store=True)
     family_details = fields.Text(string='Family Details', compute='_compute_family_details', store=False)
     preserved_family_data = fields.Text(string='Preserved Family Data')
+    full_name_passport = fields.Char(string='Full Name (as per Passport)')
+
+    @api.onchange('name', 'surname')
+    def _onchange_name_surname(self):
+        if self.name and self.surname:
+            self.full_name_passport = f"{self.name} {self.surname}"
+        elif self.name and not self.surname:
+            self.full_name_passport = self.name
+        elif not self.name and self.surname:
+            self.full_name_passport = self.surname
+        else:
+            self.full_name_passport = ""
+    @api.onchange('has_voter_id_in_kanha')
+    def _onchange_has_voter_id_in_kanha(self):
+        if self.has_voter_id_in_kanha == 'No':
+            self.voter_id_number_optional = False
+        elif self.has_voter_id_in_kanha == 'Yes':
+            self.wants_to_apply_voter_id = False
     
     @api.depends('family_member_ids')
     def _compute_family_details(self):
@@ -329,6 +358,8 @@ class ResPartner(models.Model):
                     member_info = f"{member.name} ({member.relation})"
                     if member.blood_group:
                         member_info += f" - {member.blood_group}"
+                    if member.mobile:
+                        member_info += f" - {member.mobile}"
                     details.append(member_info)
                 record.family_details = "\n".join(details)
             else:
@@ -422,6 +453,8 @@ class ResPartner(models.Model):
             name_key = f'family_member_name_{i}'
             relation_key = f'family_member_relation_{i}'
             blood_group_key = f'family_member_blood_group_{i}'
+            mobile_key = f'family_member_mobile_{i}'
+            emergency_contact_key = f'family_member_emergency_contact_{i}'
             govt_id_key = f'family_member_govt_id_{i}'
             passport_photo_key = f'family_member_passport_photo_{i}'
             address_proof_key = f'family_member_address_proof_{i}'
@@ -434,6 +467,8 @@ class ResPartner(models.Model):
                     'name': vals[name_key],
                     'relation': normalized_relation,
                     'blood_group': vals.get(blood_group_key, ''),
+                    'mobile': vals.get(mobile_key, ''),
+                    'emergency_contact': vals.get(emergency_contact_key, ''),
                     'sequence': i + 1
                 }
                 
@@ -467,11 +502,8 @@ class ResPartner(models.Model):
         
         return family_data
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
-        
         family_data_list = []
         
         for vals in vals_list:
@@ -513,7 +545,9 @@ class ResPartner(models.Model):
                     'partner_id': record.id,
                     'name': record.name or '',
                     'relation': 'Head',
-                    'blood_group': record.blood_group or False,
+                    'blood_group': record.blood_group or 'A+',
+                    'mobile': record.mobile or '',
+                    'emergency_contact': record.emergency_contact or '',
                     'sequence': 1,
                 })
 
@@ -537,7 +571,7 @@ class ResPartner(models.Model):
                 for member_data in family_data:
                     member_data['partner_id'] = record.id
                     self.env['family.member'].create(member_data)
-        elif 'name' in vals or 'blood_group' in vals:
+        elif 'name' in vals or 'blood_group' in vals or 'mobile' in vals or 'emergency_contact' in vals:
             for record in self:
                 head_member = self.env['family.member'].search([
                     ('partner_id', '=', record.id),
@@ -550,6 +584,10 @@ class ResPartner(models.Model):
                         update_vals['name'] = vals['name']
                     if 'blood_group' in vals:
                         update_vals['blood_group'] = vals['blood_group']
+                    if 'mobile' in vals:
+                        update_vals['mobile'] = vals['mobile']
+                    if 'emergency_contact' in vals:
+                        update_vals['emergency_contact'] = vals['emergency_contact']
                     
                     if update_vals:
                         head_member.write(update_vals)
