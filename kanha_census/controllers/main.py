@@ -162,7 +162,7 @@ class CustomerPortal(CustomerPortal):
                 error["members_count"] = _('Invalid members count!')
                 error_message.append(_('Invalid members count!'))
 
-        for field in ['any_gov_id_proof', 'passport_front_image', 'passport_back_image', 'indian_visa', 'passport_photo']:
+        for field in ['any_gov_id_proof', 'passport_front_image', 'passport_back_image', 'indian_visa', 'passport_photo', 'address_proof', 'age_proof']:
             file_data = data.get(field)
             if file_data and hasattr(file_data, 'filename'):
                 try:
@@ -184,9 +184,14 @@ class CustomerPortal(CustomerPortal):
                         error_message.append(_('File size cannot exceed 500KB for %s') % field)
                     
                     filename = file_data.filename.lower()
-                    if not (filename.endswith('.jpg') or filename.endswith('.jpeg')):
-                        error[field] = _('Only JPG format is allowed')
-                        error_message.append(_('Only JPG format is allowed for %s') % field)
+                    if field == 'any_gov_id_proof':
+                        if not (filename.endswith('.jpg') or filename.endswith('.jpeg') or filename.endswith('.pdf')):
+                            error[field] = _('Only JPG and PDF formats are allowed')
+                            error_message.append(_('Only JPG and PDF formats are allowed for %s') % field)
+                    else:
+                        if not (filename.endswith('.jpg') or filename.endswith('.jpeg')):
+                            error[field] = _('Only JPG format is allowed')
+                            error_message.append(_('Only JPG format is allowed for %s') % field)
                 except Exception:
                     continue
 
@@ -354,67 +359,68 @@ class CustomerPortal(CustomerPortal):
                                 values[field] = ''
 
                     family_member_vals = []
-                    family_member_count = 0
+                members_count = 0
+
+                try:
+                    members_count_val = values.get('members_count', '1')
+                    if members_count_val and re.match(r'^[1-8]$', str(members_count_val).strip()):
+                        members_count = int(members_count_val)
+                    else:
+                        members_count = 1
+                except:
+                    members_count = 1
+
+            for i in range(members_count):
+                name_field = f'family_member_name_{i}'
+                relation_field = f'family_member_relation_{i}'
+                blood_group_field = f'family_member_blood_group_{i}'
+                mobile_field = f'family_member_mobile_{i}'
+                emergency_contact_field = f'family_member_emergency_contact_{i}'
+                passport_photo_field = f'family_member_passport_photo_{i}'
+                
+                member_name = values.get(name_field, '').strip() or post.get(name_field, '').strip()
+                member_relation = values.get(relation_field, '').strip() or post.get(relation_field, '').strip()
+                
+                if member_name and member_relation:
+                    member_vals = {
+                        'name': member_name,
+                        'relation': member_relation,
+                        'blood_group': values.get(blood_group_field, '').strip() or post.get(blood_group_field, '').strip(),
+                        'mobile': values.get(mobile_field, '').strip() or post.get(mobile_field, '').strip(),
+                        'emergency_contact': values.get(emergency_contact_field, '').strip() or post.get(emergency_contact_field, '').strip(),
+                        'sequence': i + 1,
+                    }
                     
-                    while True:
-                        name_field = f'family_member_name_{family_member_count}'
-                        relation_field = f'family_member_relation_{family_member_count}'
-                        blood_group_field = f'family_member_blood_group_{family_member_count}'
-                        mobile_field = f'family_member_mobile_{family_member_count}'
-                        emergency_contact_field = f'family_member_emergency_contact_{family_member_count}'
-                        passport_photo_field = f'family_member_passport_photo_{family_member_count}'
-                        
-                        if name_field not in values and name_field not in post:
-                            break
-                        
-                        member_name = values.get(name_field, '').strip() or post.get(name_field, '').strip()
-                        member_relation = values.get(relation_field, '').strip() or post.get(relation_field, '').strip()
-                        member_blood_group = values.get(blood_group_field, '').strip() or post.get(blood_group_field, '').strip()
-                        member_mobile = values.get(mobile_field, '').strip() or post.get(mobile_field, '').strip()
-                        member_emergency_contact = values.get(emergency_contact_field, '').strip() or post.get(emergency_contact_field, '').strip()
-                        
-                        if member_name and member_relation:
-                            member_vals = {
-                                'name': member_name,
-                                'relation': member_relation,
-                                'blood_group': member_blood_group,
-                                'mobile': member_mobile,
-                                'emergency_contact': member_emergency_contact,
-                                'sequence': family_member_count,
-                            }
-                            
-                            file_data = post.get(passport_photo_field)
-                            processed_file = self._process_file_upload(file_data)
-                            if processed_file:
-                                member_vals['passport_photo'] = processed_file
-                                if hasattr(file_data, 'filename'):
-                                    member_vals['passport_photo_filename'] = file_data.filename
-                            
-                            family_member_vals.append([0, 0, member_vals])
-                        
-                        for field in [name_field, relation_field, blood_group_field, mobile_field, 
-                                    emergency_contact_field, passport_photo_field]:
-                            values.pop(field, None)
-                        family_member_count += 1
+                    if member_relation.lower() == 'head' or i == 0:
+                        main_mobile = values.get('mobile', '').strip()
+                        if main_mobile and not member_vals['mobile']:
+                            member_vals['mobile'] = main_mobile
+                    
+                    file_data = post.get(passport_photo_field)
+                    processed_file = self._process_file_upload(file_data)
+                    if processed_file:
+                        member_vals['passport_photo'] = processed_file
+                        if hasattr(file_data, 'filename'):
+                            member_vals['passport_photo_filename'] = file_data.filename
+                        else:
+                            member_vals['passport_photo_filename'] = f'passport_photo_{i}.jpg'
+                    
+                    family_member_vals.append([0, 0, member_vals])
+                
+                for field in [name_field, relation_field, blood_group_field, mobile_field, 
+                            emergency_contact_field, passport_photo_field]:
+                    values.pop(field, None)
+                    post.pop(field, None)
+                if family_member_vals:
+                    values['family_member_ids'] = family_member_vals
 
-                    if values.get('members_count'):
-                        try:
-                            members_count = int(values.get('members_count'))
-                            if members_count < 1 or members_count > 8:
-                                values['members_count'] = 1
-                            if len(family_member_vals) > members_count:
-                                family_member_vals = family_member_vals[:members_count]
-                        except ValueError:
-                            values['members_count'] = 1
-
-                    if family_member_vals:
-                        values['family_member_ids'] = family_member_vals
-
-                    for field in ['any_gov_id_proof', 'passport_front_image', 'passport_back_image', 'passport_photo', 'indian_visa']:
+                    for field in ['any_gov_id_proof', 'passport_front_image', 'passport_back_image', 'passport_photo', 'indian_visa', 'address_proof', 'age_proof']:
                         file_data = post.get(field)
                         processed_file = self._process_file_upload(file_data)
                         if processed_file:
                             values[field] = processed_file
+                            if hasattr(file_data, 'filename'):
+                                values[f'{field}_filename'] = file_data.filename
                         else:
                             values.pop(field, None)
 
@@ -636,9 +642,9 @@ class CustomerPortal(CustomerPortal):
         for res_partner in res_partners:
             request.env.cr.execute("""
                     SELECT id
-                      FROM ir_attachment
-                     WHERE res_id IN %s AND res_field IN 
-                     ('any_gov_id_proof', 'adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo', 'passport_front_image', 'passport_back_image','indian_visa')
+                    FROM ir_attachment
+                    WHERE res_id IN %s AND res_field IN 
+                    ('any_gov_id_proof', 'adhar_card', 'adhar_card_back_side', 'age_proof', 'address_proof', 'kanha_voter_id_image','kanha_voter_id_back_image', 'declaration_form', 'passport_photo', 'passport_front_image', 'passport_back_image','indian_visa')
                 """, [tuple(res_partner.ids)])
             ir_attachments = request.env.cr.fetchall()
             attachments = request.env["ir.attachment"].search([('id','in', ir_attachments)])

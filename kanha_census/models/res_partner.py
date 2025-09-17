@@ -68,6 +68,7 @@ class FamilyMember(models.Model):
             if record.emergency_contact and not re.match(r'^[6789]\d{9}$', record.emergency_contact):
                 raise ValidationError(_("Emergency contact must be a valid 10-digit Indian number starting with 6, 7, 8, or 9."))
 
+
 class CardPrintLog(models.Model):
     _name = 'card.print.log'
     _description = 'Card Print Log'
@@ -84,6 +85,8 @@ class CardPrintLog(models.Model):
         for record in self:
             if record.print_date:
                 record.print_time = record.print_date.strftime('%H:%M:%S')
+            else:
+                record.print_time = False
 
 
 class BulkCardPrintWizard(models.TransientModel):
@@ -236,7 +239,6 @@ class ResPartner(models.Model):
     card_print_log_ids = fields.One2many('card.print.log', 'partner_id', string='Card Print Logs', copy=False)
     family_member_ids = fields.One2many('family.member', 'partner_id', string='Family Members Details', copy=False)
     birth_country_name = fields.Char(related="birth_country_id.name", string="Birth Country Name", store=True)
-    #full_name_passport = fields.Char(string='Full Name (as per Passport)')
     srcm_id = fields.Char(string='SRCM ID')
     test = fields.Char(string="Test")
     preceptor_incharge_name = fields.Char(string='Preceptor Name / In-charge Name')
@@ -341,6 +343,7 @@ class ResPartner(models.Model):
             self.full_name_passport = self.surname
         else:
             self.full_name_passport = ""
+
     @api.onchange('has_voter_id_in_kanha')
     def _onchange_has_voter_id_in_kanha(self):
         if self.has_voter_id_in_kanha == 'No':
@@ -441,9 +444,12 @@ class ResPartner(models.Model):
             return []
         
         members_count = vals.get('members_count', '1')
-        if members_count and re.match(r'^[1-8]$', str(members_count).strip()):
-            members_count = int(members_count)
-        else:
+        try:
+            if members_count and re.match(r'^[1-8]$', str(members_count).strip()):
+                members_count = int(members_count)
+            else:
+                members_count = 1
+        except:
             members_count = 1
             
         family_data = []
@@ -454,40 +460,26 @@ class ResPartner(models.Model):
             blood_group_key = f'family_member_blood_group_{i}'
             mobile_key = f'family_member_mobile_{i}'
             emergency_contact_key = f'family_member_emergency_contact_{i}'
-            govt_id_key = f'family_member_govt_id_{i}'
             passport_photo_key = f'family_member_passport_photo_{i}'
-            address_proof_key = f'family_member_address_proof_{i}'
             
             if name_key in vals and vals[name_key]:
-                relation_value = vals.get(relation_key, '')
-                normalized_relation = self._normalize_relation_value(relation_value)
-                
                 member_data = {
                     'name': vals[name_key],
-                    'relation': normalized_relation,
+                    'relation': vals.get(relation_key, ''),
                     'blood_group': vals.get(blood_group_key, ''),
                     'mobile': vals.get(mobile_key, ''),
                     'emergency_contact': vals.get(emergency_contact_key, ''),
                     'sequence': i + 1
                 }
                 
-                if govt_id_key in vals and vals[govt_id_key]:
-                    processed_file = self._process_file_field(vals[govt_id_key])
-                    if processed_file:
-                        member_data['govt_id_proof'] = processed_file
-                        member_data['govt_id_proof_filename'] = getattr(vals[govt_id_key], 'filename', f'govt_id_{i}.pdf')
-                    
                 if passport_photo_key in vals and vals[passport_photo_key]:
                     processed_file = self._process_file_field(vals[passport_photo_key])
                     if processed_file:
                         member_data['passport_photo'] = processed_file
-                        member_data['passport_photo_filename'] = getattr(vals[passport_photo_key], 'filename', f'passport_photo_{i}.jpg')
-                    
-                if address_proof_key in vals and vals[address_proof_key]:
-                    processed_file = self._process_file_field(vals[address_proof_key])
-                    if processed_file:
-                        member_data['address_proof'] = processed_file
-                        member_data['address_proof_filename'] = getattr(vals[address_proof_key], 'filename', f'address_proof_{i}.pdf')
+                        if hasattr(vals[passport_photo_key], 'filename'):
+                            member_data['passport_photo_filename'] = vals[passport_photo_key].filename
+                        else:
+                            member_data['passport_photo_filename'] = f'passport_photo_{i}.jpg'
                 
                 family_data.append(member_data)
         
@@ -570,26 +562,6 @@ class ResPartner(models.Model):
                 for member_data in family_data:
                     member_data['partner_id'] = record.id
                     self.env['family.member'].create(member_data)
-        elif 'name' in vals or 'blood_group' in vals or 'mobile' in vals or 'emergency_contact' in vals:
-            for record in self:
-                head_member = self.env['family.member'].search([
-                    ('partner_id', '=', record.id),
-                    ('relation', '=', 'Head')
-                ], limit=1)
-                
-                if head_member:
-                    update_vals = {}
-                    if 'name' in vals:
-                        update_vals['name'] = vals['name']
-                    if 'blood_group' in vals:
-                        update_vals['blood_group'] = vals['blood_group']
-                    if 'mobile' in vals:
-                        update_vals['mobile'] = vals['mobile']
-                    if 'emergency_contact' in vals:
-                        update_vals['emergency_contact'] = vals['emergency_contact']
-                    
-                    if update_vals:
-                        head_member.write(update_vals)
         
         return result
 
@@ -648,8 +620,8 @@ class ResPartner(models.Model):
         partners = ResPartner.sudo().search([('visa_end_date', '>=', week_start_date), ('visa_end_date', '<=', week_end_date)])
         all_partner_data = []
         for partner in partners:
-            partner_data={}
-            partner_data['name'] =  partner.name
+            partner_data = {}
+            partner_data['name'] = partner.name
             partner_data['visa_end_date'] = partner.visa_end_date
             all_partner_data.append(partner_data)
         ctx = dict(self.env.context)
@@ -663,7 +635,7 @@ class ResPartner(models.Model):
     def button_reject(self):
         ctx = {"application_ids": self.ids}
         return {
-            "name": ("Reject Product Details Updates"),
+            "name": _("Reject Product Details Updates"),
             "type": "ir.actions.act_window",
             "view_mode": "form",
             "res_model": "application.reject.reason",
@@ -682,7 +654,7 @@ class ResPartner(models.Model):
             
         ctx = dict(self.env.context)
         ctx['reason'] = self.rejection_reason
-        ctx['subject'] = self.name +" Application Rejected - Regards"
+        ctx['subject'] = self.name + " Application Rejected - Regards"
         ctx['email_to'] = self.email
         ctx['email_from'] = self.env.user.company_id.email
         if template:
@@ -690,7 +662,7 @@ class ResPartner(models.Model):
 
     def unlink(self):
         for partner in self:
-            if(partner.application_status in ["draft","rejected"]):
+            if partner.application_status in ["draft", "rejected"]:
                 user = self.env['res.users'].search([('partner_id', '=', partner.id)])
                 if user:                
                     if user.id == self.env.user.id:
@@ -708,16 +680,16 @@ class ResPartner(models.Model):
         emails = self.env["ir.config_parameter"].sudo().get_param("email_recipients")
         
         template = None
-        if(application_status =="approved"):
+        if application_status == "approved":
             template = self.env.ref('kanha_census.mail_template_application_approved', raise_if_not_found=False)
-        elif(application_status =="to_approve"):
+        elif application_status == "to_approve":
             template = self.env.ref('kanha_census.mail_template_application_submitted', raise_if_not_found=False)
             if emails:
-                email_to = ','.join([emails,email_to])
-        elif(application_status =="deleted"):
+                email_to = ','.join([emails, email_to])
+        elif application_status == "deleted":
             template = self.env.ref('kanha_census.mail_template_application_delete', raise_if_not_found=False)
             if emails:
-                email_to = ','.join([emails,email_to])
+                email_to = ','.join([emails, email_to])
                 
         if template:
             ctx = dict(self.env.context)
@@ -746,7 +718,7 @@ class ResPartner(models.Model):
         user = self.env.user
         if hasattr(user, 'allowed_locations_ids') and user.allowed_locations_ids and user.has_group('base.group_user'):
             allowed_location_ids = user.allowed_locations_ids.ids
-            args += [('kanha_location_id', 'in', allowed_location_ids),('kanha_location_id','!=',False)]
+            args += [('kanha_location_id', 'in', allowed_location_ids), ('kanha_location_id', '!=', False)]
         return super(ResPartner, self)._search(args, offset, limit, order, count, access_rights_uid)
     
     @api.model

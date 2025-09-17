@@ -176,25 +176,26 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     },
 
     _checkIfFormSaved: function() {
-        var partnerId = this.$('input[name="partner_id"]').val();
-        var recordExists = this.$('input[name="record_exists"]').val();
-        var applicationState = this.$('input[name="application_state"]').val() || 
-                            this.$('select[name="application_state"]').val() ||
-                            this.$('.application_state').val();
+    var partnerId = this.$('input[name="partner_id"]').val();
+    var recordExists = this.$('input[name="record_exists"]').val();
+    var applicationState = this.$('input[name="application_state"]').val() || 
+                        this.$('select[name="application_state"]').val() ||
+                        this.$('.application_state').val();
+    
+    if (partnerId && recordExists === 'true') {
+        this.isFormSaved = true;
         
-        if (partnerId && recordExists === 'true') {
-            this.isFormSaved = true;
-            
-            if (applicationState && (applicationState === 'draft' || applicationState === 'approved_for_edit')) {
-                this.isFormSaved = false;
-            }
-            
-            if (this.isFormSaved) {
-                this._makeFormReadonly();
-                this._hideAllFileUploads();
-            }
+        if (applicationState && (applicationState === 'draft' || applicationState === 'approved_for_edit')) {
+            this.isFormSaved = false;
         }
-    },
+        
+        if (this.isFormSaved) {
+            this._restoreFamilyData();
+            this._makeFormReadonly();
+            this._hideAllFileUploads();
+        }
+    }
+},
     _hideAllFileUploads: function() {
         var applicationState = this.$('input[name="application_state"]').val() || 
                             this.$('select[name="application_state"]').val() ||
@@ -305,6 +306,10 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
     var citizenship = $('select[name="citizenship"]').val();
     var isOverseas = (citizenship === 'Overseas');
     var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
+    
+    if ($tableBody.length === 0) {
+        return;
+    }
     
     $tableBody.find('input, select').each(function() {
         $(this).prop('disabled', true).css({
@@ -672,124 +677,140 @@ publicWidget.registry.portalPartnerDetails = publicWidget.Widget.extend({
         $('#overseas-family-table-body').empty();
     },
 
-     _generateFamilyRows: function(count) {
-        var self = this;
-        var citizenship = $('select[name="citizenship"]').val();
-        
-        var isOverseas = false;
-        if (citizenship === 'Overseas') {
-            isOverseas = true;
-        } else if (!citizenship && window.location.href.includes('overseas')) {
-            isOverseas = true;
-        }
-        
+    _generateFamilyRows: function(count) {
+    var self = this;
+    var citizenship = $('select[name="citizenship"]').val();
+    
+    var isOverseas = false;
+    if (citizenship === 'Overseas') {
+        isOverseas = true;
+    } else if (!citizenship && window.location.href.includes('overseas')) {
+        isOverseas = true;
+    }
+    
+    var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
+    
+    if ($tableBody.length === 0) {
+        return;
+    }
+    
+    var existingRowsCount = $tableBody.find('tr').length;
+    
+    var applicationState = this.$('input[name="application_state"]').val() || 
+                        this.$('select[name="application_state"]').val() ||
+                        this.$('.application_state').val();
+    
+    var isReadonly = this.isFormSaved && !(applicationState === 'draft' || applicationState === 'approved_for_edit');
+    
+    if (isReadonly && existingRowsCount > 0) {
+        return;
+    }
+    
+    if (!isReadonly) {
         this._clearFamilyTable();
-        
-        var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
-        
-        if ($tableBody.length === 0) {
-            return;
+    }
+    
+    var applicantName = $('input[name="name"]').val() || '';
+    var applicantBloodGroup = $('select[name="blood_group"]').val() || '';
+    var applicantMobile = $('input[name="mobile"]').val() || '';
+    var applicantEmergencyContact = $('input[name="emergency_contact"]').val() || '';
+    
+    var bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB-', 'AB+'];
+    var relationOptions = [
+        'Father', 'Mother', 'Husband', 'Wife', 'Brother', 'Sister', 
+        'Son', 'Daughter', 'Grandfather', 'Grandmother', 
+        'Father-in-law', 'Mother-in-law', 'Brother-in-law', 'Sister-in-law', 
+        'Son-in-law', 'Daughter-in-law', 'Spouse', 'Other'
+    ];
+    
+    var existingFamilyData = this._getExistingFamilyData();
+    var preservedFamilyData = $('input[name="preserved_family_data"]').val();
+    var familyDataToUse = null;
+    
+    if (preservedFamilyData) {
+        try {
+            familyDataToUse = JSON.parse(preservedFamilyData);
+        } catch (e) {
+            console.log('Error parsing preserved family data:', e);
         }
+    } else if (existingFamilyData) {
+        familyDataToUse = existingFamilyData;
+    }
+    
+    var actualCount = Math.max(count, familyDataToUse ? familyDataToUse.length : 1);
+    
+    for (var i = 0; i < actualCount; i++) {
+        var rowHtml = '<tr id="family-row-' + i + '">';
         
-        var applicantName = $('input[name="name"]').val() || '';
-        var applicantBloodGroup = $('select[name="blood_group"]').val() || '';
-        var applicantMobile = $('input[name="mobile"]').val() || '';
-        var applicantEmergencyContact = $('input[name="emergency_contact"]').val() || '';
+        var nameValue = '';
+        var relationValue = '';
+        var bloodGroupValue = '';
+        var mobileValue = '';
+        var emergencyContactValue = '';
         
-        var bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB-', 'AB+'];
-        var relationOptions = [
-            'Father', 'Mother', 'Husband', 'Wife', 'Brother', 'Sister', 
-            'Son', 'Daughter', 'Grandfather', 'Grandmother', 
-            'Father-in-law', 'Mother-in-law', 'Brother-in-law', 'Sister-in-law', 
-            'Son-in-law', 'Daughter-in-law', 'Spouse', 'Other'
-        ];
-        
-        var existingFamilyData = this._getExistingFamilyData();
-        var preservedFamilyData = $('input[name="preserved_family_data"]').val();
-        var familyDataToUse = null;
-        
-        if (preservedFamilyData) {
-            try {
-                familyDataToUse = JSON.parse(preservedFamilyData);
-            } catch (e) {
-                console.log('Error parsing preserved family data:', e);
-            }
-        } else if (existingFamilyData) {
-            familyDataToUse = existingFamilyData;
-        }
-        
-        var applicationState = this.$('input[name="application_state"]').val() || 
-                            this.$('select[name="application_state"]').val() ||
-                            this.$('.application_state').val();
-        
-        var isReadonly = this.isFormSaved && !(applicationState === 'draft' || applicationState === 'approved_for_edit');
-        
-        for (var i = 0; i < count; i++) {
-            var rowHtml = '<tr id="family-row-' + i + '">';
-            
-            var nameValue = '';
-            var relationValue = '';
-            var bloodGroupValue = '';
-            var mobileValue = '';
-            var emergencyContactValue = '';
-            
-            if (familyDataToUse && familyDataToUse[i]) {
-                nameValue = familyDataToUse[i].name || '';
-                relationValue = familyDataToUse[i].relation || '';
-                bloodGroupValue = familyDataToUse[i].blood_group || '';
-                mobileValue = familyDataToUse[i].mobile || '';
-                emergencyContactValue = familyDataToUse[i].emergency_contact || '';
-            } else if (i === 0) {
-                nameValue = applicantName;
-                relationValue = 'Head';
-                bloodGroupValue = applicantBloodGroup;
-                mobileValue = applicantMobile;
-                emergencyContactValue = applicantEmergencyContact;
-            }
-            
-            var nameReadonly = isReadonly ? ' readonly disabled style="background-color: #e9ecef; color: #6c757d;"' : '';
-            var selectReadonly = isReadonly ? ' disabled style="pointer-events: none; background-color: #e9ecef; color: #6c757d; opacity: 1;"' : '';
-            var fileDisabled = isReadonly ? ' disabled style="display:none;"' : '';
-            
-            rowHtml += '<td><input type="text" class="form-control" name="family_member_name_' + i + '" placeholder="Enter Name" value="' + nameValue + '"' + nameReadonly + ' /></td>';
-            
-            if (i === 0) {
-                rowHtml += '<td><select class="form-control" name="family_member_relation_' + i + '"' + selectReadonly + '><option value="Head" selected>Head</option></select></td>';
-            } else {
-                rowHtml += '<td><select class="form-control" name="family_member_relation_' + i + '"' + selectReadonly + '><option value="">Select Relation</option>';
-                relationOptions.forEach(function(relation) {
-                    var selected = (relation === relationValue) ? ' selected' : '';
-                    rowHtml += '<option value="' + relation + '"' + selected + '>' + relation + '</option>';
-                });
-                rowHtml += '</select></td>';
-            }
-            
-            rowHtml += '<td><select class="form-control" name="family_member_blood_group_' + i + '"' + selectReadonly + '><option value="">Select...</option>';
-            bloodGroupOptions.forEach(function(bloodGroup) {
-                var selected = (bloodGroup === bloodGroupValue) ? ' selected' : '';
-                rowHtml += '<option value="' + bloodGroup + '"' + selected + '>' + bloodGroup + '</option>';
-            });
-            rowHtml += '</select></td>';
+        if (familyDataToUse && familyDataToUse[i]) {
+            nameValue = familyDataToUse[i].name || '';
+            relationValue = familyDataToUse[i].relation || '';
+            bloodGroupValue = familyDataToUse[i].blood_group || '';
             
             if (isOverseas) {
-                rowHtml += '<td><input type="text" class="form-control" name="family_member_mobile_number_' + i + '" placeholder="Mobile Number" value="' + mobileValue + '"' + nameReadonly + ' /></td>';
-                rowHtml += '<td><input type="text" class="form-control" name="family_member_emergency_contact_' + i + '" placeholder="Emergency Contact" value="' + emergencyContactValue + '"' + nameReadonly + ' /></td>';
-                rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_' + i + '" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+                mobileValue = familyDataToUse[i].mobile_number || '';
+                emergencyContactValue = familyDataToUse[i].emergency_contact || '';
             } else {
-                rowHtml += '<td><input type="text" class="form-control" name="family_member_mobile_' + i + '" placeholder="Mobile Number" value="' + mobileValue + '"' + nameReadonly + ' /></td>';
-                rowHtml += '<td><input type="text" class="form-control" name="family_member_emergency_contact_' + i + '" placeholder="Emergency Contact" value="' + emergencyContactValue + '"' + nameReadonly + ' /></td>';
-                rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_' + i + '" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+                mobileValue = familyDataToUse[i].mobile || '';
+                emergencyContactValue = familyDataToUse[i].emergency_contact || '';
             }
-            
-            rowHtml += '</tr>';
-            
-            $tableBody.append(rowHtml);
+        } else if (i === 0) {
+            nameValue = applicantName;
+            relationValue = 'Head';
+            bloodGroupValue = applicantBloodGroup;
+            mobileValue = applicantMobile;
+            emergencyContactValue = applicantEmergencyContact;
         }
         
-        if (!familyDataToUse) {
-            this._syncApplicantData();
+        var nameReadonly = isReadonly ? ' readonly disabled style="background-color: #e9ecef; color: #6c757d;"' : '';
+        var selectReadonly = isReadonly ? ' disabled style="pointer-events: none; background-color: #e9ecef; color: #6c757d; opacity: 1;"' : '';
+        var fileDisabled = isReadonly ? ' disabled style="display:none;"' : '';
+        
+        rowHtml += '<td><input type="text" class="form-control" name="family_member_name_' + i + '" placeholder="Enter Name" value="' + nameValue + '"' + nameReadonly + ' /></td>';
+        
+        if (i === 0) {
+            rowHtml += '<td><select class="form-control" name="family_member_relation_' + i + '"' + selectReadonly + '><option value="Head" selected>Head</option></select></td>';
+        } else {
+            rowHtml += '<td><select class="form-control" name="family_member_relation_' + i + '"' + selectReadonly + '><option value="">Select Relation</option>';
+            relationOptions.forEach(function(relation) {
+                var selected = (relation === relationValue) ? ' selected' : '';
+                rowHtml += '<option value="' + relation + '"' + selected + '>' + relation + '</option>';
+            });
+            rowHtml += '</select></td>';
         }
-    },
+        
+        rowHtml += '<td><select class="form-control" name="family_member_blood_group_' + i + '"' + selectReadonly + '><option value="">Select...</option>';
+        bloodGroupOptions.forEach(function(bloodGroup) {
+            var selected = (bloodGroup === bloodGroupValue) ? ' selected' : '';
+            rowHtml += '<option value="' + bloodGroup + '"' + selected + '>' + bloodGroup + '</option>';
+        });
+        rowHtml += '</select></td>';
+        
+        if (isOverseas) {
+            rowHtml += '<td><input type="text" class="form-control" name="family_member_mobile_number_' + i + '" placeholder="Mobile Number" value="' + mobileValue + '"' + nameReadonly + ' /></td>';
+            rowHtml += '<td><input type="text" class="form-control" name="family_member_emergency_contact_' + i + '" placeholder="Emergency Contact" value="' + emergencyContactValue + '"' + nameReadonly + ' /></td>';
+            rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_' + i + '" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+        } else {
+            rowHtml += '<td><input type="text" class="form-control" name="family_member_mobile_' + i + '" placeholder="Mobile Number" value="' + mobileValue + '"' + nameReadonly + ' /></td>';
+            rowHtml += '<td><input type="text" class="form-control" name="family_member_emergency_contact_' + i + '" placeholder="Emergency Contact" value="' + emergencyContactValue + '"' + nameReadonly + ' /></td>';
+            rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_' + i + '" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+        }
+        
+        rowHtml += '</tr>';
+        
+        $tableBody.append(rowHtml);
+    }
+    
+    if (!familyDataToUse && !isReadonly) {
+        this._syncApplicantData();
+    }
+},
     _getExistingFamilyData: function() {
         var familyDataInput = $('input[name="existing_family_data"]');
         if (familyDataInput.length && familyDataInput.val()) {
@@ -1213,13 +1234,27 @@ _restoreVoterIdData: function() {
             var isOverseas = (citizenship === 'Overseas');
             var $tableBody = isOverseas ? $('#overseas-family-table-body') : $('#family-table-body');
             
-            $tableBody.empty();
+            if ($tableBody.length === 0) {
+                return;
+            }
             
             var applicationState = this.$('input[name="application_state"]').val() || 
                                 this.$('select[name="application_state"]').val() ||
                                 this.$('.application_state').val();
             
             var isReadonly = this.isFormSaved && !(applicationState === 'draft' || applicationState === 'approved_for_edit');
+            
+            if (!isReadonly) {
+                $tableBody.empty();
+            }
+            
+            var bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB-', 'AB+'];
+            var relationOptions = [
+                'Father', 'Mother', 'Husband', 'Wife', 'Brother', 'Sister', 
+                'Son', 'Daughter', 'Grandfather', 'Grandmother', 
+                'Father-in-law', 'Mother-in-law', 'Brother-in-law', 'Sister-in-law', 
+                'Son-in-law', 'Daughter-in-law', 'Spouse', 'Other'
+            ];
             
             familyData.forEach(function(member, index) {
                 var rowHtml = '<tr id="family-row-' + index + '">';
@@ -1232,13 +1267,6 @@ _restoreVoterIdData: function() {
                 if (index === 0) {
                     rowHtml += '<td><select class="form-control" name="family_member_relation_' + index + '"' + selectReadonly + '><option value="Head" selected>Head</option></select></td>';
                 } else {
-                    var relationOptions = [
-                        'Father', 'Mother', 'Husband', 'Wife', 'Brother', 'Sister', 
-                        'Son', 'Daughter', 'Grandfather', 'Grandmother', 
-                        'Father-in-law', 'Mother-in-law', 'Brother-in-law', 'Sister-in-law', 
-                        'Son-in-law', 'Daughter-in-law', 'Spouse', 'Other'
-                    ];
-                    
                     rowHtml += '<td><select class="form-control" name="family_member_relation_' + index + '"' + selectReadonly + '><option value="">Select Relation</option>';
                     relationOptions.forEach(function(relation) {
                         var selected = (relation === member.relation) ? ' selected' : '';
@@ -1247,7 +1275,6 @@ _restoreVoterIdData: function() {
                     rowHtml += '</select></td>';
                 }
                 
-                var bloodGroupOptions = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB-', 'AB+'];
                 rowHtml += '<td><select class="form-control" name="family_member_blood_group_' + index + '"' + selectReadonly + '><option value="">Select...</option>';
                 bloodGroupOptions.forEach(function(bloodGroup) {
                     var selected = (bloodGroup === member.blood_group) ? ' selected' : '';
@@ -1256,6 +1283,12 @@ _restoreVoterIdData: function() {
                 rowHtml += '</select></td>';
                 
                 if (isOverseas) {
+                    rowHtml += '<td><input type="text" class="form-control" name="family_member_mobile_number_' + index + '" value="' + (member.mobile_number || '') + '"' + nameReadonly + ' /></td>';
+                    rowHtml += '<td><input type="text" class="form-control" name="family_member_emergency_contact_' + index + '" value="' + (member.emergency_contact || '') + '"' + nameReadonly + ' /></td>';
+                    var fileDisabled = isReadonly ? ' disabled style="display:none;"' : '';
+                    rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_' + index + '" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
+                } else {
+                    rowHtml += '<td><input type="text" class="form-control" name="family_member_mobile_' + index + '" value="' + (member.mobile || '') + '"' + nameReadonly + ' /></td>';
                     rowHtml += '<td><input type="text" class="form-control" name="family_member_emergency_contact_' + index + '" value="' + (member.emergency_contact || '') + '"' + nameReadonly + ' /></td>';
                     var fileDisabled = isReadonly ? ' disabled style="display:none;"' : '';
                     rowHtml += '<td><input type="file" class="form-control" name="family_member_passport_photo_' + index + '" accept="image/jpeg,image/jpg"' + fileDisabled + ' /></td>';
@@ -2076,6 +2109,9 @@ _restoreVoterIdData: function() {
                     }
                 }
             }
+        } else {
+            familyMember['mobile'] = $row.find('input[name="family_member_mobile_' + index + '"]').val() || '';
+            familyMember['emergency_contact'] = $row.find('input[name="family_member_emergency_contact_' + index + '"]').val() || '';
         }
         
         family_details[index] = familyMember;
@@ -2149,6 +2185,8 @@ _restoreVoterIdData: function() {
                     
                     if (is_submit || result_data.status === 'submitted') {
                         self._makeFormReadonly();
+                        self._hideAllFileUploads();
+                        self._disableAllFileUploads();
                     } else {
                         self._restoreVoterIdData();
                         self._restoreFamilyData();
