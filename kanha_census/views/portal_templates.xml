@@ -533,6 +533,553 @@
         
     </t>
 </template>
+<template id="kanha_family_portal_form_indian">
+    <t t-call="portal.portal_layout">
+        <div id="loading" class="hide">
+            <div id="loading-content">
+                Please wait while we are saving your data.....
+            </div>
+        </div>
+        <form t-attf-action="/website_form/#{partner.id if partner else 0}/" method="post" enctype="multipart/form-data" class="s_website_form o_mark_required" data-mark="*" data-model_name="res.partner" data-success-mode="redirect" data-success-page="/family-success-page" data-save-success-page="/family-save-success-page" hide-change-model="true">
+            <div class="s_website_form_rows s_col_no_bgcolor">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                
+                <div class="o_portal_partner_details">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div id="form_result_error" class="d-none alert alert-danger" role="alert">
+                                <span class="family_website_form_result word-wrap" />
+                            </div>
+                            <div id="form_result_success" class="d-none alert alert-success" role="alert">
+                                <span class="family_website_form_result word-wrap" />The form has been saved successfully
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div class="col-lg-6 ">
+                                            <label class="col-form-label" for="Name">Full Name (as per Passport)</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('name') and 'o_has_error' or ''}">
+                                            <input id="name_input" type="text" class="form-control s_website_form_input" name="name" placeholder="Name as per Govt ID" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="name or partner and partner.name" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field d-none">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Surname">Surname</label>
+                                        </div>
+                                        <div t-attf-class=" col-xl-6 #{error.get('surname') and 'o_has_error' or ''}">
+                                            <input id="surname_id" type="text" class="form-control s_website_form_input" name="surname" placeholder="Surname as per Govt ID" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="surname or partner and partner.surname" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field d-none">
+    <div class="col-lg-6">
+        <label class="col-form-label" for="Full Name as per Passport">Full Name (as per Passport)</label>
+    </div>
+    <div t-attf-class="col-xl-6 #{error.get('full_name_passport') and 'o_has_error' or ''}">
+        <input id="full_name_passport_id" type="text" class="form-control s_website_form_input" name="full_name_passport" t-att-value="full_name_passport or partner and partner.full_name_passport" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" />
+    </div>
+</div>
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Email">Email</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('email') and 'o_has_error' or ''} ">
+                                            <input id="email_id" type="email" class="form-control s_website_form_input" name="email" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None" placeholder="test@example.com" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="email or partner and partner.email" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Gender">Gender</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('gender') and 'o_has_error' or ''}">
+                                            <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                                                <input type="text" class="form-control s_website_form_input" t-att-value="partner.gender" readonly="readonly" />
+                                                <input type="hidden" name="gender" t-att-value="partner.gender" />
+                                            </t>
+                                            <t t-else="">
+                                                <select name="gender" t-attf-class="form-control s_website_form_input" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['Male', 'Female', 'Other']" t-as="gen">
+                                                        <option t-att-value="gen" t-att-selected="gen == gender if gender else gen == partner.gender if partner else null">
+                                                            <t t-esc="gen" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </t>
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="col-lg-12 row form-group s_website_form_field d-none">
+    <div class="col-lg-6">
+        <label class="col-form-label" for="Any Govt. ID Proof">Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)</label>
+        <span class="s_website_form_mark">*</span>
+    </div>
+    <div t-attf-class="col-xl-6 #{error.get('any_gov_id_proof') and 'o_has_error' or ''}">
+        <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+            <t t-if="partner and partner.any_gov_id_proof">
+                <div class="mt-2">
+                    <a t-attf-href="/web/content/res.partner/#{partner.id}/any_gov_id_proof/#{partner.any_gov_id_proof_filename or 'any_gov_id_proof'}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fa fa-download"/> View Current File
+                    </a>
+                </div>
+            </t>
+            <t t-else="">
+                <span class="text-muted">No file uploaded</span>
+            </t>
+        </t>
+        <t t-else="">
+            <t t-if="partner and partner.any_gov_id_proof">
+                <div class="mt-2">
+                    <a t-attf-href="/web/content/res.partner/#{partner.id}/any_gov_id_proof/#{partner.any_gov_id_proof_filename or 'any_gov_id_proof'}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fa fa-download"/> View Current File
+                    </a>
+                    <input id="any_gov_id_proof_field" type="file" t-attf-class="form-control s_website_form_input #{error.get('any_gov_id_proof') and 'is-invalid' or ''}" name="any_gov_id_proof" accept=".pdf,.jpg,.jpeg,.png" />
+                    <small class="form-text text-muted">Upload a new file to replace the existing one</small>
+                </div>
+            </t>
+            <t t-else="">
+                <input id="any_gov_id_proof_field" type="file" t-attf-class="form-control s_website_form_input #{error.get('any_gov_id_proof') and 'is-invalid' or ''}" name="any_gov_id_proof" accept=".pdf,.jpg,.jpeg,.png" required="required" />
+                <small class="form-text text-muted">Upload PDF, JPG, JPEG, or PNG files only</small>
+            </t>
+        </t>
+    </div>
+</div>
+                                    <div class="col-lg-12 row form-group s_website_form_field d-none">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Emergency Contact No.">Emergency Contact No.</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('emergency_contact') and 'o_has_error' or ''}">
+                                            <input id="emergency_contact_id" tabindex="9" type="tel" class="form-control s_website_form_input" name="emergency_contact" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None" placeholder="9984532456 - 10 digit Indian Number" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="emergency_contact or partner and partner.emergency_contact" pattern="[6789]\d{9}" title="Please enter a valid 10-digit Indian number" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="How many members staying with you">Total members staying along with you can be mentioned.?</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('members_count') and 'o_has_error' or ''}">
+                                            <input id="members_count_id" type="text" class="form-control s_website_form_input" name="members_count" placeholder="Enter number (1-8)" pattern="[1-8]" title="Please enter a single digit between 1 and 8" maxlength="1" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="members_count or partner and partner.members_count" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Mobile Number">Mobile Number</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('mobile') and 'o_has_error' or ''}">
+                                            <input id="mobile_number_id" type="tel" class="form-control s_website_form_input" name="mobile" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None" placeholder="9898989898 - 10 digit Indian Number" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="mobile or partner and partner.mobile" />
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div t-attf-class="col-lg-6 ">
+                                            <label class="col-form-label" for="year_of_birth">Year Of Birth</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('year_of_birth') and 'o_has_error' or ''}">
+                                            <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                                                <input type="text" class="form-control s_website_form_input" t-att-value="partner.year_of_birth" readonly="readonly" />
+                                                <input type="hidden" name="year_of_birth" t-att-value="partner.year_of_birth" />
+                                            </t>
+                                            <t t-else="">
+                                                <select id="year_of_birth_field" name="year_of_birth" t-attf-class="form-control s_website_form_input #{error.get('year_of_birth') and 'is-invalid' or ''}" t-att-required="(not partner or not partner.application_status or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="range(1930, 2026)" t-as="year_of_birth_value">
+                                                        <option t-att-value="year_of_birth_value" t-att-selected="year_of_birth_value == year_of_birth if year_of_birth else year_of_birth_value == partner.year_of_birth if partner else null">
+                                                            <t t-esc="year_of_birth_value" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <div class="form-group s_website_form_field">
+                                        <input type="text" class="form-control s_website_form_input citizenship d-none" name="citizenship" value="Indian" />
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+    <div class="col-lg-6">
+        <label class="col-form-label" for="Residence Type">Residence Type</label>
+        <span class="s_website_form_mark">*</span>
+    </div>
+    <div t-attf-class="col-xl-6 #{error.get('residence_type') and 'o_has_error' or ''}">
+        <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+            <input type="text" class="form-control s_website_form_input" t-att-value="partner.residence_type" readonly="readonly" />
+            <input type="hidden" name="residence_type" t-att-value="partner.residence_type" />
+        </t>
+        <t t-else="">
+            <select name="residence_type" t-attf-class="form-control s_website_form_input #{error.get('residence_type') and 'is-invalid' or ''}" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None">
+                <option value="">Select...</option>
+                <t t-foreach="['Rented Place', 'Owner', 'General Accommodation']" t-as="room">
+                    <option t-att-value="room" t-att-selected="room == residence_type if residence_type else room == partner.residence_type if partner else null">
+                        <t t-esc="room" />
+                    </option>
+                </t>
+            </select>
+        </t>
+    </div>
+</div>
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div t-attf-class="col-lg-6 ">
+                                            <label class="col-form-label" for="">Are you a preceptor?</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('is_preceptor') and 'o_has_error' or ''}">
+                                            <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                                                <input type="text" class="form-control s_website_form_input" t-att-value="partner.is_preceptor" readonly="readonly" />
+                                                <input type="hidden" name="is_preceptor" t-att-value="partner.is_preceptor" />
+                                            </t>
+                                            <t t-else="">
+                                                <select id="is_preceptor_field" name="is_preceptor" t-attf-class="form-control s_website_form_input #{error.get('is_preceptor') and 'is-invalid' or ''}" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['Yes', 'No']" t-as="is_preceptor_value">
+                                                        <option t-att-value="is_preceptor_value" t-att-selected="is_preceptor_value == is_preceptor if is_preceptor else is_preceptor_value == partner.is_preceptor if partner else null">
+                                                            <t t-esc="is_preceptor_value" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field abhyasi_id_id_class #{not partner and 'd-none' or ''} #{(partner and partner.is_preceptor != 'Yes') and 'd-none' or ''}">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Abhyasi ID">Abhyasi ID</label>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('abhyasi_id') and 'o_has_error' or ''}">
+                                            <input id="abhyasi_id_id" tabindex="8" type="text" t-att-required="partner and partner.is_preceptor == 'Yes' and partner.application_status in ['draft', 'to_approve', 'approved_for_edit'] and 'required' or None" class="form-control s_website_form_input" name="abhyasi_id" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="abhyasi_id or partner and partner.abhyasi_id" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field d-none">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Blood Group">Blood Group</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('blood_group') and 'o_has_error' or ''}">
+                                            <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                                                <input type="text" class="form-control s_website_form_input" t-att-value="partner.blood_group" readonly="readonly" />
+                                                <input type="hidden" name="blood_group" t-att-value="partner.blood_group" />
+                                            </t>
+                                            <t t-else="">
+                                                <select id="blood_group_id" name="blood_group" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('blood_group') and 'is-invalid' or ''}" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['A+', 'A-', 'B+', 'B-', 'O+' ,'O-', 'AB-', 'AB+']" t-as="blood">
+                                                        <option t-att-value="blood" t-att-selected="blood == blood_group if blood_group else blood == partner.blood_group if partner else null">
+                                                            <t t-esc="blood" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Do you have a Voter ID in Kanha">Do you have a Voter ID in Kanha?</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('has_voter_id_in_kanha') and 'o_has_error' or ''}">
+                                            <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                                                <input type="text" class="form-control s_website_form_input" t-att-value="partner.has_voter_id_in_kanha and 'Yes' or 'No'" readonly="readonly" />
+                                                <input type="hidden" name="has_voter_id_in_kanha" t-att-value="partner.has_voter_id_in_kanha and 'Yes' or 'No'" />
+                                            </t>
+                                            <t t-else="">
+                                                <select name="has_voter_id_in_kanha" tabindex="4" t-attf-class="form-control s_website_form_input #{error.get('has_voter_id_in_kanha') and 'is-invalid' or ''}" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['Yes', 'No']" t-as="voter">
+                                                        <option t-att-value="voter" t-att-selected="voter == has_voter_id_in_kanha if has_voter_id_in_kanha else (voter == 'Yes' and partner.has_voter_id_in_kanha) or (voter == 'No' and not partner.has_voter_id_in_kanha) if partner else null">
+                                                            <t t-esc="voter" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field voter_id_number_optional_field d-none">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Voter ID Number">Please share the Voter ID number</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('voter_id_number_optional') and 'o_has_error' or ''}">
+                                            <input id="voter_id_number_optional_id" type="text" class="form-control s_website_form_input" name="voter_id_number_optional" placeholder="Enter Voter ID Number" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None" t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" t-att-value="voter_id_number_optional or partner and partner.voter_id_number_optional" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 row form-group s_website_form_field wants_to_apply_voter_id_field d-none">
+                                        <div class="col-lg-6">
+                                            <label class="col-form-label" for="Apply for Voter ID">Do you like to apply for Voter ID in Kanha?</label>
+                                            <span class="s_website_form_mark">*</span>
+                                        </div>
+                                        <div t-attf-class="col-xl-6 #{error.get('wants_to_apply_voter_id') and 'o_has_error' or ''}">
+                                            <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                                                <input type="text" class="form-control s_website_form_input" t-att-value="partner.wants_to_apply_voter_id and 'Yes' or 'No'" readonly="readonly" />
+                                                <input type="hidden" name="wants_to_apply_voter_id" t-att-value="partner.wants_to_apply_voter_id and 'Yes' or 'No'" />
+                                            </t>
+                                            <t t-else="">
+                                                <select name="wants_to_apply_voter_id" t-attf-class="form-control s_website_form_input #{error.get('wants_to_apply_voter_id') and 'is-invalid' or ''}" t-att-required="(not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']) and 'required' or None">
+                                                    <option value="">Select...</option>
+                                                    <t t-foreach="['Yes', 'No']" t-as="apply_voter">
+                                                        <option t-att-value="apply_voter" t-att-selected="apply_voter == wants_to_apply_voter_id if wants_to_apply_voter_id else (apply_voter == 'Yes' and partner.wants_to_apply_voter_id) or (apply_voter == 'No' and not partner.wants_to_apply_voter_id) if partner else null">
+                                                            <t t-esc="apply_voter" />
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <section class="kanha-portal-tab-wrap">
+                            <div class="container">
+                                <ul id="tabs" class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="tab-family" data-toggle="tab" href="#pane-family" role="tab">Family Details</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-kanha" data-toggle="tab" href="#pane-kanha" role="tab">Kanha Address</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-documents" data-toggle="tab" href="#pane-documents" role="tab">Documents</a>
+                                    </li>
+                                    <t t-if="partner">
+                                        <t t-if="(partner.change_voter_id_address == 'No')">
+                                            <li class="nav-item">
+                                                <a t-attf-class="voter_id_tab nav-link d-none" id="tab-voter" data-toggle="tab" href="#pane-voter" role="tab">Existing Voter ID Details</a>
+                                            </li>
+                                        </t>
+                                        <t t-elif="(partner.change_voter_id_address == 'Yes')">
+                                            <li class="nav-item">
+                                                <a t-attf-class="voter_id_tab nav-link" id="tab-voter" data-toggle="tab" href="#pane-voter" role="tab">Existing Voter ID Details</a>
+                                            </li>
+                                        </t>
+                                        <t t-else="">
+                                            <li class="nav-item">
+                                                <a t-attf-class="voter_id_tab nav-link d-none" id="tab-voter" data-toggle="tab" href="#pane-voter" role="tab">Existing Voter ID Details</a>
+                                            </li>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <li class="nav-item">
+                                            <a t-attf-class="voter_id_tab nav-link d-none" id="tab-voter" data-toggle="tab" href="#pane-voter" role="tab">Existing Voter ID Details</a>
+                                        </li>
+                                    </t>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-vehicle" data-toggle="tab" href="#pane-vehicle" role="tab">Vehicle Details</a>
+                                    </li>
+                                </ul>
+                                <div id="content" class="tab-content" role="tablist">
+                                    <div id="pane-family" class="card tab-pane fade show active" role="tabpanel" aria-labelledby="tab-family">
+                                        <div class="card-header" role="tab" id="heading-family">
+                                            <h5 class="mb-0">
+                                                <a data-toggle="collapse" href="#collapse-family" aria-expanded="true" aria-controls="collapse-family">
+                                                    Family Details
+                                                    <i class="fa fa-plus" />
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapse-family" class="collapse show" data-parent="#content" role="tabpanel" aria-labelledby="heading-family">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered" id="family-members-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Relation</th>
+            <th>Blood Group <span class="s_website_form_mark">*</span></th>
+            <th>Mobile Number <span class="s_website_form_mark">*</span></th>
+            <th>Emergency Contact <span class="s_website_form_mark">*</span></th>
+            <th>Passport Size Photo <span class="s_website_form_mark">*</span></th>
+        </tr>
+    </thead>
+    <tbody id="family-table-body">
+        <tr id="family-row-0">
+            <td>
+                <input type="text" class="form-control" name="family_member_name_0" 
+                       t-att-value="partner and partner.name or name" 
+                       t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']" />
+            </td>
+            <td>
+                <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                    <input type="text" class="form-control" value="Head" readonly="readonly" />
+                    <input type="hidden" name="family_member_relation_0" value="Head" />
+                </t>
+                <t t-else="">
+                    <select class="form-control" name="family_member_relation_0" disabled="disabled">
+                        <option value="Head" selected="selected">Head</option>
+                    </select>
+                </t>
+            </td>
+            <td>
+                <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                    <input type="text" class="form-control" t-att-value="partner.blood_group" readonly="readonly" />
+                    <input type="hidden" name="family_member_blood_group_0" t-att-value="partner.blood_group" />
+                </t>
+                <t t-else="">
+                    <select class="form-control" name="family_member_blood_group_0" required="required">
+                        <option value="">Select...</option>
+                        <t t-foreach="['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB-', 'AB+']" t-as="blood">
+                            <option t-att-value="blood" 
+                                    t-att-selected="blood == blood_group if blood_group else blood == partner.blood_group if partner else null">
+                                <t t-esc="blood" />
+                            </option>
+                        </t>
+                    </select>
+                </t>
+            </td>
+            <td>
+                <input type="tel" class="form-control" name="family_member_mobile_0" 
+                       t-att-value="partner and partner.mobile or mobile" 
+                       t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']"
+                       required="required" placeholder="10 digit number" pattern="[6789]\d{9}" />
+            </td>
+            <td>
+                <input type="tel" class="form-control" name="family_member_emergency_contact_0" 
+                       t-att-value="partner and partner.emergency_contact or emergency_contact" 
+                       t-att-readonly="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']"
+                       required="required" placeholder="10 digit number" pattern="[6789]\d{9}" />
+            </td>
+            <td>
+                <t t-if="partner and partner.application_status not in ['draft', 'to_approve', 'approved_for_edit']">
+                    <t t-if="partner and partner.passport_photo">
+                        <a t-attf-href="/web/content/res.partner/#{partner.id}/passport_photo/#{partner.passport_photo_filename or 'passport_photo'}" 
+                           target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fa fa-eye"/> View
+                        </a>
+                    </t>
+                </t>
+                <t t-else="">
+                    <input type="file" class="form-control" name="family_member_passport_photo_0" 
+                           accept=".jpg,.jpeg,.png" required="required" />
+                </t>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="pane-kanha" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-kanha">
+                                        <div class="card-header" role="tab" id="heading-kanha">
+                                            <h5 class="mb-0">
+                                                <a class="collapsed" data-toggle="collapse" href="#collapse-kanha" aria-expanded="false" aria-controls="collapse-kanha">
+                                                    Kanha Address
+                                                    <i class="fa fa-plus" />
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapse-kanha" class="collapse" role="tabpanel" data-parent="#content" aria-labelledby="heading-kanha">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row col-lg-10">
+                                                            <t t-call="kanha_census.kanha_address_info" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="pane-documents" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-documents">
+                                        <div class="card-header" role="tab" id="heading-documents">
+                                            <h5 class="mb-0">
+                                                <a class="collapsed" data-toggle="collapse" href="#collapse-documents" aria-expanded="false" aria-controls="collapse-documents">
+                                                    Documents
+                                                    <i class="fa fa-plus" />
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapse-documents" class="collapse" data-parent="#content" role="tabpanel" aria-labelledby="heading-documents">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="row">
+                                                            <t t-call="kanha_census.documents_info_indian" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="pane-voter" class="voter_id_tab card tab-pane fade" role="tabpanel" aria-labelledby="tab-voter">
+                                        <div class="card-header" role="tab" id="heading-voter">
+                                            <h5 class="mb-0">
+                                                <a class="collapsed" data-toggle="collapse" href="#collapse-voter" aria-expanded="false" aria-controls="collapse-voter">
+                                                    Voter ID Details
+                                                    <i class="fa fa-plus" />
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapse-voter" class="collapse" role="tabpanel" data-parent="#content" aria-labelledby="heading-voter">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row col-lg-8">
+                                                            <t t-call="kanha_census.existing_voter_id_details" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="pane-vehicle" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-vehicle">
+                                        <div class="card-header" role="tab" id="heading-vehicle">
+                                            <h5 class="mb-0">
+                                                <a class="collapsed" data-toggle="collapse" href="#collapse-vehicle" aria-expanded="false" aria-controls="collapse-vehicle">
+                                                    Vehicle
+                                                    <i class="fa fa-plus" />
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapse-vehicle" class="collapse" role="tabpanel" data-parent="#content" aria-labelledby="heading-vehicle">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-12 vehicle-details">
+                                                        <t t-call="kanha_census.vehicle_info" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <div t-if="not partner or partner.application_status in ['draft', 'to_approve', 'approved_for_edit']" class="clearfix">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="row">
+                                        <div class="col-lg-10 row form-group s_website_form_field">
+                                            <div class="col-lg-3">
+                                                <a href="#" role="button" class="btn btn-primary btn-lg family_website_form_save">Save</a>
+                                            </div>
+                                            <div class="col-lg-1">
+                                            </div>
+                                            <div t-attf-class="col-lg-6">
+                                                <a href="#" role="button" class="btn btn-primary btn-lg family_website_form_submit">Submit</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </t>
+</template>
 <template id="documents_info_indian" name="Documents Info">
     <div class="col-lg-10">
         <div class="row">

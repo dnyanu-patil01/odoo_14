@@ -439,8 +439,7 @@ if records:
             (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
 	</record>
 
-<<<<<<< HEAD
-=======
+
 	<menuitem id="menu_kanha_approved_for_edit_application" name="Approved for Edit Applications" parent="menu_kanha_census_root" action="kanha_approved_for_edit_application_action" sequence="60"/>
 
     <record id="kanha_archived_application_action" model="ir.actions.act_window">
@@ -454,8 +453,13 @@ if records:
             (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
 	</record>
 
+
+	<menuitem id="menu_kanha_archived_application" name="Archived Applications" parent="menu_kanha_census_root" action="kanha_archived_application_action" sequence="70"/>
+
+	<menuitem id="menu_configuration" name="Configuration" parent="menu_kanha_census_root" sequence="80"/>
+
+ 
 	<menuitem id="menu_kanha_archived_application" name="Archived Applications" parent="menu_kanha_census_root" action="kanha_archived_application_action" sequence="70"/>
 
 	<menuitem id="menu_configuration" name="Configuration" parent="menu_kanha_census_root" sequence="80"/>
 </odoo>
->>>>>>> parent of 7d5d6cd... updates
