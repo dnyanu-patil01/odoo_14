@@ -31,9 +31,9 @@
 						<field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
 						<group>
 							<group>
-								<field name="name" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="name" string="Full Name" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="email" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
-								<field name="full_name_passport" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="full_name_passport"  invisible="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="gender" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="any_gov_id_proof" invisible="1" string="Any Govt. ID Proof: (eg. Masked Aadhar Card, Voter ID Card or Driving License)" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}" help="Masked Aadhar Card, Voter ID Card or Driving License"/>
 								<field name="is_preceptor" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
@@ -47,7 +47,7 @@
 								<field name="blood_group" invisible="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 							</group>
 							<group>
-								<field name="surname" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
+								<field name="surname"  invisible="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="mobile" required="1" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
 								<field name="year_of_birth" readonly="1"/>
 								<field name="citizenship" attrs="{'readonly':[('application_status','not in',['draft','approved_for_edit'])]}"/>
@@ -451,7 +451,7 @@ if records:
             (0, 0, {'view_mode': 'tree', 'view_id': ref('kanha_iherit_view_partner_tree')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('kanha_inherit_view_partner_form')})]"/>
 	</record>
-
+ 
 	<menuitem id="menu_kanha_archived_application" name="Archived Applications" parent="menu_kanha_census_root" action="kanha_archived_application_action" sequence="70"/>
 
 	<menuitem id="menu_configuration" name="Configuration" parent="menu_kanha_census_root" sequence="80"/>
