@@ -1223,7 +1223,7 @@
                         </t>
                     </div>
                     <div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
-                        <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="https://github.com/keyconcepts-odoo/heartfullnessDoc/blob/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
+                        <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="https://raw.githubusercontent.com/keyconcepts-odoo/heartfullnessDoc/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
                     </div>
                 </div>
                 <div class="col-lg-2">
@@ -1466,7 +1466,7 @@
                         </t>
                     </div>
                     <div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
-                        <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="https://github.com/keyconcepts-odoo/heartfullnessDoc/blob/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
+                        <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="https://raw.githubusercontent.com/keyconcepts-odoo/heartfullnessDoc/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
                     </div>
                 </div>
                 <div class="col-lg-2">
@@ -1496,7 +1496,7 @@
                         </t>
                     </div>
                     <div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
-                        <a id="download_kanha_address_proof_docs" target="_blank" t-attf-href="https://github.com/keyconcepts-odoo/heartfullnessDoc/blob/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
+                        <a id="download_kanha_address_proof_docs" target="_blank" t-attf-href="https://raw.githubusercontent.com/keyconcepts-odoo/heartfullnessDoc/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
                     </div>
                 </div>
                 <div class="col-lg-2">
@@ -2527,7 +2527,7 @@
                             </t>
                         </div>
                         <div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
-                            <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="https://github.com/keyconcepts-odoo/heartfullnessDoc/blob/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
+                            <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="https://raw.githubusercontent.com/keyconcepts-odoo/heartfullnessDoc/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
                         </div>
                     </div>
                     <div class="col-lg-2">
@@ -2556,7 +2556,7 @@
                             </t>
                         </div>
                         <div class="form-group col-12 s_website_form_field s_website_form_required" data-type="binary" data-name="Field">
-                            <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="https://github.com/keyconcepts-odoo/heartfullnessDoc/blob/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
+                            <a id="download_kanha_voter_id_image" target="_blank" t-attf-href="https://raw.githubusercontent.com/keyconcepts-odoo/heartfullnessDoc/main/Address_Proof_List.pdf" aria-label="Download">List of Approved Documents</a>
                         </div>
                     </div>
                     <div class="col-lg-2">
