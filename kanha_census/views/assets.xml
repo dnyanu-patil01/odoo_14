@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="assets_frontend" inherit_id="website.assets_frontend" name="Kanha Census Assets Frontend">
+    <!-- <template id="assets_frontend" inherit_id="website.assets_frontend" name="Kanha Census Assets Frontend">
+        <xpath expr="." position="inside">
+            <link href="/kanha_census/static/src/css/partner_portal_form.css" rel="stylesheet" type="text/css"/>
+            <script src="/kanha_census/static/src/js/partner_portal_form.js" type="text/javascript"/>
+        </xpath>
+    </template> -->
+    
+    <template id="assets_common" inherit_id="web.assets_common" name="Kanha Census Assets Common">
         <xpath expr="." position="inside">
             <link href="/kanha_census/static/src/css/partner_portal_form.css" rel="stylesheet" type="text/css"/>
             <script src="/kanha_census/static/src/js/partner_portal_form.js" type="text/javascript"/>
         </xpath>
     </template>
-    
-   <!-- <template id="assets_common" inherit_id="web.assets_common" name="Kanha Census Assets Common">
-        <xpath expr="." position="inside">
-            <script src="/kanha_census/static/src/js/partner_portal_form.js" type="text/javascript"/>
-        </xpath>
-    </template> -->
 </odoo>
