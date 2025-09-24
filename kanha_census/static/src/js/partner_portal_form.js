@@ -2691,7 +2691,7 @@ _restoreVoterIdData: function() {
             label.append('<span class="s_website_form_mark"> *</span>');
         }
         else if(is_preceptor.val() == 'No'){
-            abhyasi_id_field.addClass('d-none');
+            // abhyasi_id_field.addClass('d-none');
             abhyasi_id_input.removeAttr('required');
             abhyasi_id_input.val('');
             
@@ -2699,7 +2699,7 @@ _restoreVoterIdData: function() {
             label.find('.s_website_form_mark').remove();
         }
         else{
-            abhyasi_id_field.addClass('d-none');
+            // abhyasi_id_field.addClass('d-none');
             abhyasi_id_input.removeAttr('required');
             abhyasi_id_input.val('');
             

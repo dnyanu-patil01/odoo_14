@@ -203,7 +203,7 @@ class ResPartner(models.Model):
         ('Transfer Application', 'Transfer Application'),
     ])
     abhyasi_id = fields.Char(string="Abhyasi ID")
-    members_count = fields.Char(string="Total members staying along with you can be mentioned.?")
+    members_count = fields.Char(string="Total members staying along with you?")
     preserved_members_count = fields.Char(string="Preserved Members Count")
     citizenship = fields.Selection([
         ('Indian', 'Indian'),
