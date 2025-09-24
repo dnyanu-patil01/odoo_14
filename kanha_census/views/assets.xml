@@ -7,9 +7,9 @@
         </xpath>
     </template>
     
-    <template id="assets_common" inherit_id="web.assets_common" name="Kanha Census Assets Common">
+   <!-- <template id="assets_common" inherit_id="web.assets_common" name="Kanha Census Assets Common">
         <xpath expr="." position="inside">
             <script src="/kanha_census/static/src/js/partner_portal_form.js" type="text/javascript"/>
         </xpath>
-    </template>
+    </template> -->
 </odoo>
