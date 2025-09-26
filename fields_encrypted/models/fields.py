@@ -92,8 +92,9 @@ class Encrypted(fields.Field):
     column_type = ('text', 'text')
     prefetch = False
     KEY = config.options.get('aes_encryption_key')
-
-    key = hashlib.sha256(KEY.encode()).digest()
+    key = False
+    if KEY:
+        key = hashlib.sha256(KEY.encode()).digest()
     
     def _encrypt(self, raw):
         if raw:

@@ -48,6 +48,12 @@ class FamilyMember(models.Model):
     ], string='Blood Group', required=True)
     mobile = fields.Char(string='Mobile Number', required=True)
     emergency_contact = fields.Char(string='Emergency Contact', required=True)
+    residence_type = fields.Selection([
+        ('Rented Place', 'Rented Place'),
+        ('Owner', 'Owner'),
+        ('General Accommodation', 'General Accommodation'),        
+    ], string="Residence Type", required=True)
+    abhyasi_id = fields.Char(string='Abhyasi ID')
     sequence = fields.Integer(string='Sequence', default=1)
     govt_id_proof = fields.Binary('Government ID Proof', attachment=True)
     govt_id_proof_filename = fields.Char()
