@@ -432,6 +432,8 @@
                                                                         <th>Blood Group <span class="text-danger">*</span></th>
                                                                         <th>Mobile Number <span class="text-danger">*</span></th>
                                                                         <th>Emergency Contact <span class="text-danger">*</span></th>
+                                                                        <th>Residence Type <span class="s_website_form_mark">*</span></th>
+                                                                        <th>Abhyasi ID</th>
                                                                         <th>Passport Size Photo <span class="text-danger">*</span></th>
                                                                     </tr>
                                                                 </thead>
