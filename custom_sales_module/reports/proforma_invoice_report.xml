@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_proforma_invoice_document">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <main>
+                        <div class="page">
+                            <div class="row mb-3">
+                                <div class="col-12 text-center" style="border: 2px solid #000; padding: 10px;">
+                                    <h2 style="color: #000; font-weight: bold; font-size: 16px; margin: 0;">
+                                        <span t-esc="o.company_id.name"/>
+                                    </h2>
+                                    <div style="font-size: 10px; line-height: 1.2;">
+                                        <div t-esc="o.company_id.street"/>
+                                        <div>
+                                            <span t-esc="o.company_id.city"/>, 
+                                            <span t-esc="o.company_id.state_id.name"/> - 
+                                            <span t-esc="o.company_id.zip"/>
+                                        </div>
+                                        <div>
+                                            Ph: <span t-esc="o.company_id.phone"/> 
+                                            Email: <span t-esc="o.company_id.email"/>
+                                        </div>
+                                        <div>
+                                            GST No.: <span t-esc="o.company_id.vat"/> 
+                                            PAN No.: <span t-esc="o.company_id.company_registry"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12 text-center">
+                                    <h3 style="background-color: #000; color: white; padding: 8px; margin: 0; font-weight: bold; font-size: 14px; border: 2px solid #000;">
+                                        PROFORMA INVOICE
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6" style="border: 1px solid #000; padding: 8px;">
+                                    <table style="width: 100%; font-size: 10px; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px; width: 40%;"><strong>Proforma No:</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px;"><span t-esc="o.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;"><strong>Project Remark:</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px;"><span t-esc="o.narration or ''"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;"><strong>PI Date:</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px;">
+                                                <span t-if="o.invoice_date" t-esc="o.invoice_date.strftime('%d/%m/%Y')"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;"><strong>Sales Person:</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px;">
+                                                <span t-esc="o.invoice_user_id.name or o.user_id.name or ''"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;"><strong>Order No:</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px;"><span t-esc="o.ref or ''"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;"><strong>Party PO No.:</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px;"><span t-esc="o.payment_reference or ''"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6" style="border: 1px solid #000; padding: 8px;">
+                                    <div style="font-size: 10px; line-height: 1.2;">
+                                        <div style="border: 1px solid #000; padding: 5px; margin-bottom: 5px;">
+                                            <strong>M/s: <span t-esc="o.partner_id.name"/></strong><br/>
+                                            <span t-esc="o.partner_id.street or ''"/><br/>
+                                            <span t-esc="o.partner_id.city or ''"/><br/>
+                                            <span t-esc="o.partner_id.zip or ''"/><br/>
+                                            <span t-esc="o.partner_id.state_id.name or ''"/> 
+                                            <t t-if="o.partner_id.state_id.code">(State Code: <span t-esc="o.partner_id.state_id.code"/>)</t><br/>
+                                            GST#: <span t-esc="o.partner_id.vat or ''"/>
+                                        </div>
+                                        
+                                        <div style="border: 1px solid #000; padding: 5px;">
+                                            <strong>Dispatch To: <span t-esc="o.partner_id.name"/></strong><br/>
+                                            <t t-if="o.partner_shipping_id">
+                                                <span t-esc="o.partner_shipping_id.street or ''"/><br/>
+                                                <span t-esc="o.partner_shipping_id.city or ''"/><br/>
+                                                <span t-esc="o.partner_shipping_id.zip or ''"/><br/>
+                                                <span t-esc="o.partner_shipping_id.state_id.name or ''"/> 
+                                                <t t-if="o.partner_shipping_id.state_id.code">(State Code: <span t-esc="o.partner_shipping_id.state_id.code"/>)</t>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="o.partner_id.street or ''"/><br/>
+                                                <span t-esc="o.partner_id.city or ''"/><br/>
+                                                <span t-esc="o.partner_id.zip or ''"/><br/>
+                                                <span t-esc="o.partner_id.state_id.name or ''"/> 
+                                                <t t-if="o.partner_id.state_id.code">(State Code: <span t-esc="o.partner_id.state_id.code"/>)</t>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <t t-set="item_counter" t-value="1"/>
+                            <t t-foreach="o.invoice_line_ids.filtered(lambda l: l.display_type not in ('line_section', 'line_note'))" t-as="line">
+                                <div class="row mb-3">
+                                    <div class="col-12" style="border: 2px solid #000;">
+                                        <div style="background-color: #f0f0f0; padding: 5px; border-bottom: 1px solid #000; font-size: 11px;">
+                                            <strong><span t-esc="item_counter"/>. <span t-esc="line.name"/></strong>
+                                            <span style="float: right;"><span t-esc="line.product_id.default_code or ''"/></span>
+                                        </div>
+                                        
+                                        <table style="width: 100%; font-size: 9px; border-collapse: collapse;">
+                                            <thead style="background-color: #f0f0f0;">
+                                                <tr>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">SR<br/>No</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">Inch<br/>Width</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">Inch<br/>Height</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">W</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">H</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">Qty</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">Chrg<br/>Width</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">Chrg<br/>Height</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">H</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">C</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">BH</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">BC</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">Sqr. Mtr.</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">Rate</th>
+                                                    <th style="border: 1px solid #000; padding: 3px; text-align: center;">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">1</td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">
+                                                        <t t-if="line.actual_length">
+                                                            <span t-esc="int(line.actual_length // 12)"/>-<span t-esc="int(line.actual_length % 12)"/>/8
+                                                        </t>
+                                                    </td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">
+                                                        <t t-if="line.actual_breadth">
+                                                            <span t-esc="int(line.actual_breadth // 12)"/>-<span t-esc="int(line.actual_breadth % 12)"/>/8
+                                                        </t>
+                                                    </td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><span t-esc="int(line.actual_length or 0)"/></td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><span t-esc="int(line.actual_breadth or 0)"/></td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><span t-esc="int(line.quantity)"/></td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><span t-esc="int(line.charge_length or 0)"/></td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><span t-esc="int(line.charge_breadth or 0)"/></td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">2</td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">3</td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">2</td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">3</td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">
+                                                        <t t-if="line.charge_length and line.charge_breadth">
+                                                            <span t-esc="'{:.3f}'.format((line.charge_length * line.charge_breadth * line.quantity) / 144 * 0.092903)"/>
+                                                        </t>
+                                                    </td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><span t-esc="'{:.2f}'.format(line.price_unit or 0)"/></td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><span t-esc="'{:.2f}'.format(line.price_subtotal or 0)"/></td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot style="background-color: #f0f0f0;">
+                                                <tr>
+                                                    <td colspan="11" style="border: 1px solid #000; padding: 3px; text-align: right;"><strong>Total</strong></td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">
+                                                        <strong><span t-esc="'{:.0f}'.format(line.quantity)"/></strong>
+                                                    </td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;">
+                                                        <strong>
+                                                            <t t-if="line.charge_length and line.charge_breadth">
+                                                                <span t-esc="'{:.3f}'.format((line.charge_length * line.charge_breadth * line.quantity) / 144 * 0.092903)"/>
+                                                            </t>
+                                                        </strong>
+                                                    </td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><strong><span t-esc="'{:.2f}'.format(line.price_unit or 0)"/></strong></td>
+                                                    <td style="border: 1px solid #000; padding: 3px; text-align: center;"><strong><span t-esc="'{:.2f}'.format(line.price_subtotal or 0)"/></strong></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+
+                                        <t t-if="line.job_work_type">
+                                            <div style="padding: 5px; font-size: 10px; border-top: 1px solid #000;">
+                                                <span t-esc="line.job_work_type"/> <span t-esc="'{:.0f}'.format(line.job_work_qty or 0)"/> @ <span t-esc="'{:.2f}'.format(line.job_work_rate or 0)"/> = <span t-esc="'{:.2f}'.format(line.job_work_amount or 0)"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                                <t t-set="item_counter" t-value="item_counter + 1"/>
+                            </t>
+
+                            <div class="row mb-3">
+                                <div class="col-12" style="border: 1px solid #000; padding: 5px;">
+                                    <div style="font-size: 10px;">
+                                        <strong>Freight:</strong> To be Billed 
+                                        <strong>Qty:</strong> <span t-esc="'{:.0f}'.format(sum(o.invoice_line_ids.mapped('quantity')))"/> 
+                                        <strong>Sq.Ft:</strong> <span t-esc="'{:.3f}'.format(sum([(l.charge_length * l.charge_breadth * l.quantity) / 144 for l in o.invoice_line_ids if l.charge_length and l.charge_breadth]))"/> 
+                                        <strong>Sq.Mtr.:</strong> <span t-esc="'{:.3f}'.format(sum([(l.charge_length * l.charge_breadth * l.quantity) / 144 * 0.092903 for l in o.invoice_line_ids if l.charge_length and l.charge_breadth]))"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-8" style="border: 1px solid #000; padding: 8px;">
+                                    <div style="font-size: 10px;">
+                                        <table style="width: 100%; border-collapse: collapse;">
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;"><strong>PI No:</strong> <span t-esc="o.name"/> <strong>PROFORMA INVOICE</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;"><strong>Page:</strong> 1</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;"><strong>Validity of PI:</strong> For Further Queries feel free to contact on the No. Given Below</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;"><strong>Note:</strong> 1) Above price is Ex-factory and freight will be charged</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;"><strong>Delivery Period:</strong> 2) Unloading by Buyer</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;"><strong>Validity of PI:</strong> 10 days <strong>Packing Type:</strong> NONE</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;"><strong>Payment Terms:</strong> 100% Advance</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;">Order will be processed only after receipt of clearly accepted PI.</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-4" style="border: 1px solid #000; padding: 8px;">
+                                    <table style="width: 100%; font-size: 10px; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;">Basic Amount</td>
+                                            <td style="border: 1px solid #000; padding: 3px; text-align: right;"><span t-esc="'{:.2f}'.format(o.amount_untaxed)"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;">Admin Charge</td>
+                                            <td style="border: 1px solid #000; padding: 3px; text-align: right;">25.00</td>
+                                        </tr>
+                                        <tr style="background-color: #f0f0f0;">
+                                            <td style="border: 1px solid #000; padding: 3px;"><strong>Total</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px; text-align: right;"><strong><span t-esc="'{:.2f}'.format(o.amount_untaxed + 25)"/></strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;">Insurance 1.75%</td>
+                                            <td style="border: 1px solid #000; padding: 3px; text-align: right;"><span t-esc="'{:.2f}'.format((o.amount_untaxed + 25) * 0.0175)"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;">Ass. Value</td>
+                                            <td style="border: 1px solid #000; padding: 3px; text-align: right;"><span t-esc="'{:.2f}'.format(o.amount_untaxed + 25 + (o.amount_untaxed + 25) * 0.0175)"/></td>
+                                        </tr>
+                                        <t t-foreach="o.amount_by_group" t-as="amount_by_group">
+                                            <tr>
+                                                <td style="border: 1px solid #000; padding: 3px;"><span t-esc="amount_by_group[0]"/></td>
+                                                <td style="border: 1px solid #000; padding: 3px; text-align: right;"><span t-esc="'{:.2f}'.format(amount_by_group[1])"/></td>
+                                            </tr>
+                                        </t>
+                                        <tr style="background-color: #f0f0f0;">
+                                            <td style="border: 1px solid #000; padding: 3px;"><strong>Gross Total</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px; text-align: right;"><strong><span t-esc="'{:.2f}'.format(o.amount_total)"/></strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 3px;">Round Off</td>
+                                            <td style="border: 1px solid #000; padding: 3px; text-align: right;"><span t-esc="'{:.2f}'.format(round(o.amount_total) - o.amount_total)"/></td>
+                                        </tr>
+                                        <tr style="background-color: #f0f0f0;">
+                                            <td style="border: 1px solid #000; padding: 3px;"><strong>Grand Total</strong></td>
+                                            <td style="border: 1px solid #000; padding: 3px; text-align: right;"><strong><span t-esc="'{:.0f}'.format(round(o.amount_total))"/></strong></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-6" style="border: 1px solid #000; padding: 8px;">
+                                    <div style="font-size: 10px;">
+                                        <strong>Bank Details:</strong><br/>
+                                        <span t-esc="o.company_id.name"/><br/>
+                                        <t t-if="o.company_id.bank_ids">
+                                            <span t-esc="o.company_id.bank_ids[0].bank_id.name"/><br/>
+                                            A/c. No.: <span t-esc="o.company_id.bank_ids[0].acc_number"/><br/>
+                                            IFSC: <span t-esc="o.company_id.bank_ids[0].bank_id.bic"/><br/>
+                                            Branch: <span t-esc="o.company_id.bank_ids[0].bank_id.street"/>
+                                        </t>
+                                    </div>
+                                    
+                                    <div style="font-size: 10px; margin-top: 15px;">
+                                        <strong>Amount in words:</strong> <span t-esc="o.currency_id.amount_to_text(round(o.amount_total))"/>.
+                                    </div>
+                                </div>
+                                <div class="col-6" style="border: 1px solid #000; padding: 8px;">
+                                    <div style="font-size: 10px;">
+                                        <strong>Customer's Acceptance</strong>
+                                    </div>
+                                    
+                                    <div style="font-size: 9px; margin-top: 15px;">
+                                        1. Order will be processed only after the receipt date of technically and commercially clear<br/>
+                                        purchase order, drawing, fitting, hole dia etc and confirmed Performa Invoice<br/>
+                                        2. This performa valid for 10 Days.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-4 text-center" style="border: 1px solid #000; padding: 20px;">
+                                    <div style="border-top: 1px solid #000; margin-top: 30px; padding-top: 5px; font-size: 10px;">
+                                        <strong>Prepared By</strong>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center" style="border: 1px solid #000; padding: 20px;">
+                                    <div style="border-top: 1px solid #000; margin-top: 30px; padding-top: 5px; font-size: 10px;">
+                                        <strong>Checked By</strong>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center" style="border: 1px solid #000; padding: 20px; position: relative;">
+                                    <div style="border-top: 1px solid #000; margin-top: 30px; padding-top: 5px; font-size: 10px;">
+                                        <strong>Authorised Signatory</strong>
+                                    </div>
+                                    <div style="position: absolute; bottom: 5px; right: 10px; font-size: 9px;">
+                                        <strong>S. Admin Sign &amp; Seal</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-12 text-center" style="border: 1px solid #000; padding: 5px; font-size: 9px;">
+                                    Subject to <span t-esc="o.company_id.city"/> Jurisdiction 
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%y %H:%M %p')"/>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_proforma_invoice" model="ir.actions.report">
+            <field name="name">Proforma Invoice</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">custom_sales_module.report_proforma_invoice_document</field>
+            <field name="report_file">custom_sales_module.report_proforma_invoice_document</field>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

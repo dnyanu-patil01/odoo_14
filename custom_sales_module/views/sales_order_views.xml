@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_order_form_custom_glass" model="ir.ui.view">
+            <field name="name">sale.order.form.glass.custom</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="replace">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="date_order" string="Date"/>
+                                <field name="partner_id" string="Customer" domain="[('is_company', '=', True)]"/>
+                            </group>
+                            <group>
+                                <field name="customer_order_no" string="Customer Order No."/>
+                                <field name="site_address" string="Site Address"/>
+                                <field name="delivery_date" string="Delivery Date"/>
+                                <field name="reminder_days" string="Reminder(days)"/>
+                                <field name="charge_size_inch" string="Charge Size Inch"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Order Lines">
+                                <group>
+                                    <group string="Actual Size" class="o_label_nowrap">
+                                        <label for="actual_size_header" string=""/>
+                                    </group>
+                                    <group string="Charge Size" class="o_label_nowrap">
+                                        <label for="charge_size_header" string=""/>
+                                    </group>
+                                </group>
+
+                                <field name="order_line" context="{'default_is_jobwork_line': False}">
+                                    <tree string="Order Lines" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="is_jobwork_line" invisible="1"/>
+                                        <field name="product_id" string="Item" 
+                                               domain="[('sale_ok', '=', True)]"
+                                               attrs="{'readonly': [('display_type', '!=', False)]}"/>
+                                        <field name="actual_length" string="Length"/>
+                                        <field name="actual_breadth" string="Breadth"/>
+                                        <field name="charge_length" string="Length"/>
+                                        <field name="charge_breadth" string="Breadth"/>
+                                        <field name="product_uom_qty" string="Qty"/>
+                                        <field name="soft_value" string="SOFT"/>
+                                        <field name="rate" string="Rate"/>
+                                        <field name="amount" string="Amount"/>
+                                        <field name="notes" string="Notes"/>
+                                    </tree>
+                                </field>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button name="%(base.action_partner_form)d" type="action" 
+                                                string="F2 New Customer" class="btn btn-secondary"/>
+                                        <button name="add_product" type="object" 
+                                                string="F3 New Item" class="btn btn-secondary"/>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <strong>Net :-</strong>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="total_amount" nolabel="1" readonly="1"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <separator/>
+                                
+                                <div class="row">
+                                    <div class="col-6">
+                                        <group string="Actual Size" class="o_label_nowrap">
+                                            <label for="job_actual_size" string=""/>
+                                        </group>
+                                    </div>
+                                    <div class="col-6">
+                                        <group string="Charge Size" class="o_label_nowrap">
+                                            <label for="job_charge_size" string=""/>
+                                        </group>
+                                    </div>
+                                </div>
+
+                                <field name="order_line" context="{'default_is_jobwork_line': True}">
+                                    <tree string="Job Work Lines" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="display_type" invisible="1"/>
+                                        <field name="is_jobwork_line" invisible="1"/>
+                                        <field name="product_id" string="Item" 
+                                               domain="[('sale_ok', '=', True)]"
+                                               attrs="{'invisible': [('is_jobwork_line', '=', False)]}"/>
+                                        <field name="job_work_type" string="Job work"/>
+                                        <field name="job_work_length" string="Length"/>
+                                        <field name="job_work_breadth" string="Breadth"/>
+                                        <field name="job_work_length" string="Length"/>
+                                        <field name="job_work_breadth" string="Breadth"/>
+                                        <field name="job_work_qty" string="Qty"/>
+                                        <field name="job_work_sqft" string="SOFT"/>
+                                        <field name="job_work_rate" string="Rate"/>
+                                        <field name="job_work_amount" string="Amount"/>
+                                        <field name="notes" string="Notes"/>
+                                    </tree>
+                                </field>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button name="browse_jobwork" type="object" 
+                                                string="F4 Browse Records" class="btn btn-secondary"/>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <strong>Job Work :-</strong>
+                                            </div>
+                                            <div class="col-6">
+                                                <field name="job_work_total" nolabel="1" readonly="1"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <button name="add_record" type="object" 
+                                                string="Add" class="btn btn-primary"/>
+                                        <button name="refresh_record" type="object" 
+                                                string="Refresh" class="btn btn-secondary"/>
+                                        <button name="delete_record" type="object" 
+                                                string="Delete" class="btn btn-secondary"/>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h4><strong>Net Total :-</strong></h4>
+                                            </div>
+                                            <div class="col-6">
+                                                <h4><field name="net_total" nolabel="1" readonly="1"/></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_orders_glass_custom" model="ir.actions.act_window">
+            <field name="name">Glass Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_order_form_custom_glass"/>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <menuitem id="menu_glass_orders_root"
+                  name="Glass Orders"
+                  sequence="15"/>
+        
+        <menuitem id="menu_glass_orders"
+                  name="Order Booking"
+                  parent="menu_glass_orders_root"
+                  action="action_orders_glass_custom"
+                  sequence="10"/>
+    </data>
+</odoo>
