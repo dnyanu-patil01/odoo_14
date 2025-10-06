@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_measurement" model="ir.actions.report">
+        <field name="name">Measurement Sheet</field>
+        <field name="model">tailor.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_tailor.report_measurement</field>
+        <field name="report_file">custom_tailor.report_measurement</field>
+        <field name="print_report_name">'Measurement - %s' % (object.customer_id.name)</field>
+        <field name="binding_model_id" ref="model_tailor_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_measurement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="order">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size: 14px; page-break-inside: avoid;">
+                        <style>
+                            .double-border { border: 3px double #000; }
+                            .compact-table { margin-bottom: 10px; }
+                            .compact-table td, .compact-table th { padding: 5px 8px; line-height: 1.3; }
+                            .section-title { font-size: 16px; font-weight: bold; margin: 10px 0 6px 0; color: #2c3e50; }
+                            .measurement-row { display: flex; flex-wrap: wrap; gap: 15px; }
+                            .measurement-col { flex: 1; min-width: 280px; }
+                            .header-bg { background-color: #3498db; color: white; }
+                            .alt-bg { background-color: #ecf0f1; }
+                            .highlight-bg { background-color: #e8f4fd; }
+                        </style>
+                        
+                        <div class="double-border" style="padding: 15px;">
+                            <div class="text-center">
+                                <h2 style="margin: 0; color: #2c3e50; font-size: 20px;"><strong>MEASUREMENT SHEET</strong></h2>
+                            </div>
+                            
+                            <div style="margin-top: 15px;">
+                                <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                    <tr>
+                                        <td width="50%" style="font-weight: bold; text-align: center;" class="header-bg">Customer Details</td>
+                                        <td width="50%" style="font-weight: bold; text-align: center;" class="header-bg">Order Details</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top; padding: 10px;" class="highlight-bg">
+                                            <div style="line-height: 1.5;">
+                                                <div><strong>Name:</strong> <span t-field="order.customer_id.name"/></div>
+                                                <div><strong>Mobile:</strong> <span t-field="order.customer_mobile"/></div>
+                                                <div t-if="order.customer_email"><strong>Email:</strong> <span t-field="order.customer_email"/></div>
+                                                <div t-if="order.customer_address"><strong>Address:</strong> <span t-field="order.customer_address"/></div>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: top; padding: 10px;" class="highlight-bg">
+                                            <div style="line-height: 1.5;">
+                                                <div><strong>Order No:</strong> <span t-field="order.name"/></div>
+                                                <div><strong>Order Date:</strong> <span t-field="order.create_date" t-options='{"format": "dd/MM/yyyy"}'/></div>
+                                                <div><strong>Delivery Date:</strong> <span t-field="order.delivery_date" t-options='{"format": "dd/MM/yyyy"}'/></div>
+                                                <div><strong>Product Type:</strong> <span t-field="order.product_type"/> - <span t-field="order.order_type"/></div>
+                                                <div t-if="order.stitching_category"><strong>Stitching Category:</strong> <span t-field="order.stitching_category"/></div>
+
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="measurement-row" style="margin-top: 20px;">
+                                <div class="measurement-col" t-if="order.measurement_type in ['shirt', 'both']">
+                                    <div class="section-title">Shirt Measurements</div>
+                                    <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                        <thead class="header-bg">
+                                            <tr><th>Measurement Type</th><th>Size (inches)</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-if="order.neck" class="alt-bg"><td><strong>Neck</strong></td><td><span t-field="order.neck"/>"</td></tr>
+                                            <tr t-if="order.chest"><td><strong>Chest</strong></td><td><span t-field="order.chest"/>"</td></tr>
+                                            <tr t-if="order.shoulder" class="alt-bg"><td><strong>Shoulder</strong></td><td><span t-field="order.shoulder"/>"</td></tr>
+                                            <tr t-if="order.sleeve_length"><td><strong>Sleeve Length</strong></td><td><span t-field="order.sleeve_length"/>"</td></tr>
+                                            <tr t-if="order.shirt_length" class="alt-bg"><td><strong>Shirt Length</strong></td><td><span t-field="order.shirt_length"/>"</td></tr>
+                                            <tr t-if="order.bicep"><td><strong>Bicep</strong></td><td><span t-field="order.bicep"/>"</td></tr>
+                                            <tr t-if="order.cuff" class="alt-bg"><td><strong>Cuff</strong></td><td><span t-field="order.cuff"/>"</td></tr>
+                                            <tr t-if="order.stomach"><td><strong>Stomach</strong></td><td><span t-field="order.stomach"/>"</td></tr>
+                                            <tr t-if="order.seat" class="alt-bg"><td><strong>Seat</strong></td><td><span t-field="order.seat"/>"</td></tr>
+                                            <tr t-if="order.front"><td><strong>Front</strong></td><td><span t-field="order.front"/>"</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="measurement-col" t-if="order.measurement_type in ['pant', 'both']">
+                                    <div class="section-title">Pant Measurements</div>
+                                    <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                        <thead class="header-bg">
+                                            <tr><th>Measurement Type</th><th>Size (inches)</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-if="order.waist" class="alt-bg"><td><strong>Waist</strong></td><td><span t-field="order.waist"/>"</td></tr>
+                                            <tr t-if="order.seat_pant"><td><strong>Seat</strong></td><td><span t-field="order.seat_pant"/>"</td></tr>
+                                            <tr t-if="order.thigh" class="alt-bg"><td><strong>Thigh</strong></td><td><span t-field="order.thigh"/>"</td></tr>
+                                            <tr t-if="order.inseam"><td><strong>Inseam</strong></td><td><span t-field="order.inseam"/>"</td></tr>
+                                            <tr t-if="order.pant_length" class="alt-bg"><td><strong>Pant Length</strong></td><td><span t-field="order.pant_length"/>"</td></tr>
+                                            <tr t-if="order.knee"><td><strong>Knee</strong></td><td><span t-field="order.knee"/>"</td></tr>
+                                            <tr t-if="order.bottom" class="alt-bg"><td><strong>Bottom</strong></td><td><span t-field="order.bottom"/>"</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+                                <div style="text-align: center;">
+                                    <div style="border-top: 2px solid #2c3e50; width: 180px; margin: 0 auto;"></div>
+                                    <div style="margin-top: 8px; font-weight: bold; color: #2c3e50;">Authorized Signature</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="border-top: 2px solid #2c3e50; width: 180px; margin: 0 auto;"></div>
+                                    <div style="margin-top: 8px; font-weight: bold; color: #2c3e50;">Customer Signature</div>
+                                </div>
+                            </div>
+
+                            <div style="text-align: center; margin-top: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                                <small style="color: #6c757d; font-size: 12px;">
+                                    This measurement sheet is valid for 6 months from the date of measurement.<br/>
+                                    Please contact us for any modifications or clarifications.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

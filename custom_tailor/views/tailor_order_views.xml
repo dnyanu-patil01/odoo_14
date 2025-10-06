@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="action_tailor_order" model="ir.actions.act_window">
+<field name="name">Tailor Orders</field>
+<field name="res_model">tailor.order</field>
+<field name="view_mode">kanban,tree,form</field>
+<field name="context">{}</field>
+<field name="help" type="html">
+<p class="o_view_nocontent_smiling_face">
+Create your first tailor order!
+</p>
+</field>
+</record>
+
+<record id="action_measurement_list" model="ir.actions.act_window">
+<field name="name">Measurement List</field>
+<field name="res_model">tailor.order</field>
+<field name="view_mode">kanban,tree,form</field>
+<field name="domain">[('state', '=', 'measurement')]</field>
+<field name="context">{'search_default_measurement': 1}</field>
+</record>
+
+<record id="action_cutting_list" model="ir.actions.act_window">
+<field name="name">Cutting List</field>
+<field name="res_model">tailor.order</field>
+<field name="view_mode">kanban,tree,form</field>
+<field name="domain">[('state', '=', 'cutting')]</field>
+<field name="context">{'search_default_cutting': 1}</field>
+</record>
+
+<record id="action_stitching_list" model="ir.actions.act_window">
+<field name="name">Stitching List</field>
+<field name="res_model">tailor.order</field>
+<field name="view_mode">kanban,tree,form</field>
+<field name="domain">[('state', '=', 'stitching')]</field>
+<field name="context">{'search_default_stitching': 1}</field>
+</record>
+
+<record id="action_ready_list" model="ir.actions.act_window">
+<field name="name">Ready List</field>
+<field name="res_model">tailor.order</field>
+<field name="view_mode">kanban,tree,form</field>
+<field name="domain">[('state', '=', 'ready')]</field>
+<field name="context">{'search_default_ready': 1}</field>
+</record>
+
+<record id="action_delivered_list" model="ir.actions.act_window">
+<field name="name">Delivered List</field>
+<field name="res_model">tailor.order</field>
+<field name="view_mode">kanban,tree,form</field>
+<field name="domain">[('state', '=', 'delivered')]</field>
+<field name="context">{'search_default_delivered': 1}</field>
+</record>
+
+<record id="action_tailor_labour" model="ir.actions.act_window">
+<field name="name">Tailor Labour</field>
+<field name="res_model">tailor.labour</field>
+<field name="view_mode">tree,form</field>
+</record>
+
+<record id="action_tailor_customer" model="ir.actions.act_window">
+<field name="name">Customers</field>
+<field name="res_model">tailor.customer</field>
+<field name="view_mode">tree,form</field>
+</record>
+
+<record id="action_tailor_material" model="ir.actions.act_window">
+<field name="name">Materials</field>
+<field name="res_model">tailor.material</field>
+<field name="view_mode">tree,form</field>
+<field name="help" type="html">
+<p class="o_view_nocontent_smiling_face">
+Create your first material!
+</p>
+<p>
+Manage your tailor shop materials and track stock levels.
+</p>
+</field>
+</record>
+
+<record id="action_tailor_bulk_category" model="ir.actions.act_window">
+<field name="name">Bulk Categories</field>
+<field name="res_model">tailor.bulk.category</field>
+<field name="view_mode">tree,form</field>
+</record>
+
+<record id="action_tailor_bulk_client" model="ir.actions.act_window">
+<field name="name">Bulk Clients</field>
+<field name="res_model">tailor.bulk.client</field>
+<field name="view_mode">tree,form</field>
+</record>
+
+<record id="action_material_stock_update" model="ir.actions.act_window">
+<field name="name">Update Material Stock</field>
+<field name="res_model">material.stock.update</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
+<field name="context">{'default_material_id': active_id}</field>
+</record>
+
+<record id="view_tailor_order_kanban" model="ir.ui.view">
+<field name="name">tailor.order.kanban</field>
+<field name="model">tailor.order</field>
+<field name="arch" type="xml">
+<kanban default_group_by="state">
+<field name="name"/>
+<field name="customer_id"/>
+<field name="product_type"/>
+<field name="delivery_date_formatted"/>
+<field name="total_amount"/>
+<field name="state"/>
+<field name="current_work_stage"/>
+<field name="order_category"/>
+<field name="company_name"/>
+<field name="total_bulk_clients"/>
+<templates>
+<t t-name="kanban-box">
+<div class="oe_kanban_card oe_kanban_global_click">
+<div class="o_kanban_record_top">
+<div class="o_kanban_record_headings">
+<strong class="o_kanban_record_title">
+<field name="name"/>
+</strong>
+<br/>
+<span t-if="record.order_category.raw_value == 'individual'">
+<field name="customer_id"/>
+</span>
+<span t-if="record.order_category.raw_value == 'bulk'">
+<field name="company_name"/> (<field name="total_bulk_clients"/> clients)
+</span>
+</div>
+</div>
+<div class="o_kanban_record_body">
+<div>
+Product: <field name="product_type"/>
+</div>
+<div>
+Delivery: <field name="delivery_date_formatted"/>
+</div>
+<div>
+Amount: <field name="total_amount"/>
+</div>
+<div>
+Stage: <field name="current_work_stage"/>
+</div>
+</div>
+<div class="o_kanban_record_bottom">
+<div class="oe_kanban_bottom_left">
+<button name="action_next_stage" type="object" 
+class="btn btn-primary btn-sm"
+attrs="{'invisible': [('state', 'in', ['delivered', 'cancelled'])]}">
+Next Stage
+</button>
+</div>
+<div class="oe_kanban_bottom_right">
+<field name="state" widget="label_selection"/>
+</div>
+</div>
+</div>
+</t>
+</templates>
+</kanban>
+</field>
+</record>
+
+<record id="view_tailor_order_tree" model="ir.ui.view">
+<field name="name">tailor.order.tree</field>
+<field name="model">tailor.order</field>
+<field name="arch" type="xml">
+<tree decoration-danger="delivery_date &lt; context_today()"
+decoration-success="state == 'delivered'"
+decoration-warning="state == 'ready'">
+<field name="name" string="Order"/>
+<field name="order_category" string="Category"/>
+<field name="customer_id" string="Customer" attrs="{'invisible': [('order_category', '=', 'bulk')]}"/>
+<field name="company_name" string="Company" attrs="{'invisible': [('order_category', '=', 'individual')]}"/>
+<field name="total_bulk_clients" string="Clients" attrs="{'invisible': [('order_category', '=', 'individual')]}"/>
+<field name="product_type" string="Product Type"/>
+<field name="measurement_type" string="Measurement"/>
+<field name="current_work_stage" string="Stage"/>
+<field name="state" string="Status"/>
+<field name="delivery_date_formatted" string="Delivery"/>
+<field name="total_amount" string="Amount"/>
+<field name="delivery_date" invisible="1"/>
+<button name="action_next_stage" type="object" string="Next Stage"
+class="btn btn-primary btn-sm"
+attrs="{'invisible': [('state', 'in', ['delivered', 'cancelled'])]}"/>
+</tree>
+</field>
+</record>
+
+<record id="view_tailor_order_form" model="ir.ui.view">
+    <field name="name">tailor.order.form</field>
+    <field name="model">tailor.order</field>
+    <field name="arch" type="xml">
+        <form string="Tailor Order">
+            <header>
+                <button name="action_confirm" string="Confirm Order" type="object" 
+                        class="oe_highlight btn-primary" 
+                        style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); transform: translateY(-2px); transition: all 0.3s ease;"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                
+                <button name="action_confirm" string="Confirm" type="object" 
+                        class="btn-secondary"
+                        style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 6px; opacity: 0.7;"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                
+                <button name="action_next_stage" string="Start Measurement" type="object" 
+                        class="oe_highlight btn-primary"
+                        style="background: linear-gradient(135deg, #28a745, #1e7e34); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3); transform: translateY(-2px);"
+                        attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
+                
+                <button name="action_next_stage" string="Start Cutting" type="object" 
+                        class="oe_highlight btn-primary"
+                        style="background: linear-gradient(135deg, #ffc107, #e0a800); color: #212529; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3); transform: translateY(-2px);"
+                        attrs="{'invisible': [('state', '!=', 'measurement')]}"/>
+                
+                <button name="action_next_stage" string="Start Stitching" type="object" 
+                        class="oe_highlight btn-primary"
+                        style="background: linear-gradient(135deg, #fd7e14, #e55a00); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3); transform: translateY(-2px);"
+                        attrs="{'invisible': [('state', '!=', 'cutting')]}"/>
+                
+                <button name="action_next_stage" string="Mark Ready" type="object" 
+                        class="oe_highlight btn-primary"
+                        style="background: linear-gradient(135deg, #6f42c1, #5a2d91); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3); transform: translateY(-2px);"
+                        attrs="{'invisible': [('state', '!=', 'stitching')]}"/>
+                
+                <button name="action_complete_payment" string="Complete Payment" type="object" 
+                        class="oe_highlight btn-warning"
+                        style="background: linear-gradient(135deg, #ffc107, #e0a800); color: #212529; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3); transform: translateY(-2px);"
+                        attrs="{'invisible': ['|', ('state', '!=', 'ready'), ('pending_payment', '&lt;=', 0)]}"/>
+                
+                <button name="action_deliver" string="Deliver" type="object" 
+                        class="oe_highlight btn-primary"
+                        style="background: linear-gradient(135deg, #dc3545, #bd2130); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3); transform: translateY(-2px);"
+                        attrs="{'invisible': ['|', ('state', '!=', 'ready'), ('pending_payment', '>', 0)]}"/>
+                
+                <field name="state" widget="statusbar" 
+                       statusbar_visible="draft,confirmed,measurement,cutting,stitching,ready,delivered"
+                       style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; border: 2px solid #e9ecef;"/>
+            </header>
+            
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button btn-highlighted" type="object" name="action_print_measurement" 
+                            style="background: linear-gradient(135deg, #fd7e14, #e55a00); color: white; border: 2px solid #fd7e14; border-radius: 15px; padding: 10px 15px; box-shadow: 0 4px 8px rgba(253, 126, 20, 0.3); transition: all 0.3s ease; transform: translateY(-1px);">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Print</span>
+                            <span class="o_stat_text">Measurement</span>
+                        </div>
+                    </button>
+                    
+                    <button class="oe_stat_button btn-highlighted" type="object" name="action_print_bill" 
+                            style="background: linear-gradient(135deg, #6f42c1, #5a2d91); color: white; border: 2px solid #6f42c1; border-radius: 15px; padding: 10px 15px; box-shadow: 0 4px 8px rgba(111, 66, 193, 0.3); transition: all 0.3s ease; transform: translateY(-1px);"
+                            attrs="{'invisible': [('order_category', '!=', 'individual')]}">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Print</span>
+                            <span class="o_stat_text">Bill</span>
+                        </div>
+                    </button>
+                    
+                    <button class="oe_stat_button btn-highlighted" type="object" name="action_print_bulk_bill" 
+                            style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: 2px solid #3498db; border-radius: 15px; padding: 10px 15px; box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3); transition: all 0.3s ease; transform: translateY(-1px);"
+                            attrs="{'invisible': [('order_category', '!=', 'bulk')]}">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Print</span>
+                            <span class="o_stat_text">Bulk Bill</span>
+                        </div>
+                    </button>
+                    
+                    <button class="oe_stat_button btn-highlighted" type="object" name="action_add_bulk_client" 
+                            style="background: linear-gradient(135deg, #28a745, #1e7e34); color: white; border: 2px solid #28a745; border-radius: 15px; padding: 10px 15px; box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3); transition: all 0.3s ease; transform: translateY(-1px);"
+                            attrs="{'invisible': [('order_category', '!=', 'bulk')]}">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Add</span>
+                            <span class="o_stat_text">Client</span>
+                        </div>
+                    </button>
+                    
+                    <button class="oe_stat_button btn-highlighted" type="object" name="action_view_bulk_clients" 
+                            style="background: linear-gradient(135deg, #17a2b8, #138496); color: white; border: 2px solid #17a2b8; border-radius: 15px; padding: 10px 15px; box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3); transition: all 0.3s ease; transform: translateY(-1px);"
+                            attrs="{'invisible': [('order_category', '!=', 'bulk')]}">
+                        <field name="total_bulk_clients" widget="statinfo" string="Total Clients"/>
+                    </button>
+                </div>
+                
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <h3>
+                        <field name="current_work_stage" readonly="1"/>
+                    </h3>
+                </div>
+                
+                <group>
+                    <group>
+                        <field name="order_category" widget="radio"/>
+                        <field name="customer_id" attrs="{'invisible': [('order_category', '=', 'bulk')], 'required': [('order_category', '=', 'individual')]}"/>
+                        <field name="company_name" attrs="{'invisible': [('order_category', '=', 'individual')], 'required': [('order_category', '=', 'bulk')]}"/>
+                        <field name="bulk_category_id" attrs="{'invisible': [('order_category', '=', 'individual')], 'required': [('order_category', '=', 'bulk')]}"/>
+                        <field name="customer_mobile" attrs="{'invisible': [('order_category', '=', 'bulk')]}"/>
+                        <field name="customer_email" attrs="{'invisible': [('order_category', '=', 'bulk')]}"/>
+                        <field name="customer_address" attrs="{'invisible': [('order_category', '=', 'bulk')]}"/>
+                        <field name="product_type"/>
+                        <field name="order_type"/>
+                        <field name="measurement_type" widget="radio"/>
+                        <field name="stitching_category"/>
+                        <field name="delivery_date" class="oe_inline" widget="date"/>
+                        <field name="delivery_date_formatted" string="Delivery Date (DD/MM/YY)" readonly="1"/>
+                        <field name="payment_method" string="Payment Method"/>
+                    </group>
+                    <group>
+                        <group string="Single Process Masters" attrs="{'invisible': [('measurement_type', '=', 'both')]}">
+                            <field name="measurement_master_id"/>
+                            <field name="cutting_master_id"/>
+                            <field name="stitching_master_id"/>
+                        </group>
+                        
+                        <group string="Shirt Process Masters" attrs="{'invisible': [('measurement_type', '!=', 'both')]}">
+                            <field name="shirt_measurement_master_id"/>
+                            <field name="shirt_cutting_master_id"/>
+                            <field name="shirt_stitching_master_id"/>
+                        </group>
+                        
+                        <group string="Pant Process Masters" attrs="{'invisible': [('measurement_type', '!=', 'both')]}">
+                            <field name="pant_measurement_master_id"/>
+                            <field name="pant_cutting_master_id"/>
+                            <field name="pant_stitching_master_id"/>
+                        </group>
+                        
+                        <field name="create_date_formatted" string="Created On (DD/MM/YY)" readonly="1"/>
+                        <field name="write_date_formatted" string="Last Modified (DD/MM/YY)" readonly="1"/>
+                        <field name="current_date_formatted" string="Today (DD/MM/YY)" readonly="1"/>
+                    </group>
+                </group>
+                
+                <notebook>
+                    <page string="Bulk Clients" attrs="{'invisible': [('order_category', '!=', 'bulk')]}">
+                        <field name="bulk_client_ids">
+                            <tree>
+                                <field name="client_id"/>
+                                <field name="name"/>
+                                <field name="company_name"/>
+                                <field name="measurement_type"/>
+                                <field name="mobile"/>
+                                <field name="email"/>
+                                <field name="bulk_category_id"/>
+                            </tree>
+                        </field>
+                    </page>
+                    
+                    <page string="Measurements" attrs="{'invisible': [('measurement_type', '=', False)]}">
+                        <group string="Shirt Measurements" attrs="{'invisible': [('measurement_type', '=', 'pant')]}">
+                            <group>
+                                <field name="shirt_length" string="Shirt Length (inches)"/>
+                                <field name="shoulder" string="Shoulder (inches)"/>
+                                <field name="sleeve_length" string="Sleeve Length (inches)"/>
+                                <field name="bicep" string="Bicep (inches)"/>
+                                <field name="cuff" string="Cuff (inches)"/>
+                            </group>
+                            <group>
+                                <field name="chest" string="Chest (inches)"/>
+                                <field name="stomach" string="Stomach (inches)"/>
+                                <field name="seat" string="Seat (inches)"/>
+                                <field name="neck" string="Neck (inches)"/>
+                                <field name="front" string="Front (inches)"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Pant Measurements" attrs="{'invisible': [('measurement_type', '=', 'shirt')]}">
+                            <group>
+                                <field name="pant_length" string="Pant Length (inches)"/>
+                                <field name="inseam" string="Inseam (inches)"/>
+                                <field name="waist" string="Waist (inches)"/>
+                                <field name="seat_pant" string="Seat (inches)"/>
+                            </group>
+                            <group>
+                                <field name="thigh" string="Thigh (inches)"/>
+                                <field name="knee" string="Knee (inches)"/>
+                                <field name="bottom" string="Bottom (inches)"/>
+                            </group>
+                        </group>
+                        
+                        <separator string="Order Details"/>
+                        <group>
+                            <field name="description"/>
+                            <field name="image" widget="image" options="{'size': [200, 200]}"/>
+                        </group>
+                    </page>
+                    
+                    <page string="Billing">
+                        <group>
+                            <group>
+                                <field name="shirt_charges" string="Shirt Charges" attrs="{'invisible': [('measurement_type', '=', 'pant')]}"/>
+                                <field name="pant_charges" string="Pant Charges" attrs="{'invisible': [('measurement_type', '=', 'shirt')]}"/>
+                                <field name="alteration_charges" string="Alteration Charges"/>
+                                <field name="urgent_delivery_charges" string="Urgent Delivery Charges"/>
+                                <field name="total_amount" string="Total Amount"/>
+                            </group>
+                            <group>
+                                <field name="advance_payment" string="Advance Payment"/>
+                                <field name="pending_payment" string="Pending Payment"/>
+                                <field name="payment_status" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Payment Completion" attrs="{'invisible': ['|', ('state', '!=', 'ready'), ('pending_payment', '&lt;=', 0)]}">
+                            <group>
+                                <field name="final_payment_method" string="Final Payment Method" widget="radio" options="{'horizontal': true}"/>
+                                <field name="final_payment_amount" string="Final Payment Amount" readonly="1"/>
+                                <field name="payment_reference" string="Payment Reference/Transaction ID" attrs="{'invisible': [('final_payment_method', '=', 'cash')]}"/>
+                            </group>
+                        </group>
+                    </page>
+                    
+                    <page string="Materials" name="materials">
+                        <field name="material_ids">
+                            <tree editable="bottom">
+                                <field name="material_id"/>
+                                <field name="quantity_consumed"/>
+                                <field name="unit_price" readonly="1"/>
+                                <field name="total_cost" readonly="1"/>
+                            </tree>
+                        </field>
+                        <group class="oe_subtotal_footer oe_right">
+                            <field name="total_material_cost" readonly="1"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+    </field>
+</record>
+<record id="view_tailor_bulk_category_tree" model="ir.ui.view">
+<field name="name">tailor.bulk.category.tree</field>
+<field name="model">tailor.bulk.category</field>
+<field name="arch" type="xml">
+<tree>
+<field name="name"/>
+<field name="description"/>
+<field name="active"/>
+</tree>
+</field>
+</record>
+
+<record id="view_tailor_bulk_category_form" model="ir.ui.view">
+<field name="name">tailor.bulk.category.form</field>
+<field name="model">tailor.bulk.category</field>
+<field name="arch" type="xml">
+<form>
+<sheet>
+<group>
+<field name="name"/>
+<field name="description"/>
+<field name="active"/>
+</group>
+</sheet>
+</form>
+</field>
+</record>
+
+<record id="view_tailor_bulk_client_tree" model="ir.ui.view">
+<field name="name">tailor.bulk.client.tree</field>
+<field name="model">tailor.bulk.client</field>
+<field name="arch" type="xml">
+<tree>
+<field name="client_id"/>
+<field name="name"/>
+<field name="company_name"/>
+<field name="bulk_category_id"/>
+<field name="measurement_type"/>
+<field name="mobile"/>
+<field name="email"/>
+<field name="bulk_order_id"/>
+</tree>
+</field>
+</record>
+
+<record id="view_tailor_bulk_client_form" model="ir.ui.view">
+<field name="name">tailor.bulk.client.form</field>
+<field name="model">tailor.bulk.client</field>
+<field name="arch" type="xml">
+<form>
+<sheet>
+<div class="oe_title">
+<h1>
+<field name="client_id" readonly="1"/>
+</h1>
+<h3>
+<field name="name"/>
+</h3>
+</div>
+<group>
+<group>
+<field name="name"/>
+<field name="company_name"/>
+<field name="bulk_order_id"/>
+<field name="bulk_category_id"/>
+<field name="mobile"/>
+<field name="email"/>
+<field name="measurement_type" widget="radio"/>
+</group>
+<group>
+<field name="address"/>
+<field name="remarks"/>
+</group>
+</group>
+<notebook>
+<page string="Shirt Measurements" attrs="{'invisible': [('measurement_type', '=', 'pant')]}">
+<group>
+<group>
+<field name="shirt_length"/>
+<field name="shoulder"/>
+<field name="sleeve_length"/>
+<field name="bicep"/>
+<field name="cuff"/>
+</group>
+<group>
+<field name="chest"/>
+<field name="stomach"/>
+<field name="seat"/>
+<field name="neck"/>
+<field name="front"/>
+</group>
+</group>
+</page>
+<page string="Pant Measurements" attrs="{'invisible': [('measurement_type', '=', 'shirt')]}">
+<group>
+<group>
+<field name="pant_length"/>
+<field name="inseam"/>
+<field name="waist"/>
+<field name="seat_pant"/>
+</group>
+<group>
+<field name="thigh"/>
+<field name="knee"/>
+<field name="bottom"/>
+</group>
+</group>
+</page>
+</notebook>
+</sheet>
+</form>
+</field>
+</record>
+
+<record id="view_tailor_labour_tree" model="ir.ui.view">
+<field name="name">tailor.labour.tree</field>
+<field name="model">tailor.labour</field>
+<field name="arch" type="xml">
+<tree>
+<field name="name" string="Name"/>
+<field name="mobile" string="Mobile"/>
+<field name="commission_percent" string="Commission %"/>
+<field name="completed_orders_count" string="Completed Orders"/>
+<field name="total_commission" string="Total Commission"/>
+<field name="joining_date_formatted" string="Joining Date"/>
+</tree>
+</field>
+</record>
+
+<record id="view_tailor_labour_form" model="ir.ui.view">
+    <field name="name">tailor.labour.form</field>
+    <field name="model">tailor.labour</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" name="%(action_tailor_order)d" type="action" context="{'search_default_labour_id': active_id, 'search_default_delivered': 1}">
+                        <field name="completed_orders_count" widget="statinfo" string="Completed Orders"/>
+                    </button>
+                    <button class="oe_stat_button" name="%(action_tailor_order)d" type="action" context="{'search_default_labour_id': active_id}">
+                        <field name="paid_work_count" widget="statinfo" string="Paid Work"/>
+                    </button>
+                    <button class="oe_stat_button" name="%(action_tailor_order)d" type="action" context="{'search_default_labour_id': active_id}">
+                        <field name="pending_work_count" widget="statinfo" string="Pending Work"/>
+                    </button>
+                </div>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="mobile"/>
+                        <field name="labour_category" widget="radio"/>
+                        <field name="skill_ids" widget="many2many_tags"/>
+                        <field name="commission_percent"/>
+                        <field name="joining_date" widget="date"/>
+                        <field name="joining_date_formatted" string="Joining Date (DD/MM/YY)" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="total_commission"/>
+                        <field name="monthly_commission"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="address"/>
+                </group>
+                <notebook>
+                    <page string="Work Records">
+                        <field name="completed_order_ids">
+                            <tree>
+                                <field name="name" string="Order"/>
+                                <field name="customer_id" string="Customer"/>
+                                <field name="product_type" string="Product"/>
+                                <field name="delivery_date_formatted" string="Delivery"/>
+                                <field name="total_amount" string="Amount"/>
+                                <field name="payment_method" string="Payment"/>
+                                <field name="advance_payment" string="Payment Advance"/>
+                                <field name="pending_payment" string="Payment Pending"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="view_tailor_customer_tree" model="ir.ui.view">
+<field name="name">tailor.customer.tree</field>
+<field name="model">tailor.customer</field>
+<field name="arch" type="xml">
+<tree decoration-info="total_orders &gt; 5" 
+decoration-success="total_amount &gt; 10000" 
+decoration-warning="total_orders == 0"
+decoration-bf="total_orders &gt; 10"
+decoration-muted="total_amount &gt; 20000">
+<field name="name" string="Name"/>
+<field name="mobile" string="Mobile"/>
+<field name="email" string="Email"/>
+<field name="address" string="Address"/>
+<field name="total_orders" string="Total Orders"/>
+<field name="total_amount" string="Total Amount"/>
+</tree>
+</field>
+</record>
+
+<record id="view_tailor_customer_form" model="ir.ui.view">
+<field name="name">tailor.customer.form</field>
+<field name="model">tailor.customer</field>
+<field name="arch" type="xml">
+<form>
+<sheet>
+<div class="oe_button_box" name="button_box">
+<button class="oe_stat_button" name="%(action_tailor_order)d" type="action"
+context="{'search_default_customer_id': active_id}">
+<field name="total_orders" widget="statinfo" string="Orders"/>
+</button>
+<button class="oe_stat_button" name="%(action_tailor_order)d" type="action"
+context="{'search_default_customer_id': active_id}">
+<field name="total_amount" widget="statinfo" string="Total Amount"/>
+</button>
+</div>
+<div class="oe_title">
+<h1>
+<field name="name"/>
+</h1>
+</div>
+<group>
+<group>
+<field name="name"/>
+<field name="mobile"/>
+<field name="email"/>
+</group>
+<group>
+<field name="address"/>
+<field name="total_orders"/>
+<field name="total_amount"/>
+</group>
+</group>
+<notebook>
+<page string="Orders">
+<field name="order_ids">
+<tree decoration-success="state == 'delivered'" decoration-info="state == 'ready'" 
+decoration-warning="state in ['measurement', 'cutting', 'stitching']" 
+decoration-danger="state == 'draft'">
+<field name="name" string="Order"/>
+<field name="product_type" string="Product"/>
+<field name="state" string="Status"/>
+<field name="delivery_date_formatted" string="Delivery"/>
+<field name="total_amount" string="Total"/>
+<field name="advance_payment" string="Advance"/>
+<field name="pending_payment" string="Pending"/>
+<field name="create_date_formatted" string="Created"/>
+</tree>
+</field>
+</page>
+</notebook>
+</sheet>
+</form>
+</field>
+</record>
+
+<record id="view_tailor_order_search" model="ir.ui.view">
+<field name="name">tailor.order.search</field>
+<field name="model">tailor.order</field>
+<field name="arch" type="xml">
+<search>
+<field name="name" string="Order Name"/>
+<field name="customer_id" string="Customer"/>
+<field name="company_name" string="Company"/>
+<field name="labour_id" string="Labour"/>
+<field name="product_type" string="Product Type"/>
+<field name="state" string="Status"/>
+<field name="order_category" string="Order Category"/>
+<filter string="Individual Orders" name="individual" domain="[('order_category', '=', 'individual')]"/>
+<filter string="Bulk Orders" name="bulk" domain="[('order_category', '=', 'bulk')]"/>
+<filter string="Draft Orders" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="In Progress" name="in_progress" domain="[('state', 'in', ['confirmed', 'measurement', 'cutting', 'stitching'])]"/>
+<filter string="Ready for Delivery" name="ready" domain="[('state', '=', 'ready')]"/>
+<filter string="Delivered" name="delivered" domain="[('state', '=', 'delivered')]"/>
+<filter string="Overdue" name="overdue" domain="[('delivery_date', '&lt;', datetime.datetime.now().strftime('%Y-%m-%d')), ('state', '!=', 'delivered')]"/>
+<group expand="1" string="Group By">
+<filter string="Order Category" name="group_category" context="{'group_by': 'order_category'}"/>
+<filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+<filter string="Labour" name="group_labour" context="{'group_by': 'labour_id'}"/>
+<filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+<filter string="Product Type" name="group_product" context="{'group_by': 'product_type'}"/>
+</group>
+</search>
+</field>
+</record>
+
+<record id="view_tailor_material_tree" model="ir.ui.view">
+<field name="name">tailor.material.tree</field>
+<field name="model">tailor.material</field>
+<field name="arch" type="xml">
+<tree decoration-success="stock_quantity &gt; 50" 
+decoration-warning="stock_quantity &lt; 20" 
+decoration-danger="stock_quantity &lt; 5"
+decoration-muted="active == False">
+<field name="name"/>
+<field name="material_type"/>
+<field name="stock_quantity"/>
+<field name="unit_of_measure"/>
+<field name="unit_price"/>
+<field name="total_value"/>
+<field name="active"/>
+</tree>
+</field>
+</record>
+
+<record id="view_tailor_material_form" model="ir.ui.view">
+<field name="name">tailor.material.form</field>
+<field name="model">tailor.material</field>
+<field name="arch" type="xml">
+<form>
+<header>
+<button name="%(action_material_stock_update)d" string="Update Stock" type="action" 
+class="oe_highlight"/>
+</header>
+<sheet>
+<group>
+<group>
+<field name="name"/>
+<field name="material_type"/>
+<field name="unit_of_measure"/>
+</group>
+<group>
+<field name="stock_quantity" readonly="1"/>
+<field name="unit_price"/>
+<field name="total_value" readonly="1"/>
+<field name="active"/>
+</group>
+</group>
+</sheet>
+</form>
+</field>
+</record>
+
+<record id="view_tailor_order_material_tree" model="ir.ui.view">
+<field name="name">tailor.order.material.tree</field>
+<field name="model">tailor.order.material</field>
+<field name="arch" type="xml">
+<tree editable="bottom" 
+decoration-info="quantity_consumed &gt; 0" 
+decoration-bf="quantity_consumed &gt; 5"
+decoration-warning="total_cost &gt; 1000">
+<field name="material_id"/>
+<field name="quantity_consumed"/>
+<field name="unit_price" readonly="1"/>
+<field name="total_cost" readonly="1"/>
+</tree>
+</field>
+</record>
+
+<record id="view_material_stock_update_form" model="ir.ui.view">
+<field name="name">material.stock.update.form</field>
+<field name="model">material.stock.update</field>
+<field name="arch" type="xml">
+<form>
+<group>
+<field name="material_id"/>
+<field name="update_type" widget="radio"/>
+<field name="quantity_to_add"/>
+</group>
+<footer>
+<button name="update_stock" string="Update Stock" type="object" 
+class="btn-primary"/>
+<button string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
+</form>
+</field>
+</record>
+
+<record id="view_tailor_skill_form" model="ir.ui.view">
+    <field name="name">tailor.skill.form</field>
+    <field name="model">tailor.skill</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="description"/>
+                    <field name="active"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="view_tailor_skill_tree" model="ir.ui.view">
+    <field name="name">tailor.skill.tree</field>
+    <field name="model">tailor.skill</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="description"/>
+            <field name="active"/>
+        </tree>
+    </field>
+</record>
+
+<record id="action_tailor_skill" model="ir.actions.act_window">
+    <field name="name">Tailor Skills</field>
+    <field name="res_model">tailor.skill</field>
+    <field name="view_mode">tree,form</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Create your first skill!
+        </p>
+        <p>
+            Define skills like Measurement Master, Cutting Master, Stitching Master to categorize your employees.
+        </p>
+    </field>
+</record>
+
+<record id="action_bulk_order_list" model="ir.actions.act_window">
+<field name="name">Bulk Orders</field>
+<field name="res_model">tailor.order</field>
+<field name="view_mode">kanban,tree,form</field>
+<field name="domain">[('order_category', '=', 'bulk')]</field>
+<field name="context">{'search_default_bulk': 1}</field>
+</record>
+
+<record id="view_tailor_work_record_tree" model="ir.ui.view">
+<field name="name">tailor.work.record.tree</field>
+<field name="model">tailor.work.record</field>
+<field name="arch" type="xml">
+<tree decoration-success="payment_settled == True" 
+decoration-warning="payment_settled == False">
+<field name="labour_id" string="Labour"/>
+<field name="order_id" string="Order"/>
+<field name="customer_id" string="Customer"/>
+<field name="product_type" string="Product"/>
+<field name="amount" string="Amount"/>
+<field name="delivery_date_formatted" string="Delivery"/>
+<field name="payment_settled" string="Payment Settled"/>
+<field name="payment_date_formatted" string="Payment Date"/>
+<field name="payment_amount" string="Payment Amount"/>
+<button name="action_settle_payment" type="object" string="Settle Payment"
+class="btn btn-primary btn-sm"
+attrs="{'invisible': [('payment_settled', '=', True)]}"/>
+</tree>
+</field>
+</record>
+
+<record id="view_tailor_expense_tree" model="ir.ui.view">
+<field name="name">tailor.expense.tree</field>
+<field name="model">tailor.expense</field>
+<field name="arch" type="xml">
+<tree>
+<field name="name"/>
+<field name="amount"/>
+<field name="date_formatted" string="Date"/>
+</tree>
+</field>
+</record>
+
+<record id="view_tailor_expense_form" model="ir.ui.view">
+<field name="name">tailor.expense.form</field>
+<field name="model">tailor.expense</field>
+<field name="arch" type="xml">
+<form>
+<sheet>
+<group>
+<field name="name"/>
+<field name="amount"/>
+<field name="date" widget="date"/>
+<field name="date_formatted" string="Date (DD/MM/YY)" readonly="1"/>
+</group>
+</sheet>
+</form>
+</field>
+</record>
+
+<record id="view_payment_completion_wizard_form" model="ir.ui.view">
+        <field name="name">payment.completion.wizard.form</field>
+        <field name="model">payment.completion.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Payment Completion Warning">
+                <div class="alert alert-warning" role="alert" style="margin: 10px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; border-radius: 5px;">
+                    <h4 style="color: #856404; margin-bottom: 15px;">⚠️ Payment Completion Warning</h4>
+                    <div style="margin-bottom: 15px; font-size: 16px;">
+                        <strong style="color: #856404;">Your pending amount is: </strong>
+                        <strong style="color: #d63031; font-size: 18px;">₹</strong>
+                        <field name="pending_amount" readonly="1" style="color: #d63031; font-weight: bold; font-size: 18px; display: inline; border: none; background: transparent;"/>
+                    </div>
+                    <p style="margin-bottom: 10px; color: #856404;">
+                        <strong>First of all complete the payment and then deliver the product.</strong>
+                    </p>
+                    <p style="margin-bottom: 0; color: #856404;">
+                        <strong>Are you sure you want to complete this payment?</strong>
+                    </p>
+                </div>
+                
+                <group>
+                    <field name="order_id" invisible="1"/>
+                    <field name="final_payment_method" string="Payment Method" widget="radio" options="{'horizontal': true}"/>
+                    <field name="final_payment_amount" string="Payment Amount" readonly="1" style="font-weight: bold; font-size: 16px; color: #00b894;"/>
+                    <field name="payment_reference" string="Payment Reference/Transaction ID" attrs="{'invisible': [('final_payment_method', '=', 'cash')], 'required': [('final_payment_method', '!=', 'cash')]}"/>
+                </group>
+                
+                <footer>
+                    <button name="confirm_payment" string="Yes, Complete Payment" type="object" 
+                            class="btn-primary" style="background: linear-gradient(135deg, #00b894, #00a085); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600;"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" 
+                            style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 6px; margin-left: 10px;"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<menuitem id="menu_tailor_main" name="Tailor Shop" sequence="10" web_icon="tailor_shop,static/description/icon.png"/>
+<menuitem id="menu_tailor_order_list" name="All Orders" parent="menu_tailor_main" 
+action="action_tailor_order" sequence="10"/>
+<menuitem id="menu_measurement_list" name="Measurement List" parent="menu_tailor_main" 
+action="action_measurement_list" sequence="15"/>
+<menuitem id="menu_cutting_list" name="Cutting List" parent="menu_tailor_main" 
+action="action_cutting_list" sequence="16"/>
+<menuitem id="menu_stitching_list" name="Stitching List" parent="menu_tailor_main" 
+action="action_stitching_list" sequence="17"/>
+<menuitem id="menu_ready_list" name="Ready List" parent="menu_tailor_main" 
+action="action_ready_list" sequence="18"/>
+<menuitem id="menu_delivered_list" name="Delivered List" parent="menu_tailor_main" 
+action="action_delivered_list" sequence="19"/>
+<menuitem id="menu_bulk_orders" name="Bulk Orders" parent="menu_tailor_main" sequence="20"/>
+<menuitem id="menu_bulk_order_list" name="Bulk Order List" parent="menu_bulk_orders" 
+action="action_bulk_order_list" sequence="20"/>
+<menuitem id="menu_bulk_categories" name="Bulk Categories" parent="menu_bulk_orders" 
+action="action_tailor_bulk_category" sequence="21"/>
+<menuitem id="menu_bulk_clients" name="Bulk Clients" parent="menu_bulk_orders" 
+action="action_tailor_bulk_client" sequence="22"/>
+<menuitem id="menu_tailor_customer_list" name="Customers" parent="menu_tailor_main" 
+action="action_tailor_customer" sequence="30"/>
+<menuitem id="menu_tailor_labour_list" name="Labour/Employees" parent="menu_tailor_main" 
+action="action_tailor_labour" sequence="40"/>
+<menuitem id="menu_tailor_materials" name="Materials" parent="menu_tailor_main" 
+action="action_tailor_material" sequence="50"/>
+<menuitem id="menu_tailor_skills" name="Skills" parent="menu_tailor_main" 
+action="action_tailor_skill" sequence="60"/>
+</odoo>

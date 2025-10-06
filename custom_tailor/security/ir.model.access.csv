@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tailor_order,access_tailor_order,model_tailor_order,base.group_user,1,1,1,1
+access_tailor_labour,access_tailor_labour,model_tailor_labour,base.group_user,1,1,1,1
+access_tailor_customer,access_tailor_customer,model_tailor_customer,base.group_user,1,1,1,1
+access_tailor_stock,access_tailor_stock,model_tailor_stock,base.group_user,1,1,1,1
+access_tailor_expense,access_tailor_expense,model_tailor_expense,base.group_user,1,1,1,1
+access_tailor_material,access_tailor_material,model_tailor_material,base.group_user,1,1,1,1
+access_tailor_order_material,access_tailor_order_material,model_tailor_order_material,base.group_user,1,1,1,1
+access_material_stock_update,access_material_stock_update,model_material_stock_update,base.group_user,1,1,1,1
+access_tailor_skill,access_tailor_skill,model_tailor_skill,base.group_user,1,1,1,1
+access_tailor_work_record,access_tailor_work_record,model_tailor_work_record,base.group_user,1,1,1,1
+access_tailor_bulk_category,access_tailor_bulk_category,model_tailor_bulk_category,base.group_user,1,1,1,1
+access_tailor_bulk_client,access_tailor_bulk_client,model_tailor_bulk_client,base.group_user,1,1,1,1

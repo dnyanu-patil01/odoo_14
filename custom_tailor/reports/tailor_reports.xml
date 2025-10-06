@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_measurement" model="ir.actions.report">
+        <field name="name">Measurement Sheet</field>
+        <field name="model">tailor.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_tailor.report_measurement</field>
+        <field name="report_file">custom_tailor.report_measurement</field>
+        <field name="print_report_name">'Measurement - %s' % (object.customer_id.name)</field>
+        <field name="binding_model_id" ref="model_tailor_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_bill" model="ir.actions.report">
+        <field name="name">Tailoring Bill</field>
+        <field name="model">tailor.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_tailor.report_bill</field>
+        <field name="report_file">custom_tailor.report_bill</field>
+        <field name="print_report_name">'Bill - %s' % (object.customer_id.name)</field>
+        <field name="binding_model_id" ref="model_tailor_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_measurement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="order">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size: 14px; page-break-inside: avoid;">
+                        <style>
+                            .double-border { border: 3px double #000; }
+                            .compact-table { margin-bottom: 10px; }
+                            .compact-table td, .compact-table th { padding: 5px 8px; line-height: 1.3; }
+                            .section-title { font-size: 16px; font-weight: bold; margin: 10px 0 6px 0; color: #2c3e50; }
+                            .measurement-row { display: flex; flex-wrap: wrap; gap: 15px; }
+                            .measurement-col { flex: 1; min-width: 280px; }
+                            .header-bg { background-color: #3498db; color: white; }
+                            .alt-bg { background-color: #ecf0f1; }
+                            .highlight-bg { background-color: #e8f4fd; }
+                        </style>
+                        
+                        <div class="double-border" style="padding: 15px;">
+                            <div class="text-center">
+                                <h2 style="margin: 0; color: #2c3e50; font-size: 20px;"><strong>MEASUREMENT SHEET</strong></h2>
+                            </div>
+                            
+                            <div style="margin-top: 15px;">
+                                <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                    <tr>
+                                        <td width="50%" style="font-weight: bold; text-align: center;" class="header-bg">Customer Details</td>
+                                        <td width="50%" style="font-weight: bold; text-align: center;" class="header-bg">Order Details</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top; padding: 10px;" class="highlight-bg">
+                                            <div style="line-height: 1.5;">
+                                                <div><strong>Name:</strong> <span t-field="order.customer_id.name"/></div>
+                                                <div><strong>Mobile:</strong> <span t-field="order.customer_mobile"/></div>
+                                                <div t-if="order.customer_email"><strong>Email:</strong> <span t-field="order.customer_email"/></div>
+                                                <div t-if="order.customer_address"><strong>Address:</strong> <span t-field="order.customer_address"/></div>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: top; padding: 10px;" class="highlight-bg">
+                                            <div style="line-height: 1.5;">
+                                                <div><strong>Order No:</strong> <span t-field="order.name"/></div>
+                                                <div><strong>Order Date:</strong> <span t-field="order.create_date" t-options='{"format": "dd/MM/yyyy"}'/></div>
+                                                <div><strong>Delivery Date:</strong> <span t-field="order.delivery_date" t-options='{"format": "dd/MM/yyyy"}'/></div>
+                                                <div><strong>Product Type:</strong> <span t-field="order.product_type"/> - <span t-field="order.order_type"/></div>
+                                                <div t-if="order.measurement_date"><strong>Measurement Date:</strong> <span t-field="order.measurement_date" t-options='{"format": "dd/MM/yyyy"}'/></div>
+                                                <div t-if="order.labour_id"><strong>Tailor:</strong> <span t-field="order.labour_id.name"/></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="measurement-row" style="margin-top: 20px;">
+                                <div class="measurement-col" t-if="order.measurement_type in ['shirt', 'both']">
+                                    <div class="section-title">Shirt Measurements</div>
+                                    <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                        <thead class="header-bg">
+                                            <tr><th>Measurement Type</th><th>Size (inches)</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-if="order.neck" class="alt-bg"><td><strong>Neck</strong></td><td><span t-field="order.neck"/>"</td></tr>
+                                            <tr t-if="order.chest"><td><strong>Chest</strong></td><td><span t-field="order.chest"/>"</td></tr>
+                                            <tr t-if="order.shoulder" class="alt-bg"><td><strong>Shoulder</strong></td><td><span t-field="order.shoulder"/>"</td></tr>
+                                            <tr t-if="order.sleeve_length"><td><strong>Sleeve Length</strong></td><td><span t-field="order.sleeve_length"/>"</td></tr>
+                                            <tr t-if="order.shirt_length" class="alt-bg"><td><strong>Shirt Length</strong></td><td><span t-field="order.shirt_length"/>"</td></tr>
+                                            <tr t-if="order.bicep"><td><strong>Bicep</strong></td><td><span t-field="order.bicep"/>"</td></tr>
+                                            <tr t-if="order.cuff" class="alt-bg"><td><strong>Cuff</strong></td><td><span t-field="order.cuff"/>"</td></tr>
+                                            <tr t-if="order.stomach"><td><strong>Stomach</strong></td><td><span t-field="order.stomach"/>"</td></tr>
+                                            <tr t-if="order.seat" class="alt-bg"><td><strong>Seat</strong></td><td><span t-field="order.seat"/>"</td></tr>
+                                            <tr t-if="order.front"><td><strong>Front</strong></td><td><span t-field="order.front"/>"</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="measurement-col" t-if="order.measurement_type in ['pant', 'both']">
+                                    <div class="section-title">Pant Measurements</div>
+                                    <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                        <thead class="header-bg">
+                                            <tr><th>Measurement Type</th><th>Size (inches)</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-if="order.waist" class="alt-bg"><td><strong>Waist</strong></td><td><span t-field="order.waist"/>"</td></tr>
+                                            <tr t-if="order.seat_pant"><td><strong>Seat</strong></td><td><span t-field="order.seat_pant"/>"</td></tr>
+                                            <tr t-if="order.thigh" class="alt-bg"><td><strong>Thigh</strong></td><td><span t-field="order.thigh"/>"</td></tr>
+                                            <tr t-if="order.inseam"><td><strong>Inseam</strong></td><td><span t-field="order.inseam"/>"</td></tr>
+                                            <tr t-if="order.pant_length" class="alt-bg"><td><strong>Pant Length</strong></td><td><span t-field="order.pant_length"/>"</td></tr>
+                                            <tr t-if="order.knee"><td><strong>Knee</strong></td><td><span t-field="order.knee"/>"</td></tr>
+                                            <tr t-if="order.bottom" class="alt-bg"><td><strong>Bottom</strong></td><td><span t-field="order.bottom"/>"</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+                                <div style="text-align: center;">
+                                    <div style="border-top: 2px solid #2c3e50; width: 180px; margin: 0 auto;"></div>
+                                    <div style="margin-top: 8px; font-weight: bold; color: #2c3e50;">Authorized Signature</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="border-top: 2px solid #2c3e50; width: 180px; margin: 0 auto;"></div>
+                                    <div style="margin-top: 8px; font-weight: bold; color: #2c3e50;">Customer Signature</div>
+                                </div>
+                            </div>
+
+                            <div style="text-align: center; margin-top: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                                <small style="color: #6c757d; font-size: 12px;">
+                                    This measurement sheet is valid for 6 months from the date of measurement.<br/>
+                                    Please contact us for any modifications or clarifications.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_bill">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="order">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-size: 13px; page-break-inside: avoid;">
+                        <style>
+                            .double-border { border: 3px double #000; }
+                            .compact-table { margin-bottom: 6px; }
+                            .compact-table td, .compact-table th { padding: 4px 6px; line-height: 1.2; }
+                            .section-title { font-size: 14px; font-weight: bold; margin: 8px 0 4px 0; color: #2c3e50; }
+                            .header-bg { background-color: #e74c3c; color: white; }
+                            .alt-bg { background-color: #ecf0f1; }
+                            .highlight-bg { background-color: #fef9e7; }
+                            .total-bg { background-color: #d5dbdb; }
+                            .terms-highlight { 
+                                background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+                                border: 2px solid #f39c12;
+                                border-radius: 8px;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            }
+                        </style>
+                        
+                        <div class="double-border" style="padding: 12px;">
+                            <div class="text-center">
+                                <h2 style="margin: 0; color: #2c3e50; font-size: 18px;"><strong>TAILORING BILL</strong></h2>
+                            </div>
+                            
+                            <div style="margin-top: 10px;">
+                                <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                    <tr>
+                                        <td width="50%" style="font-weight: bold; text-align: center;" class="header-bg">Customer Details (Billed to)</td>
+                                        <td width="50%" style="font-weight: bold; text-align: center;" class="header-bg">Order Details</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top; padding: 8px;" class="highlight-bg">
+                                            <div style="line-height: 1.3;">
+                                                <div><strong>Name:</strong> <span t-field="order.customer_id.name"/></div>
+                                                <div><strong>Mobile:</strong> <span t-field="order.customer_mobile"/></div>
+                                                <div t-if="order.customer_email"><strong>Email:</strong> <span t-field="order.customer_email"/></div>
+                                                <div t-if="order.customer_address"><strong>Address:</strong> <span t-field="order.customer_address"/></div>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: top; padding: 8px;" class="highlight-bg">
+                                            <div style="line-height: 1.3;">
+                                                <div><strong>Bill No:</strong> <span t-field="order.name"/></div>
+                                                <div><strong>Bill Date:</strong> <span t-field="order.create_date" t-options='{"format": "dd/MM/yyyy"}'/></div>
+                                                <div><strong>Delivery Date:</strong> <span t-field="order.delivery_date" t-options='{"format": "dd/MM/yyyy"}'/></div>
+                                                <div><strong>Order Type:</strong> <span t-field="order.order_type"/></div>
+                                                <div><strong>Product Type:</strong> <span t-field="order.product_type"/></div>
+                                                <div t-if="order.current_work_stage"><strong>Status:</strong> <span t-field="order.current_work_stage"/></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div style="margin-top: 10px;">
+                                <div class="section-title">Service Details</div>
+                                <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                    <thead class="header-bg">
+                                        <tr>
+                                            <th width="30">#</th>
+                                            <th>Description</th>
+                                            <th width="80">Type</th>
+                                            <th width="100" style="text-align: right;">Amount (₹)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="line_no" t-value="1"/>
+                                        <tr t-if="order.shirt_charges and order.shirt_charges > 0" class="alt-bg">
+                                            <td><span t-esc="line_no"/></td>
+                                            <td><strong>Shirt Tailoring</strong></td>
+                                            <td><span t-field="order.product_type"/></td>
+                                            <td style="text-align: right;"><strong>₹ <span t-field="order.shirt_charges"/></strong></td>
+                                            <t t-set="line_no" t-value="line_no + 1"/>
+                                        </tr>
+                                        <tr t-if="order.pant_charges and order.pant_charges > 0">
+                                            <td><span t-esc="line_no"/></td>
+                                            <td><strong>Pant Tailoring</strong></td>
+                                            <td><span t-field="order.product_type"/></td>
+                                            <td style="text-align: right;"><strong>₹ <span t-field="order.pant_charges"/></strong></td>
+                                            <t t-set="line_no" t-value="line_no + 1"/>
+                                        </tr>
+                                        <tr t-if="order.alteration_charges and order.alteration_charges > 0" class="alt-bg">
+                                            <td><span t-esc="line_no"/></td>
+                                            <td><strong>Alteration Charges</strong></td>
+                                            <td>Service</td>
+                                            <td style="text-align: right;"><strong>₹ <span t-field="order.alteration_charges"/></strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <div style="flex: 1;">
+                                    <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                        <tr>
+                                            <td style="font-weight: bold; text-align: center;" class="header-bg">Subtotal Information</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px;" class="highlight-bg">
+                                                <div style="line-height: 1.3;">
+                                                    <div><strong>Subtotal:</strong> ₹ <span t-field="order.total_amount"/></div>
+                                                    <div><strong>Tax:</strong> ₹ 0.00</div>
+                                                    <div style="border-top: 1px solid #ccc; margin-top: 3px; padding-top: 3px;"><strong>Total Amount:</strong> ₹ <span t-field="order.total_amount"/></div>
+                                                    <div t-if="order.advance_payment and order.advance_payment > 0"><strong>Advance Paid:</strong> ₹ <span t-field="order.advance_payment"/></div>
+                                                    <div t-if="order.pending_payment and order.pending_payment > 0" style="color: #d68910;"><strong>Balance Due:</strong> ₹ <span t-field="order.pending_payment"/></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div style="flex: 1;">
+                                    <table class="table table-bordered compact-table double-border" style="width: 100%;">
+                                        <tr>
+                                            <td style="font-weight: bold; text-align: center;" class="header-bg">Payment Information</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px;" class="highlight-bg">
+                                                <div style="line-height: 1.3;">
+                                                    <div t-if="order.payment_method"><strong>Payment Method:</strong> <span t-field="order.payment_method"/></div>
+                                                    <div t-if="order.delivery_completed" style="margin-top: 5px;">
+                                                        <strong>Status:</strong> <span style="background-color: #d4edda; color: #155724; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 11px;">Delivered</span>
+                                                    </div>
+                                                    <div t-if="not order.delivery_completed" style="margin-top: 5px;">
+                                                        <strong>Status:</strong> <span style="background-color: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 11px;">Pending Delivery</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 10px;">
+                                <div class="section-title">Work Description</div>
+                                <div style="margin-top: 5px; padding: 6px; background-color: #f8f9fa; border-radius: 4px; font-size: 12px;">
+                                    <span t-field="order.description"/>
+                                    <div t-if="order.remarks" style="margin-top: 5px;">
+                                        <strong>Remarks:</strong> <span t-field="order.remarks"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 10px;">
+                                <div class="section-title" style="color: #e74c3c;">⚠️ Terms &amp; Conditions</div>
+                                <div class="terms-highlight" style="padding: 8px;">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; line-height: 1.3;">
+                                        <div style="flex: 1; min-width: 250px;">
+                                            <div style="font-weight: bold; color: #d35400; margin-bottom: 3px;">📋 PAYMENT TERMS:</div>
+                                            <div>• All payments in Indian Rupees (₹)</div>
+                                            <div>• Payment due at delivery</div>
+                                            <div>• No returns after delivery</div>
+                                            <div>• Alterations after fitting = extra charge</div>
+                                        </div>
+                                        <div style="flex: 1; min-width: 250px;">
+                                            <div style="font-weight: bold; color: #d35400; margin-bottom: 3px;">📅 DELIVERY TERMS:</div>
+                                            <div>• Delivery dates are approximate</div>
+                                            <div>• Items not collected in 30 days = disposed</div>
+                                            <div>• Customer must inspect at delivery</div>
+                                            <div>• Local jurisdiction for disputes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="border-top: 2px solid #2c3e50; width: 150px; margin: 0 auto;"></div>
+                                    <div style="margin-top: 5px; font-weight: bold; color: #2c3e50; font-size: 12px;">Authorized Signature</div>
+                                </div>
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="border-top: 2px solid #2c3e50; width: 150px; margin: 0 auto;"></div>
+                                    <div style="margin-top: 5px; font-weight: bold; color: #2c3e50; font-size: 12px;">Customer Signature</div>
+                                </div>
+                            </div>
+
+                            <div style="text-align: center; margin-top: 12px; padding: 8px; background-color: #e8f5e8; border-radius: 5px;">
+                                <h4 style="margin: 3px 0; font-size: 16px; color: #27ae60;"><strong>🙏 Thank You for Your Business!</strong></h4>
+                                <small style="color: #6c757d; font-size: 11px;">
+                                    For any queries, please contact us. We appreciate your trust in our services.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
